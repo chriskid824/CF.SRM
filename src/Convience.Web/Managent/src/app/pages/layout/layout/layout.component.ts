@@ -59,7 +59,7 @@ export class LayoutComponent implements OnInit {
     },
     {
       canOperate: 'systemtool', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '系统工具',
-      children: [        
+      children: [
         { canOperate: 'code', routerLink: '/tool/code', iconType: 'fund-view', firstBreadcrumb: '系统工具', lastBreadcrumb: '代码生成', name: '代码生成', },
         { canOperate: 'swagger', routerLink: '/tool/swagger', iconType: 'api', firstBreadcrumb: '系统工具', lastBreadcrumb: 'Swagger', name: 'Swagger', },
       ]
@@ -69,6 +69,12 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單資訊', name: '詢價單資訊', },
         { canOperate: 'rfq', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
+      ]
+    },
+    {
+      canOperate: 'po', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '採購單',
+      children: [
+        { canOperate: 'po', routerLink: '/srm/po', iconType: 'fund-view', firstBreadcrumb: '採購單', lastBreadcrumb: '採購單', name: '採購單', },
       ]
     },
   ];

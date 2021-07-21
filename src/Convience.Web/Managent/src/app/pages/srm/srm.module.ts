@@ -15,11 +15,13 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { AppCommonModule } from '../app-common/app-common.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-
+import { PoComponent } from './po/po.component';
+import 'ag-grid-enterprise'
 @NgModule({
   declarations: [
     RfqComponent,
     RfqManageComponent,
+    PoComponent,
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     RouterModule.forChild([
       { path: '', pathMatch: 'full', redirectTo: 'rfq' },
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
-      { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] }
+      { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
+      { path: "po", component: PoComponent }
     ]),
     AgGridModule.withComponents([]),
     NzButtonModule,
