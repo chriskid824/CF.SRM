@@ -1,0 +1,71 @@
+<div class="two-column">
+  <div class="right">
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label [nzFor]="'RFQ_NUM'">詢價單號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="詢價單號" [formControlName]="'RFQ_NUM'" [attr.id]="'RFQ_NUM'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary">搜索</button>
+            <button nz-button nzType="outline" type="button" class="ml-10"
+                    (click)="resetSearchForm()">
+              重置
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+
+    <!--詢價單數據-->
+    <nz-card [nzSize]="'small'" id="rfqCard">
+      <div>
+        <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
+                *canOperate="'adduserbtn'">
+          <i nz-icon nzType="plus"></i>新增詢價單
+        </button>
+        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>添加詢價單</button>
+      </div>
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+                  nzBordered="true" [nzScroll]="{ x: '180px' }">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="20px" nzLeft>狀態</th>
+              <th nzAlign="center" nzWidth="20px">詢價單號</th>
+              <th nzAlign="center" nzWidth="20px">詢價人員</th>
+              <th nzAlign="center" nzWidth="20px">建立人員</th>
+              <th nzAlign="center" nzWidth="20px">建立日期</th>
+              <th nzAlign="center" nzWidth="80px" nzRight>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <td nzAlign="center">{{ data.STATUS }}</td>
+              <td nzAlign="center">{{ data.RFQ_NUM }}</td>
+              <td nzAlign="center">{{ data.SOURCER }}</td>
+              <td nzAlign="center">{{ data.CREATE_BY }}</td>
+              <td nzAlign="center">{{ data.DateString }}</td>
+              <td nzAlign="center">
+                <nz-tag *ngIf="!data.isActive" [nzColor]="'red'">停用</nz-tag>
+                <!--<nz-tag *ngIf="data.isActive" [nzColor]="'green'">激活</nz-tag>-->
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+        </nz-pagination>
+      </div>
+    </nz-card>
+
+  </div>
+</div>

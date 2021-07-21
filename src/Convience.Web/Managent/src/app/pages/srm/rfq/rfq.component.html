@@ -1,0 +1,148 @@
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256–2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60 =" crossorigin="anonymous"></script>
+<div class="two-column">
+  <div class="right">
+    <nz-card [nzSize]="'small'">
+      <div class="col-md-12 colStyle">
+        <h1 id="heading001" class="head1" style="font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 24px; position: relative;">
+          詢價單
+          <span style="font-size:12px;float:right;">單號:{{H.rfqNum}}</span>
+          <span style="font-size:12px;float:left;text-align: left; font: small-caption ">
+            申請日期:{{H.C_Date}}
+            <br>填單者:{{name}}
+          </span>
+        </h1>
+      </div>
+      <div style="display: -webkit-box;margin-top:20px">
+        <div>
+          <form nz-form>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'userName'">詢價人員</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="詢價人員" [formControlName]="'SOURCER'" readonly="readonly"
+                       autocomplete="off" />
+                <button nz-button nzType="primary" style="margin-left: 20px" (click)="add(addMatnrTitleTpl,MatnrContentTpl)">選擇人員</button>
+                <input nz-input placeholder="人員群組" style="margin-left: 20px" [formControlName]="'SOURCER'" readonly="readonly"
+                       autocomplete="off" />
+                <input nz-input placeholder="工廠" style="margin-left: 20px" [formControlName]="'SOURCER'" readonly="readonly"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'deadLine'">詢價截止日期</nz-form-label>
+              <nz-form-control>
+                <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" [(ngModel)]="H.deadline"></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        </div>
+      </div>
+      <!--<div style="height: 200px; overflow-y: scroll">-->
+
+      <mat-tab-group>
+        <mat-tab label="料號明細">
+          <h1>
+            <button nz-button nzType="primary" style="margin-left: 20px" (click)="add(addMatnrTitleTpl,MatnrContentTpl)">添加料號</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMatnr()">刪除料號</button>
+          </h1>
+          <ag-grid-angular #agGrid
+                           style="width: 93%; height: 200px;border:solid"
+                           id="myGrid"
+                           [columnDefs]="columnDefs"
+                           [suppressDragLeaveHidesColumns]="true"
+                           [suppressMakeColumnVisibleAfterUnGroup]="true"
+                           [rowData]="rowData_MATNR"
+                           (gridReady)="onGridReady($event)"
+                           [enableCharts]="true"
+                           [enableRangeSelection]="true"
+                           [masterDetail]="true"
+                           [undoRedoCellEditing]="true"
+                           [undoRedoCellEditingLimit]="5"
+                           [detailRowAutoHeight]="true"
+                           class="ag-theme-alpine"
+                           [defaultColDef]="defaultColDef"
+                           [rowSelection]= "rowSelection"
+                           [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+        </mat-tab>
+        <mat-tab label="供應商明細">
+          <h1>
+            <button nz-button nzType="primary" style="margin-left: 20px" (click)="add(addVendorTitleTpl,VendorContentTpl)">添加供應商</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteVendor()">刪除供應商</button>
+          </h1>
+          <ag-grid-angular #agGrid
+                           style="width: 93%; height: 200px; border: solid"
+                           id="myGrid_VENDOR"
+                           [columnDefs]="columnDefs_VENDOR"
+                           [suppressDragLeaveHidesColumns]="true"
+                           [suppressMakeColumnVisibleAfterUnGroup]="true"
+                           [rowData]="rowData_VENDOR"
+                           (gridReady)="onGridReady_VENDOR($event)"
+                           [enableCharts]="true"
+                           [enableRangeSelection]="true"
+                           [masterDetail]="true"
+                           [undoRedoCellEditing]="true"
+                           [undoRedoCellEditingLimit]="5"
+                           [detailRowAutoHeight]="true"
+                           class="ag-theme-alpine"
+                           [defaultColDef]="defaultColDef"
+                           [rowSelection]= "rowSelection"></ag-grid-angular>
+        </mat-tab>
+        </mat-tab-group>
+          <div style="text-align:center;width:93%">
+      <button nz-button nzType="primary" style="margin-top:20px" (click)="save()">保存</button>
+          </div>
+</nz-card>
+  </div>
+</div>
+
+<ng-template #addMatnrTitleTpl>
+  <span>添加料號</span>
+</ng-template>
+<ng-template #addVendorTitleTpl>
+  <span>添加供應商</span>
+</ng-template>
+<ng-template #MatnrContentTpl>
+  <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="searchMatnrList()">
+    <nz-form-item>
+      <nz-form-label>料號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="料號" formControlName="matnr"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzType="primary">搜索</button>
+  </form>
+    <div style="height: 100px; overflow: auto; margin-left: 20px ">
+      <nz-checkbox-group [(ngModel)]="MatnrList"></nz-checkbox-group>
+    </div>
+    <form nz-form [formGroup]="matnrListForm" (ngSubmit)="submitMatnrList()">
+      <nz-form-item>
+        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+          <button nz-button nzType="primary" class="mr-10">提交</button>
+          <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+</ng-template>
+<ng-template #VendorContentTpl>
+  <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="searchVendorList()">
+    <nz-form-item>
+      <nz-form-label>供應商</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="供應商" formControlName="vendor"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzType="primary">搜索</button>
+  </form>
+  <div style="height: 100px; overflow: auto; margin-left: 20px ">
+    <nz-checkbox-group [(ngModel)]="VendorList"></nz-checkbox-group>
+  </div>
+  <form nz-form [formGroup]="vendorListForm" (ngSubmit)="submitVendorList()">
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary" class="mr-10">提交</button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
