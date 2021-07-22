@@ -10,6 +10,11 @@ namespace Convience.Entity.Entity.SRM
     [Entity(DbContextType = typeof(SRMContext))]
     public partial class SrmPoH
     {
+        public SrmPoH()
+        {
+            SrmPoLs = new HashSet<SrmPoL>();
+        }
+
         public int PoId { get; set; }
         public string PoNum { get; set; }
         public int VendorId { get; set; }
@@ -22,5 +27,8 @@ namespace Convience.Entity.Entity.SRM
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
+        public decimal? TotalAmount { get; set; }
+
+        public virtual ICollection<SrmPoL> SrmPoLs { get; set; }
     }
 }

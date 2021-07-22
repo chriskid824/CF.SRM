@@ -1,7 +1,7 @@
 ﻿using Convience.EntityFrameWork.Infrastructure;
 
 using System;
-
+using System.Collections.Generic;
 #nullable disable
 
 namespace Convience.Entity.Entity.SRM
@@ -20,5 +20,7 @@ namespace Convience.Entity.Entity.SRM
         public string DeliveryPlace { get; set; }
         public string CriticalPart { get; set; }
         public float? InspectionTime { get; set; }
+
+        public virtual SrmPoH Po { get; set; }
     }
 }

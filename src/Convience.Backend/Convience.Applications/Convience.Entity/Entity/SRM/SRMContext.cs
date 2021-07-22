@@ -382,6 +382,10 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
+                entity.Property(e => e.TotalAmount)
+                    .HasColumnType("money")
+                    .HasColumnName("TOTAL_AMOUNT");
+
                 entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
             });
 
@@ -425,6 +429,12 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.ReplyDeliveryDate)
                     .HasColumnType("datetime")
                     .HasColumnName("REPLY_DELIVERY_DATE");
+
+                entity.HasOne(d => d.Po)
+                    .WithMany(p => p.SrmPoLs)
+                    .HasForeignKey(d => d.PoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("PO_ID");
             });
             OnModelCreatingPartial(modelBuilder);
         }
