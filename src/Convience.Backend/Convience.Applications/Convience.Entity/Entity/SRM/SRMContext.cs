@@ -22,6 +22,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmRfqM> SrmRfqMs { get; set; }
         public virtual DbSet<SrmRfqV> SrmRfqVs { get; set; }
         public virtual DbSet<SrmVendor> SrmVendors { get; set; }
+        public virtual DbSet<SrmPoH> SrmPoHs { get; set; }
+        public virtual DbSet<SrmPoL> SrmPoLs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -332,7 +334,98 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("VENDOR_NAME")
                     .HasComment("供應商名稱");
             });
+            modelBuilder.Entity<SrmPoH>(entity =>
+            {
+                entity.HasKey(e => e.PoId)
+                    .HasName("PK__SRM_PO_H__5ECDB69D17817CBC");
 
+                entity.ToTable("SRM_PO_H");
+
+                entity.Property(e => e.PoId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("PO_ID");
+
+                entity.Property(e => e.Buyer)
+                    .HasMaxLength(8)
+                    .HasColumnName("BUYER");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.DocDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DOC_DATE");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.Org).HasColumnName("ORG");
+
+                entity.Property(e => e.PoNum)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("PO_NUM");
+
+                entity.Property(e => e.ReplyDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("REPLY_DATE");
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
+            });
+
+            modelBuilder.Entity<SrmPoL>(entity =>
+            {
+                entity.HasKey(e => e.PoLId)
+                    .HasName("PK__SRM_PO_L__96094CB1B64DAE59");
+
+                entity.ToTable("SRM_PO_L");
+
+                entity.Property(e => e.PoLId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("PO_L_ID");
+
+                entity.Property(e => e.CriticalPart)
+                    .HasMaxLength(5)
+                    .HasColumnName("CRITICAL_PART");
+
+                entity.Property(e => e.DeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DELIVERY_DATE");
+
+                entity.Property(e => e.DeliveryPlace)
+                    .HasMaxLength(10)
+                    .HasColumnName("DELIVERY_PLACE");
+
+                entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.InspectionTime).HasColumnName("INSPECTION_TIME");
+
+                entity.Property(e => e.MantrId).HasColumnName("MANTR_ID");
+
+                entity.Property(e => e.PoId).HasColumnName("PO_ID");
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("money")
+                    .HasColumnName("PRICE");
+
+                entity.Property(e => e.Qty).HasColumnName("QTY");
+
+                entity.Property(e => e.ReplyDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("REPLY_DELIVERY_DATE");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 
