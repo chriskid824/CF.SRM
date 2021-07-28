@@ -16,14 +16,16 @@ import { AppCommonModule } from '../app-common/app-common.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { PoComponent } from './po/po.component';
+import { QotComponent } from './qot/qot.component';
 import { AgGridDatePickerComponent } from './po/AGGridDatePickerCompponent';
-import 'ag-grid-enterprise'
+import 'ag-grid-enterprise';
 @NgModule({
   declarations: [
     RfqComponent,
     RfqManageComponent,
     PoComponent,
     AgGridDatePickerComponent,
+    QotComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import 'ag-grid-enterprise'
       { path: '', pathMatch: 'full', redirectTo: 'rfq' },
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
-      { path: "po", component: PoComponent }
+      { path: "po", component: PoComponent },
+      { path: "qot", component: QotComponent }
     ]),
     AgGridModule.withComponents([]),
     NzButtonModule,
@@ -43,7 +46,7 @@ import 'ag-grid-enterprise'
     NzCheckboxModule,
     AppCommonModule,
     MatTabsModule,
-    NzDatePickerModule
+    NzDatePickerModule,
   ]
 })
 export class SrmModule { }

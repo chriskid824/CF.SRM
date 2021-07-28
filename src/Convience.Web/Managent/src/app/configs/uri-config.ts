@@ -85,4 +85,6 @@ export class UriConfig {
     get LoginLogUri(): string { return `${this._apiUri}/loginLog` };
 
     get SrmRfq(): string { return `${this._apiUri}/SrmRfq` };
+
+    get SrmQot(): string { return `${this._apiUri}/SrmQot` };
 }
