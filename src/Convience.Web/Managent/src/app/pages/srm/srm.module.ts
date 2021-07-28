@@ -16,12 +16,14 @@ import { AppCommonModule } from '../app-common/app-common.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { PoComponent } from './po/po.component';
+import { AgGridDatePickerComponent } from './po/AGGridDatePickerCompponent';
 import 'ag-grid-enterprise'
 @NgModule({
   declarations: [
     RfqComponent,
     RfqManageComponent,
     PoComponent,
+    AgGridDatePickerComponent,
   ],
   imports: [
     CommonModule,

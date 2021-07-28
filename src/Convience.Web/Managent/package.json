@@ -31,6 +31,7 @@
     "angular-dual-listbox": "^6.0.0",
     "file-saver": "^2.0.5",
     "jquery": "^3.6.0",
+    "jquery-datepicker": "^1.12.3",
     "jsplumb": "^2.15.5",
     "monaco-editor": "^0.22.3",
     "ng-zorro-antd": "^11.1.0",
