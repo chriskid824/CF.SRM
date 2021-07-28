@@ -1,0 +1,441 @@
+<body>
+  <div class="shape-ex3">
+    <div id="_header" class="parent" style=" width: 1000px; background-color: #45a1ec; border-radius: 5px;">
+      <h1 id="heading001" style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:center;">報價作業<span style="font-size:12px;right:0px;float:right;">單號:ITD210713005</span><span style="float:left;font-size:12px;text-align: left;">申請日期:2021/07/13 11:13:38<br>填單者:陳嘉融</span></h1>
+    </div>
+    <div class="child">
+      <div class="cc" style="margin: 0px auto;">
+        <table style=" font-family: 微軟正黑體;">
+          <tr>
+            <td class="content1" id="currency" style="width:330px">幣別:</td>
+            <td class="content1" id="leadtime">交貨時間：</td>
+            <td class="content1" id="min_qty">最小採購數量：</td>
+          </tr>
+          <tr id="rowtype2">
+            <td class="content1">
+              <input class="content1" type="text" id="txtcfno" name="txtcfno" disabled value="台幣">
+            </td>
+            <td class="content1">
+              <input class="content1" type="text" id="txtversion" name="txtversion" disabled value="2021/07/05">
+            </td>
+            <td class="content1">
+              <input class="content1" type="text" id="txtspecification" name="txtspecification" disabled value="">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <p class="title"><span id="item">詢價項目</span> </p>
+        <table class="table1">
+          <tr id="rowtype1">
+            <td class="content2" id="cfno">料號:</td>
+            <td class="content2" id="version">版次</td>
+            <td class="content2" id="specification">材質規格：</td>
+            <td class="content2" id="density">密度</td>
+          </tr>
+          <tr id="rowtype2">
+            <td class="content2">
+              <input class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="ZAT00">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtversion" name="txtversion" disabled value="2">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtspecification" name="txtspecification" disabled value="3x5x6">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtdensity" name="txtdensity" disabled value="1.2">
+            </td>
+          </tr>
+          <tr id="rowtype3">
+            <td class="content2" id="materiallength">長:</td>
+            <td class="content2" id="materialwidth">寬:</td>
+            <td class="content2" id="materialheight">高：</td>
+            <td class="content2" id="materialweight">重量:</td>
+          </tr>
+          <tr id="rowtype4">
+            <td class="content2">
+              <input class="content2" type="text" id="txtmateriallength" name="txtmateriallength" disabled value="3">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtmaterialwidth" name="txtmaterialwidth" disabled value="2">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtmaterialheight" name="txtmaterialheight" disabled value="4">
+            </td>
+            <td class="content2">
+              <input class="content2" type="text" id="txtmaterialweight" name="txtmaterialweight" disabled value="5">
+            </td>
+          </tr>
+          <tr id="rowtype5">
+            <td colspan="4" id="materiallength" style=" "><span style=" font-family: 微軟正黑體;">備註:</span></td>
+          </tr>
+          <tr id="rowtype6">
+            <td colspan="4">
+              <!--<input type="text" id="txtnote" name="txtnote" disabled value="aa" style="width: 100%; height: 50px; border-radius: 5px;">-->
+              <textarea style=" font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>備註</textarea>
+            </td>
+
+          </tr>
+        </table>
+        <p class="line2"><span></span> </p>
+        <mat-tab-group style="font-family:微軟正黑體;">
+          <mat-tab label="材料">
+            <!--<buttonv nz-button class="mr-10" (click)="addRole(addRoleTitleTpl,roleContentTpl)" *canOperate="'addRoleBtn'">
+              <i nz-icon nzType="plus"></i>添加角色
+            </button>-->
+            <button (click)="addRole(addMaterialTitleTp,MaterialContentTp)">新增材料</button>
+            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
+            <ag-grid-angular style="width: 990px; height: 200px; font-family: 微軟正黑體;" class="ag-theme-balham" [rowData]="rowDatamaterial" [columnDefs]="columnDefsmaterial" [gridOptions]="gridOptions">
+            </ag-grid-angular>
+          </mat-tab>
+          <mat-tab label="加工">
+            <button (click)="addRole(addProcessTitleTp,ProcessContentTp)">新增加工</button>
+            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
+            <ag-grid-angular style="width: 990px; height: 200px; " class="ag-theme-balham" [rowData]="rowDataprocess" [columnDefs]="columnDefsprocess" [gridOptions]="gridOptions">
+            </ag-grid-angular>
+          </mat-tab>
+          <mat-tab label="表面處理">
+            <button (click)="addRole(addSurfaceTitleTp,SurfaceContentTp)">新增表面處理</button>
+            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
+            <ag-grid-angular style="width: 990px; height: 200px; " class="ag-theme-balham" [rowData]="rowDatasurface" [columnDefs]="columnDefssurface" [gridOptions]="gridOptions">
+            </ag-grid-angular>
+          </mat-tab>
+          <mat-tab label="其他費用">
+            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
+            <button (click)="addRole(addOtherTitleTp,OtherContentTp)">新增其他</button>
+            <ag-grid-angular style="width: 990px; height: 200px;" class="ag-theme-balham" [rowData]="rowDataother" [columnDefs]="columnDefsother" [gridOptions]="gridOptions">
+            </ag-grid-angular>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <table align="center"><tr><td><button>送出</button> <button>返回</button></td></tr></table>
+    </div>
+  </div>
+</body>
+<!--材料-->
+<ng-template #addMaterialTitleTp>
+  <span>材料明細</span>
+</ng-template>
+<ng-template #MaterialContentTp>
+  <form nz-form [formGroup]="editForm" (ngSubmit)="submitMatnrList()">
+    <table border="1">
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_name'" formControlName="material_name" nz-input placeholder="素材材質" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_price'">材料單價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_length'">長</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_length'" formControlName="material_length" nz-input placeholder="長" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_width'">寬</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_width'" formControlName="material_width" nz-input placeholder="寬" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_height'">高</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_height'" formControlName="material_height" nz-input placeholder="高" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_density'">密度</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_density'" formControlName="material_density" nz-input placeholder="密度" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_weight'">重量</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_weight'" formControlName="material_weight" nz-input placeholder="重量" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_totalcost'">總金額</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'add_material_totalcost'" formControlName="material_totalcost" nz-input placeholder="總金額" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_note'">備註</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <textarea [attr.id]="'add_material_note'" formControlName="material_note" nz-input placeholder="備註"
+                      rows="2"></textarea>
+            <!--<input [attr.id]="'add_material_note'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button id="btninsert_material" nz-button nzType="primary" class="mr-10">提交</button>
+          </nz-form-control>
+        </td>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button id="btncancel_material" nz-button type="button" (click)="cancelEdit()">取消</button>
+          </nz-form-control>
+        </td>
+      </tr>
+    </table>
+  </form>
+</ng-template>
+<!--加工-->
+<ng-template #addProcessTitleTp>
+  <span>加工明細</span>
+</ng-template>
+<ng-template #ProcessContentTp>
+  <form nz-form [formGroup]="editForm1" (ngSubmit)="submitEdit()">
+    <table border="1">
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工序代碼</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工序代碼" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工時(時)</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工時(時)" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價(時)</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價(時)" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">機台</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="機台" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+                      rows="2"></textarea>
+<!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
+</nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" class="mr-10">提交</button>
+          </nz-form-control>
+        </td>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button type="button" (click)="cancelEdit()">取消</button>
+          </nz-form-control>
+        </td>
+      </tr>
+    </table>
+  </form>
+</ng-template>
+<!--表面處理-->
+<ng-template #addSurfaceTitleTp>
+  <span>表面處理明細</span>
+</ng-template>
+<ng-template #SurfaceContentTp>
+  <form nz-form [formGroup]="editForm2" (ngSubmit)="submitEdit()">
+    <table border="1">
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工序</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工序" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">次數</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="次數" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價(時)</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價(時)" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+<!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
+<textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+                      rows="2"></textarea>
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" class="mr-10">提交</button>
+          </nz-form-control>
+        </td>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button type="button" (click)="cancelEdit()">取消</button>
+          </nz-form-control>
+        </td>
+      </tr>
+    </table>
+  </form>
+</ng-template>
+<!--其他-->
+<ng-template #addOtherTitleTp>
+  <span>其他明細</span>
+</ng-template>
+<ng-template #OtherContentTp>
+  <form nz-form [formGroup]="editForm3" (ngSubmit)="submitEdit()">
+    <table border="1">
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">項目</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="項目" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">說明</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="說明" autocomplete="off" />
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+<!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
+<textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+                      rows="2"></textarea>
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" class="mr-10">提交</button>
+          </nz-form-control>
+        </td>
+        <td>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button type="button" (click)="cancelEdit()">取消</button>
+          </nz-form-control>
+        </td>
+      </tr>
+    </table>
+  </form>
+</ng-template>

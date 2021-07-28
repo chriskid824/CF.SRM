@@ -1,0 +1,172 @@
+.title span {
+  display: block;
+  font-size: 20px;
+  color: black;
+  position: relative;
+}
+
+.title span:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  background: #ddd;
+  width: 15px;
+  height: 1px;
+}
+
+.title span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  background: #ddd;
+  width: 850px;
+  height: 1px;
+}
+
+.title span:before {
+  left: -20px;
+}
+
+.title span:after {
+  left: 100px;
+}
+
+#item {
+  margin-left: 20px;
+}
+
+.line2 span {
+  display: block;
+  font-size: 20px;
+  color: black;
+  position: relative;
+}
+
+.line2 span:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  background: #ddd;
+  width: 15px;
+  height: 1px;
+}
+
+.line2 span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  background: #ddd;
+  width: 970px;
+  height: 1px;
+}
+#item {
+    color:aliceblue;
+}
+.body {
+  align-items: center;
+  
+}
+.table_format {
+  font-family: 微軟正黑體;
+}
+/*.my-custom-class {
+  border-width: 9px;
+  border-style: solid;
+  border-color:cadetblue;
+  width:auto;
+}
+.mat-tab-label {
+  border: 1px solid transparent;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+
+.mat-tab-label-active {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.mat-ink-bar {
+  display: none;
+}*/
+.mat-tab-group {
+  margin-bottom: 48px;
+}
+
+/*.shape-ex3 {
+  width: 150px;
+  height: 150px;
+  max-width: 900px;
+  display: table;
+  background-color: oldlace;
+}
+.shape-ex3-block {
+  
+  text-align: center;
+}*/
+#item{
+    color:black;
+    font-family: 微軟正黑體;
+}
+.btnstyle {
+  font-family: 微軟正黑體;
+}
+/*.btnstyle {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}*/
+
+.btnstyle span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.btnstyle span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.btnstyle:hover span {
+  padding-right: 25px;
+}
+
+.btnstyle:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+.content1 {
+  width: 330px;
+  border-radius: 5px;
+}
+.content2 {
+  width: 247px;
+  border-radius: 5px;
+  
+}
+.content1 input,
+textarea {
+  background-color: aliceblue;
+}
+.content2 input {
+  background-color: aliceblue;
+}
+.content2{
+  font-family: 微軟正黑體;
+}
