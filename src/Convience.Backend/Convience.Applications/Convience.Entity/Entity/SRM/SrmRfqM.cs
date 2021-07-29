@@ -2,7 +2,7 @@
 using Convience.EntityFrameWork.Infrastructure;
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace Convience.Entity.Entity.SRM
         public string Density { get; set; }
         public double? Weight { get; set; }
         public string MachineName { get; set; }
-        public double? Qot { get; set; }
+        public double? Qty { get; set; }
         public string Note { get; set; }
     }
 }

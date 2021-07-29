@@ -14,6 +14,8 @@ namespace Convience.Entity.Entity.SRM
         public string SrmVendor1 { get; set; }
         public string Vendor { get; set; }
         public string VendorName { get; set; }
+        public int? Org { get; set; }
+        public int? Ekorg { get; set; }
         public string Person { get; set; }
         public string Address { get; set; }
         public string TelPhone { get; set; }

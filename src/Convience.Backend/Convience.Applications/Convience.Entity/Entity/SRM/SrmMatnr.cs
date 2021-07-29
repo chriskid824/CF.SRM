@@ -14,6 +14,8 @@ namespace Convience.Entity.Entity.SRM
         public int MatnrId { get; set; }
         public string SrmMatnr1 { get; set; }
         public string Matnr { get; set; }
+        public string MatnrGroup { get; set; }
+        public string Description { get; set; }
         public string Version { get; set; }
         public string Material { get; set; }
         public double? Length { get; set; }
