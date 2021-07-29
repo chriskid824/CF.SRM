@@ -73,7 +73,7 @@ namespace Convience.Service.Account
                         (CustomClaimTypes.Name,user.Name)
                     };
                     return new ValidateCredentialsResultModel(_jwtFactory.GenerateJwtToken(pairs),
-                        user.Name, user.Avatar, roleIds);
+                        user.Name, user.Avatar, roleIds, user.CostNo);
                 }
             }
             return null;
