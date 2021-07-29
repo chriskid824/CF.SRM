@@ -9,7 +9,8 @@
         string Avatar,
         string Token,
         string Identification,
-        string Routes);
+        string Routes,
+        string CostNo);
 
     public record LoginViewModel(
         string UserName,
@@ -21,5 +22,6 @@
         string Token,
         string Name,
         string Avatar,
-        string RoleIds);
+        string RoleIds,
+        string CostNo);
 }
