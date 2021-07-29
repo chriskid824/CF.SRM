@@ -8,7 +8,6 @@ import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { DatePipe } from '@angular/common'
 import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from 'src/app/business/system-manage/user.service';
 
 @Component({
   selector: 'app-rfq',
@@ -22,66 +21,48 @@ export class RfqComponent implements OnInit {
   canCxl;
   canDel;
   name;
+  page = 1;
+  size = 50;
+
+  //Matnr
   columnDefs;
   rowData_MATNR;
   columnApi;
   gridApi;
   defaultColDef;
-  searchForm: FormGroup = new FormGroup({});
-  private _searchObject: any = {};
+  OriMatnrList;
+  MatnrList;
+  //Vendor
   columnDefs_VENDOR;
   rowData_VENDOR;
   columnApi_VENDOR;
   gridApi_VENDOR;
   defaultColDef_VENDOR;
-  rowSelection = "multiple";
+  OriVendorList;
+  VendorList;
+  //sorcer
+  SourcerList;
   radioValue;
 
+  rowSelection = "multiple";
   tplModal: NzModalRef;
+  searchForm: FormGroup = new FormGroup({});
   formDetail: FormGroup = new FormGroup({});
   matnrListForm: FormGroup = new FormGroup({});
   vendorListForm: FormGroup = new FormGroup({});
   sourcerListForm: FormGroup = new FormGroup({});
-  createForm: FormGroup = new FormGroup({});
 
-  form: FormGroup;
-  ordersData = [];
-  getOrders() {
-    return [
-      { id: 100, name: 'order 1' },
-      { id: 200, name: 'order 2' },
-      { id: 300, name: 'order 3' },
-      { id: 400, name: 'order 4' }
-    ];
-  }
 
-  OriMatnrList;
-  MatnrList;
-  OriVendorList;
-  VendorList;
-  SourcerList;
-
-  selectedValue = null;
-
-  get ordersFormArray() {
-    return this.form.controls.orders as FormArray;
-  }
-  private addCheckboxes() {
-    this.ordersData.forEach(() => this.ordersFormArray.push(new FormControl(false)));
-  }
   constructor(
     private activatedRoute: ActivatedRoute,
     private _storageService: StorageService,
     private formBuilder: FormBuilder,
     private _modalService: NzModalService,
     private _formBuilder: FormBuilder,
-    private _userService: UserService,
     private _srmRfqService: SrmRfqService,
     public datepipe: DatePipe) {
     console.log(_storageService.costNo);
     this.H = {
-      //status: 0,
-      //CREATEBY: _storageService.userName,
     }
     this.activatedRoute.queryParams.subscribe(params => {
       this.H.rfqId = params['id'];
@@ -89,106 +70,12 @@ export class RfqComponent implements OnInit {
     });
 
 
-    //_srmRfqService.GetMatnr().subscribe(result => {
-    //  console.log(result);
-    //  this.OriMatnrList = result;
-    //});
-    //_srmRfqService.GetVendor().subscribe(result => {
-    //  console.log(result);
-    //  this.OriVendorList = result;
-    //});
-
-    this.form = this.formBuilder.group({
-      orders: new FormArray([])
-    });
-    of(this.getOrders()).subscribe(orders => {
-      //this.ordersData = orders;
-      //this.addCheckboxes();
-    });
-    //this.columnDefs = [
-    //  {
-    //    headerName: "料號",
-    //    field: "matnr",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "240px",
-    //    cellRenderer: 'agGroupCellRenderer',
-    //    headerCheckboxSelection: true,
-    //    checkboxSelection: true,
-    //  },
-    //  {
-    //    headerName: "版次",
-    //    field: "version",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "材質規格",
-    //    field: "material",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "體積",
-    //    field: "volume",
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "密度",
-    //    field: "density",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "重量",
-    //    field: "weight",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "狀態",
-    //    field: "status",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "數量",
-    //    field: "qty",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    editable: this.canModify,
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "機種",
-    //    field: "machineName",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    editable: this.canModify,
-    //    width: "150px",
-    //  },
-    //  {
-    //    headerName: "備註",
-    //    field: "note",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //  }
-    //]
-
     this.defaultColDef = {
       filter: "agTextColumnFilter",
       allowedAggFuncs: ['sum', 'min', 'max'],
       enableValue: true,
       enableRowGroup: true,
       enablePivot: true,
-      // floatingFilter: true,
       resizable: true,
       rowSelection: "multiple",
       wrapText: true,
@@ -270,36 +157,15 @@ export class RfqComponent implements OnInit {
         width: "150px",
       }
     ]
-
-
-    //this.columnDefs = [
-    //  {
-    //    headerName: 'Make', field: 'make'},
-    //  { headerName: 'Model', field: 'model' },
-    //  { headerName: 'Price', field: 'price' }
-    //];
-
     this.rowData_MATNR = [];
     this.rowData_VENDOR = [];
-
-    //this.rowData_MATNR = [
-    //  { matnr: 'toyota', version: '1', material: 'celica', volume: '35000', density: '10', weight: '12', status: '1', machine_name: '', note: '1' },
-    //  { matnr: 'ford', version: '1', material: 'mondeo', volume: '32000', density: '10', weight: '12', status: '1', machine_name: '', note: '2' },
-    //  { matnr: 'porsche', version: '1', material: 'boxter', volume: '72000', density: '10', weight: '12', status: '1', machine_name: '', note: '3' }
-    //  , { matnr: 'qq' }
-    //];
-    //this.rowData_VENDOR = [
-    //  { vendor: 'toyota', vendor_name: '1', person: 'celica', address: '35000testwidthtestwidthtestwidthtestwidthtestwidth', tel_phone: '10', ext: '12', fax_number: '1', cell_phone: '', mail: '1', status: '1' },
-    //  { vendor: 'ford', vendor_name: '1', person: 'mondeo', address: '32000', tel_phone: '10', ext: '12', fax_number: '1', cell_phone: '', mail: '2', status: '1' },
-    //  { vendor: 'porsche', vendor_name: '1', person: 'boxter', address: '72000', tel_phone: '10', ext: '12', fax_number: '1', cell_phone: '', mail: '3', status: '1' }
-    //];
   }
 
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("matnr")?.value,
-      page: 1,
-      size:50
+      page: this.page,
+      size: this.size
     }
     this._srmRfqService.GetMatnr(matnrQuery).subscribe(result => {
       this.MatnrList = [];
@@ -309,28 +175,16 @@ export class RfqComponent implements OnInit {
         this.MatnrList.push({ mantr: this.OriMatnrList[i].matnr, label: this.OriMatnrList[i].matnr + ' ' + this.OriMatnrList[i].description?.substring(0, 40) , value: this.OriMatnrList[i].matnrId });
       }
       if (result["count"] > matnrQuery.size) {
-        alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 50 筆資料) ，請重新指定查詢條件!');
+        alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 ' + matnrQuery.size + ' 筆資料) ，請重新指定查詢條件!');
       }
     });
-    //this._srmRfqService.GetMatnr().subscribe(result => {
-    //  console.log(result);
-    //  this.OriMatnrList = result;
-    //  console.log(this.OriMatnrList);
-    //  this._searchObject.matnr = this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"];
-    //  var temp = this.OriMatnrList.filter(item => item.matnr.toUpperCase().indexOf(this._searchObject.matnr.toUpperCase()) >= 0);
-    //  console.log(temp);
-    //  this.MatnrList = [];
-    //  for (var i = 0; i < temp.length; i++) {
-    //    this.MatnrList.push({ label: temp[i].matnr, value: temp[i].matnrId });
-    //  }
-    //});
   }
 
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["vendor"],
-      page: 1,
-      size: 50
+      page: this.page,
+      size: this.size
     }
     this._srmRfqService.GetVendor(vendorQuery).subscribe(result => {
       this.VendorList = [];
@@ -339,36 +193,18 @@ export class RfqComponent implements OnInit {
         this.VendorList.push({ vendor: this.OriVendorList[i].vendor,  label: this.OriVendorList[i].vendor + ' ' + this.OriVendorList[i].vendorName?.substring(0, 40), value: this.OriVendorList[i].vendorId });
       }
       if (result["count"] > vendorQuery.size) {
-        alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 50 筆資料) ，請重新指定查詢條件!');
+        alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 ' + vendorQuery.size + ' 筆資料) ，請重新指定查詢條件!');
       }
     });
-    //this._srmRfqService.GetVendor().subscribe(result => {
-    //  console.log(result);
-    //  this.OriVendorList = result;
-    //  console.log(this.OriVendorList);
-    //  this._searchObject.vendor = this.searchForm.value["vendor"] == null ? "" : this.searchForm.value["vendor"];
-    //  var temp = this.OriVendorList.filter(item => item.vendor.toUpperCase().indexOf(this._searchObject.vendor.toUpperCase()) >= 0);
-    //  console.log(temp);
-    //  this.VendorList = [];
-    //  for (var i = 0; i < temp.length; i++) {
-    //    this.VendorList.push({ label: temp[i].vendor, value: temp[i].vendorId });
-    //  }
-    //});
   }
   onRefreshSourcer() {
     var query = {
       name: (this.searchForm.value["name"])??"",
       costNo: this._storageService.costNo,
-      page: 1,
-      size:50
+      page: this.page,
+      size: this.size
     }
-    //this._userService.getUsers(1, 50,
-    //  "",
-    //  this.searchForm.value["name"],
-    //  "",
-    //  this.searchForm.value["name"],
-    //  "2",
-    //  "")
+
     this._srmRfqService.GetSourcerList(query)
       .subscribe(result => {
         console.log(result['data']);
@@ -378,8 +214,8 @@ export class RfqComponent implements OnInit {
           console.log(this.SourcerList);
           this.SourcerList.push({ label: result['data'][i].name, value: result['data'][i] });
         }
-        if (result['count'] > 50) {
-          alert('查詢結果筆數：' + result['count']+'(系統只顯示最前 50 筆資料) ，請重新指定查詢條件!');
+        if (result['count'] > query.size) {
+          alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 ' + query.size + ' 筆資料) ，請重新指定查詢條件!');
         }
       });
   }
@@ -575,7 +411,7 @@ export class RfqComponent implements OnInit {
     console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
-
+  //選取
   submitMatnrList() {
     console.log(this.rowData_MATNR);
     for (var i = 0; i < this.MatnrList.length; i++) {
@@ -612,14 +448,12 @@ export class RfqComponent implements OnInit {
     console.log(this.radioValue);
     this.formDetail.setValue({ sourcerName: this.radioValue.name, sourcer: this.radioValue.userName, deadline: this.formDetail.value["deadline"] });
     this.tplModal.close();
-    //this.formDetail.setValue({ sourcer: this.SourcerList }).SourcerList.setRowData(this.rowData_VENDOR);
-    //console.log(this.rowData_VENDOR);
-    //this.tplModal.close();
   }
 
   cancelEdit() {
     this.tplModal.close();
   }
+  //refresh
   searchMatnrList() {
     this.onRefreshMatnr();
   }
@@ -628,34 +462,6 @@ export class RfqComponent implements OnInit {
   }
   searchSourcerList() {
     this.onRefreshSourcer();
-  }
-
-  save() {
-    var rfq = this.getrfq();
-    //var rfq = {
-    //  h: null, m: null, v: null
-    //}
-    //var date = new Date();
-    //this.H.SOURCER = "137680";
-
-    //rfq.h = this.H;
-    //if (this.H.deadline != undefined) {
-    //  var deadline = new Date(this.H.deadline);
-    //  rfq.h.deadLine = deadline.getFullYear() + '-' + (deadline.getMonth() + 1) + '-' + deadline.getDate();
-    //} else {
-    //  rfq.h.deadLine = null;
-    //}
-    //rfq.h.LASTUPDATEBY = this._storageService.userName;
-    //console.log(this.gridApi);
-    //this.gridApi.forEachNode(node => console.log(node));
-    //rfq.m = [];
-    //rfq.v = [];
-    //this.gridApi.forEachNode(node => rfq.m.push(node.data));
-    //this.gridApi_VENDOR.forEachNode(node => rfq.v.push(node.data));
-    this._srmRfqService.SAVE(rfq).subscribe(result => {
-      console.log(result);
-      alert('保存成功');
-    });
   }
 
   getrfq() {
@@ -685,9 +491,17 @@ export class RfqComponent implements OnInit {
     return rfq;
   }
 
+  save() {
+    var rfq = this.getrfq();
+    this._srmRfqService.SAVE(rfq).subscribe(result => {
+      console.log(result);
+      alert('保存成功');
+      window.close();
+    });
+  }
+
   start() {
     var rfq = this.getrfq();
-    //rfq.m.forEach(row => { if (!row.qty || isNaN(row.qty)) { alert("料號數量必填"); return; } });
     if (rfq.h.SOURCER == null) { alert("詢價人員未選擇"); return; }
     if (rfq.h.deadLine == null) { alert("截止日期未選擇"); return; }
     if (rfq.m.length == 0) { alert('料號至少需一筆!'); return; }
@@ -706,10 +520,9 @@ export class RfqComponent implements OnInit {
       }
     }
     if (rfq.v.length == 0) { alert('供應商至少需一筆!'); return; }
-    //rfq.m.forEach(row => row.machineName)
-    //forEach(row => row.volume = row.length + 'X' + row.width + 'X' + row.height);
     this._srmRfqService.StartUp(rfq).subscribe(result => {
       alert('上架成功');
+      window.close();
     });
   }
 
@@ -719,6 +532,7 @@ export class RfqComponent implements OnInit {
     rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Cancel(rfq.h).subscribe(result => {
       alert('作廢成功');
+      window.close();
     });
   }
 
@@ -727,7 +541,7 @@ export class RfqComponent implements OnInit {
     rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Delete(rfq.h).subscribe(result => {
       alert('刪除成功');
-      //window.close();
+      window.close();
     });
   }
 }
