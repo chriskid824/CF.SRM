@@ -64,6 +64,7 @@ export class LoginComponent implements OnInit {
             this._storageService.Avatar = result.avatar;
             this._storageService.Identifycation = result.identification;
             this._storageService.Route = result.routes;
+            this._storageService.costNo = result.costNo;
             this._router.navigate(['/dashboard']);
           },
           error => {

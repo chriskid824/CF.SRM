@@ -10,16 +10,31 @@ export class SrmRfqService {
   constructor(private httpClient: HttpClient,
     private uriConstant: UriConfig) { }
 
-  GetMatnr(matnr = "") {
-    return this.httpClient.get(`${this.uriConstant.SrmRfq}/GetMatnr?matnr=${matnr}`);
+  GetMatnr(matnrQuery) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetMatnr`, matnrQuery);
   }
-  GetVendor(vendor = "") {
-    return this.httpClient.get(`${this.uriConstant.SrmRfq}/GetVendor?vendor=${vendor}`);
+  GetVendor(vendorQuery) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetVendor`, vendorQuery);
   }
   GetRfqData(id) {
     return this.httpClient.get(`${this.uriConstant.SrmRfq}/GetRfqData?id=${id}`)
   }
+  GetRfqList(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetRfqList`, query);
+  }
   SAVE(rfq) {
     return this.httpClient.post(`${this.uriConstant.SrmRfq}/Save`,rfq);
+  }
+  StartUp(rfq) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/StartUp`, rfq);
+  }
+  Cancel(rfq) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/Cancel`, rfq);
+  }
+  Delete(rfq) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/Delete`, rfq);
+  }
+  GetSourcerList(user) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetSourcerList`, user);
   }
 }

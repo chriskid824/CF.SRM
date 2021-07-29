@@ -19,6 +19,8 @@ import { PoComponent } from './po/po.component';
 import { QotComponent } from './qot/qot.component';
 import { AgGridDatePickerComponent } from './po/AGGridDatePickerCompponent';
 import 'ag-grid-enterprise';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+
 @NgModule({
   declarations: [
     RfqComponent,
@@ -47,6 +49,7 @@ import 'ag-grid-enterprise';
     AppCommonModule,
     MatTabsModule,
     NzDatePickerModule,
+	NzSelectModule
   ]
 })
 export class SrmModule { }

@@ -35,4 +35,5 @@ export interface LoginResult {
   token: string;
   identification: string;
   routes: string;
+  costNo: string;
 }

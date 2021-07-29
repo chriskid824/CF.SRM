@@ -11,12 +11,30 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
+          <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'STATUS'" ngModel="1">
+              <nz-option nzValue="1" nzLabel="初始"></nz-option>
+              <nz-option nzValue="7" nzLabel="啟動"></nz-option>
+              <nz-option nzValue="18" nzLabel="作廢"></nz-option>
+              <nz-option nzValue="16" nzLabel="完成"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'NAME'">建立人員</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="建立人員" [formControlName]="'NAME'" [attr.id]="'NAME'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
           <nz-form-control>
             <button nz-button nzType="primary">搜索</button>
-            <button nz-button nzType="outline" type="button" class="ml-10"
-                    (click)="resetSearchForm()">
-              重置
-            </button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+              (click)="resetSearchForm()">
+        重置
+      </button>-->
           </nz-form-control>
         </nz-form-item>
       </form>
@@ -25,12 +43,12 @@
     <!--詢價單數據-->
     <nz-card [nzSize]="'small'" id="rfqCard">
       <div>
-        <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
+        <!--<button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
                 *canOperate="'adduserbtn'">
           <i nz-icon nzType="plus"></i>新增詢價單
-        </button>
+        </button>-->
         <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
-        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>添加詢價單</button>
+        <button nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="sync"></i>建立詢價單</button>
       </div>
       <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -42,20 +60,19 @@
               <th nzAlign="center" nzWidth="20px">詢價人員</th>
               <th nzAlign="center" nzWidth="20px">建立人員</th>
               <th nzAlign="center" nzWidth="20px">建立日期</th>
-              <th nzAlign="center" nzWidth="80px" nzRight>操作</th>
+              <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of dataTable.data;let i = index">
-              <td nzAlign="center">{{ data.STATUS }}</td>
-              <td nzAlign="center">{{ data.RFQ_NUM }}</td>
-              <td nzAlign="center">{{ data.SOURCER }}</td>
-              <td nzAlign="center">{{ data.CREATE_BY }}</td>
-              <td nzAlign="center">{{ data.DateString }}</td>
-              <td nzAlign="center">
+            <tr *ngFor="let data of dataTable.data;let i = index" (click)="open(data.id)">
+              <td nzAlign="center">{{ data.viewstatus }}</td>
+              <td nzAlign="center">{{ data.rfqNum }}</td>
+              <td nzAlign="center">{{ data.sourcerName }}</td>
+              <td nzAlign="center">{{ data.c_by }}</td>
+              <td nzAlign="center">{{ data.c_Date }}</td>
+              <!--<td nzAlign="center">
                 <nz-tag *ngIf="!data.isActive" [nzColor]="'red'">停用</nz-tag>
-                <!--<nz-tag *ngIf="data.isActive" [nzColor]="'green'">激活</nz-tag>-->
-              </td>
+              </td>-->
             </tr>
           </tbody>
         </nz-table>

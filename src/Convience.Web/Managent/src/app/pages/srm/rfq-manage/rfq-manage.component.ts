@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { RFQ } from '../model/rfq';
+import { StorageService } from '../../../services/storage.service';
 
 
 @Component({
@@ -10,25 +12,23 @@ import { RFQ } from '../model/rfq';
 })
 export class RfqManageComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
-  data: RFQ[] = [];
+  data;
 
   page: number = 1;
-  size: number = 10;
-  total: number = 0;
+  size: number = 2;
+  total: number;
   t = "";
-  constructor(private _formBuilder: FormBuilder,) { }
+  constructor(private _formBuilder: FormBuilder, private _srmRfqService: SrmRfqService, private _storageService: StorageService,) { }
 
 
-  selectedValue = null;
-  countries = [
-    { id: 1, name: "United States" },
-    { id: 2, name: "Australia" },
-    { id: 3, name: "Canada" },
-    { id: 4, name: "Brazil" },
-    { id: 5, name: "England" }
-  ];
+  selectedValue = null
 
   ngOnInit(): void {
+    this.searchForm = this._formBuilder.group({
+      RFQ_NUM: [null],
+      STATUS: [1],
+      NAME:[null]
+    });
   }
 
   submitSearch() {
@@ -51,14 +51,27 @@ export class RfqManageComponent implements OnInit {
   };
 
   refresh() {
-    this.t = this.test();
+    //this.t = this.test();
+    console.log(this.searchForm.value["STATUS"]);
+    var query = {
+      rfqNum: this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"],
+      status: this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"],
+      name: this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"],
+      costNo: this._storageService.costNo,
+      page: this.page,
+      size: this.size
+    }
+    this._srmRfqService.GetRfqList(query).subscribe(result => {
+      this.data = result["data"];
+      this.total = result["total"];
+    })
 
-    this.data = [
-      { RFQ_ID: 1, RFQ_NUM: 'order 1', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST'},
-      { RFQ_ID: 2, RFQ_NUM: 'order 2', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
-      { RFQ_ID: 3, RFQ_NUM: 'order 3', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
-      { RFQ_ID: 4, RFQ_NUM: 'order 4', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' }
-    ];
+    //this.data = [
+    //  { RFQ_ID: 1, RFQ_NUM: 'order 1', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST'},
+    //  { RFQ_ID: 2, RFQ_NUM: 'order 2', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
+    //  { RFQ_ID: 3, RFQ_NUM: 'order 3', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
+    //  { RFQ_ID: 4, RFQ_NUM: 'order 4', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' }
+    //];
   }
 
   // reset the search form content 
@@ -75,5 +88,12 @@ export class RfqManageComponent implements OnInit {
 
   pageChange() {
     this.refresh();
+  }
+
+  open(id) {
+    window.open('../srm/rfq?id=' + id);
+  }
+  addRfq() {
+    window.open('../srm/rfq');
   }
 }

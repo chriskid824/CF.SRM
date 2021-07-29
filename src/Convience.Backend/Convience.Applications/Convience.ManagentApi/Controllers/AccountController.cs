@@ -76,7 +76,8 @@ namespace Convience.ManagentApi.Controllers
                 validateResult.Avatar,
                 validateResult.Token,
                 irs.Item1,
-                irs.Item2));
+                irs.Item2,
+                validateResult.CostNo));
         }
 
         [HttpPost("password")]
