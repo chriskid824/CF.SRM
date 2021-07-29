@@ -15,6 +15,7 @@ namespace Convience.Entity.Entity.Identity
         public bool IsActive { get; set; }
 
         public DateTime CreatedTime { get; set; }
+        public string CostNo { get; set; }
     }
 
     public enum Sex

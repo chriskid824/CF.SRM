@@ -24,6 +24,9 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmVendor> SrmVendors { get; set; }
         public virtual DbSet<SrmPoH> SrmPoHs { get; set; }
         public virtual DbSet<SrmPoL> SrmPoLs { get; set; }
+		public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
+        public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -63,6 +66,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("DENSITY")
                     .HasComment("密度");
 
+                entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
                 entity.Property(e => e.Height)
                     .HasColumnName("HEIGHT")
                     .HasComment("高");
@@ -90,6 +95,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(18)
                     .HasColumnName("MATNR")
                     .HasComment("SAP料號");
+
+                entity.Property(e => e.MatnrGroup)
+                    .HasMaxLength(5)
+                    .HasColumnName("MATNR_GROUP");
 
                 entity.Property(e => e.Note)
                     .HasColumnName("NOTE")
@@ -142,6 +151,14 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("DEADLINE")
                     .HasComment("詢價截止日期");
+
+                entity.Property(e => e.EndBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("END_BY");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("END_DATE");
 
                 entity.Property(e => e.LastUpdateBy)
                     .HasMaxLength(8)
@@ -209,8 +226,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("NOTE")
                     .HasComment("備註");
 
-                entity.Property(e => e.Qot)
-                    .HasColumnName("QOT")
+                entity.Property(e => e.Qty)
+                    .HasColumnName("QTY")
                     .HasComment("數量");
 
                 entity.Property(e => e.RfqId)
@@ -280,6 +297,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("CREATE_DATE")
                     .HasComment("建立日期");
 
+                entity.Property(e => e.Ekorg).HasColumnName("EKORG");
+
                 entity.Property(e => e.Ext)
                     .HasMaxLength(5)
                     .HasColumnName("EXT")
@@ -304,6 +323,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(50)
                     .HasColumnName("MAIL")
                     .HasComment("信箱");
+
+                entity.Property(e => e.Org).HasColumnName("ORG");
 
                 entity.Property(e => e.Person)
                     .HasMaxLength(20)
@@ -334,7 +355,120 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("VENDOR_NAME")
                     .HasComment("供應商名稱");
             });
-            modelBuilder.Entity<SrmPoH>(entity =>
+
+            modelBuilder.Entity<SrmQotH>(entity =>
+            {
+                entity.HasKey(e => e.QotId);
+
+                entity.ToTable("SRM_QOT_H");
+
+                entity.Property(e => e.QotId)
+                    .HasColumnName("QOT_ID")
+                    .HasComment("報價單識別碼");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY")
+                    .HasComment("建立人員");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasComment("建立日期");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(3)
+                    .HasColumnName("CURRENCY")
+                    .HasComment("幣別");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY")
+                    .HasComment("最後修改人員");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasComment("最後修改日期");
+
+                entity.Property(e => e.LeadTime)
+                    .HasColumnName("LEAD_TIME")
+                    .HasComment("交貨時間");
+
+                entity.Property(e => e.MatnrId)
+                    .HasColumnName("MATNR_ID")
+                    .HasComment("料號識別碼");
+
+                entity.Property(e => e.MinQty)
+                    .HasColumnName("MIN_QTY")
+                    .HasComment("最小採購單數量");
+
+                entity.Property(e => e.QotNum)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("QOT_NUM")
+                    .HasComputedColumnSql("('RFQ'+right('0000000'+CONVERT([varchar],[QOT_ID]),(7)))", false)
+                    .HasComment("報價單號");
+
+                entity.Property(e => e.RfqId)
+                    .HasColumnName("RFQ_ID")
+                    .HasComment("詢價單識別碼");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasComment("狀態");
+
+                entity.Property(e => e.TotalAmount)
+                    .HasColumnType("money")
+                    .HasColumnName("TOTAL_AMOUNT")
+                    .HasComment("總金額");
+
+                entity.Property(e => e.VendorId)
+                    .HasMaxLength(8)
+                    .HasColumnName("VENDOR_ID")
+                    .HasComment("供應商識別碼");
+            });
+            modelBuilder.Entity<SrmEkgry>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("SRM_EKGRY");
+
+                entity.Property(e => e.Ekgry)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("EKGRY");
+
+                entity.Property(e => e.EkgryDesc)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("EKGRY_DESC");
+
+                entity.Property(e => e.Empid)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("EMPID");
+            });
+            modelBuilder.Entity<AspNetUser>(entity =>
+            {
+                entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+                entity.Property(e => e.CostNo).HasMaxLength(20);
+
+                entity.Property(e => e.Email).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.UserName).HasMaxLength(256);
+            });
+  
+			modelBuilder.Entity<SrmPoH>(entity =>
             {
                 entity.HasKey(e => e.PoId)
                     .HasName("PK__SRM_PO_H__5ECDB69D17817CBC");

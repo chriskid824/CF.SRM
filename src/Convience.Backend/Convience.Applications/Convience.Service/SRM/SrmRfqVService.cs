@@ -8,6 +8,7 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +24,7 @@ namespace Convience.Service.SRM
     public interface ISrmRfqVService
     {
         public void Save(SrmRfqV rfqV, SRMContext db);
-        public IQueryable GetDataByRfqId(int RfqId);
+        public ViewSrmRfqV[] GetDataByRfqId(int RfqId);
     }
     public class SrmRfqVService : ISrmRfqVService
     {
@@ -54,7 +55,7 @@ namespace Convience.Service.SRM
                 //db.SaveChanges();
             //}
         }
-        public IQueryable GetDataByRfqId(int RfqId)
+        public ViewSrmRfqV[] GetDataByRfqId(int RfqId)
         {
             //var z = _srmRfqVRepository.Get(r => r.RfqId == RfqId).Join(new SRMContext().SrmVendors, a => a.RfqVId, b => b.VendorId, (a, b) => new
             //{
@@ -76,23 +77,23 @@ namespace Convience.Service.SRM
                         join b in _srmVendorRepository.Get(false)
                             on a.VendorId equals b.VendorId
                         where a.RfqId == RfqId
-                        select new
+                        select new ViewSrmRfqV
                         {
-                            vendor = b.Vendor,
-                            vendorName = b.VendorName,
-                            person = b.Person,
-                            address = b.Address,
-                            telphone = b.TelPhone,
-                            ext = b.Ext,
-                            faxnumber = b.FaxNumber,
-                            cellphone = b.CellPhone,
-                            mail = b.Mail,
-                            status = b.Status,
+                            Vendor = b.Vendor,
+                            VendorName = b.VendorName,
+                            Person = b.Person,
+                            Address = b.Address,
+                            TelPhone = b.TelPhone,
+                            Ext = b.Ext,
+                            FaxNumber = b.FaxNumber,
+                            CellPhone = b.CellPhone,
+                            Mail = b.Mail,
+                            Status = b.Status,
                             rfqVId = a.RfqVId,
-                            rfqId = a.RfqId,
-                            vendorId = a.VendorId
+                            rfqId = a.RfqId.Value,
+                            vendorId = a.VendorId.Value
                         };
-            return query;
+            return query.ToArray();
         }
     }
 }

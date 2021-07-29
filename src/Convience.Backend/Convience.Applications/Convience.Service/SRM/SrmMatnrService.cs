@@ -8,6 +8,7 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public IEnumerable<SrmMatnr> GetMatnr(string matnr);
+        public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery);
     }
     public class SrmMatnrService: ISrmMatnrService
     {
@@ -42,13 +43,22 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public IEnumerable<SrmMatnr> GetMatnr(string matnr)
+        public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery)
         {
-            return _srmMatnrRepository.Get(r=>string.IsNullOrWhiteSpace(matnr)? true:r.Matnr.IndexOf(matnr)>=0).ToList();
+            int skip = (matnrQuery.Page - 1) * matnrQuery.Size;
+            var resultQuery = _srmMatnrRepository.Get().AndIfHaveValue(matnrQuery.Matnr, r => r.Matnr.Contains(matnrQuery.Matnr));
+            var matnrs = resultQuery.Skip(skip).Take(matnrQuery.Size).ToArray();
+            return new PagingResultModel<SrmMatnr>
+            {
+                Data = matnrs,
+                Count = resultQuery.Count()
+            };
+            // return _srmMatnrRepository.Get(r=>string.IsNullOrWhiteSpace(matnrQuery.MATNR) ? true:r.Matnr.IndexOf(matnr)>=0).ToList().Skip(skip).Take(size).AsQueryable(); ;
         }
         public IEnumerable<SrmMatnr> GetMatnrById(int id)
         {
-            return _srmMatnrRepository.Get(r => r.MatnrId == id);
+            //using (var transaction = new TransactionScope())
+                return _srmMatnrRepository.Get(r => r.MatnrId == id);
         }
     }
 }

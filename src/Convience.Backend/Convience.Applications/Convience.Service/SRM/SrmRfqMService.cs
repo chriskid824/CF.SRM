@@ -69,7 +69,7 @@ namespace Convience.Service.SRM
                             density = a.Density,
                             weight = a.Weight,
                             status = b.Status,
-                            qot = a.Qot,
+                            qty = a.Qty,
                             machineName = a.MachineName,
                             note = a.Note,
                             length = a.Length,

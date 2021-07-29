@@ -1,14 +1,24 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
+using Convience.Model.Models.SRM;
+using Convience.Model.Models.SystemManage;
 using Convience.Service.SRM;
+using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Convience.ManagentApi.Controllers.SRM
@@ -23,32 +33,42 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmRfqHService _srmRfqHService;
         private readonly ISrmRfqMService _srmRfqMService;
         private readonly ISrmRfqVService _srmRfqVService;
+        private readonly ISrmQotService _srmQotHService;
+        private readonly IUserService _userService;
 
-        public SrmRfqController(ISrmMatnrService srmMatnrService, ISrmVendorService srmVendorService, ISrmRfqHService srmRfqHService, ISrmRfqMService srmRfqMService, ISrmRfqVService srmRfqVService)
+        public SrmRfqController(ISrmMatnrService srmMatnrService,
+            ISrmVendorService srmVendorService,
+            ISrmRfqHService srmRfqHService, 
+            ISrmRfqMService srmRfqMService,
+            ISrmRfqVService srmRfqVService,
+            ISrmQotService srmQotHService,
+            IUserService userService)
         {
             _srmMatnrService = srmMatnrService;
             _srmVendorService = srmVendorService;
             _srmRfqHService = srmRfqHService;
             _srmRfqMService = srmRfqMService;
             _srmRfqVService = srmRfqVService;
+            _srmQotHService = srmQotHService;
+            _userService = userService;
         }
 
-        [HttpGet("GetMatnr")]
-        public IActionResult GetMatnr(string matnr = "")
+        [HttpPost("GetMatnr")]
+        public IActionResult GetMatnr(QueryMatnrModel matnrQuery)
         {
-            return Ok(_srmMatnrService.GetMatnr(matnr));
+            return Ok(_srmMatnrService.GetMatnr(matnrQuery));
         }
 
-        [HttpGet("test")]
-        public System.Collections.Generic.IEnumerable<SrmMatnr> GetMatnr2(string matnr = "")
-        {
-            var a = _srmMatnrService.GetMatnr(matnr);
-            return a;
-        }
+        //[HttpGet("test")]
+        //public System.Collections.Generic.IEnumerable<SrmMatnr> GetMatnr2(string matnr = "")
+        //{
+        //    var a = _srmMatnrService.GetMatnr(matnr);
+        //    return a;
+        //}
 
-        [HttpGet("GetVendor")]
-        public IActionResult GetVendor(string vendor = "") {
-            return Ok(_srmVendorService.GetVendor(vendor));
+        [HttpPost("GetVendor")]
+        public IActionResult GetVendor(QueryVendorModel vendorQuery) {
+            return Ok(_srmVendorService.GetVendor(vendorQuery));
         }
         [HttpPost("Save")]
         public IActionResult Save(JObject rfq) {
@@ -67,17 +87,155 @@ namespace Convience.ManagentApi.Controllers.SRM
         //};
         [HttpGet("GetRfqData")]
         public IActionResult GetRfqData(int id) {
-            SrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
+            ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
+            h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer,Page=1,Size=1 }).Data[0].Name;
             System.Linq.IQueryable m = _srmRfqMService.GetDataByRfqId(id);
-            System.Linq.IQueryable v = _srmRfqVService.GetDataByRfqId(id);
+            ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
             Newtonsoft.Json.JsonSerializer js = new Newtonsoft.Json.JsonSerializer();
             js.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
-            JObject rfq = new JObject() {
-                { "h",JObject.FromObject(h,js)},
-                { "m",JArray.FromObject(m,js)},
-                { "v",JArray.FromObject(v,js)},
+            //JObject rfq = new JObject() {
+            //    { "h",JObject.FromObject(h,js)},
+            //    { "m",JArray.FromObject(m,js)},
+            //    { "v",JArray.FromObject(v,js)},
+            //};
+            ResultRfqModel rfq = new ResultRfqModel() {
+                h = h,
+                m = m,
+                v = v
             };
             return Ok(rfq);
+        }
+
+        [HttpPost("GetRfqList")]
+        public IActionResult GetRfqList(JObject query)
+        {
+            QueryRfqList q = new QueryRfqList();
+            q.rfqNum = query["rfqNum"].ToString();
+            q.status = (int)query["status"];
+            q.name = query["name"].ToString();
+            q.costNo = query["costNo"].ToString();
+            int page = (int)query["page"];
+            int size = (int)query["size"];
+            var h = _srmRfqHService.GetRfqList(q,page,size);
+            return Ok(h);
+        }
+        [HttpPost("StartUp")]
+        public IActionResult StartUp(JObject rfq) {
+            SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
+            SrmRfqM[] matnrs = rfq["m"].ToObject<SrmRfqM[]>();
+            SrmRfqV[] vendors = rfq["v"].ToObject<SrmRfqV[]>();
+            DateTime now = DateTime.Now.Date;
+
+            if (h.Deadline < now) {
+                return BadRequest("截止日期已過");
+            }
+
+            using (var transaction = new System.Transactions.TransactionScope()) {
+                try
+                {
+                    _srmRfqHService.Save(h, matnrs, vendors);
+                    //int RfqId = (int)rfq["RfqId"];
+                    //string logonid = rfq["logonid"].ToString();
+                    //_srmRfqHService.UpdateStatus(1, RfqId);
+                    //var matnrs = JArray.FromObject(_srmRfqMService.GetDataByRfqId(RfqId));
+                    //var vendors = JArray.FromObject(_srmRfqVService.GetDataByRfqId(RfqId));
+
+                    _srmRfqHService.UpdateStatus((int)Status.啟動, h.RfqId);
+                    List<SrmQotH> qots = new List<SrmQotH>();
+                    foreach (var matnr in matnrs)
+                    {
+                        foreach (var vendor in vendors)
+                        {
+                            SrmQotH qot = new SrmQotH();
+                            qot.MatnrId = matnr.MatnrId;
+                            qot.VendorId = vendor.VendorId;
+                            qot.RfqId = h.RfqId;
+                            qot.Status = 0;
+                            qot.CreateDate = now;
+                            qot.CreateBy = h.LastUpdateBy;
+                            qot.LastUpdateDate = now;
+                            qot.LastUpdateBy = h.LastUpdateBy;
+                            qots.Add(qot);
+                        }
+                    }
+                    _srmQotHService.Add(qots.ToArray());
+                    //db.SaveChanges();
+                    //db.Database.CommitTransaction();
+                    transaction.Complete();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Dispose();
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        //[HttpPost("GetSourcer")]
+        //public IActionResult GetSourcer(UserQueryModel userQuery) {
+        //    return Ok(_userService.GetUsers(userQuery));
+        //}
+        [HttpPost("Cancel")]
+        public IActionResult Cancel(SrmRfqH rfqH) {
+            using (var transaction = new System.Transactions.TransactionScope())
+            {
+                try
+                {
+                    var rfq = _srmRfqHService.UpdateStatus(((int)Status.作廢), rfqH);
+                    _srmQotHService.UpdateStatus((int)Status.作廢, rfqH);
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    mail.To.Add("leon.jcg@chenfull.com.tw");
+                    var temp = _srmRfqVService.GetDataByRfqId(rfqH.RfqId);
+                    //string a = JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId));
+                    ViewSrmRfqV[] vendors = JsonConvert.DeserializeObject<ViewSrmRfqV[]>(JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId)));
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var vendor in vendors) {
+                        sb.AppendLine(vendor.Mail);
+                    }
+                    SrmQotH[] qots = _srmQotHService.Get(rfqH);
+                    foreach (var qot in qots) {
+                        sb.AppendLine(qot.QotNum);
+                    }
+                        //_srmVendorService.GetUsers(new UserQueryModel() { UserName = rfq.Sourcer,Page=1,Size=1 });
+                    mail.Body = sb.ToString();
+                    mail.Subject = "123";
+                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+                    {
+                        MySMTP.Send(mail);
+                        MySMTP.Dispose();
+                    }
+                    transaction.Complete();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Dispose();
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        [HttpPost("Delete")]
+        public IActionResult Delete(SrmRfqH rfqH)
+        {
+            try
+            {
+                _srmRfqHService.UpdateStatus(((int)Status.刪除), rfqH);
+                return Ok();
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("GetSourcerList")]
+        public IActionResult GetSourcerList(JObject jobj) {
+            string name = jobj["name"].ToString();
+            string costNo = jobj["costNo"].ToString();
+            int page = (int)jobj["page"];
+            int size = (int)jobj["size"];
+            var users = _srmRfqHService.GetSourcer(name,costNo,size,page);
+            return Ok(users);
+            //return Ok(_srmRfqHService.GetSourcer(users));
         }
     }
 }

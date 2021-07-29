@@ -17,6 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Convience.Model.Models.SRM;
+using Newtonsoft.Json;
+using Convience.Service.SystemManage;
 
 namespace Convience.Service.SRM
 {
@@ -24,18 +27,26 @@ namespace Convience.Service.SRM
     {
         public void Save(SrmRfqH rfqH);
         public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
-        public SrmRfqH GetDataByRfqId(int RfqId);
+        public ViewSrmRfqH GetDataByRfqId(int RfqId);
+        public JObject GetRfqList(QueryRfqList q, int page, int size);
+        public void UpdateStatus(int status, int RfqId);
+        public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
+        public PagingResultModel<AspNetUser> GetSourcer(string name,string werks, int size, int page);
     }
     public class SrmRfqHService:ISrmRfqHService
     {
         private readonly IRepository<SrmRfqH> _srmRfqHRepository;
+        private readonly SRMContext _dbContext;
+        private readonly IRepository<SystemUser> _userRepository;
         public SrmRfqHService(
             //IMapper mapper,
-            IRepository<SrmRfqH> srmRfqHRepository)
+            IRepository<SrmRfqH> srmRfqHRepository,SRMContext dbContext, IRepository<SystemUser> userRepository)
         //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
         {
             //_mapper = mapper;
             _srmRfqHRepository = srmRfqHRepository;
+            _dbContext = dbContext;
+            _userRepository = userRepository;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
         public void Save(SrmRfqH rfqH)
@@ -57,15 +68,17 @@ namespace Convience.Service.SRM
         {
             using (var db = new SRMContext())
             {
-                db.Database.BeginTransaction();
-                try
-                {
+                //db.Database.BeginTransaction();
+                //try
+                //{
+                    DateTime now = DateTime.Now;
+                    rfqH.LastUpdateDate = now;
                     if (rfqH.RfqId == 0)
                     {
+                        rfqH.CreateDate = now;
                         db.SrmRfqHs.Add(rfqH);
                         db.SaveChanges();
                         rfqH.RfqNum = "V" + rfqH.RfqId.ToString().PadLeft(6,'0');
-                        rfqH.CreateDate = rfqH.LastUpdateDate;
                         foreach (var rfqM in rfqMs)
                         {
                             rfqM.RfqId = rfqH.RfqId;
@@ -80,16 +93,13 @@ namespace Convience.Service.SRM
                     }
                     else
                     {
-                        db.SrmRfqHs.Update(rfqH);
-                        var oldRfqMs = db.SrmRfqMs.Where(r => r.RfqId == rfqH.RfqId);
-                        foreach (var oldrfqM in oldRfqMs)
-                        {
-                            if (rfqMs.AsEnumerable().Where(item => item.RfqMId == oldrfqM.RfqMId).Count() == 0)
-                            {
-                                db.SrmRfqMs.Remove(oldrfqM);
-                            }
+                        //db.SrmRfqHs.Any(r => r.RfqId == rfqH.RfqId && r.Status == (int)Status.初始)
+                        if (!db.SrmRfqHs.Any(r => r.RfqId == rfqH.RfqId && r.Status == (int)Status.初始)) {
+                            throw new Exception("非初始無法修改");
                         }
-                        foreach (var rfqM in rfqMs) {
+                        db.SrmRfqHs.Update(rfqH);
+                        foreach (var rfqM in rfqMs)
+                        {
                             rfqM.RfqId = rfqH.RfqId;
                             if (rfqM.RfqMId == 0)
                             {
@@ -100,12 +110,12 @@ namespace Convience.Service.SRM
                                 db.SrmRfqMs.Update(rfqM);
                             }
                         }
-                        var oldRfqVs = db.SrmRfqVs.Where(r => r.RfqId == rfqH.RfqId);
-                        foreach (var oldrfqV in oldRfqVs)
+                        var oldRfqMs = db.SrmRfqMs.Where(r => r.RfqId == rfqH.RfqId);
+                        foreach (var oldrfqM in oldRfqMs)
                         {
-                            if (rfqVs.AsEnumerable().Where(item => item.RfqVId == oldrfqV.RfqVId).Count() == 0)
+                            if (rfqMs.AsEnumerable().Where(item => item.RfqMId == oldrfqM.RfqMId).Count() == 0)
                             {
-                                db.SrmRfqVs.Remove(oldrfqV);
+                                db.SrmRfqMs.Remove(oldrfqM);
                             }
                         }
                         foreach (var rfqV in rfqVs)
@@ -120,25 +130,160 @@ namespace Convience.Service.SRM
                                 db.SrmRfqVs.Update(rfqV);
                             }
                         }
+                        var oldRfqVs = db.SrmRfqVs.Where(r => r.RfqId == rfqH.RfqId);
+                        foreach (var oldrfqV in oldRfqVs)
+                        {
+                            if (rfqVs.AsEnumerable().Where(item => item.RfqVId == oldrfqV.RfqVId).Count() == 0)
+                            {
+                                db.SrmRfqVs.Remove(oldrfqV);
+                            }
+                        }
                     }
                     db.SaveChanges();
-                    db.Database.CommitTransaction();
-                }
-                catch (Exception ex)
-                {
-                    db.Database.RollbackTransaction();
-                    throw ex;
-                }
+                //    db.Database.CommitTransaction();
+                //}
+                //catch (Exception ex)
+                //{
+                //    db.Database.RollbackTransaction();
+                //    throw;
+                //}
             }
         }
-        //public SrmRfqH GetDataByRfqId()
-        //{
-        //    return _srmRfqHRepository.Get();
-        //}
-
-        public SrmRfqH GetDataByRfqId(int RfqId)
+        public JObject GetRfqList(QueryRfqList q, int page,int size)
         {
-            return _srmRfqHRepository.Get(r => r.RfqId == RfqId).First();
+            int skip = (page-1) * size;
+
+            var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
+                .AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
+
+            rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
+            var rfqs = rfqQuery.ToList().Join(_userRepository.Get().ToList(), a => a.CreateBy, b => b.UserName, (_srmRfqHRepository, _userRepository) => new
+            {
+                id = _srmRfqHRepository.RfqId,
+                status = _srmRfqHRepository.Status,
+                rfqNum = _srmRfqHRepository.RfqNum,
+                sourcer = _srmRfqHRepository.Sourcer,
+                createBy = _srmRfqHRepository.CreateBy,
+                createDate = _srmRfqHRepository.CreateDate,
+                c_by = _userRepository.Name,
+                c_Date = _srmRfqHRepository.CreateDate.Value.ToString("yyyy-MM-dd"),
+                viewstatus = ((Status)_srmRfqHRepository.Status).ToString(),
+                costNo = _userRepository.CostNo
+            }).Where(r=>r.costNo.Substring(0,2) == q.costNo.Substring(0,2)).Join(_userRepository.Get().ToList(), a => a.sourcer, b => b.UserName, (a, b) => new
+            {
+                id = a.id,
+                status = a.status,
+                rfqNum = a.rfqNum,
+                sourcer = a.sourcer,
+                sourcerName = b.Name,
+                createBy = a.createBy,
+                createDate = a.createDate,
+                c_by = a.c_by,
+                c_Date = a.c_Date,
+                viewstatus = a.viewstatus,
+            })
+            .AndIfHaveValue(q.name,r=>r.c_by.Contains(q.name));
+
+
+
+            //var rfqs = _srmRfqHRepository.Get(r => string.IsNullOrWhiteSpace(rfqNum) ? true : r.RfqNum.IndexOf(rfqNum) >= 0
+            //).ToList()
+            //    .Join(_userRepository.Get().ToList(), a => a.CreateBy, b => b.UserName, (_srmRfqHRepository, _userRepository) => new
+            //    {
+            //        id = _srmRfqHRepository.RfqId,
+            //        status = _srmRfqHRepository.Status,
+            //        rfqNum = _srmRfqHRepository.RfqNum,
+            //        sourcer = _srmRfqHRepository.Sourcer,
+            //        createBy = _srmRfqHRepository.CreateBy,
+            //        createDate = _srmRfqHRepository.CreateDate,
+            //        c_by = _userRepository.Name,
+            //        c_Date = _srmRfqHRepository.CreateDate.Value.ToString("yyyy-MM-dd")
+            //    });
+            var r = rfqs.Skip(skip).Take(size).AsQueryable();
+            JObject obj = new JObject() {
+                { "data",JArray.FromObject(r)},
+                { "total",rfqs.Count()}
+            };
+            return obj;
+        }
+
+        public ViewSrmRfqH GetDataByRfqId(int RfqId)
+        {
+            var rfq = _srmRfqHRepository.Get(r => r.RfqId == RfqId).First();
+            string temp = JsonConvert.SerializeObject(rfq);
+            ViewSrmRfqH result = JsonConvert.DeserializeObject<ViewSrmRfqH>(temp);
+            return result;
+        }
+        public void UpdateStatus(int status, int RfqId) {
+            var rfq = _srmRfqHRepository.Get(r => r.RfqId == RfqId).First();
+            switch ((Status)status) {
+                case Status.啟動:
+                    if ((Status)rfq.Status != Status.初始)
+                    {
+                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                    }
+                    break;
+                case Status.作廢:
+                case Status.刪除:
+                    if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動) {
+                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                    }
+                    break;
+            }
+            rfq.Status = status;
+            using (SRMContext db = new SRMContext()) {
+                db.Update(rfq);
+                db.SaveChanges();
+            }
+        }
+
+
+        public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH) {
+            var rfq = _srmRfqHRepository.Get(r => r.RfqId == rfqH.RfqId).First();
+            switch ((Status)status)
+            {
+                case Status.啟動:
+                    if ((Status)rfq.Status != Status.初始)
+                    {
+                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                    }
+                    break;
+                case Status.作廢:
+                case Status.刪除:
+                    if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動)
+                    {
+                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                    }
+                    rfq.EndDate = DateTime.Now;
+                    rfq.EndBy = rfqH.EndBy;
+                    break;
+                default:
+                    throw new Exception($"未定義{((Status)status).ToString()}");
+                    break;
+            }
+            rfq.Status = status;
+            using (SRMContext db = new SRMContext())
+            {
+                db.Update(rfq);
+                db.SaveChanges();
+                return rfq;
+            }
+        }
+        public PagingResultModel<AspNetUser> GetSourcer(string name ,string werks,int size,int page) {
+            using (SRMContext db = new SRMContext())
+            {
+                var resultQuery = from s in db.AspNetUsers
+                             join sa in db.SrmEkgries on s.UserName equals sa.Empid
+                             where s.UserName.Contains(name) && s.Name.Contains(name) && s.CostNo.StartsWith(werks)
+                             select s;
+                var skip = size * (page - 1);
+                var users = size == 0 ? resultQuery.ToArray() : resultQuery.Skip(skip).Take(size).ToArray();
+                return new PagingResultModel<AspNetUser>
+                {
+                    Data = users,
+                    Count = resultQuery.Count()
+                };
+            }
         }
     }
 }

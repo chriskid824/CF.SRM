@@ -8,6 +8,7 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public IEnumerable<SrmVendor> GetVendor(string vendor);
+        public PagingResultModel<SrmVendor> GetVendor(QueryVendorModel vendorQuery);
     }
     class SrmVendorService:ISrmVendorService
     {
@@ -41,9 +42,21 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public IEnumerable<SrmVendor> GetVendor(string vendor)
+        public IEnumerable<SrmVendor> GetVendor(string vendor, int page, int size)
         {
-            return _srmVendorRepository.Get(r => string.IsNullOrWhiteSpace(vendor) ? true : r.Vendor.IndexOf(vendor) >= 0).ToList();
+            int skip = (page - 1) * size;
+            return _srmVendorRepository.Get(r => string.IsNullOrWhiteSpace(vendor) ? true : r.Vendor.IndexOf(vendor) >= 0).ToList().Skip(skip).Take(size).AsQueryable(); ;
+        }
+        public PagingResultModel<SrmVendor> GetVendor(QueryVendorModel vendorQuery)
+        {
+            int skip = (vendorQuery.Page - 1) * vendorQuery.Size;
+            var resultQuery = _srmVendorRepository.Get().AndIfHaveValue(vendorQuery.Vendor, r => r.Vendor.Contains(vendorQuery.Vendor));
+            var vendors =resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray(); ;
+            return new PagingResultModel<SrmVendor>
+            {
+                Data = vendors,
+                Count = resultQuery.Count()
+            };
         }
 
         public IEnumerable<SrmVendor> GetVendorById(int id)
