@@ -36,5 +36,23 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
+        [HttpPost("UpdateReplyDeliveryDate")]
+        public IActionResult UpdateReplyDeliveryDate(JObject rfq)
+        {
+            SrmPoL data = rfq.ToObject<SrmPoL>();
+            _srmPoService.UpdateReplyDeliveryDate(data);
+            if (_srmPoService.CheckAllReply(data.PoId))
+            {
+                _srmPoService.UpdateStatus(data.PoId, 12);
+            }
+            return Ok();
+        }
+        [HttpGet("UpdateStatus")]
+        public IActionResult UpdateStatus(int id)
+        {
+            //int data= id.ToObject<int>();
+            _srmPoService.UpdateStatus(id, 11);
+            return Ok();
+        }
     }
 }

@@ -467,17 +467,15 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.UserName).HasMaxLength(256);
             });
-  
-			modelBuilder.Entity<SrmPoH>(entity =>
+
+            modelBuilder.Entity<SrmPoH>(entity =>
             {
                 entity.HasKey(e => e.PoId)
-                    .HasName("PK__SRM_PO_H__5ECDB69D17817CBC");
+                    .HasName("PK__SRM_PO_H__5ECDB69DD3352076");
 
                 entity.ToTable("SRM_PO_H");
 
-                entity.Property(e => e.PoId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("PO_ID");
+                entity.Property(e => e.PoId).HasColumnName("PO_ID");
 
                 entity.Property(e => e.Buyer)
                     .HasMaxLength(8)
@@ -525,14 +523,14 @@ namespace Convience.Entity.Entity.SRM
 
             modelBuilder.Entity<SrmPoL>(entity =>
             {
-                entity.HasKey(e => e.PoLId)
+                entity.HasKey(e => new { e.PoId, e.PoLId })
                     .HasName("PK__SRM_PO_L__96094CB1B64DAE59");
 
                 entity.ToTable("SRM_PO_L");
 
-                entity.Property(e => e.PoLId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("PO_L_ID");
+                entity.Property(e => e.PoId).HasColumnName("PO_ID");
+
+                entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
 
                 entity.Property(e => e.CriticalPart)
                     .HasMaxLength(5)
@@ -543,16 +541,14 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("DELIVERY_DATE");
 
                 entity.Property(e => e.DeliveryPlace)
-                    .HasMaxLength(10)
+                    .HasMaxLength(20)
                     .HasColumnName("DELIVERY_PLACE");
 
                 entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
 
                 entity.Property(e => e.InspectionTime).HasColumnName("INSPECTION_TIME");
 
-                entity.Property(e => e.MantrId).HasColumnName("MANTR_ID");
-
-                entity.Property(e => e.PoId).HasColumnName("PO_ID");
+                entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
 
                 entity.Property(e => e.Price)
                     .HasColumnType("money")

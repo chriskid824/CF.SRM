@@ -26,6 +26,9 @@ namespace Convience.Service.SRM
         /// 取得全部角色
         /// </summary>
         public IEnumerable<SrmPoH> GetAll();
+        public bool UpdateReplyDeliveryDate(SrmPoL data);
+        public bool UpdateStatus(int id, int status);
+        public bool CheckAllReply(int id);
     }
     public class SrmPoService : ISrmPoService
     {
@@ -63,6 +66,32 @@ namespace Convience.Service.SRM
         public IEnumerable<SrmPoL> GetPolById(int id)
         {
             return _srmPolRepository.Get(r => r.PoId == id);
+        }
+        public bool UpdateReplyDeliveryDate(SrmPoL data)
+        {
+            _context.SrmPoLs.Update(data);
+            _context.SaveChanges();
+            return true;
+        }
+        public bool UpdateStatus(int id,int status)
+        {
+            SrmPoH data = _context.SrmPoHs.Find(id);
+            data.Status = status;
+            if (status == 11)
+            {
+                data.ReplyDate = DateTime.Now;
+            }
+            _context.SrmPoHs.Update(data);
+            _context.SaveChanges();
+            return true;
+        }
+        public bool CheckAllReply(int id)
+        {
+            if (_context.SrmPoLs.Any(p => p.PoId == id && p.ReplyDeliveryDate == null))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -77,7 +77,7 @@ export class UriConfig {
     get WorkFlowFormUri(): string { return `${this._apiUri}/workflowForm` };
 
     get WorkFlowInstanceUri(): string { return `${this._apiUri}/workflowInstance` };
-    
+
     get OperateLogSettingUri(): string { return `${this._apiUri}/operateLogSetting` };
 
     get OperateLogDetailUri(): string { return `${this._apiUri}/operateLogDetail` };
@@ -87,4 +87,6 @@ export class UriConfig {
     get SrmRfq(): string { return `${this._apiUri}/SrmRfq` };
 
     get SrmQot(): string { return `${this._apiUri}/SrmQot` };
+
+    get SrmPo(): string { return `${this._apiUri}/SrmPo` };
 }

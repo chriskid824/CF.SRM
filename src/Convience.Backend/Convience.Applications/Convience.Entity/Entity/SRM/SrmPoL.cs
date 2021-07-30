@@ -1,7 +1,9 @@
-﻿using Convience.EntityFrameWork.Infrastructure;
+﻿using Convience.Entity.Data;
+using Convience.EntityFrameWork.Infrastructure;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 #nullable disable
 
 namespace Convience.Entity.Entity.SRM
@@ -11,7 +13,7 @@ namespace Convience.Entity.Entity.SRM
     {
         public int PoLId { get; set; }
         public int PoId { get; set; }
-        public int MantrId { get; set; }
+        public int MatnrId { get; set; }
         public string Description { get; set; }
         public float? Qty { get; set; }
         public decimal? Price { get; set; }

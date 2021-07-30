@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import datepickerFactory from 'jquery-datepicker';
 import datepickerJAFactory from 'jquery-datepicker/i18n/jquery.ui.datepicker-en-GB';
 import { AgGridDatePickerComponent} from './AGGridDatePickerCompponent';
+import { SrmPoService } from '../../../business/srm/srm-po.service';
+// import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
 datepickerJAFactory($);
 @Component({
   selector: 'app-po',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './po.component.html',
   styleUrls: ['./po.component.less']
 })
@@ -20,7 +23,7 @@ export class PoComponent implements OnInit {
   detailCellRendererParams;
   components;
   rowData: any;
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private _srmPoService: SrmPoService) {
     this.columnDefs = [
       {
         headerName:'採購單識別碼',
@@ -43,6 +46,12 @@ export class PoComponent implements OnInit {
       {
         headerName:'狀態',
         field: 'Status',
+        cellClassRules: {
+          'rag-green': 'x == 12',
+          'rag-amber': 'x == 11',
+          'rag-red': 'x == 10',
+        },
+        valueFormatter:'switch(value){case 10 : return "已拋轉"; case 11 : return "已接收"; case 12 : return "已回覆"; default : return "未知";}'
       },
       {
         headerName:'採購單總金額',
@@ -59,15 +68,49 @@ export class PoComponent implements OnInit {
       {
         headerName:'文件日期',
         field: 'DocDate',
+        valueFormatter:dateFormatter
       },
       {
         headerName:'廠商接收日期',
         field: 'ReplyDate',
+        valueFormatter:dateFormatter
       },
       {
         headerName:'拋轉日期',
         field: 'CreateDate',
+        valueFormatter:dateFormatter
       },
+      { headerName: '操作', field: 'fieldName',
+      cellRenderer : function(params){
+        if(params.data.Status==10)
+        {
+          var eDiv = document.createElement('div');
+          eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">確認</button></span>';
+          var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+
+          eButton.addEventListener('click', function() {
+            _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+              alert('採購單號:'+params.data.PoNum+'已接收');
+              params.data.Status=11;
+              params.data.ReplyDate=new Date();
+              params.api.refreshCells();
+            });
+
+
+          });
+
+          return eDiv;
+          }
+        }
+          //return '<button nz-button nzType="primary" (click)="alert(params.PoId)">確認</button>'
+
+      }
+      // {
+      //   headerName:'操作',
+      //   field: 'total',
+      //   minWidth: 175,
+      //   cellRenderer: 'totalValueRenderer',
+      // },
     //   { field: 'calls' },
     //   {
     //     field: 'minutes',
@@ -81,7 +124,7 @@ export class PoComponent implements OnInit {
     //   },
     ];
     this.defaultColDef = { flex: 1 };
-    this.components = { datePicker: getDatePicker() };
+    this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
       detailGridOptions: {
         columnDefs: [
@@ -112,10 +155,15 @@ export class PoComponent implements OnInit {
           {
             headerName:'交貨日期',
             field: 'DeliveryDate',
+            valueFormatter:dateFormatter
           },
           {
             headerName:'廠商交貨日期',
             field: 'ReplyDeliveryDate',
+            editable: function(params){return true},
+            valueFormatter:dateFormatter,
+            // valueFormatter: this.expiryDateFormatter,
+            cellEditorFramework: AgGridDatePickerComponent
           },
           {
             headerName:'交貨地點',
@@ -129,12 +177,7 @@ export class PoComponent implements OnInit {
             headerName:'檢驗時間',
             field: 'InspectionTime',
           },
-          {
-            field: 'date',
-            editable: true,
-            // valueFormatter: this.expiryDateFormatter,
-        cellEditorFramework: AgGridDatePickerComponent
-          },
+
         ],
         defaultColDef: { flex: 1 },
       },
@@ -144,7 +187,6 @@ export class PoComponent implements OnInit {
 
       },
     };
-    console.info(this.detailCellRendererParams);
   }
 
   ngOnInit(): void {
@@ -164,16 +206,18 @@ export class PoComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
-    this.http
-      .get('http://localhost:5000/api/SrmPo/GetPo')
+    this._srmPoService.GetPo()
       .subscribe((data) => {
         this.rowData = data;
-        console.info(data);
       });
   }
 
 }
-
+function dateFormatter(data) {
+  if(data.value==null) return "";
+  var date=new Date(data.value);
+  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+}
 function getDatePicker() {
   function Datepicker() {}
   Datepicker.prototype.init = function (params) {
