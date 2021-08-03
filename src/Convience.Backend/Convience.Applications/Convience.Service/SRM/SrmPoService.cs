@@ -8,6 +8,7 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,7 @@ namespace Convience.Service.SRM
         /// 取得全部角色
         /// </summary>
         public IEnumerable<SrmPoH> GetAll();
+        public IEnumerable<SrmPoH> GetAll(QueryRfqList query);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateStatus(int id, int status);
         public bool CheckAllReply(int id);
@@ -58,6 +60,14 @@ namespace Convience.Service.SRM
             //    item.SrmPoLs = (ICollection<SrmPoL>)_srmPolRepository.Get(r => r.PoId == item.PoId);
             //}
             return _context.SrmPoHs.Include(m=>m.SrmPoLs).ToList();
+        }
+        public IEnumerable<SrmPoH> GetAll(QueryRfqList query)
+        {
+            var result = _context.SrmPoHs
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.name), p => p.Buyer.IndexOf(query.name)>-1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqNum), p => p.PoNum.IndexOf(query.rfqNum)>-1)
+                .AndIfCondition(query.status != 0, p=>p.Status == query.status);
+            return result.Include(m => m.SrmPoLs).ToList();
         }
         public IEnumerable<SrmPoH> GetMatnrById(int id)
         {

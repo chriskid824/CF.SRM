@@ -5,6 +5,7 @@ import datepickerFactory from 'jquery-datepicker';
 import datepickerJAFactory from 'jquery-datepicker/i18n/jquery.ui.datepicker-en-GB';
 import { AgGridDatePickerComponent} from './AGGridDatePickerCompponent';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -23,7 +24,11 @@ export class PoComponent implements OnInit {
   detailCellRendererParams;
   components;
   rowData: any;
-  constructor(private http: HttpClient,private _srmPoService: SrmPoService) {
+  searchForm: FormGroup = new FormGroup({});
+  page: number = 1;
+  size: number = 2;
+  total: number;
+  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService) {
     this.columnDefs = [
       {
         headerName:'採購單識別碼',
@@ -51,7 +56,7 @@ export class PoComponent implements OnInit {
           'rag-amber': 'x == 11',
           'rag-red': 'x == 10',
         },
-        valueFormatter:'switch(value){case 10 : return "已拋轉"; case 11 : return "已接收"; case 12 : return "已回覆"; default : return "未知";}'
+        valueFormatter:'switch(value){case 10 : return "待確認"; case 11 : return "已確認"; case 12 : return "已回覆"; default : return "未知";}'
       },
       {
         headerName:'採購單總金額',
@@ -160,7 +165,7 @@ export class PoComponent implements OnInit {
           {
             headerName:'廠商交貨日期',
             field: 'ReplyDeliveryDate',
-            editable: function(params){return true},
+            editable: function(params){console.info(params.node.parent);return true},
             valueFormatter:dateFormatter,
             // valueFormatter: this.expiryDateFormatter,
             cellEditorFramework: AgGridDatePickerComponent
@@ -190,6 +195,11 @@ export class PoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchForm = this._formBuilder.group({
+      RFQ_NUM: [null],
+      STATUS: [1],
+      NAME:[null]
+    });
   }
   expiryDateFormatter(params) {
     if (params.value) {
@@ -205,13 +215,44 @@ export class PoComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-
-    this._srmPoService.GetPo()
-      .subscribe((data) => {
-        this.rowData = data;
+    this.getPoList(null);
+    // this._srmPoService.GetPo(null)
+    //   .subscribe((data) => {
+    //     this.rowData = data;
+    //   });
+  }
+  submitSearch() {
+    this.refresh();
+  }
+  pageChange() {
+    this.refresh();
+  }
+  refresh() {
+    var query = {
+      rfqNum: this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"],
+      status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
+      name: this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"],
+      page: this.page,
+      size: this.size
+    }
+    this.getPoList(query);
+  }
+  getPoList(query){
+    if(query==null)
+    {
+      query = {
+        rfqNum: "",
+        status: "0",
+        name: "",
+        page: this.page,
+        size: this.size
+      }
+    }
+    this._srmPoService.GetPo(query)
+      .subscribe((result) => {
+        this.rowData = result;
       });
   }
-
 }
 function dateFormatter(data) {
   if(data.value==null) return "";

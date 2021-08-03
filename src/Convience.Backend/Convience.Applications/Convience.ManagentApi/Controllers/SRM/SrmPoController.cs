@@ -2,6 +2,7 @@
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
+using Convience.Model.Models.SRM;
 using Convience.Service.SRM;
 using Convience.Util.Extension;
 
@@ -26,10 +27,25 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmPoService = srmPoService;
         }
 
-        [HttpGet("GetPo")]
-        public string GetMatnr()
+        [HttpPost("GetPo")]
+        public string GetPo(JObject query)
         {
-            var aaa = _srmPoService.GetAll();
+            if (query == null)
+            {
+                return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+            }
+            QueryRfqList q = new QueryRfqList();
+            q.rfqNum = query["rfqNum"].ToString();
+            q.status = (int)query["status"];
+            q.name = query["name"].ToString();
+            int page = (int)query["page"];
+            int size = (int)query["size"];
+            var aaa = _srmPoService.GetAll(q);
+
             return JsonConvert.SerializeObject(aaa, Formatting.None,
                         new JsonSerializerSettings()
                         {
@@ -51,7 +67,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult UpdateStatus(int id)
         {
             //int data= id.ToObject<int>();
-            _srmPoService.UpdateStatus(id, 11);
+                _srmPoService.UpdateStatus(id, 11);
             return Ok();
         }
     }
