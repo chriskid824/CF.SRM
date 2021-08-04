@@ -27,6 +27,7 @@ namespace Convience.Entity.Entity.SRM
 		public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
         public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<SrmInforecord> SrmInforecords { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -428,6 +429,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("VENDOR_ID")
                     .HasComment("供應商識別碼");
             });
+
             modelBuilder.Entity<SrmEkgry>(entity =>
             {
                 entity.HasNoKey();
@@ -449,6 +451,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("EMPID");
             });
+
             modelBuilder.Entity<AspNetUser>(entity =>
             {
                 entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
@@ -566,6 +569,187 @@ namespace Convience.Entity.Entity.SRM
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("PO_ID");
             });
+
+            modelBuilder.Entity<SrmQotMaterial>(entity =>
+            {
+                entity.HasKey(e => e.QotMId)
+                    .HasName("PK_SRM_QOT_MATNR");
+
+                entity.ToTable("SRM_QOT_MATERIAL");
+
+                entity.Property(e => e.QotMId).HasColumnName("QOT_M_ID");
+
+                entity.Property(e => e.Density).HasColumnName("DENSITY");
+
+                entity.Property(e => e.Height).HasColumnName("HEIGHT");
+
+                entity.Property(e => e.Length).HasColumnName("LENGTH");
+
+                entity.Property(e => e.MCostPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("M_COST_PRICE");
+
+                entity.Property(e => e.MMaterial)
+                    .HasMaxLength(18)
+                    .HasColumnName("M_MATERIAL");
+
+                entity.Property(e => e.MPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("M_PRICE");
+
+                entity.Property(e => e.Note).HasColumnName("NOTE");
+
+                entity.Property(e => e.QotId).HasColumnName("QOT_ID");
+
+                entity.Property(e => e.Weight).HasColumnName("WEIGHT");
+
+                entity.Property(e => e.Width).HasColumnName("WIDTH");
+            });
+
+            modelBuilder.Entity<SrmQotOther>(entity =>
+            {
+                entity.HasKey(e => e.QotOId);
+
+                entity.ToTable("SRM_QOT_OTHER");
+
+                entity.Property(e => e.QotOId).HasColumnName("QOT_O_ID");
+
+                entity.Property(e => e.ODescription)
+                    .HasMaxLength(50)
+                    .HasColumnName("O_DESCRIPTION");
+
+                entity.Property(e => e.OItem)
+                    .HasMaxLength(20)
+                    .HasColumnName("O_ITEM");
+
+                entity.Property(e => e.ONote).HasColumnName("O_NOTE");
+
+                entity.Property(e => e.OPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("O_PRICE");
+
+                entity.Property(e => e.QotId).HasColumnName("QOT_ID");
+            });
+
+            modelBuilder.Entity<SrmQotProcess>(entity =>
+            {
+                entity.HasKey(e => e.QotPId);
+
+                entity.ToTable("SRM_QOT_PROCESS");
+
+                entity.Property(e => e.QotPId).HasColumnName("QOT_P_ID");
+
+                entity.Property(e => e.PHours).HasColumnName("P_HOURS");
+
+                entity.Property(e => e.PMachine)
+                    .HasMaxLength(20)
+                    .HasColumnName("P_MACHINE");
+
+                entity.Property(e => e.PNote).HasColumnName("P_NOTE");
+
+                entity.Property(e => e.PPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("P_PRICE");
+
+                entity.Property(e => e.PProcessNum)
+                    .HasMaxLength(18)
+                    .HasColumnName("P_PROCESS_NUM");
+
+                entity.Property(e => e.QotId).HasColumnName("QOT_ID");
+            });
+
+            modelBuilder.Entity<SrmQotSurface>(entity =>
+            {
+                entity.HasKey(e => e.QotSId);
+
+                entity.ToTable("SRM_QOT_SURFACE");
+
+                entity.Property(e => e.QotSId).HasColumnName("QOT_S_ID");
+
+                entity.Property(e => e.QotId).HasColumnName("QOT_ID");
+
+                entity.Property(e => e.SNote).HasColumnName("S_NOTE");
+
+                entity.Property(e => e.SPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("S_PRICE");
+
+                entity.Property(e => e.SProcess)
+                    .HasMaxLength(18)
+                    .HasColumnName("S_PROCESS");
+
+                entity.Property(e => e.STimes).HasColumnName("S_TIMES");
+            });
+
+            modelBuilder.Entity<SrmInforecord>(entity =>
+            {
+                entity.HasKey(e => e.InfoId);
+
+                entity.ToTable("SRM_INFORECORD");
+
+                entity.Property(e => e.InfoId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("INFO_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(3)
+                    .HasColumnName("CURRENCY");
+
+                entity.Property(e => e.EffectiveDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EFFECTIVE_DATE");
+
+                entity.Property(e => e.Ekgry)
+                    .HasMaxLength(3)
+                    .HasColumnName("EKGRY");
+
+                entity.Property(e => e.ExpirationDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EXPIRATION_DATE");
+
+                entity.Property(e => e.InfoNum).HasColumnName("INFO_NUM");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.LeadTime).HasColumnName("LEAD_TIME");
+
+                entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
+
+                entity.Property(e => e.MinQty).HasColumnName("MIN_QTY");
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("money")
+                    .HasColumnName("PRICE");
+
+                entity.Property(e => e.QotId).HasColumnName("QOT_ID");
+
+                entity.Property(e => e.StandQty).HasColumnName("STAND_QTY");
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.Taxcode)
+                    .HasMaxLength(2)
+                    .HasColumnName("TAXCODE");
+
+                entity.Property(e => e.Unit).HasColumnName("UNIT");
+
+                entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 
