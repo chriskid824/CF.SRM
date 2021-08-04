@@ -67,7 +67,7 @@ export class LayoutComponent implements OnInit {
     {
       canOperate: 'rfqmanage', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '詢價單',
       children: [
-        { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單資訊', name: '詢價單資訊', },
+        { canOperate: 'price', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '價格資訊', name: '價格資訊', },
         { canOperate: 'rfq', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
       ]
     },
