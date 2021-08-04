@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
-import { RFQ } from '../model/rfq';
+import { Rfq } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
 
 

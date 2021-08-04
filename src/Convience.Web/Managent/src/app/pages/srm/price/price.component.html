@@ -1,0 +1,134 @@
+
+<form nz-form  [formGroup]="matnrList" (ngSubmit)="search()">
+  <nz-form-item>
+    <!--<nz-radio-group formControlName="selectedMatnr" [(ngModel)]="radioValue" (ngModelChange)="search()">
+      <label nz-radio [nzValue]="o.value" *ngFor="let o of matnrs">{{ o.label }}</label>
+    </nz-radio-group>-->
+
+    <nz-select style="width: 20%"
+               nzShowSearch
+               formControlName="selectedMatnr"
+               (ngModelChange)="search()">
+      <nz-option *ngFor="let item of matnrs" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
+    </nz-select>
+
+  </nz-form-item>
+  <nz-form-item>
+    <mat-tab-group>
+      <mat-tab label="料號">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_matnr"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_matnr"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+      <mat-tab label="材料">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_material"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_material"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+      <mat-tab label="加工費用">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_process"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_process"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+      <mat-tab label="表面處理">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_surface"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_surface"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+      <mat-tab label="其他費用">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_other"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_other"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+      <mat-tab label="總價格">
+        <ag-grid-angular #agGrid
+                         style="width: 93%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_inforecord"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_inforecord"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]="rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
+    </mat-tab-group>
+    </nz-form-item>
+</form>

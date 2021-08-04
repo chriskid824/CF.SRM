@@ -11,7 +11,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox'; 
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { AppCommonModule } from '../app-common/app-common.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -20,6 +21,8 @@ import { QotComponent } from './qot/qot.component';
 import { AgGridDatePickerComponent } from './po/AGGridDatePickerCompponent';
 import 'ag-grid-enterprise';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { PriceManageComponent } from './price-manage/price-manage.component';
+import { PriceComponent } from './price/price.component';
 
 @NgModule({
   declarations: [
@@ -28,16 +31,20 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     PoComponent,
     AgGridDatePickerComponent,
     QotComponent
+    PriceManageComponent,
+    PriceComponent,
   ],
   imports: [
     CommonModule,
     AngularDualListBoxModule,
     RouterModule.forChild([
-      { path: '', pathMatch: 'full', redirectTo: 'rfq' },
+      //{ path: '', pathMatch: 'full', redirectTo: 'rfq' },
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "po", component: PoComponent },
       { path: "qot", component: QotComponent }
+      { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
+      { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
     ]),
     AgGridModule.withComponents([]),
     NzButtonModule,
@@ -46,10 +53,11 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzTableModule,
     NzPaginationModule,
     NzCheckboxModule,
+    NzRadioModule,
     AppCommonModule,
     MatTabsModule,
     NzDatePickerModule,
-	NzSelectModule
+    NzSelectModule
   ]
 })
 export class SrmModule { }
