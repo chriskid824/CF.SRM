@@ -30,7 +30,7 @@ import { PriceComponent } from './price/price.component';
     RfqManageComponent,
     PoComponent,
     AgGridDatePickerComponent,
-    QotComponent
+    QotComponent,
     PriceManageComponent,
     PriceComponent,
   ],
@@ -42,7 +42,7 @@ import { PriceComponent } from './price/price.component';
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "po", component: PoComponent },
-      { path: "qot", component: QotComponent }
+      { path: "qot", component: QotComponent },
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
       { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
     ]),

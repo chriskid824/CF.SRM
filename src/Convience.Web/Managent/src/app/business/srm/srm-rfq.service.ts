@@ -37,4 +37,7 @@ export class SrmRfqService {
   GetSourcerList(user) {
     return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetSourcerList`, user);
   }
+  GetRfqByRfqNum(rfqNum) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetRfqByRfqNum`, rfqNum);
+  }
 }
