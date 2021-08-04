@@ -20,13 +20,14 @@ namespace Convience.Model.Models.SRM
     {
         public string matnr { get; set; }
         public string volume { get; set; }
+        public int status { get; set; }
+        public string srmMatnr { get; set; }
     }
 
     public class ViewSrmRfqV : SrmVendor
     {
         public int rfqVId { get; set; }
         public int rfqId { get; set; }
-        public int vendorId { get; set; }
     }
     public class ViewSrmRfqH : SrmRfqH { 
     

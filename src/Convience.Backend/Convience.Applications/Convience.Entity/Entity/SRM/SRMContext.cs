@@ -27,6 +27,10 @@ namespace Convience.Entity.Entity.SRM
 		public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
         public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<SrmQotMaterial> SrmQotMaterial { get; set; }
+        public virtual DbSet<SrmQotProcess> SrmQotProcesses { get; set; }
+        public virtual DbSet<SrmQotOther> SrmQotOthers { get; set; }
+        public virtual DbSet<SrmQotSurface> SrmQotSurfaces { get; set; }
         public virtual DbSet<SrmInforecord> SrmInforecords { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

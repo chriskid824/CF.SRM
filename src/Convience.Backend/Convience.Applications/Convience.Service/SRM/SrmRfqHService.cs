@@ -32,6 +32,7 @@ namespace Convience.Service.SRM
         public void UpdateStatus(int status, int RfqId);
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
         public PagingResultModel<AspNetUser> GetSourcer(string name,string werks, int size, int page);
+        public SrmRfqH GetRfqByRfqNum(string rfqNum);
     }
     public class SrmRfqHService:ISrmRfqHService
     {
@@ -183,22 +184,6 @@ namespace Convience.Service.SRM
                 viewstatus = a.viewstatus,
             })
             .AndIfHaveValue(q.name,r=>r.c_by.Contains(q.name));
-
-
-
-            //var rfqs = _srmRfqHRepository.Get(r => string.IsNullOrWhiteSpace(rfqNum) ? true : r.RfqNum.IndexOf(rfqNum) >= 0
-            //).ToList()
-            //    .Join(_userRepository.Get().ToList(), a => a.CreateBy, b => b.UserName, (_srmRfqHRepository, _userRepository) => new
-            //    {
-            //        id = _srmRfqHRepository.RfqId,
-            //        status = _srmRfqHRepository.Status,
-            //        rfqNum = _srmRfqHRepository.RfqNum,
-            //        sourcer = _srmRfqHRepository.Sourcer,
-            //        createBy = _srmRfqHRepository.CreateBy,
-            //        createDate = _srmRfqHRepository.CreateDate,
-            //        c_by = _userRepository.Name,
-            //        c_Date = _srmRfqHRepository.CreateDate.Value.ToString("yyyy-MM-dd")
-            //    });
             var r = rfqs.Skip(skip).Take(size).AsQueryable();
             JObject obj = new JObject() {
                 { "data",JArray.FromObject(r)},
@@ -283,6 +268,11 @@ namespace Convience.Service.SRM
                     Data = users,
                     Count = resultQuery.Count()
                 };
+            }
+        }
+        public SrmRfqH GetRfqByRfqNum(string rfqNum) {
+            using (SRMContext db = new SRMContext()) {
+                return db.SrmRfqHs.Where(r => r.RfqNum == rfqNum).FirstOrDefault();
             }
         }
     }

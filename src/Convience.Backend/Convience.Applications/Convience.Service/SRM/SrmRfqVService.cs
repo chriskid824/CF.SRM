@@ -91,7 +91,7 @@ namespace Convience.Service.SRM
                             Status = b.Status,
                             rfqVId = a.RfqVId,
                             rfqId = a.RfqId.Value,
-                            vendorId = a.VendorId.Value
+                            VendorId = a.VendorId.Value
                         };
             return query.ToArray();
         }

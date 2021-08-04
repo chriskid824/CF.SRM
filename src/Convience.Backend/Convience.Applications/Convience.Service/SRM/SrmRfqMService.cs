@@ -8,6 +8,7 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,7 @@ namespace Convience.Service.SRM
     {
         public void Save(SrmRfqM rfqM, SRMContext db);
         public IQueryable GetDataByRfqId(int RfqId);
+        public ViewSrmRfqM GetRfqMData(SrmRfqM rfq);
     }
     public class SrmRfqMService:ISrmRfqMService
     {
@@ -75,11 +77,39 @@ namespace Convience.Service.SRM
                             length = a.Length,
                             width = a.Width,
                             height = a.Height,
-                            rgqId = a.RfqId,
+                            rfqId = a.RfqId,
                             rfqMId = a.RfqMId,
-                            matnrId = a.MatnrId
+                            matnrId = a.MatnrId,
+                            srmMatnr = b.SrmMatnr1
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
+        }
+        public ViewSrmRfqM GetRfqMData(SrmRfqM rfq) {
+            var query = from a in _srmRfqMRepository.Get(false)
+                        join b in _srmSrmMatnrRepository.Get(false)
+                            on a.MatnrId equals b.MatnrId
+                        where a.RfqId == rfq.RfqId && a.MatnrId == rfq.MatnrId
+                        select new ViewSrmRfqM
+                        {
+                            matnr = b.Matnr,
+                            Version = a.Version,
+                            Material = a.Material,
+                            volume = a.Length + "X" + a.Width + "X" + a.Height,
+                            Density = a.Density,
+                            Weight = a.Weight,
+                            status = b.Status.Value,
+                            Qty = a.Qty,
+                            MachineName = a.MachineName,
+                            Note = a.Note,
+                            Length = a.Length,
+                            Width = a.Width,
+                            Height = a.Height,
+                            RfqId = a.RfqId,
+                            RfqMId = a.RfqMId,
+                            MatnrId = a.MatnrId,
+                            srmMatnr = b.SrmMatnr1
+                        };
+            return query.FirstOrDefault();
         }
     }
 }

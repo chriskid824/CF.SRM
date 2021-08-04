@@ -59,13 +59,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok(_srmMatnrService.GetMatnr(matnrQuery));
         }
 
-        //[HttpGet("test")]
-        //public System.Collections.Generic.IEnumerable<SrmMatnr> GetMatnr2(string matnr = "")
-        //{
-        //    var a = _srmMatnrService.GetMatnr(matnr);
-        //    return a;
-        //}
-
         [HttpPost("GetVendor")]
         public IActionResult GetVendor(QueryVendorModel vendorQuery) {
             return Ok(_srmVendorService.GetVendor(vendorQuery));
@@ -80,11 +73,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqHService.Save(h, ms, vs);
             return Ok();
         }
-        //public class rfq {
-        //    public SrmRfqH h { get; set; }
-        //    public System.Collections.Generic.IEnumerable<SrmRfqM> m { get; set; }
-        //    public System.Collections.Generic.IEnumerable<SrmRfqV> v { get; set; }
-        //};
+
         [HttpGet("GetRfqData")]
         public IActionResult GetRfqData(int id) {
             ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
@@ -190,16 +179,33 @@ namespace Convience.ManagentApi.Controllers.SRM
                     //string a = JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId));
                     ViewSrmRfqV[] vendors = JsonConvert.DeserializeObject<ViewSrmRfqV[]>(JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId)));
                     StringBuilder sb = new StringBuilder();
+                    StringBuilder qotNums = new StringBuilder();
+                    sb.AppendLine("收件者:");
                     foreach (var vendor in vendors) {
                         sb.AppendLine(vendor.Mail);
                     }
-                    SrmQotH[] qots = _srmQotHService.Get(rfqH);
+                    SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfqH.RfqId });
                     foreach (var qot in qots) {
-                        sb.AppendLine(qot.QotNum);
+                        qotNums.AppendLine(qot.QotNum);
                     }
+
+
+                    string body = $@"親愛的供應商夥伴您好,
+因本公司內部原因，
+詢價單：{rfq.RfqNum}
+以下報價單：
+{qotNums.ToString()}
+進行取消詢價作業，
+造成貴公司困擾深感抱歉，
+謝謝!
+
+此信為系統發送,
+ 如有任何問題，
+ 請回覆此E-MAIL致採購窗口或致電協調。";
+
                         //_srmVendorService.GetUsers(new UserQueryModel() { UserName = rfq.Sourcer,Page=1,Size=1 });
-                    mail.Body = sb.ToString();
-                    mail.Subject = "123";
+                    mail.Body = body;
+                    mail.Subject = "詢價單作廢通知";
                     using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
                     {
                         MySMTP.Send(mail);
@@ -236,6 +242,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             var users = _srmRfqHService.GetSourcer(name,costNo,size,page);
             return Ok(users);
             //return Ok(_srmRfqHService.GetSourcer(users));
+        }
+        [HttpPost("GetRfqByRfqNum")]
+        public IActionResult GetRfqByRfqNum(SrmRfqH rfqH) {
+            return Ok(_srmRfqHService.GetRfqByRfqNum(rfqH.RfqNum));
         }
     }
 }
