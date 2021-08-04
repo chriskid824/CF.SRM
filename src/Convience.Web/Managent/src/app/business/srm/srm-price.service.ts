@@ -10,6 +10,6 @@ export class SrmPriceService {
   constructor(private httpClient: HttpClient,
     private uriConstant: UriConfig) { }
   GetQotDetail(query) {
-    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotDetail`, query);
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetQotDetail`, query);
   }
 }

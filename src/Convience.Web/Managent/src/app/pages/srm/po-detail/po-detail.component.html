@@ -1,0 +1,34 @@
+<!-- <div class="example-wrapper"> -->
+  <!-- <div class="example-header">
+    Page Size:
+    <select (change)="onPageSizeChanged()" id="page-size">
+      <option value="10" selected="">10</option>
+      <option value="100">100</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+    </select>
+  </div> -->
+  <nz-card>
+  <ag-grid-angular
+    #agGrid
+    style="width: 100%; height: 650px;"
+    id="myGrid"
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [autoGroupColumnDef]="autoGroupColumnDef"
+    [defaultColDef]="defaultColDef"
+    [suppressRowClickSelection]="true"
+    [groupSelectsChildren]="true"
+    [debug]="true"
+    [rowSelection]="rowSelection"
+    [rowGroupPanelShow]="rowGroupPanelShow"
+    [pivotPanelShow]="pivotPanelShow"
+    [enableRangeSelection]="true"
+    [pagination]="true"
+    [paginationPageSize]="paginationPageSize"
+    [paginationNumberFormatter]="paginationNumberFormatter"
+    [rowData]="rowData"
+    (gridReady)="onGridReady($event)"
+  ></ag-grid-angular>
+</nz-card>
+<!-- </div> -->

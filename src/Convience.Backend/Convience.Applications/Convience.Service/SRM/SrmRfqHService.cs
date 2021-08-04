@@ -32,7 +32,7 @@ namespace Convience.Service.SRM
         public void UpdateStatus(int status, int RfqId);
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
         public PagingResultModel<AspNetUser> GetSourcer(string name,string werks, int size, int page);
-        public SrmRfqH GetRfqByRfqNum(string rfqNum);
+        public SrmRfqH GetRfq(SrmRfqH rfqH);
     }
     public class SrmRfqHService:ISrmRfqHService
     {
@@ -270,9 +270,10 @@ namespace Convience.Service.SRM
                 };
             }
         }
-        public SrmRfqH GetRfqByRfqNum(string rfqNum) {
+        public SrmRfqH GetRfq(SrmRfqH rfqH) {
             using (SRMContext db = new SRMContext()) {
-                return db.SrmRfqHs.Where(r => r.RfqNum == rfqNum).FirstOrDefault();
+                return db.SrmRfqHs.AsQueryable().AndIfHaveValue(rfqH.RfqNum,r=>r.RfqNum== rfqH.RfqNum)
+                     .AndIfHaveValue(rfqH.Status, r => r.Status == rfqH.Status.Value).FirstOrDefault();
             }
         }
     }

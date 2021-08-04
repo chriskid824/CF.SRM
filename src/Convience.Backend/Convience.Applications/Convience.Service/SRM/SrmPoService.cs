@@ -27,7 +27,8 @@ namespace Convience.Service.SRM
         /// 取得全部角色
         /// </summary>
         public IEnumerable<SrmPoH> GetAll();
-        public IEnumerable<SrmPoH> GetAll(QueryRfqList query);
+        public IEnumerable<SrmPoH> GetAll(QueryPoList query);
+        public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateStatus(int id, int status);
         public bool CheckAllReply(int id);
@@ -38,14 +39,13 @@ namespace Convience.Service.SRM
         private readonly IRepository<SrmPoH> _srmPohRepository;
         private readonly IRepository<SrmPoL> _srmPolRepository;
         private readonly SRMContext _context;
-        //private readonly SystemIdentityDbUnitOfWork _systemIdentityDbUnitOfWork;
+        IMapper _mapper;
 
         public SrmPoService(
             //IMapper mapper,
-            IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context)
-            //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
+            IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper)            
         {
-            //_mapper = mapper;
+            _mapper = mapper;
             _srmPohRepository = srmPohRepository;
             _srmPolRepository = srmPolRepository;
             _context = context;
@@ -61,13 +61,40 @@ namespace Convience.Service.SRM
             //}
             return _context.SrmPoHs.Include(m=>m.SrmPoLs).ToList();
         }
-        public IEnumerable<SrmPoH> GetAll(QueryRfqList query)
+        public IEnumerable<SrmPoH> GetAll(QueryPoList query)
         {
             var result = _context.SrmPoHs
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.name), p => p.Buyer.IndexOf(query.name)>-1)
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqNum), p => p.PoNum.IndexOf(query.rfqNum)>-1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) >-1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) >-1)
                 .AndIfCondition(query.status != 0, p=>p.Status == query.status);
             return result.Include(m => m.SrmPoLs).ToList();
+        }
+        public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query)
+        {
+            var result = _context.SrmPoLs.Join(
+                _context.SrmPoHs,
+                l => l.PoId,
+                h => h.PoId,
+                (l, h) => new ViewSrmPoL
+                {
+                    PoNum = h.PoNum,
+                    PoLId = l.PoLId,
+                    PoId = l.PoId,
+                    MatnrId = l.MatnrId,
+                    Description = l.Description,
+                    Qty = l.Qty,
+                    Price = l.Price,
+                    DeliveryDate = l.DeliveryDate,
+                    ReplyDeliveryDate = l.ReplyDeliveryDate,
+                    DeliveryPlace = l.DeliveryPlace,
+                    CriticalPart = l.CriticalPart,
+                    InspectionTime = l.InspectionTime
+                }
+                )
+                //.AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1);
+                //.AndIfCondition(query.status != 0, p => p.Status == query.status);
+            return result.ToList();
         }
         public IEnumerable<SrmPoH> GetMatnrById(int id)
         {

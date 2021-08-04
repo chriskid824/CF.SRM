@@ -139,7 +139,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                             qot.MatnrId = matnr.MatnrId;
                             qot.VendorId = vendor.VendorId;
                             qot.RfqId = h.RfqId;
-                            qot.Status = 0;
+                            qot.Status = (int)Status.初始;
                             qot.CreateDate = now;
                             qot.CreateBy = h.LastUpdateBy;
                             qot.LastUpdateDate = now;
@@ -243,9 +243,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok(users);
             //return Ok(_srmRfqHService.GetSourcer(users));
         }
-        [HttpPost("GetRfqByRfqNum")]
-        public IActionResult GetRfqByRfqNum(SrmRfqH rfqH) {
-            return Ok(_srmRfqHService.GetRfqByRfqNum(rfqH.RfqNum));
+        [HttpPost("GetRfq")]
+        public IActionResult GetRfq(SrmRfqH rfqH) {
+            return Ok(_srmRfqHService.GetRfq(rfqH));
         }
     }
 }

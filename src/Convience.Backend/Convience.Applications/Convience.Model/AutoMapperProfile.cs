@@ -2,12 +2,15 @@
 using Convience.Entity.Entity;
 using Convience.Entity.Entity.Identity;
 using Convience.Entity.Entity.Logs;
+using Convience.Entity.Entity.SRM;
 using Convience.Entity.Entity.WorkFlows;
 using Convience.Model.Models.ContentManage;
 using Convience.Model.Models.GroupManage;
+using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Model.Models.SystemTool;
 using Convience.Model.Models.WorkFlowManage;
+using System.Collections.Generic;
 
 namespace Convience.Model
 {
@@ -69,6 +72,10 @@ namespace Convience.Model
 
             CreateMap<OperateLogDetailResultModel, OperateLogDetail>().ReverseMap();
             CreateMap<OperateLogSettingResultModel, OperateLogSetting>().ReverseMap();
+
+            CreateMap<SrmPoL, ViewSrmPoL>();
+            CreateMap<List<SrmPoL>, List<ViewSrmPoL>>();
+            CreateMap<ViewSrmPoL, SrmPoL>();
         }
     }
 }
