@@ -1,5 +1,5 @@
 
-<form nz-form  [formGroup]="matnrList" (ngSubmit)="search()">
+<form nz-form  [formGroup]="matnrList">
   <nz-form-item>
     <!--<nz-radio-group formControlName="selectedMatnr" [(ngModel)]="radioValue" (ngModelChange)="search()">
       <label nz-radio [nzValue]="o.value" *ngFor="let o of matnrs">{{ o.label }}</label>
@@ -118,6 +118,7 @@
                          [suppressDragLeaveHidesColumns]="true"
                          [suppressMakeColumnVisibleAfterUnGroup]="true"
                          [rowData]="rowData_inforecord"
+                         (gridReady)="onGridReady_inforecord($event)"
                          [enableCharts]="true"
                          [enableRangeSelection]="true"
                          [masterDetail]="true"
@@ -128,6 +129,7 @@
                          [defaultColDef]="defaultColDef"
                          [rowSelection]="rowSelection"
                          [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+        <button nz-button nzType="primary" style="margin-left: 20px" (click)="start()">啟動簽核</button>
       </mat-tab>
     </mat-tab-group>
     </nz-form-item>
