@@ -38,13 +38,35 @@ namespace Convience.ManagentApi.Controllers.SRM
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     });
             }
-            QueryRfqList q = new QueryRfqList();
-            q.rfqNum = query["rfqNum"].ToString();
+            QueryPoList q = new QueryPoList();
+            //var aaa = query.Property("poNum");
+            q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
-            q.name = query["name"].ToString();
-            int page = (int)query["page"];
-            int size = (int)query["size"];
+            q.buyer = query["buyer"].ToString();
             var aaa = _srmPoService.GetAll(q);
+
+            return JsonConvert.SerializeObject(aaa, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+        }
+        [HttpPost("GetPoL")]
+        public string GetPoL(JObject query)
+        {
+            if (query == null)
+            {
+                return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+            }
+            QueryPoList q = new QueryPoList();
+            q.poNum = query["poNum"].ToString();
+            q.status = (int)query["status"];
+            q.buyer = query["buyer"].ToString();
+            var aaa = _srmPoService.GetPoL(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
                         new JsonSerializerSettings()

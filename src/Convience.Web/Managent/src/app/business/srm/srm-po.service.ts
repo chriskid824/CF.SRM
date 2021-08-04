@@ -13,6 +13,9 @@ export class SrmPoService {
   GetPo(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPo`,query);
   }
+  GetPoL(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPoL`,query);
+  }
   SAVE(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/Save`,po);
   }

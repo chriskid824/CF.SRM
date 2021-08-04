@@ -11,7 +11,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox'; 
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { AppCommonModule } from '../app-common/app-common.module';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,7 +23,7 @@ import 'ag-grid-enterprise';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { PriceManageComponent } from './price-manage/price-manage.component';
 import { PriceComponent } from './price/price.component';
-
+import { PoDetailComponent } from './po-detail/po-detail.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -33,6 +33,7 @@ import { PriceComponent } from './price/price.component';
     QotComponent,
     PriceManageComponent,
     PriceComponent,
+    PoDetailComponent
   ],
   imports: [
     CommonModule,
@@ -42,6 +43,7 @@ import { PriceComponent } from './price/price.component';
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "po", component: PoComponent },
+      { path: "podetail", component: PoDetailComponent },
       { path: "qot", component: QotComponent },
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
       { path: "price", component: PriceComponent, canActivate: [LoginGuard] }

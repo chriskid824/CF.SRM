@@ -26,7 +26,6 @@ export class AgGridDatePickerComponent implements ICellEditorAngularComp {
   getValue(): any {
     this.params.data.ReplyDeliveryDate=this.selectedDate;
     this._srmPoService.UpdateReplyDeliveryDate(this.params.data).subscribe(result => {
-      alert(result);
     });
     return this.selectedDate;
   }
