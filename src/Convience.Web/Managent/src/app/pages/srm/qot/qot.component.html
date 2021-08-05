@@ -68,7 +68,7 @@
             </td>
           </tr>
           <tr id="rowtype5">
-            <td colspan="4" id="materiallength" style=" "><span style=" font-family: 微軟正黑體;">備註:</span></td>
+            <td colspan="4" id="materiallength" ><span style=" font-family: 微軟正黑體;">備註:</span></td>
           </tr>
           <tr id="rowtype6">
             <td colspan="4">
@@ -80,33 +80,107 @@
         </table>
         <p class="line2"><span></span> </p>
         <mat-tab-group style="font-family:微軟正黑體;">
-          <mat-tab label="材料">
-            <!--<buttonv nz-button class="mr-10" (click)="addRole(addRoleTitleTpl,roleContentTpl)" *canOperate="'addRoleBtn'">
-              <i nz-icon nzType="plus"></i>添加角色
-            </button>-->
-            <button (click)="addRole(addMaterialTitleTp,MaterialContentTp)">新增材料</button>
-            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
-            <ag-grid-angular style="width: 990px; height: 200px; font-family: 微軟正黑體;" class="ag-theme-balham" [rowData]="rowDatamaterial" [columnDefs]="columnDefsmaterial" [gridOptions]="gridOptions">
-            </ag-grid-angular>
+
+          
+            <mat-tab label="材料明細">
+              
+                <button nz-button nzType="primary" style="margin-left: 20px" (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)">新增材料</button>
+                <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMaterial()">刪除材料</button>
+      
+              <ag-grid-angular #agGrid
+                               style="width: 59%; height: 200px;border:solid"
+                               id="myGrid"
+                               [columnDefs]="columnDefs"
+                               [suppressDragLeaveHidesColumns]="true"
+                               [suppressMakeColumnVisibleAfterUnGroup]="true"
+                               [rowData]="rowData_Material"
+                               (gridReady)="onGridReady($event)"
+                               [enableCharts]="true"
+                               [enableRangeSelection]="true"
+                               [masterDetail]="true"
+                               [undoRedoCellEditing]="true"
+                               [undoRedoCellEditingLimit]="5"
+                               [detailRowAutoHeight]="true"
+                               class="ag-theme-alpine"
+                               [defaultColDef]="defaultColDef"
+                               [rowSelection]= "rowSelection"
+                               [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+            </mat-tab>
+          
+            <mat-tab label="加工">
+              
+              <button nz-button nzType="primary" style="margin-left: 20px" (click)="addProcess(addProcessTitleTp,ProcessContentTp)">新增加工</button>
+              <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteProcess()">刪除加工</button>
+    
+            <ag-grid-angular #agGrid
+                             style="width: 59%; height: 200px;border:solid"
+                             id="myGrid"
+                             [columnDefs]="columnDefs_PROCESS"
+                             [suppressDragLeaveHidesColumns]="true"
+                             [suppressMakeColumnVisibleAfterUnGroup]="true"
+                             [rowData]="rowData_Process"
+                             (gridReady)="onGridReady_Process($event)"
+                             [enableCharts]="true"
+                             [enableRangeSelection]="true"
+                             [masterDetail]="true"
+                             [undoRedoCellEditing]="true"
+                             [undoRedoCellEditingLimit]="5"
+                             [detailRowAutoHeight]="true"
+                             class="ag-theme-alpine"
+                             [defaultColDef]="defaultColDef"
+                             [rowSelection]= "rowSelection"
+                             [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
           </mat-tab>
-          <mat-tab label="加工">
-            <button (click)="addRole(addProcessTitleTp,ProcessContentTp)">新增加工</button>
-            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
-            <ag-grid-angular style="width: 990px; height: 200px; " class="ag-theme-balham" [rowData]="rowDataprocess" [columnDefs]="columnDefsprocess" [gridOptions]="gridOptions">
-            </ag-grid-angular>
-          </mat-tab>
+
           <mat-tab label="表面處理">
-            <button (click)="addRole(addSurfaceTitleTp,SurfaceContentTp)">新增表面處理</button>
-            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
-            <ag-grid-angular style="width: 990px; height: 200px; " class="ag-theme-balham" [rowData]="rowDatasurface" [columnDefs]="columnDefssurface" [gridOptions]="gridOptions">
-            </ag-grid-angular>
-          </mat-tab>
-          <mat-tab label="其他費用">
-            <!--<button class="btnstyle" type="button"><span>新增</span></button>-->
-            <button (click)="addRole(addOtherTitleTp,OtherContentTp)">新增其他</button>
-            <ag-grid-angular style="width: 990px; height: 200px;" class="ag-theme-balham" [rowData]="rowDataother" [columnDefs]="columnDefsother" [gridOptions]="gridOptions">
-            </ag-grid-angular>
-          </mat-tab>
+              
+            <button nz-button nzType="primary" style="margin-left: 20px" (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)">新增表面處理</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteSurface()">刪除表面處理</button>
+  
+          <ag-grid-angular #agGrid
+                           style="width: 59%; height: 200px;border:solid"
+                           id="myGrid"
+                           [columnDefs]="columnDefs_SURFACE"
+                           [suppressDragLeaveHidesColumns]="true"
+                           [suppressMakeColumnVisibleAfterUnGroup]="true"
+                           [rowData]="rowData_Surface"
+                           (gridReady)="onGridReady_Surface($event)"
+                           [enableCharts]="true"
+                           [enableRangeSelection]="true"
+                           [masterDetail]="true"
+                           [undoRedoCellEditing]="true"
+                           [undoRedoCellEditingLimit]="5"
+                           [detailRowAutoHeight]="true"
+                           class="ag-theme-alpine"
+                           [defaultColDef]="defaultColDef"
+                           [rowSelection]= "rowSelection"
+                           [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+        </mat-tab>
+
+        <mat-tab label="其他費用">
+              
+          <button nz-button nzType="primary" style="margin-left: 20px" (click)="addOther(addOtherTitleTp,OtherContentTp)">新增其他</button>
+          <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteOther()">刪除其他費用</button>
+
+        <ag-grid-angular #agGrid
+                         style="width: 59%; height: 200px;border:solid"
+                         id="myGrid"
+                         [columnDefs]="columnDefs_OTHER"
+                         [suppressDragLeaveHidesColumns]="true"
+                         [suppressMakeColumnVisibleAfterUnGroup]="true"
+                         [rowData]="rowData_Other"
+                         (gridReady)="onGridReady_Other($event)"
+                         [enableCharts]="true"
+                         [enableRangeSelection]="true"
+                         [masterDetail]="true"
+                         [undoRedoCellEditing]="true"
+                         [undoRedoCellEditingLimit]="5"
+                         [detailRowAutoHeight]="true"
+                         class="ag-theme-alpine"
+                         [defaultColDef]="defaultColDef"
+                         [rowSelection]= "rowSelection"
+                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+      </mat-tab>
         </mat-tab-group>
       </div>
       <table align="center"><tr><td><button>送出</button> <button>返回</button></td></tr></table>
@@ -118,15 +192,15 @@
   <span>材料明細</span>
 </ng-template>
 <ng-template #MaterialContentTp>
-  <form nz-form [formGroup]="editForm" (ngSubmit)="submitMatnrList()">
+  <form nz-form [formGroup]="editForm_Material" (ngSubmit)="submitMaterialList()">
     <table border="1">
       <tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_name'" formControlName="material_name" nz-input placeholder="素材材質" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
+            <input [attr.id]="'add_material_name'" formControlName="material_name" nz-input placeholder="素材材質" autocomplete="off"/>
           </nz-form-control>
         </td>
       </tr>
@@ -135,8 +209,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_price'">材料單價</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_priceErrorTpl">
+            <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價" autocomplete="off"   (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
@@ -145,8 +219,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
+            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
@@ -155,8 +229,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_length'">長</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_length'" formControlName="material_length" nz-input placeholder="長" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_lengthErrorTpl">
+            <input [attr.id]="'add_material_length'" formControlName="material_length" nz-input placeholder="長" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
@@ -165,8 +239,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_width'">寬</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_width'" formControlName="material_width" nz-input placeholder="寬" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_widthErrorTpl">
+            <input [attr.id]="'add_material_width'" formControlName="material_width" nz-input placeholder="寬" autocomplete="off"   (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
@@ -175,8 +249,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_height'">高</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_height'" formControlName="material_height" nz-input placeholder="高" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_heightErrorTpl">
+            <input [attr.id]="'add_material_height'" formControlName="material_height" nz-input placeholder="高" autocomplete="off"   (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
@@ -185,8 +259,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_density'">密度</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_density'" formControlName="material_density" nz-input placeholder="密度" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_densityErrorTpl">
+            <input [attr.id]="'add_material_density'" formControlName="material_density" nz-input placeholder="密度" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
@@ -195,8 +269,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_weight'">重量</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_weight'" formControlName="material_weight" nz-input placeholder="重量" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_weightErrorTpl">
+            <input [attr.id]="'add_material_weight'" formControlName="material_weight" nz-input placeholder="重量" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
@@ -205,8 +279,8 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_totalcost'">總金額</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'add_material_totalcost'" formControlName="material_totalcost" nz-input placeholder="總金額" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_totalcostErrorTpl">
+            <input [attr.id]="'add_material_totalcost'" formControlName="material_totalcost" nz-input placeholder="總金額" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
@@ -215,7 +289,7 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_note'">備註</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_noteErrorTpl">
             <textarea [attr.id]="'add_material_note'" formControlName="material_note" nz-input placeholder="備註"
                       rows="2"></textarea>
             <!--<input [attr.id]="'add_material_note'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
@@ -235,6 +309,7 @@
         </td>
       </tr>
     </table>
+    
   </form>
 </ng-template>
 <!--加工-->
@@ -242,55 +317,55 @@
   <span>加工明細</span>
 </ng-template>
 <ng-template #ProcessContentTp>
-  <form nz-form [formGroup]="editForm1" (ngSubmit)="submitEdit()">
+  <form nz-form [formGroup]="editForm_Process" (ngSubmit)="submitProcessList()">
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工序代碼</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序代碼</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工序代碼" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
+            <input [attr.id]="'edit_process_no'" formControlName="process_no" nz-input placeholder="工序代碼" autocomplete="off" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工時(時)</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_hour'">工時(時)</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工時(時)" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_hourErrorTpl">
+            <input [attr.id]="'edit_process_hour'" formControlName="process_hour" nz-input placeholder="工時(時)" autocomplete="off"  (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價(時)</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_cost'">單價(時)</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價(時)" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costErrorTpl">
+            <input [attr.id]="'edit_process_cost'" formControlName="process_cost" nz-input placeholder="單價(時)" autocomplete="off"  (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">機台</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_machine'">機台</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="機台" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_machineErrorTpl">
+            <input [attr.id]="'edit_process_machine'" formControlName="process_machine" nz-input placeholder="機台" autocomplete="off" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_remark'">備註</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_remarkErrorTpl">
+            <textarea [attr.id]="'edit_process_remark'" formControlName="process_remark" nz-input placeholder="備註"
                       rows="2"></textarea>
 <!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
 </nz-form-control>
@@ -316,46 +391,46 @@
   <span>表面處理明細</span>
 </ng-template>
 <ng-template #SurfaceContentTp>
-  <form nz-form [formGroup]="editForm2" (ngSubmit)="submitEdit()">
+  <form nz-form [formGroup]="editForm_Surface" (ngSubmit)="submitSurfaceList()">
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">工序</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_name'">工序</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="工序" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_nameErrorTpl">
+            <input [attr.id]="'edit_surface_name'" formControlName="surface_name" nz-input placeholder="工序" autocomplete="off"  (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">次數</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_times'">次數</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="次數" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_timesErrorTpl">
+            <input [attr.id]="'edit_surface_times'" formControlName="surface_times" nz-input placeholder="次數" autocomplete="off"  (ngModelChange)="checktype($event)"/>
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價(時)</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_cost'">單價(時)</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價(時)" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costErrorTpl">
+            <input [attr.id]="'edit_surface_cost'" formControlName="surface_cost" nz-input placeholder="單價(時)" autocomplete="off" (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_note'">備註</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
 <!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
-<textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+<textarea [attr.id]="'edit_surface_note'" formControlName="surface_note" nz-input placeholder="備註"
                       rows="2"></textarea>
           </nz-form-control>
         </td>
@@ -380,46 +455,46 @@
   <span>其他明細</span>
 </ng-template>
 <ng-template #OtherContentTp>
-  <form nz-form [formGroup]="editForm3" (ngSubmit)="submitEdit()">
+  <form nz-form [formGroup]="editForm_Other" (ngSubmit)="submitOtherList()">
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">項目</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'other_item'">項目</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="項目" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_itemErrorTpl">
+            <input [attr.id]="'edit_other_item'" formControlName="other_item" nz-input placeholder="項目" autocomplete="off" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">單價</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_other_price'">單價</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="單價" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_priceErrorTpl">
+            <input [attr.id]="'edit_other_price'" formControlName="other_price" nz-input placeholder="單價" autocomplete="off" (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">說明</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_other_note'">說明</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-            <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="說明" autocomplete="off" />
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_noteErrorTpl">
+            <input [attr.id]="'edit_other_note'" formControlName="other_note" nz-input placeholder="說明" autocomplete="off" />
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_roleName'">備註</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_other_desc'">備註</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_descErrorTpl">
 <!--<input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="備註" autocomplete="off" />-->
-<textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="備註"
+<textarea [attr.id]="'edit_other_desc'" formControlName="other_desc" nz-input placeholder="備註"
                       rows="2"></textarea>
           </nz-form-control>
         </td>

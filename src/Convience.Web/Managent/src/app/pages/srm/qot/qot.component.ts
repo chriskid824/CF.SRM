@@ -9,6 +9,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { Material } from 'src/app/pages/srm/model/material';
 import { QotApiService} from './qot-api.service';
 import { SrmQotService } from '../../../business/srm/srm-qot.service';
+import { Process } from '../model/Process';
+import { Surface } from '../model/Surface';
+import { Other } from '../model/Other';
 
 
 @Component({
@@ -17,9 +20,19 @@ import { SrmQotService } from '../../../business/srm/srm-qot.service';
   styleUrls: ['./qot.component.less']
 })
 export class QotComponent implements OnInit {
-  editForm: FormGroup = new FormGroup({});
+  editForm_Material: FormGroup = new FormGroup({});
+  editForm_Process: FormGroup = new FormGroup({});
+  editForm_Surface: FormGroup = new FormGroup({});
+  editForm_Other: FormGroup = new FormGroup({});
+  editedMatetial: Material = new Material();
+  editedProcess: Process = new Process();
+  editedSurface: Surface = new Surface();
+  editedOther: Other = new Other();
   tplModal: NzModalRef;
-  rowData_MATNR;
+  rowData_Material;
+  rowData_Process;
+  rowData_Surface;
+  rowData_Other;
   MT;//material
   PC;//process
   SF;//surface
@@ -29,7 +42,19 @@ export class QotComponent implements OnInit {
   SFApi;
   OTApi;
   gridApi;
-  gridApi_VENDOR;
+  gridApi_Process;
+  gridApi_Surface;
+  gridApi_Other;
+  columnDefs;
+  defaultColDef;
+  columnDefs_PROCESS;
+  columnDefs_SURFACE;
+  columnDefs_OTHER;
+  rowSelection = "multiple";
+  columnApi;
+  columnApi_Process;
+  columnApi_Surface;
+  columnApi_Other;
   public gridOptions: GridOptions;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
@@ -40,12 +65,216 @@ export class QotComponent implements OnInit {
     private _srmQotService: SrmQotService,
  
 
-  ) { this.rowData_MATNR = []; }
-     //this.rowData_MATNR = [];
+  ) {  
+    this.rowData_Material = [];
+    this.data1 = [];
+    this.rowData_Process = [];
+    this.rowData_Surface = [];
+    this.rowData_Other = [];
+    /**********/
+    /*material*/
+    this.columnDefs = [
+      {
+        headerName: "素材材質",
+        field: "M_MATERIAL",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "240px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "材料單價",
+        field: "M_PRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料成本價",
+        field: "M_COST_PRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "長",
+        field: "LENGTH",
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "寬",
+        field: "WIDTH",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "高",
+        field: "HEIGHT",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "密度",
+        field: "DENSITY",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "重量",
+        field: "WEIGHT",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: true,
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "NOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: true,
+        width: "150px",
+      }
+      
+    ]
+    this.defaultColDef = {
+      filter: "agTextColumnFilter",
+      allowedAggFuncs: ['sum', 'min', 'max'],
+      enableValue: true,
+      enableRowGroup: true,
+      enablePivot: true,
+      // floatingFilter: true,
+      resizable: true,
+      rowSelection: "multiple",
+      wrapText: true,
+    };
+    /*process*/
+    this.columnDefs_PROCESS = [
+      {
+        headerName: "工序代碼",
+        field: "P_PROCESS_NUM",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "工時(時)",
+        field: "P_HOURS",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價(時)",
+        field: "P_PRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "機台",
+        field: "P_MACHINE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        autoHeight: true,
+        wrapText: true,
+      },
+      {
+        headerName: "備註",
+        field: "P_NOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+     /*surface*/
+     this.columnDefs_SURFACE = [
+      {
+        headerName: "工序",
+        field: "S_PROCESS",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "次數",
+        field: "S_TIMES",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價(時)",
+        field: "S_PRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "S_NOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+     /*other*/
+     this.columnDefs_OTHER = [
+      {
+        headerName: "項目",
+        field: "O_ITEM",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "說明",
+        field: "O_DESCRIPTION",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價",
+        field: "O_PRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "O_NOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+    /**********/
+  }
+
+ 
+
+  //this.rowData_MATNR = [];
   ngOnInit(): void {
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
   }
-
+  
+   
   columnDefsmaterial = [
     { field: '序號', resizable: true },
     { field: '素材材質', resizable: true },
@@ -87,6 +316,7 @@ export class QotComponent implements OnInit {
     { field: '備註', resizable: true }
   ];
 
+
   rowDatasurface = [
     { 序號: '1', 工序: '工序A', 次數: '1', '單價(時)': '20', 備註: 'A' },
   ];
@@ -107,11 +337,10 @@ export class QotComponent implements OnInit {
   }
   //tplModal: NzModalRef;
 
-
   data: Role[] = [];
   editedRole: Role = new Role();
   data1: Material[] = [];
-  editedMatetial: Material = new Material();
+ 
   page: number = 1;
   size: number = 10;
   total: number = 0;
@@ -120,6 +349,124 @@ export class QotComponent implements OnInit {
   submitEdi() {
 
   }
+
+  onGridReady(params) {
+    function myRowClickedHandler(event) {
+    console.log('The row was clicked');
+  }
+  params.api.addEventListener('rowClicked', myRowClickedHandler);
+  this.gridApi = params.api;
+  this.columnApi = params.columnApi;
+  console.log(params.api);
+
+  //this.gridApi.sizeColumnsToFit();
+}
+
+  onGridReady_Surface(params) {
+    function myRowClickedHandler(event) {
+      console.log('The row was clicked');
+    }
+    params.api.addEventListener('rowClicked', myRowClickedHandler);
+    this.gridApi_Surface = params.api;
+    this.columnApi_Surface = params.columnApi;
+ 
+    //this.gridApi_Surface.sizeColumnsToFit();
+  }
+  
+  onGridReady_Process(params) {
+    function myRowClickedHandler(event) {
+      console.log('The row was clicked');
+    }
+    params.api.addEventListener('rowClicked', myRowClickedHandler);
+    this.gridApi_Process = params.api;
+    this.columnApi_Process = params.columnApi;
+    console.log(params.api);
+    //this.gridApi_Process.sizeColumnsToFit();
+  }
+  onGridReady_Other(params) {
+    function myRowClickedHandler(event) {
+      console.log('The row was clicked');
+    }
+    params.api.addEventListener('rowClicked', myRowClickedHandler);
+    this.gridApi_Other = params.api;
+    this.columnApi_Other = params.columnApi;
+    //this.gridApi_Other.sizeColumnsToFit();
+  }
+  deleteMaterial() {
+    let selectedNodes = this.gridApi.getSelectedNodes();
+    let selectedData = selectedNodes.map(node => node.data);
+    let selectedRows = this.gridApi.getSelectedRows();
+    let temp = this.rowData_Material;
+    for (var i = selectedRows.length - 1; i >= 0; i--) {
+      for (var j = 0; j < this.rowData_Material.length; j++) {
+        if (this.rowData_Material[j].material_name == selectedRows[i].material_name) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.rowData_Material = temp;
+    this.gridApi.setRowData(this.rowData_Material);
+    console.log(selectedRows);
+    //this.gridApi.applyTransaction({ remove: selectedRows });
+  }
+  deleteProcess() {
+    let selectedNodes = this.gridApi_Process.getSelectedNodes();
+    let selectedData = selectedNodes.map(node => node.data);
+    let selectedRows = this.gridApi_Process.getSelectedRows();
+    let temp = this.rowData_Process;
+    for (var i = selectedRows.length - 1; i >= 0; i--) {
+      for (var j = 0; j < this.rowData_Process.length; j++) {
+        if (this.rowData_Process[j].vendor == selectedRows[i].vendor) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.rowData_Process = temp;
+    this.gridApi_Process.setRowData(this.rowData_Process);
+    console.log(selectedRows);
+    //this.gridApi.applyTransaction({ remove: selectedRows });
+  }
+  deleteSurface() {
+    let selectedNodes = this.gridApi_Surface.getSelectedNodes();
+    let selectedData = selectedNodes.map(node => node.data);
+    let selectedRows = this.gridApi_Surface.getSelectedRows();
+    let temp = this.rowData_Surface;
+    for (var i = selectedRows.length - 1; i >= 0; i--) {
+      for (var j = 0; j < this.rowData_Process.length; j++) {
+        if (this.rowData_Surface[j].vendor == selectedRows[i].vendor) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.rowData_Surface = temp;
+    this.gridApi_Surface.setRowData(this.rowData_Surface);
+    console.log(selectedRows);
+    //this.gridApi.applyTransaction({ remove: selectedRows });
+  }
+
+  deleteOther() {
+    let selectedNodes = this.gridApi_Other.getSelectedNodes();
+    let selectedData = selectedNodes.map(node => node.data);
+    let selectedRows = this.gridApi_Other.getSelectedRows();
+    let temp = this.rowData_Other;
+    for (var i = selectedRows.length - 1; i >= 0; i--) {
+      for (var j = 0; j < this.rowData_Other.length; j++) {
+        if (this.rowData_Other[j].vendor == selectedRows[i].vendor) {
+          temp.splice(j, 1);
+          break;
+        }
+      }
+    }
+    this.rowData_Other = temp;
+    this.gridApi_Other.setRowData(this.rowData_Other);
+    console.log(selectedRows);
+    //this.gridApi.applyTransaction({ remove: selectedRows });
+  }
+
+
   /**/
   add(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.tplModal = this._modalService.create({
@@ -130,98 +477,83 @@ export class QotComponent implements OnInit {
       nzMaskClosable: false
     });
   }
-  /**/
-  submitMatnrList() {
+  //addRole(title: TemplateRef<{}>, content: TemplateRef<{}>){}
+  submitProcessList(){
     /**/
-    for (const i in this.editForm.controls) {
-      this.editForm.controls[i].markAsDirty();
-      this.editForm.controls[i].updateValueAndValidity();
+    for (const i in this.editForm_Process.controls) {
+      this.editForm_Process.controls[i].markAsDirty();
+      this.editForm_Process.controls[i].updateValueAndValidity();
     }
-    alert(this.editForm.valid)
-    if (this.editForm.valid) {
-      this.editedMatetial.name = this.editForm.value['material_name'];
-      this.editedMatetial.price = this.editForm.value['material_price'];
-      console.info(this.editForm);
-      alert('name = '+this.editedMatetial.name)
-      //this.editedMatetial.cost = this.editForm.value['remark'];
-      //this.editedMatetial.length = this.editForm.value['remark'];
-      //this.editedMatetial.width = this.editForm.value['remark'];
-      //this.editedMatetial.height = this.editForm.value['remark'];
-      //this.editedMatetial.density = this.editForm.value['remark'];
-      //this.editedMatetial.weight = this.editForm.value['remark'];
-      //this.editedMatetial.totalcost = this.editForm.value['remark'];
-      //this.editedMatetial.note = this.editForm.value['remark'];
+    //alert(this.editForm_Process.valid)
+    if (this.editForm_Process.valid) {
+      this.editedProcess.processno = this.editForm_Process.value['process_no'];
+      this.editedProcess.price = this.editForm_Process.value['process_cost'];
+      this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
+      this.editedProcess.note = this.editForm_Process.value['process_remark'];
+      this.editedProcess.machine = this.editForm_Process.value['process_machine'];
+      console.info(this.editForm_Process.value);
+    
+      /*寫入grid */
       
-      if (this.editedMatetial.id) {
-      //  this._roleService.updateRole(this.editedRole)
-      //    .subscribe(result => {
-      //      this.refresh(); this.tplModal.close();
-      //      this._messageService.success("更新成功！");
-      //    });
-      //} else {
-      //  this._roleService.addRole(this.editedRole)
-      //    .subscribe(result => {
-      //      this.refresh(); this.tplModal.close();
-      //      this._messageService.success("添加成功！");
-      //    });
-      }
+      this.rowData_Process.push({
+        "P_PROCESS_NUM": this.editedProcess.processno,
+        "P_HOURS":this.editedProcess.p_hour, 
+        "P_PRICE":this.editedProcess.price,
+        "P_MACHINE":this.editedProcess.machine,
+        "P_NOTE":this.editedProcess.note
+      });
+      //alert('aaaaa+ '+ this.rowData_Process.value)
+      console.log(this.gridApi);
+      console.log('-------------');
+      console.log(this.gridApi_Process);
+      this.gridApi_Process.setRowData(this.rowData_Process);     
+      this.tplModal.close();
+      
     }
+  }
+  /**/
+  submitMaterialList() {
     /**/
-    alert('aaaa')
-    alert('aaaacc=' + this.rowData_MATNR)
-    console.log(this.rowData_MATNR);
-    for (var i = 0; i < this.MatnrList.length; i++) {
-      if (this.MatnrList[i].checked == true) {
-        console.log(this.MatnrList[i].label);
-        if (this.rowData_MATNR.filter(item => item.matnr.toUpperCase().indexOf(this.MatnrList[i].label.toUpperCase()) >= 0).length == 0) {
-          this.rowData_MATNR.push(this.OriMatnrList.filter(item => item.matnr == this.MatnrList[i].label)[0]);
-        }
-      }
+    for (const i in this.editForm_Material.controls) {
+      this.editForm_Material.controls[i].markAsDirty();
+      this.editForm_Material.controls[i].updateValueAndValidity();
     }
-    this.rowData_MATNR.forEach(row => row.volume = row.length + 'X' + row.width + 'X' + row.height);
-    this.gridApi.setRowData(this.rowData_MATNR);
-    console.log(this.rowData_MATNR);
-    this.tplModal.close();
+    //alert(this.editForm_Material.valid)
+    if (this.editForm_Material.valid) {
+      this.editedMatetial.name = this.editForm_Material.value['material_name'];
+      this.editedMatetial.price = this.editForm_Material.value['material_price'];
+      this.editedMatetial.cost = this.editForm_Material.value['material_cost'];
+      this.editedMatetial.length = this.editForm_Material.value['material_length'];
+      this.editedMatetial.width = this.editForm_Material.value['material_width'];
+      this.editedMatetial.height = this.editForm_Material.value['material_height'];
+      this.editedMatetial.density = this.editForm_Material.value['material_density'];
+      this.editedMatetial.weight = this.editForm_Material.value['material_weight'];
+      this.editedMatetial.totalcost = this.editForm_Material.value['material_totalcost'];
+      this.editedMatetial.note = this.editForm_Material.value['material_note'];
+      console.info(this.editForm_Material.value);
+      //alert('name = '+this.editedMatetial.name)
+      /*寫入grid */
+      
+      this.rowData_Material.push({
+        "M_MATERIAL":this.editedMatetial.name,
+        "M_PRICE":this.editedMatetial.price, 
+        "M_COST_PRICE":this.editedMatetial.cost,
+        "LENGTH":this.editedMatetial.length,
+        "WIDTH":this.editedMatetial.width,
+        "HEIGHT":this.editedMatetial.height,
+        "DENSITY":this.editedMatetial.density,
+        "M_TOTAL_COST":this.editedMatetial.totalcost,
+        "WEIGHT":this.editedMatetial.weight, 
+        "NOTE":this.editedMatetial.note,
+      });
+      //console.log('rowData_Material='+this.rowData_Material);
+    
+      this.gridApi.setRowData(this.rowData_Material);
+      this.tplModal.close();
+    }
   }
   /**/
 
-  submitEdit() {
-    alert('submitEdit')
-    for (const i in this.editForm.controls) {
-      this.editForm.controls[i].markAsDirty();
-      this.editForm.controls[i].updateValueAndValidity();
-    }
-    alert(this.editForm.valid)
-    //if (this.editForm.valid) {
-    //  this.editedMatetial.name = this.editForm.value['material_name'];
-    //  this.editedMatetial.price = this.editForm.value['material_price'];
-    //  this.editedMatetial.cost = this.editForm.value['material_cost'];
-    //  this.editedMatetial.length = this.editForm.value['material_length'];
-    //  this.editedMatetial.width = this.editForm.value['material_width'];
-    //  this.editedMatetial.height = this.editForm.value['material_height'];
-    //  this.editedMatetial.density = this.editForm.value['material_density'];
-    //  this.editedMatetial.weight = this.editForm.value['material_weight'];
-    //  this.editedMatetial.totalcost = this.editForm.value['material_totalcost'];
-    //  this.editedMatetial.note = this.editForm.value['material_note'];
-
-
-    //  //this.editedRole.menus = this.editForm.value['menus'].join(',');
-    //  //?? insert db
-    //  //if (this.editedMatetial.id) {
-    //  //  this._roleService.updateRole(this.editedMatetial)
-    //  //    .subscribe(result => {
-    //  //      this.refresh(); this.tplModal.close();
-    //  //      this._messageService.success("更新成功！");
-    //  //    });
-    //  //} else {
-    //  //  this._roleService.addRole(this.editedRole)
-    //  //    .subscribe(result => {
-    //  //      this.refresh(); this.tplModal.close();
-    //  //      this._messageService.success("添加成功！");
-    //  //    });
-    //  //}
-    //}
-  }
 
 
 
@@ -233,14 +565,100 @@ export class QotComponent implements OnInit {
     this.tplModal.close();
   }
 
-  /**
-   * /
-   * @param title
-   * @param content
-   */
-  addRole1(title: TemplateRef<{}>, content: TemplateRef<{}>) {
-    this.editedMatetial = new Material();
-    this.editForm = this._formBuilder.group({
+
+  addMaterial(title: TemplateRef<{}>, content: TemplateRef<{}>) {
+    //this.editedRole = new Role();
+    this.editForm_Material = this._formBuilder.group({
+      //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
+      material_name: [this.editedMatetial.name, [Validators.required]],
+      material_price: [this.editedMatetial.price, [Validators.required]],
+      material_cost: [this.editedMatetial.cost, [Validators.required ]],
+      material_length: [this.editedMatetial.length, [Validators.required]],
+      material_width: [this.editedMatetial.width, [Validators.required]],
+      material_height: [this.editedMatetial.height, [Validators.required,]],
+      material_density: [this.editedMatetial.density, [Validators.required]],
+      material_weight: [this.editedMatetial.weight, [Validators.required]],
+      material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
+      material_note: [this.editedMatetial.note,]
+      //menus: [[]]
+    });
+    this.tplModal = this._modalService.create({
+      nzTitle: title,
+      nzContent: content,
+      nzFooter: null,
+    });
+  }
+  /*0730*/
+  submitOtherList(){ 
+    for (const i in this.editForm_Other.controls) {
+      this.editForm_Other.controls[i].markAsDirty();
+      this.editForm_Other.controls[i].updateValueAndValidity();
+    }
+    alert(this.editForm_Other.valid)
+    if (this.editForm_Other.valid) {
+      this.editedOther.item = this.editForm_Other.value['other_item'];
+      this.editedOther.price = this.editForm_Other.value['other_price'];
+      this.editedOther.note = this.editForm_Other.value['other_note'];
+      this.editedOther.description = this.editForm_Other.value['other_desc'];
+     
+      console.info(this.editForm_Other.value);
+      alert('name = '+this.editedOther.item)
+      /*寫入grid */
+      
+      this.rowData_Other.push({
+        "O_ITEM":this.editedOther.item,
+        "O_PRICE": this.editedOther.price,
+        "O_DESCRIPTION":this.editedOther.description,
+        "O_NOTE":this.editedOther.note
+      });
+
+      this.gridApi_Other.setRowData(this.rowData_Other);
+      this.tplModal.close();
+    }}
+
+  submitSurfaceList() {
+    /**/
+    for (const i in this.editForm_Surface.controls) {
+      this.editForm_Surface.controls[i].markAsDirty();
+      this.editForm_Surface.controls[i].updateValueAndValidity();
+    }
+    alert(this.editForm_Surface.valid)
+    if (this.editForm_Surface.valid) {
+      this.editedSurface.process = this.editForm_Surface.value['surface_name'];
+      this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
+      this.editedSurface.note = this.editForm_Surface.value['surface_note'];
+      this.editedSurface.times = this.editForm_Surface.value['surface_times'];
+     
+     
+      console.info(this.editForm_Surface.value);
+      alert('name = '+this.editedSurface.process)
+      /*寫入grid */
+      
+      this.rowData_Surface.push({
+        "S_PROCESS":this.editedSurface.process,
+        "S_TIMES":this.editedSurface.times,
+        "S_PRICE":this.editedSurface.price,
+        "S_NOTE":this.editedSurface.note
+      });
+
+      this.gridApi_Surface.setRowData(this.rowData_Surface);
+      this.tplModal.close();
+    }
+  }
+  checktype(number:number){
+    if (isNaN(number)) {
+      alert("欄位格式錯誤");
+      return;
+    }
+  }
+  addSurface(title: TemplateRef<{}>, content: TemplateRef<{}>) {
+    this.editedSurface = new Surface();
+    this.editForm_Surface = this._formBuilder.group({
+      //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
+      surface_name: [this.editedSurface.process, [Validators.required]],
+      surface_times: [this.editedSurface.times, [Validators.required]],
+      surface_cost: [this.editedSurface.price, [Validators.required ]],
+      surface_note: [this.editedSurface.note]
     });
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -249,38 +667,62 @@ export class QotComponent implements OnInit {
     });
   }
 
-  addRole(title: TemplateRef<{}>, content: TemplateRef<{}>) {
-    //this.editedRole = new Role();
-    //this.editForm = this._formBuilder.group({
-    //  roleName: [this.editedRole.name, [Validators.required, Validators.maxLength(15)]],
-    //  remark: [this.editedRole.remark, [Validators.maxLength(30)]],
-    //  menus: [[]]
-    //});
+  addOther(title: TemplateRef<{}>, content: TemplateRef<{}>) {
+    this.editedOther = new Other();
+    this.editForm_Other = this._formBuilder.group({
+      //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
+      other_item: [this.editedOther.item, [Validators.required]],
+      other_desc: [this.editedOther.description],
+      other_price: [this.editedOther.price, [Validators.required ]],
+      other_note: [this.editedOther.note, [Validators.required]]
+    });
     this.tplModal = this._modalService.create({
       nzTitle: title,
       nzContent: content,
       nzFooter: null,
     });
   }
+  /*0730*/
+
+  
+
+
+
+  addProcess(title: TemplateRef<{}>, content: TemplateRef<{}>) {
+    this.editForm_Process= this._formBuilder.group({
+      //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
+      process_no: [this.editedProcess.processno, [Validators.required]],
+      process_cost: [this.editedProcess.price, [Validators.required]],
+      process_hour: [this.editedProcess.p_hour, [Validators.required ]],
+      process_machine: [this.editedProcess.machine, [Validators.required]],
+      process_remark: [this.editedProcess.note],     
+    });
+    this.tplModal = this._modalService.create({
+      nzTitle: title,
+      nzContent: content,
+      nzFooter: null,
+    });
+  }
+
   /**/
   saveqotmatnr() {
-    for (const i in this.editForm.controls) {
-      this.editForm.controls[i].markAsDirty();
-      this.editForm.controls[i].updateValueAndValidity();
+    for (const i in this.editForm_Material.controls) {
+      this.editForm_Material.controls[i].markAsDirty();
+      this.editForm_Material.controls[i].updateValueAndValidity();
     }
     //alert(this.editForm.valid)
-    if (this.editForm.valid) {
-      this.editedMatetial.name = this.editForm.value['material_name'];
+    if (this.editForm_Material.valid) {
+      this.editedMatetial.name = this.editForm_Material.value['material_name'];
       alert('aa = '+this.editedMatetial.name)
-      this.editedMatetial.price = this.editForm.value['material_price'];
-      this.editedMatetial.cost = this.editForm.value['material_cost'];
-      this.editedMatetial.length = this.editForm.value['material_length'];
-      this.editedMatetial.width = this.editForm.value['material_width'];
-      this.editedMatetial.height = this.editForm.value['material_height'];
-      this.editedMatetial.density = this.editForm.value['material_density'];
-      this.editedMatetial.weight = this.editForm.value['material_weight'];
-      this.editedMatetial.totalcost = this.editForm.value['material_totalcost'];
-      this.editedMatetial.note = this.editForm.value['material_note'];
+      this.editedMatetial.price = this.editForm_Material.value['material_price'];
+      this.editedMatetial.cost = this.editForm_Material.value['material_cost'];
+      this.editedMatetial.length = this.editForm_Material.value['material_length'];
+      this.editedMatetial.width = this.editForm_Material.value['material_width'];
+      this.editedMatetial.height = this.editForm_Material.value['material_height'];
+      this.editedMatetial.density = this.editForm_Material.value['material_density'];
+      this.editedMatetial.weight = this.editForm_Material.value['material_weight'];
+      //this.editedMatetial.totalcost = this.editForm.value['material_totalcost'];
+      this.editedMatetial.note = this.editForm_Material.value['material_note'];
     }
     console.log("saveqotmatnr");
     alert("saveqotmatnr");
@@ -290,14 +732,14 @@ export class QotComponent implements OnInit {
     //var date = new Date();
     //qot.material = this.MT;
     qot.material = {
-      MPrice: this.editForm.value['material_price'],
-      MCostPrice: this.editForm.value['material_cost'],
-      Length: this.editForm.value['material_length'],
-      Width: this.editForm.value['material_width'],
-      Height: this.editForm.value['material_height'],
-      Density: this.editForm.value['material_density'],
-      Weight: this.editForm.value['material_weight'],
-      Note: this.editForm.value['material_note'],
+      MPrice: this.editForm_Material.value['material_price'],
+      MCostPrice: this.editForm_Material.value['material_cost'],
+      Length: this.editForm_Material.value['material_length'],
+      Width: this.editForm_Material.value['material_width'],
+      Height: this.editForm_Material.value['material_height'],
+      Density: this.editForm_Material.value['material_density'],
+      Weight: this.editForm_Material.value['material_weight'],
+      Note: this.editForm_Material.value['material_note'],
     };
     alert(qot.material.MMaterial);
     console.log(this.MTApi);

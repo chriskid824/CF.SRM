@@ -1,0 +1,35 @@
+<p style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:left;">待辦清單</p>
+<ag-grid-angular style="width: 1600px; height: 200px;"
+                 class="ag-theme-balham"
+                 [rowData]="rowData"
+                 [columnDefs]="columnDefs"
+             
+                 [rowMultiSelectWithClick]=true
+                >
+</ag-grid-angular>
+<!--<mat-tab-group style="font-family:微軟正黑體;">
+
+          
+    <mat-tab label="材料明細">
+      <ag-grid-angular #agGrid
+                       style="width: 59%; height: 200px;border:solid"
+                       id="myGrid"
+                       [columnDefs]="columnDefs"
+                       [suppressDragLeaveHidesColumns]="true"
+                       [suppressMakeColumnVisibleAfterUnGroup]="true"
+                       [rowData]="rowData_Material"
+                       (gridReady)="onGridReady($event)"
+                       [enableCharts]="true"
+                       [enableRangeSelection]="true"
+                       [masterDetail]="true"
+                       [undoRedoCellEditing]="true"
+                       [undoRedoCellEditingLimit]="5"
+                       [detailRowAutoHeight]="true"
+                       class="ag-theme-alpine"
+                       [defaultColDef]="defaultColDef"
+                       [rowSelection]= "rowSelection"
+                       [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+    </mat-tab>
+</mat-tab-group>-->
+
+
