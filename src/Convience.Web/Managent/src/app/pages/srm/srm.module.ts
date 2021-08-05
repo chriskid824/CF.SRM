@@ -24,6 +24,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { PriceManageComponent } from './price-manage/price-manage.component';
 import { PriceComponent } from './price/price.component';
 import { PoDetailComponent } from './po-detail/po-detail.component';
+import { QotlistComponent } from './qotlist/qotlist.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -33,7 +34,8 @@ import { PoDetailComponent } from './po-detail/po-detail.component';
     QotComponent,
     PriceManageComponent,
     PriceComponent,
-    PoDetailComponent
+    PoDetailComponent,
+    QotlistComponent
   ],
   imports: [
     CommonModule,
@@ -45,6 +47,7 @@ import { PoDetailComponent } from './po-detail/po-detail.component';
       { path: "po", component: PoComponent },
       { path: "podetail", component: PoDetailComponent },
       { path: "qot", component: QotComponent },
+      { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
       { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
     ]),
