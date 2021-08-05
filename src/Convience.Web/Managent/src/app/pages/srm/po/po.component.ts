@@ -138,7 +138,7 @@ export class PoComponent implements OnInit {
             field: 'PoLId',
           },
           {
-            PoId:'採購單識別碼',
+            headerName:'採購單識別碼',
             field: 'PoId',
           },
           {
@@ -196,9 +196,9 @@ export class PoComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      RFQ_NUM: [null],
+      PO_NUM: [null],
       STATUS: [1],
-      NAME:[null]
+      BUYER:[null]
     });
   }
   expiryDateFormatter(params) {
@@ -229,9 +229,9 @@ export class PoComponent implements OnInit {
   }
   refresh() {
     var query = {
-      rfqNum: this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"],
+      poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
-      name: this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"],
+      buyer: this.searchForm.value["BUYER"] == null ? "" : this.searchForm.value["BUYER"],
       page: this.page,
       size: this.size
     }
@@ -241,9 +241,9 @@ export class PoComponent implements OnInit {
     if(query==null)
     {
       query = {
-        rfqNum: "",
+        poNum: "",
         status: "0",
-        name: "",
+        buyer: "",
         page: this.page,
         size: this.size
       }

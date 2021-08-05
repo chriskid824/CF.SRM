@@ -2,9 +2,9 @@
     <nz-card [nzSize]="'small'" id="searchBar">
       <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
         <nz-form-item>
-          <nz-form-label [nzFor]="'RFQ_NUM'">採購單號</nz-form-label>
+          <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="採購單號" [formControlName]="'RFQ_NUM'" [attr.id]="'RFQ_NUM'"
+            <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"
                    autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
@@ -20,9 +20,9 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzFor]="'NAME'">採購人員</nz-form-label>
+          <nz-form-label [nzFor]="'BUYER'">採購人員</nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="採購人員" [formControlName]="'NAME'" [attr.id]="'NAME'"
+            <input nz-input placeholder="採購人員" [formControlName]="'BUYER'" [attr.id]="'BUYER'"
                    autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
