@@ -1,18 +1,22 @@
 <br>
+<nz-card>
+
 
 <p style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:left;">待辦清單</p>
-<ag-grid-angular style="width: 1600px; height: 200px;"
-                 class="ag-theme-balham"
+<ag-grid-angular style="width: 1600px; height: 650px;"
+                 class="ag-theme-alpine"
                  [rowData]="rowData"
                  [columnDefs]="columnDefs"
                  (ng-click)="onRowClicked($event)"
                  [rowMultiSelectWithClick]=true
                  [masterDetail]="true"
+                 [detailCellRendererParams]="detailCellRendererParams"
                 >
 </ag-grid-angular>
+</nz-card>
 <!--<mat-tab-group style="font-family:微軟正黑體;">
 
-          
+
     <mat-tab label="材料明細">
       <ag-grid-angular #agGrid
                        style="width: 59%; height: 200px;border:solid"
