@@ -56,7 +56,7 @@ export class QotlistComponent implements OnInit {
     paginationAutoPageSize: true,
     detailCellRendererParams: {
       detailGridOptions: {
-        columnDefs: [
+        columnDefs1: [
           { field: '報價單號' },
           { field: '報價單號' },
           { field: '狀態', minWidth: 150 },
@@ -70,9 +70,7 @@ export class QotlistComponent implements OnInit {
           flex: 1,
         },
       },
-      getDetailRowData: function (params) {
-        params.successCallback(params.data.callRecords);
-      },
+
     },
   }
 
