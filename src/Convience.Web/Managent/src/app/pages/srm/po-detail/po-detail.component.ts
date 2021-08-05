@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 @Component({
   selector: 'app-po-detail',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './po-detail.component.html',
   styleUrls: ['./po-detail.component.less']
 })
@@ -20,23 +21,62 @@ export class PoDetailComponent implements OnInit {
   paginationPageSize;
   paginationNumberFormatter;
   rowData;
-  constructor(private http: HttpClient,private _srmPoService: SrmPoService) {
+  searchForm: FormGroup = new FormGroup({});
+  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService) {
     this.columnDefs = [
       {
-        headerName:'採購單識別碼',
-        field: 'PoId',
+        headerName:'採購單號',
+        field: 'PoNum',
         minWidth: 170,
         checkboxSelection: checkboxSelection,
         headerCheckboxSelection: headerCheckboxSelection,
       },
       {
+        headerName:'採購單識別碼',
+        field: 'PoId',
+        minWidth: 170,
+        hide:'true',
+      },
+      {
         headerName:'採購單明細識別碼',
         field: 'PoLId',
+        hide:'true',
       },
-
+      {
+        headerName:'供應商識別碼',
+        field: 'VendorId',
+        hide:'true',
+      },
+      {
+        headerName:'供應商',
+        field: 'VendorName',
+      },
+      {
+        headerName:'狀態',
+        field: 'Status',
+        cellClassRules: {
+          'rag-green': 'x == 12',
+          'rag-amber': 'x == 11',
+          'rag-red': 'x == 10',
+        },
+        valueFormatter:'switch(value){case 10 : return "待確認"; case 11 : return "已確認"; case 12 : return "已回覆"; default : return "未知";}'
+      },
+      {
+        headerName:'採購單總金額',
+        field: 'TotalAmount',
+      },
+      {
+        headerName:'採購人員',
+        field: 'Buyer',
+      },
       {
         headerName:'料號識別碼',
-        field: 'MantrId',
+        field: 'MatnrId',
+        hide:'true'
+      },
+      {
+        headerName:'料號',
+        field: 'Matnr',
       },
       {
         headerName:'物料內文',
@@ -58,20 +98,22 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'廠商交貨日期',
         field: 'ReplyDeliveryDate',
-        editable: function(params){return false},
         valueFormatter:dateFormatter,
       },
       {
         headerName:'交貨地點',
         field: 'DeliveryPlace',
+        hide:'true'
       },
       {
         headerName:'關鍵零組件/首件',
         field: 'CriticalPart',
+        hide:'true'
       },
       {
         headerName:'檢驗時間',
         field: 'InspectionTime',
+        hide:'true'
       },
     ];
     this.autoGroupColumnDef = {
@@ -110,6 +152,13 @@ export class PoDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchForm = this._formBuilder.group({
+      PO_NUM: [null],
+      STATUS: [1],
+      BUYER:[null],
+      replyDeliveryDate_s: [null],
+      replyDeliveryDate_e: [null],
+    });
   }
   // onPageSizeChanged(newPageSize) {
   //   var value = document.getElementById('page-size').value;
@@ -121,19 +170,46 @@ export class PoDetailComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
     this.getPoLList(null);
   }
+  submitSearch() {
+    this.refresh();
+  }
+  pageChange() {
+    this.refresh();
+  }
+  refresh() {
+    var query = {
+      poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
+      status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
+      replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
+      replyDeliveryDate_e: this.searchForm.value["ReplyDeliveryDate_e"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_e"],
+    }
+    this.getPoLList(query);
+  }
   getPoLList(query){
     if(query==null)
     {
       query = {
         poNum: "",
         status: "0",
-        buyer: "",
+        replyDeliveryDate_s: null,
+        replyDeliveryDate_e: null,
       }
     }
     this._srmPoService.GetPoL(query)
       .subscribe((result) => {
         this.rowData = result;
       });
+  }
+  getSelectedRowData(event) {
+    let selectedNodes = this.gridApi.getSelectedNodes();
+    if(selectedNodes.length==0)
+    {
+      alert('請先選擇要出貨的項目!');
+      return;
+    }
+    let selectedData = selectedNodes.map(node => node.data);
+    console.info(selectedData);
+    return selectedData;
   }
 }
 var checkboxSelection = function (params) {

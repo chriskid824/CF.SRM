@@ -88,11 +88,27 @@ namespace Convience.Service.SRM
                     ReplyDeliveryDate = l.ReplyDeliveryDate,
                     DeliveryPlace = l.DeliveryPlace,
                     CriticalPart = l.CriticalPart,
-                    InspectionTime = l.InspectionTime
+                    InspectionTime = l.InspectionTime,
+                    Status=h.Status,
+                    VendorId=h.VendorId,
+                    TotalAmount=h.TotalAmount,
+                    Buyer=h.Buyer,
+
                 }
                 )
                 //.AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1);
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                .AndIfHaveValue(query.replyDeliveryDate_s,p=>p.DeliveryDate>=query.replyDeliveryDate_s.Value.Date)
+                .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+                .AndIfCondition(query.status!=0,p=>p.Status==query.status).ToList();
+
+            result.ForEach(p =>
+            {
+                p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).Matnr;
+                p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
+            });
+
+
                 //.AndIfCondition(query.status != 0, p => p.Status == query.status);
             return result.ToList();
         }

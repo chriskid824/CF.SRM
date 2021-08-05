@@ -46,7 +46,7 @@ export class PoComponent implements OnInit {
       },
       {
         headerName:'供應商',
-        field: 'vendor_name',
+        field: 'VendorName',
       },
       {
         headerName:'狀態',
@@ -143,7 +143,7 @@ export class PoComponent implements OnInit {
           },
           {
             headerName:'料號識別碼',
-            field: 'MantrId',
+            field: 'MatnrId',
           },
           {
             headerName:'物料內文',
@@ -188,6 +188,7 @@ export class PoComponent implements OnInit {
       },
 
       getDetailRowData: function (params) {
+        console.info(params);
         params.successCallback(params.data.SrmPoLs);
 
       },

@@ -65,7 +65,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             QueryPoList q = new QueryPoList();
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
-            q.buyer = query["buyer"].ToString();
+            q.replyDeliveryDate_s = query["replyDeliveryDate_s"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_s"]):null;
+            q.replyDeliveryDate_e = query["replyDeliveryDate_e"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_e"]):null;
             var aaa = _srmPoService.GetPoL(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
