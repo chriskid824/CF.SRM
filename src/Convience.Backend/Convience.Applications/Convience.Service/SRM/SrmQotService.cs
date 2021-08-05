@@ -59,6 +59,8 @@ namespace Convience.Service.SRM
             foreach (var qot in qots)
             {
                 qot.Status = status;
+                qot.LastUpdateDate = rfqH.LastUpdateDate;
+                qot.LastUpdateBy = rfqH.LastUpdateBy;
             }
             //using (SRMContext db = new SRMContext())
             //{

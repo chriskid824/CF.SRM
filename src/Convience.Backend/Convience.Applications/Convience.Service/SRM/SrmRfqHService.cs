@@ -29,10 +29,9 @@ namespace Convience.Service.SRM
         public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
         public ViewSrmRfqH GetDataByRfqId(int RfqId);
         public JObject GetRfqList(QueryRfqList q, int page, int size);
-        public void UpdateStatus(int status, int RfqId);
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
         public PagingResultModel<AspNetUser> GetSourcer(string name,string werks, int size, int page);
-        public SrmRfqH GetRfq(SrmRfqH rfqH);
+        public SrmRfqH GetRfq(QueryRfq query);
     }
     public class SrmRfqHService:ISrmRfqHService
     {
@@ -79,7 +78,7 @@ namespace Convience.Service.SRM
                         rfqH.CreateDate = now;
                         db.SrmRfqHs.Add(rfqH);
                         db.SaveChanges();
-                        rfqH.RfqNum = "V" + rfqH.RfqId.ToString().PadLeft(6,'0');
+                        //rfqH.RfqNum = "V" + rfqH.RfqId.ToString().PadLeft(6,'0');
                         foreach (var rfqM in rfqMs)
                         {
                             rfqM.RfqId = rfqH.RfqId;
@@ -199,29 +198,6 @@ namespace Convience.Service.SRM
             ViewSrmRfqH result = JsonConvert.DeserializeObject<ViewSrmRfqH>(temp);
             return result;
         }
-        public void UpdateStatus(int status, int RfqId) {
-            var rfq = _srmRfqHRepository.Get(r => r.RfqId == RfqId).First();
-            switch ((Status)status) {
-                case Status.啟動:
-                    if ((Status)rfq.Status != Status.初始)
-                    {
-                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
-                    }
-                    break;
-                case Status.作廢:
-                case Status.刪除:
-                    if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動) {
-                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
-                    }
-                    break;
-            }
-            rfq.Status = status;
-            using (SRMContext db = new SRMContext()) {
-                db.Update(rfq);
-                db.SaveChanges();
-            }
-        }
-
 
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH) {
             var rfq = _srmRfqHRepository.Get(r => r.RfqId == rfqH.RfqId).First();
@@ -247,6 +223,8 @@ namespace Convience.Service.SRM
                     break;
             }
             rfq.Status = status;
+            rfq.LastUpdateDate = rfqH.LastUpdateDate;
+            rfq.LastUpdateBy = rfqH.LastUpdateBy;
             using (SRMContext db = new SRMContext())
             {
                 db.Update(rfq);
@@ -270,10 +248,12 @@ namespace Convience.Service.SRM
                 };
             }
         }
-        public SrmRfqH GetRfq(SrmRfqH rfqH) {
+        public SrmRfqH GetRfq(QueryRfq query) {
             using (SRMContext db = new SRMContext()) {
-                return db.SrmRfqHs.AsQueryable().AndIfHaveValue(rfqH.RfqNum,r=>r.RfqNum== rfqH.RfqNum)
-                     .AndIfHaveValue(rfqH.Status, r => r.Status == rfqH.Status.Value).FirstOrDefault();
+                return db.SrmRfqHs.AsQueryable().AndIfHaveValue(query.rfqNum, r=>r.RfqNum== query.rfqNum)
+                     .AndIfHaveValue(query.status, r => r.Status == query.status)
+                     .AndIfHaveValue(query.statuses,r=> query.statuses.Contains(r.Status.Value))
+                     .FirstOrDefault();
             }
         }
     }

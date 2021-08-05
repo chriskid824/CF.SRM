@@ -31,8 +31,9 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmPriceService _srmPriceService;
         private readonly ISrmQotService _srmQotService;
         private readonly ISrmRfqMService _srmRfqMService;
+        private readonly ISrmRfqHService _srmRfqHService;
 
-        public SrmPriceController(ISrmPriceService srmPriceService, ISrmQotService srmQotService, ISrmRfqMService srmRfqMService)
+        public SrmPriceController(ISrmPriceService srmPriceService, ISrmQotService srmQotService, ISrmRfqHService srmRfqHService, ISrmRfqMService srmRfqMService)
         {
             _srmQotService = srmQotService;
             _srmPriceService = srmPriceService;
@@ -50,6 +51,34 @@ namespace Convience.ManagentApi.Controllers.SRM
             };
             detail.matnr = _srmRfqMService.GetRfqMData(m);
             return Ok(detail);
+        }
+        [HttpPost("Start")]
+        public IActionResult Start(JObject jobj) {
+            viewSrmInfoRecord[] infos = jobj["infos"].ToObject<viewSrmInfoRecord[]>();
+            string logonid = jobj["logonid"].ToString();
+            DateTime now = DateTime.Now;
+            foreach (viewSrmInfoRecord info in infos)
+            {
+                    info.Status = (int)Status.初始;
+                    info.CreateDate = now;
+                    info.CreateBy = logonid;
+                    info.LastUpdateDate = now;
+                    info.LastUpdateBy = logonid;
+            }
+            using (var transaction = new System.Transactions.TransactionScope())
+            {
+                try
+                {
+                    int? rfqId = _srmPriceService.Start(infos);
+                    if (rfqId.HasValue) { _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId.Value, LastUpdateDate = now, LastUpdateBy = logonid }); }
+                    transaction.Complete();
+                    return Ok();
+                }
+                catch (Exception ex) {
+                    transaction.Dispose();
+                    return BadRequest(ex.Message);
+                }
+            }
         }
     }
 }

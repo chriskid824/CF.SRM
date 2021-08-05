@@ -4,6 +4,7 @@ using Convience.Model.Models.SRM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace Convience.Service.SRM
     public interface ISrmPriceService
     {
         public ViewSrmPriceDetail GetDetail(SrmQotH[] query);
+        public int? Start(viewSrmInfoRecord[] infos);
     }
     public class SrmPriceService:ISrmPriceService
     {
@@ -115,12 +117,14 @@ namespace Convience.Service.SRM
             //     count = g.Sum(s => s.MCostPrice)
             // });
 
-            viewSrmQotInfoRecord[] infos = new viewSrmQotInfoRecord[vendorIds.Count()];
+            viewSrmInfoRecord[] infos = new viewSrmInfoRecord[query.Count()];
             for (int i = 0; i < infos.Length; i++)
             {
-                viewSrmQotInfoRecord info = new viewSrmQotInfoRecord();
-                info.VendorId = vendorIds[i];
+                viewSrmInfoRecord info = new viewSrmInfoRecord();
+                info.VendorId = query[i].VendorId;
                 info.VendorName = _context.SrmVendors.Where(r => r.VendorId == info.VendorId).Select(r => r.VendorName).FirstOrDefault();
+                info.QotId = query[i].QotId;
+                info.MatnrId = query[i].MatnrId;
                 info.Atotal = price.material.Where(r => r.VendorId == info.VendorId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
                 info.Btotal = price.process.Where(r => r.VendorId == info.VendorId).Select(r => r.SubTotal).Sum();
                 info.Ctotal = price.surface.Where(r => r.VendorId == info.VendorId).Select(r => r.SubTotal).Sum();
@@ -165,6 +169,42 @@ namespace Convience.Service.SRM
 
             //}
             return price;
+        }
+        public int? Start(viewSrmInfoRecord[] infos) {
+            DateTime now = DateTime.Now;
+            int? rfqId = null;
+            //string[] must = new string[] { "price", "unit", "ekgry", "leadTime", "standQty", "minQty", "taxcode", "effectiveDate", "expirationDate" };
+            Dictionary<string, string> must = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            must.Add("price", "總計金額");
+            must.Add("unit", "價格單位");
+            must.Add("ekgry", "採購群組");
+            must.Add("leadTime", "計畫交貨時間");
+            must.Add("standQty", "標準採購數量");
+            must.Add("minQty", "標準採購數量");
+            must.Add("taxcode", "稅碼");
+            must.Add("effectiveDate", "生效日期");
+            must.Add("expirationDate", "有效日期");
+            foreach (viewSrmInfoRecord info in infos) {
+                foreach (PropertyInfo prop in info.GetType().GetProperties())
+                {
+                    var temp = prop.GetValue(info);
+                    if (must.Keys.Contains(prop.Name,StringComparer.OrdinalIgnoreCase) && (temp == null || string.IsNullOrWhiteSpace(temp.ToString()))) {
+                        throw new Exception(must[prop.Name] + "未填");
+                    }
+                }
+
+
+                if (!_context.SrmInforecords.Any(r => r.QotId == info.QotId)) {
+                    _context.SrmInforecords.Add(info);
+                    var qot = _context.SrmQotHs.Where(r => r.QotId == info.QotId).FirstOrDefault();
+                    if (qot != null)
+                    {
+                        rfqId = qot.RfqId.Value;
+                    }
+                }
+            }
+            _context.SaveChanges();
+            return rfqId;
         }
     }
 }

@@ -28,7 +28,7 @@ export class PriceManageComponent implements OnInit {
     });
   }
   searchRFQ() {
-    this._srmRfqService.GetRfq({ rfqNum: this.form_searchRFQ.value["rfqNum"], Status:5 }).subscribe(result => {
+    this._srmRfqService.GetRfq({ rfqNum: this.form_searchRFQ.value["rfqNum"],statuses:[5,8,9] }).subscribe(result => {
 /*      console.log(result);*/
       if (result) {
         this._layout.navigateTo('price');

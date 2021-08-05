@@ -21,7 +21,7 @@ namespace Convience.Model.Models.SRM
         public viewSrmQotProcess[] process { get; set; }
         public viewSrmQotSurface[] surface { get; set; }
         public viewSrmQotOther[] other { get; set; }
-        public viewSrmQotInfoRecord[] infoRecord { get; set; }
+        public viewSrmInfoRecord[] infoRecord { get; set; }
     }
     public class viewSrmQotMaterial: SrmQotMaterial
     {
@@ -67,9 +67,9 @@ namespace Convience.Model.Models.SRM
         public int VendorId { get; set; }
         public string VendorName { get; set; }
     }
-    public class viewSrmQotInfoRecord : SrmInforecord {
-        public viewSrmQotInfoRecord() { }
-        public viewSrmQotInfoRecord(SrmInforecord parent)
+    public class viewSrmInfoRecord : SrmInforecord {
+        public viewSrmInfoRecord() { }
+        public viewSrmInfoRecord(SrmInforecord parent)
         {
             foreach (PropertyInfo prop in parent.GetType().GetProperties())
                 GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);

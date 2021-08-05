@@ -123,13 +123,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 try
                 {
                     _srmRfqHService.Save(h, matnrs, vendors);
-                    //int RfqId = (int)rfq["RfqId"];
-                    //string logonid = rfq["logonid"].ToString();
-                    //_srmRfqHService.UpdateStatus(1, RfqId);
-                    //var matnrs = JArray.FromObject(_srmRfqMService.GetDataByRfqId(RfqId));
-                    //var vendors = JArray.FromObject(_srmRfqVService.GetDataByRfqId(RfqId));
-
-                    _srmRfqHService.UpdateStatus((int)Status.啟動, h.RfqId);
+                    h.LastUpdateDate = DateTime.Now;
+                    _srmRfqHService.UpdateStatus((int)Status.啟動, h);
                     List<SrmQotH> qots = new List<SrmQotH>();
                     foreach (var matnr in matnrs)
                     {
@@ -170,6 +165,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 try
                 {
+                    rfqH.LastUpdateDate = DateTime.Now;
                     var rfq = _srmRfqHService.UpdateStatus(((int)Status.作廢), rfqH);
                     _srmQotHService.UpdateStatus((int)Status.作廢, rfqH);
                     MailMessage mail = new MailMessage();
@@ -226,6 +222,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             try
             {
+                rfqH.LastUpdateDate = DateTime.Now;
                 _srmRfqHService.UpdateStatus(((int)Status.刪除), rfqH);
                 return Ok();
             }catch (Exception ex)
@@ -244,8 +241,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             //return Ok(_srmRfqHService.GetSourcer(users));
         }
         [HttpPost("GetRfq")]
-        public IActionResult GetRfq(SrmRfqH rfqH) {
-            return Ok(_srmRfqHService.GetRfq(rfqH));
+        public IActionResult GetRfq(QueryRfq query) {
+            return Ok(_srmRfqHService.GetRfq(query));
         }
     }
 }

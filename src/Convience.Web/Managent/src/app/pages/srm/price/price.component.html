@@ -1,5 +1,8 @@
-
-<form nz-form  [formGroup]="matnrList">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<form nz-form [formGroup]="matnrList">
   <nz-form-item>
     <!--<nz-radio-group formControlName="selectedMatnr" [(ngModel)]="radioValue" (ngModelChange)="search()">
       <label nz-radio [nzValue]="o.value" *ngFor="let o of matnrs">{{ o.label }}</label>
@@ -128,9 +131,32 @@
                          class="ag-theme-alpine"
                          [defaultColDef]="defaultColDef"
                          [rowSelection]="rowSelection"
-                         [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+                         [suppressRowClickSelection]="true"
+                         [stopEditingWhenCellsLoseFocus]="true"
+                         [components]="components"></ag-grid-angular>
         <button nz-button nzType="primary" style="margin-left: 20px" (click)="start()">啟動簽核</button>
       </mat-tab>
     </mat-tab-group>
-    </nz-form-item>
+  </nz-form-item>
 </form>
+
+<!--<ag-grid-angular #agGrid
+                 style="width: 93%; height: 200px;border:solid"
+                 id="myGrid"
+                 [columnDefs]="columnDefs_inforecord"
+                 [suppressDragLeaveHidesColumns]="true"
+                 [suppressMakeColumnVisibleAfterUnGroup]="true"
+                 [rowData]="rowData_inforecord"
+                 (gridReady)="onGridReady_inforecord($event)"
+                 [enableCharts]="true"
+                 [enableRangeSelection]="true"
+                 [masterDetail]="true"
+                 [undoRedoCellEditing]="true"
+                 [undoRedoCellEditingLimit]="5"
+                 [detailRowAutoHeight]="true"
+                 class="ag-theme-alpine"
+                 [defaultColDef]="defaultColDef"
+                 [rowSelection]="rowSelection"
+                 [suppressRowClickSelection]="true"
+                 [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+<button nz-button nzType="primary" style="margin-left: 20px" (click)="start()">啟動簽核</button>-->

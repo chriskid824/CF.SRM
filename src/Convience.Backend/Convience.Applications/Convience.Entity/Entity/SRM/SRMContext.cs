@@ -177,7 +177,9 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.RfqNum)
                     .HasMaxLength(10)
+                    .IsUnicode(false)
                     .HasColumnName("RFQ_NUM")
+                    .HasComputedColumnSql("('RFQ'+right('0000000'+CONVERT([varchar],[RFQ_ID]),(7)))", false)
                     .HasComment("詢價單號");
 
                 entity.Property(e => e.Sourcer)
@@ -412,7 +414,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("QOT_NUM")
-                    .HasComputedColumnSql("('RFQ'+right('0000000'+CONVERT([varchar],[QOT_ID]),(7)))", false)
+                    .HasComputedColumnSql("('QOT'+right('0000000'+CONVERT([varchar],[QOT_ID]),(7)))", false)
                     .HasComment("報價單號");
 
                 entity.Property(e => e.RfqId)
@@ -719,7 +721,11 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("EXPIRATION_DATE");
 
-                entity.Property(e => e.InfoNum).HasColumnName("INFO_NUM");
+                entity.Property(e => e.InfoNum)
+                .HasMaxLength(10)
+                .HasColumnName("INFO_NUM")
+                .IsUnicode(false)
+                .HasComputedColumnSql("('INF'+right('0000000'+CONVERT([varchar],[INFO_ID]),(7)))", false);
 
                 entity.Property(e => e.LastUpdateBy)
                     .HasMaxLength(8)

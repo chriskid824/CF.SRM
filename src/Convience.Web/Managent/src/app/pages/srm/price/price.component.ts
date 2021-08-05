@@ -5,7 +5,9 @@ import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { SrmPriceService } from '../../../business/srm/srm-price.service';
 import { ActivatedRoute } from '@angular/router';
 import { Rfq } from '../model/rfq';
+import { StorageService } from '../../../services/storage.service';
 
+declare const $: any;
 @Component({
   selector: 'app-price',
   templateUrl: './price.component.html',
@@ -35,6 +37,7 @@ export class PriceComponent implements OnInit {
   columnDefs_inforecord;
   defaultColDef;
   rowSelection = "multiple";
+  components;
 
   rowData_matnr;
   rowData_material;
@@ -50,7 +53,8 @@ export class PriceComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute
     , private _formBuilder: FormBuilder
     , private _srmRfqService: SrmRfqService
-    , private _srmQotService: SrmPriceService) {
+    , private _srmPriceService: SrmPriceService
+    , private _storageService: StorageService  ) {
     //this.activatedRoute.queryParams.subscribe(params => {
     //  this.rfqId = params['id'];
     //  //this.rfqId = 12;
@@ -70,6 +74,170 @@ export class PriceComponent implements OnInit {
     };
   //gird
 
+
+   function getDatePicker() {
+      // function to act as a class
+      function Datepicker() { }
+
+      // gets called once before the renderer is used
+      Datepicker.prototype.init = function (params) {
+        // create the cell
+        this.eInput = document.createElement('input');
+        this.eInput.value = params.value;
+        this.eInput.classList.add('ag-input');
+        this.eInput.style.height = '100%';
+
+        // https://jqueryui.com/datepicker/
+        $(this.eInput).datepicker({
+          dateFormat: 'dd/mm/yy',
+        });
+      };
+
+      // gets called once when grid ready to insert the element
+      Datepicker.prototype.getGui = function () {
+        return this.eInput;
+      };
+
+      // focus and select can be done after the gui is attached
+      Datepicker.prototype.afterGuiAttached = function () {
+        this.eInput.focus();
+        this.eInput.select();
+      };
+
+      // returns the new value after editing
+      Datepicker.prototype.getValue = function () {
+        return false;
+        return this.eInput.value;
+      };
+
+      // any cleanup we need to be done here
+      Datepicker.prototype.destroy = function () {
+        // but this example is simple, no cleanup, we could
+        // even leave this method out as it's optional
+      };
+
+      // if true, then this editor will appear in a popup
+      Datepicker.prototype.isPopup = function () {
+        // and we could leave this method out also, false is the default
+        return false;
+      };
+
+      return Datepicker;
+   }
+
+
+
+    this.columnDefs_inforecord = [
+      {
+        headerName: "供應商",
+        field: "vendorName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "A",
+        field: "atotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "100px",
+      },
+      {
+        headerName: "B",
+        field: "btotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "100px",
+      },
+      {
+        headerName: "C",
+        field: "ctotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "100px",
+      },
+      {
+        headerName: "D",
+        field: "dtotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "100px",
+      },
+      {
+        headerName: "總計金額",
+        field: "price",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "價格單位",
+        field: "unit",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "採購群組",
+        field: "ekgry",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "計畫交貨時間",
+        field: "leadTime",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "標準採購數量",
+        field: "standQty",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "最小採購數量",
+        field: "minQty",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "稅碼",
+        field: "taxcode",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      },
+      {
+        headerName: "生效日期",
+        field: "effectiveDate",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+        cellEditor: getDatePicker(),
+      },
+      {
+        headerName: "有效日期",
+        field: "expirationDate",
+        width: "150px",
+        editable: this.canModify,
+        cellEditor: getDatePicker(),
+      }
+    ]
   }
 
   ngOnInit(): void {
@@ -90,6 +258,7 @@ export class PriceComponent implements OnInit {
       //this.radioValue = this.matnrs[0].value;
     });
   }
+
 
   initGrid() {
     this.columnDefs_matnr = [
@@ -341,119 +510,123 @@ export class PriceComponent implements OnInit {
         width: "240px",
       }
     ]
-    this.columnDefs_inforecord = [
-      {
-        headerName: "供應商",
-        field: "vendorName",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
-      },
-      {
-        headerName: "A",
-        field: "atotal",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "100px",
-      },
-      {
-        headerName: "B",
-        field: "btotal",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "100px",
-      },
-      {
-        headerName: "C",
-        field: "ctotal",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "100px",
-      },
-      {
-        headerName: "D",
-        field: "dtotal",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "100px",
-      },
-      {
-        headerName: "總計金額",
-        field: "price",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "價格單位",
-        field: "unit",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "採購群組",
-        field: "EKGRY",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "計畫交貨時間",
-        field: "leadTime",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "標準採購數量",
-        field: "standQty",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "最小採購數量",
-        field: "minQty",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "稅碼",
-        field: "taxcode",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "生效日期",
-        field: "effectiveDate",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "有效日期",
-        field: "expirationDate",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      }
-    ]
-  }
 
+    //this.columnDefs_inforecord = [
+    //  {
+    //    headerName: "供應商",
+    //    field: "vendorName",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    headerCheckboxSelection: true,
+    //    checkboxSelection: true,
+    //  },
+    //  {
+    //    headerName: "A",
+    //    field: "atotal",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "100px",
+    //  },
+    //  {
+    //    headerName: "B",
+    //    field: "btotal",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "100px",
+    //  },
+    //  {
+    //    headerName: "C",
+    //    field: "ctotal",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "100px",
+    //  },
+    //  {
+    //    headerName: "D",
+    //    field: "dtotal",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "100px",
+    //  },
+    //  {
+    //    headerName: "總計金額",
+    //    field: "price",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "價格單位",
+    //    field: "unit",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "採購群組",
+    //    field: "ekgry",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "計畫交貨時間",
+    //    field: "leadTime",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "標準採購數量",
+    //    field: "standQty",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "最小採購數量",
+    //    field: "minQty",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "稅碼",
+    //    field: "taxcode",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //  },
+    //  {
+    //    headerName: "生效日期",
+    //    field: "effectiveDate",
+    //    enableRowGroup: true,
+    //    cellClass: "show-cell",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //    cellEditor: getDatePicker(),
+    //  },
+    //  {
+    //    headerName: "有效日期",
+    //    field: "expirationDate",
+    //    width: "150px",
+    //    editable: this.canModify,
+    //    cellEditor: this.getDatePicker(),
+    //  }
+    //]
+
+    //this.components = {
+    //  datePicker: getDatePicker()
+    //}
+  }
   search() {
     this.radioValue = this.matnrList.get('selectedMatnr').value;
     this.rowData_material = [];
@@ -467,7 +640,7 @@ export class PriceComponent implements OnInit {
       rfqId: this.rfqId,
       matnrId: this.radioValue
     };
-    this._srmQotService.GetQotDetail(query).subscribe(result => {
+    this._srmPriceService.GetQotDetail(query).subscribe(result => {
       this.rowData_matnr = [result["matnr"]];
       this.rowData_material = result["material"];
       this.rowData_process = result["process"];
@@ -483,7 +656,15 @@ export class PriceComponent implements OnInit {
     this.gridApi_inforecord.sizeColumnsToFit();
   }
   start() {
-    let selectedRows = this.gridApi_inforecord.getSelectedRows();
+    var selectedRows = this.gridApi_inforecord.getSelectedRows();
+    if (selectedRows.length == 0) { return;}
+    var obj = {
+      infos: selectedRows,
+      logonid: this._storageService.userName
+    };
+    this._srmPriceService.Start(obj).subscribe(result => {
+      console.log("s");
+    });
     console.log(selectedRows);
   }
 }

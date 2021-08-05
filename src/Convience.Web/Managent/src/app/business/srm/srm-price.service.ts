@@ -12,4 +12,7 @@ export class SrmPriceService {
   GetQotDetail(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetQotDetail`, query);
   }
+  Start(obj) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/Start`, obj);
+  }
 }
