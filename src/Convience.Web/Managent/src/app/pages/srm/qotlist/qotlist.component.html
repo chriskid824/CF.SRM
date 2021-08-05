@@ -1,10 +1,12 @@
+<br>
 <p style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:left;">待辦清單</p>
 <ag-grid-angular style="width: 1600px; height: 200px;"
                  class="ag-theme-balham"
                  [rowData]="rowData"
                  [columnDefs]="columnDefs"
-             
+                 (ng-click)="onRowClicked($event)"
                  [rowMultiSelectWithClick]=true
+                 [masterDetail]="true"
                 >
 </ag-grid-angular>
 <!--<mat-tab-group style="font-family:微軟正黑體;">

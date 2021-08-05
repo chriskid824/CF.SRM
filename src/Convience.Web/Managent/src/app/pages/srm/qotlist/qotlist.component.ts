@@ -16,6 +16,7 @@ export class QotlistComponent implements OnInit {
   //rowData: [];
   //columnApi;
   //gridApi;
+  
   detailCellRendererParams;
   detailCellRendererParams2;
   defaultColDef;
@@ -32,26 +33,60 @@ export class QotlistComponent implements OnInit {
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
-  
+
+ 
   columnDefs = [
     { field: '序號', resizable: true},
-    { field: '報價單號', resizable: true},
-    { field: '料號', resizable: true},
     { field: '詢價單號', resizable: true},
+    { field: '狀態', resizable: true},
     { field: '建立日期', resizable: true },
     { field: '建立人員', resizable: true},
     { field: '最後異動日期', resizable: true},
     { field: '最後異動人員', resizable: true },
-    { field: '狀態', resizable: true}
+    
   ];
+ 
+  gridOptions = {
+    columnDefs:this.columnDefs,
+    masterDetail: true,
+    rowSelection: 'multiple',
+    suppressRowClickSelection: true,
+    enableRangeSelection: true,
+    pagination: true,
+    paginationAutoPageSize: true,
+    detailCellRendererParams: {
+      detailGridOptions: {
+        columnDefs: [
+          { field: '報價單號' },
+          { field: '報價單號' },
+          { field: '狀態', minWidth: 150 },
+          { field: '料號' },
+          { field: '建立日期', minWidth: 150 },
+          { field: '建立人員', minWidth: 150 },
+          { field: '最後異動日期', minWidth: 150 },
+          { field: '最後異動人員', minWidth: 150 },
+        ],
+        defaultColDef: {
+          flex: 1,
+        },
+      },
+      getDetailRowData: function (params) {
+        params.successCallback(params.data.callRecords);
+      },
+    },
+  }
 
   rowData = [
-    { 序號: '1', 報價單號: 'QOT0000001', 料號: 'ZMMXX', 詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'A', 最後異動日期: '2021/07/14', 最後異動人員: 'A', 狀態: 'New'},
-    { 序號: '2',報價單號: 'QOT0000002', 料號: 'ZMMX1', 詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'B', 最後異動日期: '2021/07/14', 最後異動人員: 'B', 狀態: 'New' },
-    { 序號: '3',報價單號: 'QOT0000003', 料號: 'ZMMX2', 詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'C', 最後異動日期: '2021/07/14', 最後異動人員: 'C', 狀態: 'New' },
-    { 序號: '4',報價單號: 'QOT0000004', 料號: 'ZMMX3', 詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'D', 最後異動日期: '2021/07/14', 最後異動人員: 'D', 狀態: 'New' },
+    { 序號: '1',  詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'A', 最後異動日期: '2021/07/14', 最後異動人員: 'A', 狀態: '啟動'},
+    { 序號: '2',  詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'B', 最後異動日期: '2021/07/14', 最後異動人員: 'B', 狀態: '啟動' },
+    { 序號: '3',  詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'C', 最後異動日期: '2021/07/14', 最後異動人員: 'C', 狀態: '啟動' },
+    { 序號: '4',  詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'D', 最後異動日期: '2021/07/14', 最後異動人員: 'D', 狀態: '啟動' },
   ];
+  /* */
+  /* */
+  
   private selectedRows = [];
+  
   //onRowClicked() {
   //  alert(1);
   //}
@@ -63,6 +98,38 @@ export class QotlistComponent implements OnInit {
     //var itxst = JSON.stringify(event.data);
     //alert(itxst);
   }
+  onGridReady(params) {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
+    this.gridApi.sizeColumnsToFit();
+  }
+  gridOptions1 = {
+    // enable Master / Detail
+    masterDetail: true,
 
+    // the first Column is configured to use agGroupCellRenderer
+    columnDefs: [
+        { field: 'name', cellRenderer: 'agGroupCellRenderer' },
+        { field: 'account' }
+    ],
+
+    // provide Detail Cell Renderer Params
+    detailCellRendererParams: {
+        // provide the Grid Options to use on the Detail Grid
+        detailGridOptions: {
+            columnDefs: [
+                { field: 'callId' },
+                { field: 'direction' },
+                { field: 'number'}
+            ]
+        },
+        // get the rows for each Detail Grid
+        getDetailRowData: params => {
+            params.successCallback(params.data.callRecords);
+        }
+    },
+
+    // other grid options ...
+}
 
 }

@@ -1,25 +1,30 @@
 <body>
   <div class="shape-ex3">
-    <div id="_header" class="parent" style=" width: 1000px; background-color: #45a1ec; border-radius: 5px;">
-      <h1 id="heading001" style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:center;">報價作業<span style="font-size:12px;right:0px;float:right;">單號:ITD210713005</span><span style="float:left;font-size:12px;text-align: left;">申請日期:2021/07/13 11:13:38<br>填單者:陳嘉融</span></h1>
+    <div id="_header" class="parent" style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
+      <h1 id="heading001" style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:center;">報價作業<span style="font-size:12px;right:0px;float:right;">單號:QOT00000012<br>狀態:初始</span><span style="float:left;font-size:12px;text-align: left;">申請日期:2021/07/13 11:13:38<br>填單者:陳嘉融</span></h1>
     </div>
+    <br>
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style=" font-family: 微軟正黑體;">
           <tr>
-            <td class="content1" id="currency" style="width:330px">幣別:</td>
-            <td class="content1" id="leadtime">交貨時間：</td>
-            <td class="content1" id="min_qty">最小採購數量：</td>
+            <td class="content2" id="rfqno" >詢價單號:</td>
+            <td class="content2" id="currency" >幣別:</td>
+            <td class="content2" id="leadtime">交貨時間：</td>
+            <td class="content2" id="min_qty">最小採購數量：</td>
           </tr>
           <tr id="rowtype2">
-            <td class="content1">
-              <input class="content1" type="text" id="txtcfno" name="txtcfno" disabled value="台幣">
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">RFQ00000001</label>
             </td>
-            <td class="content1">
-              <input class="content1" type="text" id="txtversion" name="txtversion" disabled value="2021/07/05">
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">台幣</label>
             </td>
-            <td class="content1">
-              <input class="content1" type="text" id="txtspecification" name="txtspecification" disabled value="">
+            <td class="content2">
+              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2021/07/05</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled value=""></label>
             </td>
           </tr>
         </table>
@@ -35,16 +40,16 @@
           </tr>
           <tr id="rowtype2">
             <td class="content2">
-              <input class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="ZAT00">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">ZAT00</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtversion" name="txtversion" disabled value="2">
+              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtspecification" name="txtspecification" disabled value="3x5x6">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled value="">3x5x6</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtdensity" name="txtdensity" disabled value="1.2">
+              <label class="content2" type="text" id="txtdensity" name="txtdensity" disabled value="">1.2</label>
             </td>
           </tr>
           <tr id="rowtype3">
@@ -55,16 +60,16 @@
           </tr>
           <tr id="rowtype4">
             <td class="content2">
-              <input class="content2" type="text" id="txtmateriallength" name="txtmateriallength" disabled value="3">
+              <label class="content2" type="text" id="txtmateriallength" name="txtmateriallength" disabled value="">3</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtmaterialwidth" name="txtmaterialwidth" disabled value="2">
+              <label class="content2" type="text" id="txtmaterialwidth" name="txtmaterialwidth" disabled value="">2</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtmaterialheight" name="txtmaterialheight" disabled value="4">
+              <label class="content2" type="text" id="txtmaterialheight" name="txtmaterialheight" disabled value="">4</label>
             </td>
             <td class="content2">
-              <input class="content2" type="text" id="txtmaterialweight" name="txtmaterialweight" disabled value="5">
+              <label class="content2" type="text" id="txtmaterialweight" name="txtmaterialweight" disabled value="">5</label>
             </td>
           </tr>
           <tr id="rowtype5">
@@ -73,12 +78,12 @@
           <tr id="rowtype6">
             <td colspan="4">
               <!--<input type="text" id="txtnote" name="txtnote" disabled value="aa" style="width: 100%; height: 50px; border-radius: 5px;">-->
-              <textarea style=" font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>備註</textarea>
+              <label style="height:50px; font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>備註</label>
             </td>
 
           </tr>
         </table>
-        <p class="line2"><span></span> </p>
+        <!--<p class="line2"><span></span> </p>-->
         <mat-tab-group style="font-family:微軟正黑體;">
 
           
@@ -88,7 +93,7 @@
                 <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMaterial()">刪除材料</button>
       
               <ag-grid-angular #agGrid
-                               style="width: 59%; height: 200px;border:solid"
+                               style="width: 1000px; height: 200px;border:solid"
                                id="myGrid"
                                [columnDefs]="columnDefs"
                                [suppressDragLeaveHidesColumns]="true"
@@ -113,7 +118,7 @@
               <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteProcess()">刪除加工</button>
     
             <ag-grid-angular #agGrid
-                             style="width: 59%; height: 200px;border:solid"
+                             style="width: 1000px; height: 200px;border:solid"
                              id="myGrid"
                              [columnDefs]="columnDefs_PROCESS"
                              [suppressDragLeaveHidesColumns]="true"
@@ -138,7 +143,7 @@
             <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteSurface()">刪除表面處理</button>
   
           <ag-grid-angular #agGrid
-                           style="width: 59%; height: 200px;border:solid"
+                           style="width:1000px; height: 200px;border:solid"
                            id="myGrid"
                            [columnDefs]="columnDefs_SURFACE"
                            [suppressDragLeaveHidesColumns]="true"
@@ -163,7 +168,7 @@
           <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteOther()">刪除其他費用</button>
 
         <ag-grid-angular #agGrid
-                         style="width: 59%; height: 200px;border:solid"
+                         style="width: 1000px; height: 200px;border:solid"
                          id="myGrid"
                          [columnDefs]="columnDefs_OTHER"
                          [suppressDragLeaveHidesColumns]="true"
@@ -183,7 +188,8 @@
       </mat-tab>
         </mat-tab-group>
       </div>
-      <table align="center"><tr><td><button>送出</button> <button>返回</button></td></tr></table>
+      <button id="btnRejectQot">拒絕報價</button><button id =" btnSendQot" style="margin-left:400px;">送出</button> <button id="btnBackQot" >返回</button><button id="btnSendAllQot" style="margin-left:380px;">全部送出</button>
+      <table><tr><td rowspan="8"></td><td></td> <td></td><td></td><td></td><td></td></tr></table>
     </div>
   </div>
 </body>

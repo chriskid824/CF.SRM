@@ -428,13 +428,14 @@ export class QotComponent implements OnInit {
     console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
+
   deleteSurface() {
     let selectedNodes = this.gridApi_Surface.getSelectedNodes();
     let selectedData = selectedNodes.map(node => node.data);
     let selectedRows = this.gridApi_Surface.getSelectedRows();
     let temp = this.rowData_Surface;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
-      for (var j = 0; j < this.rowData_Process.length; j++) {
+      for (var j = 0; j < this.rowData_Surface.length; j++) {
         if (this.rowData_Surface[j].vendor == selectedRows[i].vendor) {
           temp.splice(j, 1);
           break;
@@ -594,7 +595,7 @@ export class QotComponent implements OnInit {
       this.editForm_Other.controls[i].markAsDirty();
       this.editForm_Other.controls[i].updateValueAndValidity();
     }
-    alert(this.editForm_Other.valid)
+    //alert(this.editForm_Other.valid)
     if (this.editForm_Other.valid) {
       this.editedOther.item = this.editForm_Other.value['other_item'];
       this.editedOther.price = this.editForm_Other.value['other_price'];
@@ -602,7 +603,7 @@ export class QotComponent implements OnInit {
       this.editedOther.description = this.editForm_Other.value['other_desc'];
      
       console.info(this.editForm_Other.value);
-      alert('name = '+this.editedOther.item)
+      //alert('name = '+this.editedOther.item)
       /*寫入grid */
       
       this.rowData_Other.push({
@@ -622,7 +623,7 @@ export class QotComponent implements OnInit {
       this.editForm_Surface.controls[i].markAsDirty();
       this.editForm_Surface.controls[i].updateValueAndValidity();
     }
-    alert(this.editForm_Surface.valid)
+    //alert(this.editForm_Surface.valid)
     if (this.editForm_Surface.valid) {
       this.editedSurface.process = this.editForm_Surface.value['surface_name'];
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
@@ -631,7 +632,7 @@ export class QotComponent implements OnInit {
      
      
       console.info(this.editForm_Surface.value);
-      alert('name = '+this.editedSurface.process)
+      //alert('name = '+this.editedSurface.process)
       /*寫入grid */
       
       this.rowData_Surface.push({
@@ -713,7 +714,7 @@ export class QotComponent implements OnInit {
     //alert(this.editForm.valid)
     if (this.editForm_Material.valid) {
       this.editedMatetial.name = this.editForm_Material.value['material_name'];
-      alert('aa = '+this.editedMatetial.name)
+      //alert('aa = '+this.editedMatetial.name)
       this.editedMatetial.price = this.editForm_Material.value['material_price'];
       this.editedMatetial.cost = this.editForm_Material.value['material_cost'];
       this.editedMatetial.length = this.editForm_Material.value['material_length'];
@@ -725,7 +726,7 @@ export class QotComponent implements OnInit {
       this.editedMatetial.note = this.editForm_Material.value['material_note'];
     }
     console.log("saveqotmatnr");
-    alert("saveqotmatnr");
+    //alert("saveqotmatnr");
     var qot = {
       material: null,process :null,surface:null,other:null
     }
@@ -741,11 +742,11 @@ export class QotComponent implements OnInit {
       Weight: this.editForm_Material.value['material_weight'],
       Note: this.editForm_Material.value['material_note'],
     };
-    alert(qot.material.MMaterial);
+    //alert(qot.material.MMaterial);
     console.log(this.MTApi);
     this.MTApi.forEachNode(node => console.log(node));
     this.MTApi.forEachNode(node => qot.material.push(node.data));
-    alert('aaaa=' + qot.material)
+    //alert('aaaa=' + qot.material)
     //console.log('aaaa='+ qot.material)
     
     this._srmQotService.SaveQotMatnr(qot).subscribe(result => {
