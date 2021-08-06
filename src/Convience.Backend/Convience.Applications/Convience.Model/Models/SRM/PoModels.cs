@@ -12,10 +12,21 @@ namespace Convience.Model.Models.SRM
         public string poNum { get; set; }
         public int status { get; set; }
         public string buyer { get; set; }
+        public DateTime? replyDeliveryDate_s { get; set; }
+        public DateTime? replyDeliveryDate_e { get; set; }
     }
     public class ViewSrmPoL : SrmPoL
     {
 
         public string PoNum { get; set; }
+        public int? Status { get; set; }
+        public int? VendorId { get; set; }
+        public string VendorName { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public string Buyer { get; set; }
+        public string Matnr { get; set; }
+        public float? RemainQty { get; set; }
+        private float? _changeQty;
+        public float? ChangeQty { get { return _changeQty.HasValue ? _changeQty.Value : RemainQty; } set { _changeQty = value; } }
     }
 }

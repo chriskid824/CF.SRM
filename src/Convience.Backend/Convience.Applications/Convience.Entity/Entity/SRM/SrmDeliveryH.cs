@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using Convience.EntityFrameWork.Infrastructure;
+#nullable disable
+
+namespace Convience.Entity.Entity.SRM
+{
+    [Entity(DbContextType = typeof(SRMContext))]
+    public partial class SrmDeliveryH
+    {
+        public SrmDeliveryH()
+        {
+            SrmDeliveryLs = new HashSet<SrmDeliveryL>();
+        }
+
+        public int DeliveryId { get; set; }
+        public string DeliveryNum { get; set; }
+        public int? Status { get; set; }
+        public DateTime CreateDate { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime LastUpdateDate { get; set; }
+        public string LastUpdateBy { get; set; }
+
+        public virtual ICollection<SrmDeliveryL> SrmDeliveryLs { get; set; }
+    }
+}
