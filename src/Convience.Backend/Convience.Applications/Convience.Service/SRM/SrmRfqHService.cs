@@ -169,7 +169,7 @@ namespace Convience.Service.SRM
                 c_Date = _srmRfqHRepository.CreateDate.Value.ToString("yyyy-MM-dd"),
                 viewstatus = ((Status)_srmRfqHRepository.Status).ToString(),
                 costNo = _userRepository.CostNo
-            }).Where(r=>r.costNo.Substring(0,2) == q.costNo.Substring(0,2)).Join(_userRepository.Get().ToList(), a => a.sourcer, b => b.UserName, (a, b) => new
+            }).Where(r=>r.costNo.Substring(0,2) == q.costNo.Substring(0,2)).DefaultIfEmpty().Join(_userRepository.Get().ToList(), a => a?.sourcer??"", b => b.UserName, (a, b) => new
             {
                 id = a.id,
                 status = a.status,
