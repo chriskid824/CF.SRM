@@ -87,6 +87,15 @@ export class PoDetailComponent implements OnInit {
         field: 'Qty',
       },
       {
+        headerName:'未交貨數量',
+        field: 'RemainQty',
+      },
+      {
+        headerName:'此次交貨數量',
+        field: 'DeliveryQty',
+        editable:true
+      },
+      {
         headerName:'單價',
         field: 'Price',
       },
@@ -209,7 +218,10 @@ export class PoDetailComponent implements OnInit {
     }
     let selectedData = selectedNodes.map(node => node.data);
     console.info(selectedData);
-    return selectedData;
+    this._srmPoService.AddDelivery(selectedData)
+    .subscribe((result) => {
+      if(result==null) alert('出貨單生成成功');
+    });
   }
 }
 var checkboxSelection = function (params) {

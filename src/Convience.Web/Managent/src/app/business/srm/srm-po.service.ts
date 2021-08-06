@@ -25,6 +25,9 @@ export class SrmPoService {
   UpdateStatus(id) {
     return this.httpClient.get(`${this.uriConstant.SrmPo}/UpdateStatus?id=${id}`);
   }
+  AddDelivery(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/AddDelivery`,po);
+  }
   StartUp(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/StartUp`, po);
   }

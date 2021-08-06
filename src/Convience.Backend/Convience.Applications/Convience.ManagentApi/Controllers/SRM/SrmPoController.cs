@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Convience.ManagentApi.Controllers.SRM
@@ -85,6 +86,12 @@ namespace Convience.ManagentApi.Controllers.SRM
                 _srmPoService.UpdateStatus(data.PoId, 12);
             }
             return Ok();
+        }
+        [HttpPost("AddDelivery")]
+        public IActionResult AddDelivery(List<ViewSrmPoL> pols)
+        {
+            if(_srmPoService.AddDelivery(pols)) return Ok();
+            return BadRequest("出貨單生成失敗");
         }
         [HttpGet("UpdateStatus")]
         public IActionResult UpdateStatus(int id)

@@ -31,6 +31,7 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateStatus(int id, int status);
+        public bool AddDelivery(List<ViewSrmPoL> data);
         public bool CheckAllReply(int id);
     }
     public class SrmPoService : ISrmPoService
@@ -43,7 +44,7 @@ namespace Convience.Service.SRM
 
         public SrmPoService(
             //IMapper mapper,
-            IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper)            
+            IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper)
         {
             _mapper = mapper;
             _srmPohRepository = srmPohRepository;
@@ -59,14 +60,14 @@ namespace Convience.Service.SRM
             //{
             //    item.SrmPoLs = (ICollection<SrmPoL>)_srmPolRepository.Get(r => r.PoId == item.PoId);
             //}
-            return _context.SrmPoHs.Include(m=>m.SrmPoLs).ToList();
+            return _context.SrmPoHs.Include(m => m.SrmPoLs).ToList();
         }
         public IEnumerable<SrmPoH> GetAll(QueryPoList query)
         {
             var result = _context.SrmPoHs
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) >-1)
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) >-1)
-                .AndIfCondition(query.status != 0, p=>p.Status == query.status);
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                .AndIfCondition(query.status != 0, p => p.Status == query.status);
             return result.Include(m => m.SrmPoLs).ToList();
         }
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query)
@@ -89,28 +90,28 @@ namespace Convience.Service.SRM
                     DeliveryPlace = l.DeliveryPlace,
                     CriticalPart = l.CriticalPart,
                     InspectionTime = l.InspectionTime,
-                    Status=h.Status,
-                    VendorId=h.VendorId,
-                    TotalAmount=h.TotalAmount,
-                    Buyer=h.Buyer,
-
+                    Status = h.Status,
+                    VendorId = h.VendorId,
+                    TotalAmount = h.TotalAmount,
+                    Buyer = h.Buyer,                    
                 }
                 )
                 //.AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
-                .AndIfHaveValue(query.replyDeliveryDate_s,p=>p.DeliveryDate>=query.replyDeliveryDate_s.Value.Date)
+                .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                 .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
-                .AndIfCondition(query.status!=0,p=>p.Status==query.status).ToList();
+                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
             result.ForEach(p =>
             {
                 p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).Matnr;
                 p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
+                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q=>q.PoId==p.PoId &&q.PoLId==p.PoLId).Sum(q => q.DeliveryQty);
             });
 
 
-                //.AndIfCondition(query.status != 0, p => p.Status == query.status);
-            return result.ToList();
+            //.AndIfCondition(query.status != 0, p => p.Status == query.status);
+            return result.Where(p=>p.RemainQty>0).ToList();
         }
         public IEnumerable<SrmPoH> GetMatnrById(int id)
         {
@@ -126,7 +127,7 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return true;
         }
-        public bool UpdateStatus(int id,int status)
+        public bool UpdateStatus(int id, int status)
         {
             SrmPoH data = _context.SrmPoHs.Find(id);
             data.Status = status;
@@ -135,6 +136,24 @@ namespace Convience.Service.SRM
                 data.ReplyDate = DateTime.Now;
             }
             _context.SrmPoHs.Update(data);
+            _context.SaveChanges();
+            return true;
+        }
+        public bool AddDelivery(List<ViewSrmPoL> data){
+            var neworder = _context.SrmDeliveryHs
+    .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
+            if(neworder==null) return false;
+            data.ForEach(p =>
+            {
+                SrmDeliveryL l = new SrmDeliveryL() {
+                    DeliveryId = neworder.DeliveryId,
+                    PoId=p.PoId,
+                    PoLId=p.PoLId,
+                    DeliveryQty=p.DeliveryQty,
+                    QmQty=0
+                };
+                _context.SrmDeliveryLs.Add(l);
+            });
             _context.SaveChanges();
             return true;
         }

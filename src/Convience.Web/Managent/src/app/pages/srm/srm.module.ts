@@ -45,7 +45,7 @@ import { QotlistComponent } from './qotlist/qotlist.component';
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "po", component: PoComponent },
-      { path: "podetail", component: PoDetailComponent },
+      { path: "deliveryh", component: PoDetailComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },

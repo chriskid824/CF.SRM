@@ -26,7 +26,7 @@ namespace Convience.Model.Models.SRM
         public string Buyer { get; set; }
         public string Matnr { get; set; }
         public float? RemainQty { get; set; }
-        private float? _changeQty;
-        public float? ChangeQty { get { return _changeQty.HasValue ? _changeQty.Value : RemainQty; } set { _changeQty = value; } }
+        private float? _deliveryQty;
+        public float? DeliveryQty { get { return _deliveryQty.HasValue ? _deliveryQty.Value : RemainQty; } set { _deliveryQty = value; } }
     }
 }
