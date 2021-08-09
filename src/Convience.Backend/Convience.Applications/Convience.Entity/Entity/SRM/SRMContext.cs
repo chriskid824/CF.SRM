@@ -24,7 +24,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmVendor> SrmVendors { get; set; }
         public virtual DbSet<SrmPoH> SrmPoHs { get; set; }
         public virtual DbSet<SrmPoL> SrmPoLs { get; set; }
-		public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
+        public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
         public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<SrmQotMaterial> SrmQotMaterial { get; set; }
@@ -479,6 +479,67 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.UserName).HasMaxLength(256);
             });
 
+            modelBuilder.Entity<SrmDeliveryH>(entity =>
+            {
+                entity.HasKey(e => e.DeliveryId)
+                    .HasName("PK__SRM_DELI__7D75E88BA780B676");
+
+                entity.ToTable("SRM_DELIVERY_H");
+
+                entity.Property(e => e.DeliveryId).HasColumnName("DELIVERY_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DeliveryNum)
+                    .HasMaxLength(20)
+                    .HasColumnName("DELIVERY_NUM");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasDefaultValueSql("((14))");
+            });
+
+            modelBuilder.Entity<SrmDeliveryL>(entity =>
+            {
+                entity.HasKey(e => e.DeliveryLId)
+                    .HasName("PK__SRM_DELI__0CF2FB9204EA3A51");
+
+                entity.ToTable("SRM_DELIVERY_L");
+
+                entity.Property(e => e.DeliveryLId).HasColumnName("DELIVERY_L_ID");
+
+                entity.Property(e => e.DeliveryId).HasColumnName("DELIVERY_ID");
+
+                entity.Property(e => e.DeliveryQty).HasColumnName("DELIVERY_QTY");
+
+                entity.Property(e => e.PoId).HasColumnName("PO_ID");
+
+                entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
+
+                entity.Property(e => e.QmQty).HasColumnName("QM_QTY");
+
+                entity.HasOne(d => d.Delivery)
+                    .WithMany(p => p.SrmDeliveryLs)
+                    .HasForeignKey(d => d.DeliveryId)
+                    .HasConstraintName("FK__SRM_DELIV__DELIV__2DE6D218");
+            });
+
             modelBuilder.Entity<SrmPoH>(entity =>
             {
                 entity.HasKey(e => e.PoId)
@@ -523,7 +584,9 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("REPLY_DATE");
 
-                entity.Property(e => e.Status).HasColumnName("STATUS");
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasDefaultValueSql("((21))");
 
                 entity.Property(e => e.TotalAmount)
                     .HasColumnType("money")
@@ -570,6 +633,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.ReplyDeliveryDate)
                     .HasColumnType("datetime")
                     .HasColumnName("REPLY_DELIVERY_DATE");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasDefaultValueSql("((21))");
 
                 entity.HasOne(d => d.Po)
                     .WithMany(p => p.SrmPoLs)
@@ -760,64 +827,6 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Unit).HasColumnName("UNIT");
 
                 entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
-            });
-            modelBuilder.Entity<SrmDeliveryH>(entity =>
-            {
-                entity.HasKey(e => e.DeliveryId)
-                    .HasName("PK__SRM_DELI__7D75E88BA780B676");
-
-                entity.ToTable("SRM_DELIVERY_H");
-
-                entity.Property(e => e.DeliveryId).HasColumnName("DELIVERY_ID");
-
-                entity.Property(e => e.CreateBy)
-                    .HasMaxLength(8)
-                    .HasColumnName("CREATE_BY");
-
-                entity.Property(e => e.CreateDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CREATE_DATE")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.DeliveryNum)
-                    .HasMaxLength(20)
-                    .HasColumnName("DELIVERY_NUM");
-
-                entity.Property(e => e.LastUpdateBy)
-                    .HasMaxLength(8)
-                    .HasColumnName("LAST_UPDATE_BY");
-
-                entity.Property(e => e.LastUpdateDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("LAST_UPDATE_DATE")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Status).HasColumnName("STATUS");
-            });
-
-            modelBuilder.Entity<SrmDeliveryL>(entity =>
-            {
-                entity.HasKey(e => e.DeliveryLId)
-                    .HasName("PK__SRM_DELI__0CF2FB9204EA3A51");
-
-                entity.ToTable("SRM_DELIVERY_L");
-
-                entity.Property(e => e.DeliveryLId).HasColumnName("DELIVERY_L_ID");
-
-                entity.Property(e => e.DeliveryId).HasColumnName("DELIVERY_ID");
-
-                entity.Property(e => e.DeliveryQty).HasColumnName("DELIVERY_QTY");
-
-                entity.Property(e => e.PoId).HasColumnName("PO_ID");
-
-                entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
-
-                entity.Property(e => e.QmQty).HasColumnName("QM_QTY");
-
-                entity.HasOne(d => d.Delivery)
-                    .WithMany(p => p.SrmDeliveryLs)
-                    .HasForeignKey(d => d.DeliveryId)
-                    .HasConstraintName("FK__SRM_DELIV__DELIV__2DE6D218");
             });
 
             OnModelCreatingPartial(modelBuilder);
