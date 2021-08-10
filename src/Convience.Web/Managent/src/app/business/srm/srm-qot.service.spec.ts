@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { SrmQotService } from './srm-qot.service';
 
 describe('SrmQotService', () => {

@@ -12,4 +12,7 @@ export class SrmQotService {
    SaveQotMatnr(qot) {
      return this.httpClient.post(`${this.uriConstant.SrmQot}/Save`, qot);
   }
+  GetQotList(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
+  }
 }

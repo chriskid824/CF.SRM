@@ -1,7 +1,44 @@
 <br>
+<nz-card [nzSize]="'small'" id="find">
+  <form nz-form [nzLayout]="'inline'" [formGroup]="form_searchQot" (ngSubmit)="searchQOT()">
+    <nz-form-item>
+      <nz-form-label [nzFor]="'rfqno'">詢價單號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="詢價單號" [formControlName]="'rfqno'" [attr.id]="'rfqno'"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzFor]="'qotmatnr'">料號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="料號" [formControlName]="'qotmatnr'" [attr.id]="'qotmatnr'"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzFor]="'qotstatus'">報價狀態</nz-form-label>
+      <nz-form-control>
+        <nz-select [formControlName]="'qotstatus'"  style="width: 100px;">
+          <nz-option nzValue="0" nzLabel="全部"></nz-option>
+          <nz-option nzValue="10" nzLabel="初始"></nz-option>
+          <nz-option nzValue="20" nzLabel="已回覆"></nz-option>         
+          <nz-option nzValue="30" nzLabel="確認"></nz-option><!--確認表示該詢價單所有報價單皆回覆-->
+          <nz-option nzValue="40" nzLabel="拒絕"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary">查詢</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+
+
+
 <nz-card>
-
-
 <p style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:left;">待辦清單</p>
 <ag-grid-angular style="width: 1600px; height: 650px;"
                  class="ag-theme-alpine"

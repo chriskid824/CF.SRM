@@ -12,6 +12,10 @@ import { SrmQotService } from '../../../business/srm/srm-qot.service';
 import { Process } from '../model/Process';
 import { Surface } from '../model/Surface';
 import { Other } from '../model/Other';
+interface Food {
+  value: string;
+  viewValue: string;
+}
 
 
 @Component({
@@ -20,6 +24,11 @@ import { Other } from '../model/Other';
   styleUrls: ['./qot.component.less']
 })
 export class QotComponent implements OnInit {
+  foods: Food[] = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'}
+  ];
   editForm_Material: FormGroup = new FormGroup({});
   editForm_Process: FormGroup = new FormGroup({});
   editForm_Surface: FormGroup = new FormGroup({});
