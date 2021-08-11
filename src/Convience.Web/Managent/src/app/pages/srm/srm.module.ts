@@ -72,7 +72,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzSelectModule,
     MatFormFieldModule,
     MatSelectModule,
-    NzIconModule
+    NzIconModule,
   ]
 })
 export class SrmModule { }
