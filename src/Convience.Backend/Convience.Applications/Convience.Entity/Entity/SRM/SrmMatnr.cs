@@ -13,7 +13,7 @@ namespace Convience.Entity.Entity.SRM
     {
         public int MatnrId { get; set; }
         public string SrmMatnr1 { get; set; }
-        public string Matnr { get; set; }
+        public string SapMatnr { get; set; }
         public string MatnrGroup { get; set; }
         public string Description { get; set; }
         public string Version { get; set; }
@@ -23,6 +23,7 @@ namespace Convience.Entity.Entity.SRM
         public double? Height { get; set; }
         public string Density { get; set; }
         public double? Weight { get; set; }
+        public int? Werks { get; set; }
         public int? Status { get; set; }
         public string Note { get; set; }
         public DateTime? CreateDate { get; set; }

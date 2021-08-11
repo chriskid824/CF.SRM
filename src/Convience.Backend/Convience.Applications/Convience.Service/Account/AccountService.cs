@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.Identity;
+using Convience.Entity.Entity.SRM;
 using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Models.Account;
@@ -37,17 +38,21 @@ namespace Convience.Service.Account
 
         private readonly IJwtFactory _jwtFactory;
 
+        private readonly SRMContext _srmContext;
+
         public AccountService(
             UserManager<SystemUser> userManager,
             IRepository<SystemUserRole> userRoleRepository,
             IMemoryCache cachingProvider,
-            IOptionsSnapshot<JwtOption> jwtOptionAccessor)
+            IOptionsSnapshot<JwtOption> jwtOptionAccessor,
+            SRMContext srmContext)
         {
             var option = jwtOptionAccessor.Get(JwtAuthenticationSchemeConstants.DefaultAuthenticationScheme);
             _userManager = userManager;
             _userRoleRepository = userRoleRepository;
             _cachingProvider = cachingProvider;
             _jwtFactory = new JwtFactory(option);
+            _srmContext = srmContext;
         }
 
         public bool IsStopUsing(string userName)
@@ -72,8 +77,10 @@ namespace Convience.Service.Account
                         (CustomClaimTypes.UserRoleIds,roleIds),
                         (CustomClaimTypes.Name,user.Name)
                     };
+                    int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
                     return new ValidateCredentialsResultModel(_jwtFactory.GenerateJwtToken(pairs),
-                        user.Name, user.Avatar, roleIds, user.CostNo);
+ user.Name, user.Avatar, roleIds, user.CostNo, werks);
+
                 }
             }
             return null;

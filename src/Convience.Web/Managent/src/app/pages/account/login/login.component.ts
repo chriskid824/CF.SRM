@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
             this._storageService.Identifycation = result.identification;
             this._storageService.Route = result.routes;
             this._storageService.costNo = result.costNo;
+            this._storageService.werks = result.werks;
             this._router.navigate(['/dashboard']);
           },
           error => {

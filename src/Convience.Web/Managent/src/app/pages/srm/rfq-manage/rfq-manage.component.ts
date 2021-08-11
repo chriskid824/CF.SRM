@@ -53,14 +53,16 @@ export class RfqManageComponent implements OnInit {
   refresh() {
     //this.t = this.test();
     console.log(this.searchForm.value["STATUS"]);
+    console.log(this._storageService.werks);
     var query = {
       rfqNum: this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"],
       name: this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"],
-      costNo: this._storageService.costNo,
+      werks: this._storageService.werks,
       page: this.page,
       size: this.size
     }
+    console.log(query);
     this._srmRfqService.GetRfqList(query).subscribe(result => {
       this.data = result["data"];
       this.total = result["total"];

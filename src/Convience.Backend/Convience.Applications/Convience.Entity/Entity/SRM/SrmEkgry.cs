@@ -11,6 +11,7 @@ namespace Convience.Entity.Entity.SRM
     {
         public string Ekgry { get; set; }
         public string EkgryDesc { get; set; }
+        public int Werks { get; set; }
         public string Empid { get; set; }
     }
 }

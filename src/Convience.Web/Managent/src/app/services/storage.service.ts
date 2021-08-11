@@ -19,6 +19,7 @@ export class StorageService {
     localStorage.setItem("username", decodeToken['username']);
     localStorage.setItem('userTokenExpiration', expirationDate.toString());
     localStorage.setItem("costNo", decodeToken['costNo']);
+    localStorage.setItem("werks", decodeToken['werks']);
   }
 
   removeUserToken() {
@@ -27,6 +28,7 @@ export class StorageService {
     localStorage.removeItem('username');
     localStorage.removeItem('userTokenExpiration');
     localStorage.removeItem('costNo');
+    localStorage.removeItem('werks');
 
     localStorage.removeItem("name");
     localStorage.removeItem("avatar");
@@ -57,6 +59,13 @@ export class StorageService {
   }
   set costNo(value) {
     localStorage.setItem("costNo", value);
+  }
+
+  get werks() {
+    return localStorage.getItem("werks");
+  }
+  set werks(value) {
+    localStorage.setItem("werks", value);
   }
 
   hasUserToken(): boolean {

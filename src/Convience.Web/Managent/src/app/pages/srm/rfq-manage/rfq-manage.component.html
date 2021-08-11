@@ -44,11 +44,11 @@
     <nz-card [nzSize]="'small'" id="rfqCard">
       <div>
         <!--<button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
-                *canOperate="'adduserbtn'">
-          <i nz-icon nzType="plus"></i>新增詢價單
-        </button>-->
+          *canOperate="'adduserbtn'">
+    <i nz-icon nzType="plus"></i>新增詢價單
+  </button>-->
+        <button nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="plus"></i>建立詢價單</button>
         <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
-        <button nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="sync"></i>建立詢價單</button>
       </div>
       <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"

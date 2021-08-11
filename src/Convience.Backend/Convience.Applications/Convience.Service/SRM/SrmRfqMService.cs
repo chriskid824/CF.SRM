@@ -64,7 +64,7 @@ namespace Convience.Service.SRM
                         where a.RfqId == RfqId
                         select new
                         {
-                            matnr = b.Matnr,
+                            matnr = b.SapMatnr,
                             version = a.Version,
                             material = a.Material,
                             volume = a.Length+"X"+a.Width+"X"+a.Height,
@@ -91,7 +91,7 @@ namespace Convience.Service.SRM
                         where a.RfqId == rfq.RfqId && a.MatnrId == rfq.MatnrId
                         select new ViewSrmRfqM
                         {
-                            matnr = b.Matnr,
+                            matnr = b.SapMatnr,
                             Version = a.Version,
                             Material = a.Material,
                             volume = a.Length + "X" + a.Width + "X" + a.Height,

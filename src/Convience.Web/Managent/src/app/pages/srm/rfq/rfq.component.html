@@ -14,6 +14,19 @@
             <br>填單者:{{name}}
           </span>
         </h1>
+
+        <!--<div class="mr-auto">
+          單號:{{H.rfqNum}}
+        </div>
+        <div class="mr-auto">
+          狀態:{{H.viewstatus}}
+        </div>
+        <div class="mr-auto">
+          申請日期:{{H.C_Date}}
+        </div>
+        <div class="mr-auto">
+          填單者:{{name}}
+        </div>-->
       </div>
       <div style="display: -webkit-box;margin-top:20px">
         <div>
@@ -25,7 +38,7 @@
                        autocomplete="off" />
                 <input nz-input placeholder="詢價人員" formControlName="sourcer" readonly="readonly" style="display:none"
                        autocomplete="off" />
-                <button nz-button nzType="primary" style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addSourcerTitleTpl,SourcerContentTpl)">選擇人員</button>
+                <button nz-button nzType="primary" style="margin-left: 20px;display:none" disabled="{{canModify==false}}" (click)="add(addSourcerTitleTpl,SourcerContentTpl)">選擇人員</button>
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
@@ -36,16 +49,21 @@
               </nz-form-control>
             </nz-form-item>
             <!--<nz-form-item>
-              <nz-form-label [nzFor]="'status'">狀態</nz-form-label>
-              <nz-form-control>
-                <label>{{H.viewstatus}}</label>
-              </nz-form-control>
-            </nz-form-item>-->
+          <nz-form-label [nzFor]="'status'">狀態</nz-form-label>
+          <nz-form-control>
+            <label>{{H.viewstatus}}</label>
+          </nz-form-control>
+        </nz-form-item>-->
           </form>
         </div>
       </div>
       <!--<div style="height: 200px; overflow-y: scroll">-->
-
+      <div>
+        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="save()"><i nz-icon nzType="save"></i>保存</button>
+        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
+        <button *ngIf="canCxl" nz-button disabled="{{canCxl==false}}" (click)="cancel()"><i nz-icon nzType="delete"></i>作廢</button>
+        <button *ngIf="canDel" nz-button disabled="{{canDel==false}}" (click)="delete()"><i nz-icon nzType="delete"></i>刪除</button>
+      </div>
       <mat-tab-group>
         <mat-tab label="料號明細">
           <h1>
@@ -95,14 +113,6 @@
                            [rowSelection]="rowSelection"></ag-grid-angular>
         </mat-tab>
       </mat-tab-group>
-      <div style="text-align:center;width:93%">
-        <button nz-button nzType="primary" style="margin-top:20px" disabled="{{canModify==false}}" (click)="save()">保存</button>
-        <button nz-button nzType="primary" style="margin-top:20px;margin-left:20px" disabled="{{canModify==false}}" (click)="start()">啟動</button>
-        <!--<button *ngIf="H.rfqId !== undefined" nz-button nzType="primary" style="margin-top: 20px; margin-left: 20px" disabled="{{canCxl==false}}" (click)="cancel()">作廢</button>
-  <button *ngIf="H.rfqId != undefined" nz-button nzType="primary" style="margin-top: 20px; margin-left: 20px" disabled="{{canDel==false}}" (click)="delete()">刪除</button>-->
-        <button *ngIf="canCxl" nz-button nzType="primary" style="margin-top: 20px; margin-left: 20px" disabled="{{canCxl==false}}" (click)="cancel()">作廢</button>
-        <button *ngIf="canDel" nz-button nzType="primary" style="margin-top: 20px; margin-left: 20px" disabled="{{canDel==false}}" (click)="delete()">刪除</button>
-      </div>
     </nz-card>
   </div>
 </div>
@@ -122,13 +132,43 @@
       <nz-form-label>料號</nz-form-label>
       <nz-form-control>
         <input nz-input placeholder="料號" formControlName="matnr"
-               autocomplete="off" />
+   autocomplete="off" />
       </nz-form-control>
     </nz-form-item>
     <button nz-button nzType="primary">搜索</button>
   </form>
-  <div style="height: 100px; overflow: auto; margin-left: 20px ">
-    <nz-checkbox-group [(ngModel)]="MatnrList"></nz-checkbox-group>
+  <div style="height: 200px; overflow: auto; margin-left: 20px ">
+    <!--<nz-checkbox-group [(ngModel)]="MatnrList"></nz-checkbox-group>-->
+
+    <div class="mt-10">
+      <nz-table #dataTable nzSize="middle" [nzData]="MatnrList" nzShowPagination="false" nzFrontPagination="false"
+                nzBordered="true" [nzScroll]="{ x: '180px' }">
+        <thead>
+          <tr>
+            <th nzWidth="10px"
+                [nzLeft]="fixedColumn"></th>
+            <th nzAlign="left" nzWidth="20px">料號</th>
+            <th nzAlign="left" nzWidth="20px">物料內文</th>
+            <th nzAlign="left" nzWidth="20px">物料群組</th>
+            <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dataTable.data;let i = index" (click)="open(data.id)">
+            <td [nzLeft]="fixedColumn"
+                [nzShowCheckbox]="true"
+                [(nzChecked)]="data.checked"></td>
+            <td nzAlign="left">{{ data.srmMatnr1 }}</td>
+            <td nzAlign="left">{{ data.description }}</td>
+            <td nzAlign="left">{{ data.matnrGroup }}</td>
+            <!--<td nzAlign="center">
+          <nz-tag *ngIf="!data.isActive" [nzColor]="'red'">停用</nz-tag>
+        </td>-->
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
   </div>
   <form nz-form [formGroup]="matnrListForm" (ngSubmit)="submitMatnrList()">
     <nz-form-item>
@@ -150,7 +190,7 @@
     </nz-form-item>
     <button nz-button nzType="primary">搜索</button>
   </form>
-  <div style="height: 100px; overflow: auto; margin-left: 20px ">
+  <div style="height: 300px; overflow: auto; margin-left: 20px ">
     <nz-checkbox-group [(ngModel)]="VendorList"></nz-checkbox-group>
   </div>
   <form nz-form [formGroup]="vendorListForm" (ngSubmit)="submitVendorList()">
@@ -173,7 +213,7 @@
     </nz-form-item>
     <button nz-button nzType="primary">搜索</button>
   </form>
-  <div style="height: 100px; overflow: auto; margin-left: 20px ">
+  <div style="height: 300px; overflow: auto; margin-left: 20px ">
     <nz-radio-group [(ngModel)]="radioValue">
       <label nz-radio [nzValue]="o.value" *ngFor="let o of SourcerList">{{ o.label }}</label>
     </nz-radio-group>

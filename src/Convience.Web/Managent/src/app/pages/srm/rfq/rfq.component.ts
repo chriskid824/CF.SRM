@@ -171,9 +171,10 @@ export class RfqComponent implements OnInit {
       this.MatnrList = [];
       console.log(result);
       this.OriMatnrList = result["data"];
-      for (var i = 0; i < this.OriMatnrList.length; i++) {
-        this.MatnrList.push({ mantr: this.OriMatnrList[i].matnr, label: this.OriMatnrList[i].matnr + ' ' + this.OriMatnrList[i].description?.substring(0, 40) , value: this.OriMatnrList[i].matnrId });
-      }
+      //for (var i = 0; i < this.OriMatnrList.length; i++) {
+      //  this.MatnrList.push({ mantr: this.OriMatnrList[i].matnr, label: this.OriMatnrList[i].matnr + ' ' + this.OriMatnrList[i].description?.substring(0, 40) , value: this.OriMatnrList[i].matnrId });
+      //}
+      this.MatnrList = result["data"];
       if (result["count"] > matnrQuery.size) {
         alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 ' + matnrQuery.size + ' 筆資料) ，請重新指定查詢條件!');
       }
@@ -199,8 +200,8 @@ export class RfqComponent implements OnInit {
   }
   onRefreshSourcer() {
     var query = {
-      name: (this.searchForm.value["name"])??"",
-      costNo: this._storageService.costNo,
+      name: (this.searchForm.value["name"]) ?? "",
+      werks: this._storageService.werks,
       page: this.page,
       size: this.size
     }
@@ -265,6 +266,8 @@ export class RfqComponent implements OnInit {
       this.H.STATUS = 1;
       this.canModify = true;
       this.H.viewstatus = "初始";
+      this.H.sourcerName = this._storageService.Name;
+      this.H.sourcer = this._storageService.userName;
     }
     this.initMatnrList();
     this.H.LASTUPDATEBY = this._storageService.userName;
@@ -281,6 +284,7 @@ export class RfqComponent implements OnInit {
       sourcerName: [null],
       deadline: [null]
     });
+    this.formDetail.setValue({ sourcerName: this.H.sourcerName, sourcer: this.H.sourcer, deadline: null });
   }
 
 
@@ -370,7 +374,7 @@ export class RfqComponent implements OnInit {
       nzFooter: null,
       nzClosable: true,
       nzMaskClosable: false,
-      nzWidth:1000
+      nzWidth: 1000,
     });
   }
 
@@ -413,12 +417,13 @@ export class RfqComponent implements OnInit {
   }
   //選取
   submitMatnrList() {
+    console.log(this.MatnrList);
     console.log(this.rowData_MATNR);
     for (var i = 0; i < this.MatnrList.length; i++) {
       if (this.MatnrList[i].checked == true) {
         console.log(this.MatnrList[i].label);
-        if (this.rowData_MATNR.filter(item => item.matnr.toUpperCase().indexOf(this.MatnrList[i].mantr.toUpperCase()) >= 0).length == 0) {
-          this.rowData_MATNR.push(this.OriMatnrList.filter(item => item.matnr == this.MatnrList[i].mantr)[0]);
+        if (this.rowData_MATNR.filter(item => item.matnrId == this.MatnrList[i].matnrId).length == 0) {
+          this.rowData_MATNR.push(this.OriMatnrList.filter(item => item.matnrId == this.MatnrList[i].matnrId)[0]);
         }
       }
     }

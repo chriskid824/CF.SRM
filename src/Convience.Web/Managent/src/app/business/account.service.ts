@@ -36,4 +36,5 @@ export interface LoginResult {
   identification: string;
   routes: string;
   costNo: string;
+  werks: string;
 }

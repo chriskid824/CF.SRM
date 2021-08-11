@@ -79,7 +79,7 @@ namespace Convience.Service.SRM
                         where a.RfqId == RfqId
                         select new ViewSrmRfqV
                         {
-                            Vendor = b.Vendor,
+                            SapVendor = b.SapVendor,
                             VendorName = b.VendorName,
                             Person = b.Person,
                             Address = b.Address,

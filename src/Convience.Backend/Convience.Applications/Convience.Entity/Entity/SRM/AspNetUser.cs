@@ -9,6 +9,11 @@ namespace Convience.Entity.Entity.SRM
     [Entity(DbContextType = typeof(SRMContext))]
     public partial class AspNetUser
     {
+        public AspNetUser()
+        {
+            AspNetUserRoles = new HashSet<AspNetUserRole>();
+        }
+
         public int Id { get; set; }
         public string Avatar { get; set; }
         public int Sex { get; set; }
@@ -30,5 +35,7 @@ namespace Convience.Entity.Entity.SRM
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string CostNo { get; set; }
+
+        public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
     }
 }

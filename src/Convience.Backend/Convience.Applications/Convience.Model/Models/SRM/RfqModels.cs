@@ -47,8 +47,8 @@ namespace Convience.Model.Models.SRM
         public string rfqNum { get; set; }
         public int status { get; set; }
         public string name { get; set; }
-        public string costNo { get; set; }
         public int[] statuses { get; set; }
+        public int[] werks { get; set; }
     }
     public class QueryRfq
     {

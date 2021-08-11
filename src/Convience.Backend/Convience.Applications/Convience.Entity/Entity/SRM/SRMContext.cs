@@ -27,6 +27,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
         public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
         public virtual DbSet<SrmQotMaterial> SrmQotMaterial { get; set; }
         public virtual DbSet<SrmQotProcess> SrmQotProcesses { get; set; }
         public virtual DbSet<SrmQotOther> SrmQotOthers { get; set; }
@@ -98,9 +100,9 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("MATERIAL")
                     .HasComment("材質規格");
 
-                entity.Property(e => e.Matnr)
+                entity.Property(e => e.SapMatnr)
                     .HasMaxLength(18)
-                    .HasColumnName("MATNR")
+                    .HasColumnName("SAP_MATNR")
                     .HasComment("SAP料號");
 
                 entity.Property(e => e.MatnrGroup)
@@ -128,6 +130,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Weight)
                     .HasColumnName("WEIGHT")
                     .HasComment("重量");
+
+                entity.Property(e => e.Werks)
+                    .HasColumnName("WERKS")
+                    .HasComment("工廠");
 
                 entity.Property(e => e.Width)
                     .HasColumnName("WIDTH")
@@ -354,9 +360,9 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("TEL_PHONE")
                     .HasComment("電話號碼");
 
-                entity.Property(e => e.Vendor)
+                entity.Property(e => e.SapVendor)
                     .HasMaxLength(8)
-                    .HasColumnName("VENDOR")
+                    .HasColumnName("SAP_VENDOR")
                     .HasComment("SAP供應商代碼");
 
                 entity.Property(e => e.VendorName)
@@ -453,6 +459,11 @@ namespace Convience.Entity.Entity.SRM
                     .IsRequired()
                     .HasMaxLength(10)
                     .HasColumnName("EKGRY_DESC");
+
+                entity.Property(e => e.Werks)
+                .IsRequired()
+                .HasMaxLength(10)
+                .HasColumnType("WERKS");
 
                 entity.Property(e => e.Empid)
                     .IsRequired()
@@ -827,6 +838,32 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Unit).HasColumnName("UNIT");
 
                 entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
+            });
+
+            modelBuilder.Entity<AspNetRole>(entity =>
+            {
+                entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedName] IS NOT NULL)");
+
+                entity.Property(e => e.Name).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedName).HasMaxLength(256);
+            });
+
+            modelBuilder.Entity<AspNetUserRole>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.RoleId });
+
+                entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.AspNetUserRoles)
+                    .HasForeignKey(d => d.RoleId);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.AspNetUserRoles)
+                    .HasForeignKey(d => d.UserId);
             });
 
             OnModelCreatingPartial(modelBuilder);

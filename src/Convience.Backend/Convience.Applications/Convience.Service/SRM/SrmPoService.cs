@@ -106,7 +106,7 @@ namespace Convience.Service.SRM
 
             result.ForEach(p =>
             {
-                p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).Matnr;
+                p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).SapMatnr;
                 p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
                 p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q=>q.PoId==p.PoId &&q.PoLId==p.PoLId).Sum(q => q.DeliveryQty);
             });

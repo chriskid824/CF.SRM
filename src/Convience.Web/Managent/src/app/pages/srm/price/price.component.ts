@@ -6,8 +6,10 @@ import { SrmPriceService } from '../../../business/srm/srm-price.service';
 import { ActivatedRoute } from '@angular/router';
 import { Rfq } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
+import datepickerFactory from 'jquery-datepicker';
 
 declare const $: any;
+datepickerFactory($);
 @Component({
   selector: 'app-price',
   templateUrl: './price.component.html',
@@ -75,57 +77,7 @@ export class PriceComponent implements OnInit {
   //gird
 
 
-   function getDatePicker() {
-      // function to act as a class
-      function Datepicker() { }
-
-      // gets called once before the renderer is used
-      Datepicker.prototype.init = function (params) {
-        // create the cell
-        this.eInput = document.createElement('input');
-        this.eInput.value = params.value;
-        this.eInput.classList.add('ag-input');
-        this.eInput.style.height = '100%';
-
-        // https://jqueryui.com/datepicker/
-        $(this.eInput).datepicker({
-          dateFormat: 'dd/mm/yy',
-        });
-      };
-
-      // gets called once when grid ready to insert the element
-      Datepicker.prototype.getGui = function () {
-        return this.eInput;
-      };
-
-      // focus and select can be done after the gui is attached
-      Datepicker.prototype.afterGuiAttached = function () {
-        this.eInput.focus();
-        this.eInput.select();
-      };
-
-      // returns the new value after editing
-      Datepicker.prototype.getValue = function () {
-        return false;
-        return this.eInput.value;
-      };
-
-      // any cleanup we need to be done here
-      Datepicker.prototype.destroy = function () {
-        // but this example is simple, no cleanup, we could
-        // even leave this method out as it's optional
-      };
-
-      // if true, then this editor will appear in a popup
-      Datepicker.prototype.isPopup = function () {
-        // and we could leave this method out also, false is the default
-        return false;
-      };
-
-      return Datepicker;
-   }
-
-
+    this.components = { datePicker: getDatePicker() };
 
     this.columnDefs_inforecord = [
       {
@@ -172,6 +124,7 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
+/*        stopEditingWhenCellsLoseFocus:true,*/
       },
       {
         headerName: "價格單位",
@@ -228,14 +181,14 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        cellEditor: getDatePicker(),
+        cellEditor: 'datePicker',
       },
       {
         headerName: "有效日期",
         field: "expirationDate",
         width: "150px",
         editable: this.canModify,
-        cellEditor: getDatePicker(),
+        cellEditor: 'datePicker',
       }
     ]
   }
@@ -622,10 +575,6 @@ export class PriceComponent implements OnInit {
     //    cellEditor: this.getDatePicker(),
     //  }
     //]
-
-    //this.components = {
-    //  datePicker: getDatePicker()
-    //}
   }
   search() {
     this.radioValue = this.matnrList.get('selectedMatnr').value;
@@ -656,6 +605,7 @@ export class PriceComponent implements OnInit {
     this.gridApi_inforecord.sizeColumnsToFit();
   }
   start() {
+    this.gridApi_inforecord.stopEditing();
     var selectedRows = this.gridApi_inforecord.getSelectedRows();
     if (selectedRows.length == 0) { return;}
     var obj = {
@@ -667,4 +617,37 @@ export class PriceComponent implements OnInit {
     });
     console.log(selectedRows);
   }
+}
+
+function dateFormatter(data) {
+  if (data.value == null) return "";
+  var date = new Date(data.value);
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+function getDatePicker() {
+  function Datepicker() { }
+  Datepicker.prototype.init = function (params) {
+    this.eInput = document.createElement('input');
+    this.eInput.value = params.value;
+    this.eInput.classList.add('ag-input');
+    this.eInput.style.height = '100%';
+    this.eInput.o
+    $(this.eInput).datepicker({ dateFormat: 'yy/mm/dd' });
+  };
+  Datepicker.prototype.getGui = function () {
+    return this.eInput;
+  };
+  Datepicker.prototype.afterGuiAttached = function () {
+    this.eInput.focus();
+    this.eInput.select();
+  };
+  Datepicker.prototype.getValue = function () {
+    return dateFormatter(this.eInput);
+    //return this.eInput.value;
+  };
+  Datepicker.prototype.destroy = function () { };
+  Datepicker.prototype.isPopup = function () {
+    return false;
+  };
+  return Datepicker;
 }

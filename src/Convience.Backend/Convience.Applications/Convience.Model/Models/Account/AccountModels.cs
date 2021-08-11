@@ -10,7 +10,8 @@
         string Token,
         string Identification,
         string Routes,
-        string CostNo);
+        string CostNo,
+        int[] Werks);
 
     public record LoginViewModel(
         string UserName,
@@ -23,5 +24,6 @@
         string Name,
         string Avatar,
         string RoleIds,
-        string CostNo);
+        string CostNo,
+        int[] Werks);
 }

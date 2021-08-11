@@ -102,7 +102,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.rfqNum = query["rfqNum"].ToString();
             q.status = (int)query["status"];
             q.name = query["name"].ToString();
-            q.costNo = query["costNo"].ToString();
+            q.werks = Array.ConvertAll(query["werks"].ToString().Split(","), s => int.Parse(s));
             int page = (int)query["page"];
             int size = (int)query["size"];
             var h = _srmRfqHService.GetRfqList(q,page,size);
@@ -233,16 +233,21 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetSourcerList")]
         public IActionResult GetSourcerList(JObject jobj) {
             string name = jobj["name"].ToString();
-            string costNo = jobj["costNo"].ToString();
+            int[] werks = Array.ConvertAll(jobj["werks"].ToString().Split(","), s => int.Parse(s));
             int page = (int)jobj["page"];
             int size = (int)jobj["size"];
-            var users = _srmRfqHService.GetSourcer(name,costNo,size,page);
+            var users = _srmRfqHService.GetSourcer(name, werks, size,page);
             return Ok(users);
             //return Ok(_srmRfqHService.GetSourcer(users));
         }
         [HttpPost("GetRfq")]
         public IActionResult GetRfq(QueryRfq query) {
             return Ok(_srmRfqHService.GetRfq(query));
+        }
+        [HttpPost("AsyncSourcer")]
+        public IActionResult AsyncSourcer() {
+            _srmRfqHService.AsyncSourcer();
+            return Ok();
         }
     }
 }

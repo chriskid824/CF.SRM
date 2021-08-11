@@ -28,6 +28,7 @@ import { QotlistComponent } from './qotlist/qotlist.component';
 import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select'; 
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import {MatSelectModule} from '@angular/material/select';
     NzDatePickerModule,
     NzSelectModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    NzIconModule
   ]
 })
 export class SrmModule { }

@@ -12,7 +12,7 @@ namespace Convience.Entity.Entity.SRM
     {
         public int VendorId { get; set; }
         public string SrmVendor1 { get; set; }
-        public string Vendor { get; set; }
+        public string SapVendor { get; set; }
         public string VendorName { get; set; }
         public int? Org { get; set; }
         public int? Ekorg { get; set; }
