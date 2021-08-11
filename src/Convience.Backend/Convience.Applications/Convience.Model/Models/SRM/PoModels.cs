@@ -10,6 +10,7 @@ namespace Convience.Model.Models.SRM
 {
     public class QueryPoList {
         public string poNum { get; set; }
+        public string deliveryNum { get; set; }
         public int status { get; set; }
         public string buyer { get; set; }
         public DateTime? replyDeliveryDate_s { get; set; }

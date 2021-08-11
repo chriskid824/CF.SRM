@@ -29,6 +29,7 @@ namespace Convience.Service.SRM
         public IEnumerable<SrmPoH> GetAll();
         public IEnumerable<SrmPoH> GetAll(QueryPoList query);
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
+        public IEnumerable<SrmDeliveryH> GetDelivery(QueryPoList query);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateStatus(int id, int status);
         public bool AddDelivery(List<ViewSrmPoL> data);
@@ -68,6 +69,7 @@ namespace Convience.Service.SRM
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status);
+
             return result.Include(m => m.SrmPoLs).ToList();
         }
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query)
@@ -113,6 +115,16 @@ namespace Convience.Service.SRM
             //.AndIfCondition(query.status != 0, p => p.Status == query.status);
             return result.Where(p=>p.RemainQty>0).ToList();
         }
+        public IEnumerable<SrmDeliveryH> GetDelivery(QueryPoList query)
+        {
+            var result = _context.SrmDeliveryHs
+    .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+    .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p => {
+                p.SrmDeliveryLs = _context.SrmDeliveryLs.Where(m => m.DeliveryId == p.DeliveryId).ToList();
+            });
+            return result;
+        }
         public IEnumerable<SrmPoH> GetMatnrById(int id)
         {
             return _srmPohRepository.Get(r => r.PoId == id);
@@ -136,6 +148,12 @@ namespace Convience.Service.SRM
                 data.ReplyDate = DateTime.Now;
             }
             _context.SrmPoHs.Update(data);
+            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId);
+            foreach (var item in LList)
+            {
+                item.Status = status;
+                _context.SrmPoLs.Update(item);
+            }
             _context.SaveChanges();
             return true;
         }
@@ -159,11 +177,16 @@ namespace Convience.Service.SRM
         }
         public bool CheckAllReply(int id)
         {
-            if (_context.SrmPoLs.Any(p => p.PoId == id && p.ReplyDeliveryDate == null))
+            //必須是待接收 或是已接收狀態
+            if (_context.SrmPoHs.Find(id).Status == 21 || _context.SrmPoHs.Find(id).Status==11)
             {
-                return false;
-            }
-            return true;
+                if (_context.SrmPoLs.Any(p => p.PoId == id && p.ReplyDeliveryDate == null))
+                {
+                    return false;
+                }
+                return true;
+            }            
+            return false;
         }
     }
 }

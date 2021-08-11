@@ -54,9 +54,9 @@ export class PoComponent implements OnInit {
         cellClassRules: {
           'rag-green': 'x == 12',
           'rag-amber': 'x == 11',
-          'rag-red': 'x == 10',
+          'rag-red': 'x == 21',
         },
-        valueFormatter:'switch(value){case 10 : return "待確認"; case 11 : return "已確認"; case 12 : return "已回覆"; default : return "未知";}'
+        valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return "未知";}'
       },
       {
         headerName:'採購單總金額',
@@ -65,6 +65,7 @@ export class PoComponent implements OnInit {
       {
         headerName:'採購人員',
         field: 'Buyer',
+        editable:true
       },
       {
         headerName:'採購組織',
@@ -78,7 +79,9 @@ export class PoComponent implements OnInit {
       {
         headerName:'廠商接收日期',
         field: 'ReplyDate',
-        valueFormatter:dateFormatter
+        valueFormatter:dateFormatter,
+        editable: function(params){return true},
+        cellEditorFramework: AgGridDatePickerComponent
       },
       {
         headerName:'拋轉日期',
@@ -87,7 +90,7 @@ export class PoComponent implements OnInit {
       },
       { headerName: '操作', field: 'fieldName',
       cellRenderer : function(params){
-        if(params.data.Status==10)
+        if(params.data.Status==21)
         {
           var eDiv = document.createElement('div');
           eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">確認</button></span>';
@@ -98,35 +101,16 @@ export class PoComponent implements OnInit {
               alert('採購單號:'+params.data.PoNum+'已接收');
               params.data.Status=11;
               params.data.ReplyDate=new Date();
+              params.data.SrmPoLs.forEach(element => {
+                element.Status=11;
+              });
               params.api.refreshCells();
             });
-
-
           });
-
           return eDiv;
           }
         }
-          //return '<button nz-button nzType="primary" (click)="alert(params.PoId)">確認</button>'
-
       }
-      // {
-      //   headerName:'操作',
-      //   field: 'total',
-      //   minWidth: 175,
-      //   cellRenderer: 'totalValueRenderer',
-      // },
-    //   { field: 'calls' },
-    //   {
-    //     field: 'minutes',
-    //     valueFormatter: "x.toLocaleString() + 'm'",
-    //   },
-    //   {
-    //     field: 'date',
-    //     editable: true,
-    //     // valueFormatter: this.expiryDateFormatter,
-    // cellEditorFramework: AgGridDatePickerComponent
-    //   },
     ];
     this.defaultColDef = { flex: 1 };
     this.components = { datePicker: getDatePicker()};
@@ -167,8 +151,19 @@ export class PoComponent implements OnInit {
             field: 'ReplyDeliveryDate',
             editable: function(params){console.info(params.node.parent);return true},
             valueFormatter:dateFormatter,
+            stopEditingWhenCellsLoseFocus:false,
             // valueFormatter: this.expiryDateFormatter,
             cellEditorFramework: AgGridDatePickerComponent
+          },
+          {
+            headerName:'狀態',
+            field: 'Status',
+            cellClassRules: {
+              'rag-green': 'x == 12',
+              'rag-amber': 'x == 11',
+              'rag-red': 'x == 21',
+            },
+            valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return "未知";}'
           },
           {
             headerName:'交貨地點',

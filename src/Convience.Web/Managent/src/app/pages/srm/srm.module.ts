@@ -25,6 +25,7 @@ import { PriceManageComponent } from './price-manage/price-manage.component';
 import { PriceComponent } from './price/price.component';
 import { PoDetailComponent } from './po-detail/po-detail.component';
 import { QotlistComponent } from './qotlist/qotlist.component';
+import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -35,7 +36,8 @@ import { QotlistComponent } from './qotlist/qotlist.component';
     PriceManageComponent,
     PriceComponent,
     PoDetailComponent,
-    QotlistComponent
+    QotlistComponent,
+    DelyveryLComponent
   ],
   imports: [
     CommonModule,
@@ -46,6 +48,7 @@ import { QotlistComponent } from './qotlist/qotlist.component';
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "po", component: PoComponent },
       { path: "deliveryh", component: PoDetailComponent },
+      { path: "deliveryl", component: DelyveryLComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },

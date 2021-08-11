@@ -2,9 +2,9 @@
     <nz-card [nzSize]="'small'" id="searchBar">
       <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
         <nz-form-item>
-          <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
+          <nz-form-label [nzFor]="'DELIVERY_NUM'">出貨單號</nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"
+            <input nz-input placeholder="出貨單號" [formControlName]="'DELIVERY_NUM'" [attr.id]="'DELIVERY_NUM'"
                    autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
@@ -13,17 +13,9 @@
           <nz-form-control>
             <nz-select [formControlName]="'STATUS'" ngModel="0" style="width: 100px;">
               <nz-option nzValue="0" nzLabel="全部"></nz-option>
-              <nz-option nzValue="10" nzLabel="待確認"></nz-option>
-              <nz-option nzValue="11" nzLabel="已確認"></nz-option>
-              <nz-option nzValue="12" nzLabel="已回覆"></nz-option>
+              <nz-option nzValue="15" nzLabel="待出貨"></nz-option>
+              <nz-option nzValue="16" nzLabel="已出貨"></nz-option>
             </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzFor]="'BUYER'">採購人員</nz-form-label>
-          <nz-form-control>
-            <input nz-input placeholder="採購人員" [formControlName]="'BUYER'" [attr.id]="'BUYER'"
-                   autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -54,7 +46,6 @@
   (gridReady)="onGridReady($event)"
   [pagination]="true"
   [paginationPageSize]="15"
-  [stopEditingWhenCellsLoseFocus]="true"
 ></ag-grid-angular>
 </nz-card>
 

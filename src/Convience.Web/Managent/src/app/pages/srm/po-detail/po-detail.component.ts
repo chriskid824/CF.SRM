@@ -141,7 +141,7 @@ export class PoDetailComponent implements OnInit {
       cellRendererParams: { checkbox: true },
     };
     this.defaultColDef = {
-      editable: true,
+      editable: false,
       enableRowGroup: true,
       enablePivot: true,
       enableValue: true,

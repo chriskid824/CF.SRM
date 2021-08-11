@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Convience.EntityFrameWork.Infrastructure;
+using System;
 using System.Collections.Generic;
-using Convience.EntityFrameWork.Infrastructure;
+
 #nullable disable
 
 namespace Convience.Entity.Entity.SRM
