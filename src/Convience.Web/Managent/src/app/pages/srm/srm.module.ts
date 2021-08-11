@@ -26,6 +26,9 @@ import { PriceComponent } from './price/price.component';
 import { PoDetailComponent } from './po-detail/po-detail.component';
 import { QotlistComponent } from './qotlist/qotlist.component';
 import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select'; 
+
 @NgModule({
   declarations: [
     RfqComponent,
@@ -65,7 +68,9 @@ import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
     AppCommonModule,
     MatTabsModule,
     NzDatePickerModule,
-    NzSelectModule
+    NzSelectModule,
+    MatFormFieldModule,
+    MatSelectModule
   ]
 })
 export class SrmModule { }
