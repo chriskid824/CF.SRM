@@ -78,6 +78,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult GetRfqData(int id) {
             ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer,Page=1,Size=1 }).Data[0].Name;
+            h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
             System.Linq.IQueryable m = _srmRfqMService.GetDataByRfqId(id);
             ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
             Newtonsoft.Json.JsonSerializer js = new Newtonsoft.Json.JsonSerializer();

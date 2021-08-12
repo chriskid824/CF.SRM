@@ -16,6 +16,9 @@ export class RfqH {
   lastUpdateBy?: string;
   endDate?: Date;
   endBy?: string;
+  viewstatus?: string;
+  c_date?: string;
+  c_by?: string;
 }
 export class RfqM {
   rfqMId?: number;

@@ -30,7 +30,7 @@ export class RfqComponent implements OnInit {
   columnApi;
   gridApi;
   defaultColDef;
-  OriMatnrList;
+  //OriMatnrList;
   MatnrList;
   //Vendor
   columnDefs_VENDOR;
@@ -38,7 +38,7 @@ export class RfqComponent implements OnInit {
   columnApi_VENDOR;
   gridApi_VENDOR;
   defaultColDef_VENDOR;
-  OriVendorList;
+  //OriVendorList;
   VendorList;
   //sorcer
   SourcerList;
@@ -84,7 +84,7 @@ export class RfqComponent implements OnInit {
     this.columnDefs_VENDOR = [
       {
         headerName: "供應商代碼",
-        field: "vendor",
+        field: "srmVendor1",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "250px",
@@ -164,13 +164,14 @@ export class RfqComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("matnr")?.value,
+      werks: this._storageService.werks,
       page: this.page,
       size: this.size
     }
     this._srmRfqService.GetMatnr(matnrQuery).subscribe(result => {
       this.MatnrList = [];
       console.log(result);
-      this.OriMatnrList = result["data"];
+      //this.OriMatnrList = result["data"];
       //for (var i = 0; i < this.OriMatnrList.length; i++) {
       //  this.MatnrList.push({ mantr: this.OriMatnrList[i].matnr, label: this.OriMatnrList[i].matnr + ' ' + this.OriMatnrList[i].description?.substring(0, 40) , value: this.OriMatnrList[i].matnrId });
       //}
@@ -184,15 +185,17 @@ export class RfqComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["vendor"],
+      werks: this._storageService.werks,
       page: this.page,
       size: this.size
     }
     this._srmRfqService.GetVendor(vendorQuery).subscribe(result => {
       this.VendorList = [];
-      this.OriVendorList = result["data"];
-      for (var i = 0; i < this.OriVendorList.length; i++) {
-        this.VendorList.push({ vendor: this.OriVendorList[i].vendor,  label: this.OriVendorList[i].vendor + ' ' + this.OriVendorList[i].vendorName?.substring(0, 40), value: this.OriVendorList[i].vendorId });
-      }
+      //this.OriVendorList = result["data"];
+      //for (var i = 0; i < this.OriVendorList.length; i++) {
+      //  this.VendorList.push({ vendor: this.OriVendorList[i].vendor,  label: this.OriVendorList[i].vendor + ' ' + this.OriVendorList[i].vendorName?.substring(0, 40), value: this.OriVendorList[i].vendorId });
+      //}
+      this.VendorList = result["data"];
       if (result["count"] > vendorQuery.size) {
         alert('查詢結果筆數：' + result['count'] + '(系統只顯示最前 ' + vendorQuery.size + ' 筆資料) ，請重新指定查詢條件!');
       }
@@ -292,7 +295,7 @@ export class RfqComponent implements OnInit {
     this.columnDefs = [
       {
         headerName: "料號",
-        field: "matnr",
+        field: "srmMatnr1",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "240px",
@@ -423,7 +426,8 @@ export class RfqComponent implements OnInit {
       if (this.MatnrList[i].checked == true) {
         console.log(this.MatnrList[i].label);
         if (this.rowData_MATNR.filter(item => item.matnrId == this.MatnrList[i].matnrId).length == 0) {
-          this.rowData_MATNR.push(this.OriMatnrList.filter(item => item.matnrId == this.MatnrList[i].matnrId)[0]);
+        //  this.rowData_MATNR.push(this.OriMatnrList.filter(item => item.matnrId == this.MatnrList[i].matnrId)[0]);
+          this.rowData_MATNR.push(this.MatnrList[i]);
         }
       }
     }
@@ -438,8 +442,9 @@ export class RfqComponent implements OnInit {
     for (var i = 0; i < this.VendorList.length; i++) {
       if (this.VendorList[i].checked == true) {
         console.log(this.VendorList[i].label);
-        if (this.rowData_VENDOR.filter(item => item.vendor.toUpperCase().indexOf(this.VendorList[i].vendor.toUpperCase()) >= 0).length == 0) {
-          this.rowData_VENDOR.push(this.OriVendorList.filter(item => item.vendor == this.VendorList[i].vendor)[0]);
+        if (this.rowData_VENDOR.filter(item => item.vendorId == this.VendorList[i].vendorId).length == 0) {
+        //  this.rowData_VENDOR.push(this.OriVendorList.filter(item => item.vendor == this.VendorList[i].vendor)[0]);
+          this.rowData_VENDOR.push(this.VendorList[i]);
         }
       }
     }

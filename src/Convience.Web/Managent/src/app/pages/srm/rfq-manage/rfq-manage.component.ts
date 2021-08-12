@@ -3,7 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { Rfq } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
-
+import { Router } from '@angular/router';
+import { LayoutComponent } from '../../layout/layout/layout.component';
 
 @Component({
   selector: 'app-rfq-manage',
@@ -18,7 +19,11 @@ export class RfqManageComponent implements OnInit {
   size: number = 2;
   total: number;
   t = "";
-  constructor(private _formBuilder: FormBuilder, private _srmRfqService: SrmRfqService, private _storageService: StorageService,) { }
+  constructor(private _formBuilder: FormBuilder,
+    private _srmRfqService: SrmRfqService,
+    private _storageService: StorageService,
+    private _router: Router,
+    private _layout: LayoutComponent  ) { }
 
 
   selectedValue = null
@@ -93,9 +98,13 @@ export class RfqManageComponent implements OnInit {
   }
 
   open(id) {
-    window.open('../srm/rfq?id=' + id);
+    this._layout.navigateTo('rfq');
+    this._router.navigate(['srm/rfq', { id: id }]);
+    //window.open('../srm/rfq?id=' + id);
   }
   addRfq() {
-    window.open('../srm/rfq');
+    this._layout.navigateTo('rfq');
+    this._router.navigate(['srm/rfq']);
+    //window.open('../srm/rfq');
   }
 }

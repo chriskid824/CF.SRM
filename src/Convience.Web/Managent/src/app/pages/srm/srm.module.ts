@@ -29,6 +29,7 @@ import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select'; 
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTreeModule } from 'ng-zorro-antd/tree';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     MatFormFieldModule,
     MatSelectModule,
     NzIconModule,
+    NzTreeModule
   ]
 })
 export class SrmModule { }
