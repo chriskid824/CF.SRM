@@ -1,22 +1,125 @@
 <body>
   <div class="shape-ex3">
-    <div id="_header" class="parent"
+    <!--<div id="_header" class="parent"
       style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
       <h1 id="heading001"
         style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:center;">
         報價作業<span style="font-size:12px;right:0px;float:right;">詢價單號:QOT00000012<br>狀態:初始</span><span
           style="float:left;font-size:12px;text-align: left;">申請日期:2021/07/13 11:13:38<br>填單者:陳嘉融</span></h1>
-    </div> 
+    </div>-->
+    <h1 style=" margin-left: 450px;"> 報價作業</h1>
     <br>
-    <h4>料號:</h4>
-    <mat-form-field appearance="fill">
+
+    <!--<mat-form-field appearance="fill">
       <mat-label>料號</mat-label> 
       <mat-select>
         <mat-option *ngFor="let food of foods" [value]="food.value">
           {{food.viewValue}}
         </mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field>-->
+
+    <div class="child">
+      <div class="cc" style="margin: 0px auto;">
+        <table style="  text-align: center;">
+          <tr>
+            <td class="content2" id="rfqno">建立日期</td>
+            <td class="content2" id="currency">建立人員</td>
+            <td class="content2" id="leadtime">狀態</td>
+            <td class="content2" id="min_qty">詢價單號</td>
+            <td class="content2" id="min_qty">報價單號</td>
+          </tr>
+          <tr id="rowtype2">
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">2021/07/13</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">AA</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">初始</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
+                value="">RFQ00000001</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
+                value="">QOT00001-1</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="child">
+      <div class="cc" style="margin: 0px auto;">
+        <table style=" text-align: center;">
+          <tr>
+            <td class="content2" id="rfqno">料號</td>
+            <td class="content2" id="currency">材料規格</td>
+            <td class="content2" id="leadtime">成本尺寸</td>
+            <td class="content2" id="min_qty">工件重量(KG)</td>
+            <td class="content2" id="min_qty">機種名稱</td>
+          </tr>
+          <tr id="rowtype2">
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">ZAT42-31653</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">SUS304</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">3739*562mm</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
+                value="">1850</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
+                value="">25KTOP</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!--<div class="child">
+      <div class="cc" style="margin: 0px auto;">
+        <table style=" font-family: 微軟正黑體;">
+          <tr>
+            <td class="content2" id="rfqno">報價單號:</td>
+            <td class="content2" id="currency">幣別:</td>
+            <td class="content2" id="leadtime">交貨時間：</td>
+            <td class="content2" id="min_qty">最小採購數量：</td>
+          </tr>
+          <tr id="rowtype2">
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">RFQ00000001</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">台幣</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2021/07/05</label>
+            </td>
+            <td class="content2">
+              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
+                value=""></label>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>-->
+    <nz-card [nzSize]="'small'" id="btnBar">
+      <button id="btnRejectQot"  nz-button class="mr-10"  ><i nz-icon nzType="default"></i>拒絕報價</button>
+      <button id=" btnSaveQot" nz-button class="mr-10" ><i nz-icon nzType="save"></i>儲存</button>
+      <button id="btnBackQot" nz-button class="mr-10"  ><i nz-icon nzType="arrow-left"></i>返回</button>
+      <button id="btnSendQot" nz-button class="mr-10" ><i nz-icon nzType="arrow-right"></i>送出</button>
+      <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
+      id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
+      </nz-card>
+    <!--
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style=" font-family: 微軟正黑體;">
@@ -96,21 +199,29 @@
           </tr>
           <tr id="rowtype6">
             <td colspan="4">
-              <!--<input type="text" id="txtnote" name="txtnote" disabled value="aa" style="width: 100%; height: 50px; border-radius: 5px;">-->
-              <label style="height:50px; font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>備註</label>
+              <input type="text" id="txtnote" name="txtnote" disabled value="aa" style="width: 100%; height: 50px; border-radius: 5px;">
+              <label style="height:50px; font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>XXX</label>
             </td>
 
           </tr>
         </table>
+      -->
         <!--<p class="line2"><span></span> </p>-->
-        <mat-tab-group style="font-family:微軟正黑體;">
+        <!--<mat-tab-group style="font-family:微軟正黑體;">-->
 
-
-          <mat-tab label="材料明細">
-
-            <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)">新增材料</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMaterial()">刪除材料</button>
+          <nz-card>
+          <!--<mat-tab label="材料明細">-->
+            <div>
+              <h4>A.材料</h4>
+             
+              <button  nz-button class="mr-10"  (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"><i nz-icon nzType="plus"></i>新增材料費用</button>
+              <button nz-button class="mr-10"  (click)="deleteMaterial()"><i nz-icon nzType="delete"></i>刪除材料費用</button>
+               <!--<section class="example-section">-->
+                <mat-checkbox class="example-margin" id="chkreject_material">不回填</mat-checkbox>
+              <!-- </section>-->
+            <!--<button nz-button nzType="primary" style="margin-left: 20px"
+              (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)">新增材料費用</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMaterial()">刪除材料費用</button>-->
 
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs" [suppressDragLeaveHidesColumns]="true"
@@ -119,13 +230,23 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-          </mat-tab>
-
-          <mat-tab label="加工">
-
+            </div>
+          </nz-card>
+          <!--</mat-tab>-->
+          <nz-card>
+          <!--<mat-tab label="加工">-->
+            <div>
+              <h4>B.加工</h4>
+              
+              <button  nz-button class="mr-10"  (click)="addProcess(addProcessTitleTp,ProcessContentTp)"><i nz-icon nzType="plus"></i>新增加工費用</button>
+              <button nz-button class="mr-10"  (click)="deleteProcess()"><i nz-icon nzType="delete"></i>刪除加工費用</button>
+              <!--<section class="example-section">-->
+                <mat-checkbox class="example-margin" id="chkreject_process">不回填</mat-checkbox>
+              <!-- </section>-->
+              <!--
             <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addProcess(addProcessTitleTp,ProcessContentTp)">新增加工</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteProcess()">刪除加工</button>
+              (click)="addProcess(addProcessTitleTp,ProcessContentTp)">新增加工費用</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteProcess()">刪除加工費用</button>-->
 
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_PROCESS" [suppressDragLeaveHidesColumns]="true"
@@ -134,13 +255,23 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-          </mat-tab>
-
-          <mat-tab label="表面處理">
-
+            </div>
+          <!--</mat-tab>-->
+        </nz-card>
+        <nz-card>
+          <!-- <mat-tab label="表面處理">-->
+            <div>
+              <h4>C.表面處理</h4>
+             
+              <button  nz-button class="mr-10"  (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)"><i nz-icon nzType="plus"></i>新增表面處理</button>
+              <button nz-button class="mr-10"  (click)="deleteSurface()"><i nz-icon nzType="delete"></i>刪除表面處理</button>
+               <!--<section class="example-section">-->
+                <mat-checkbox class="example-margin" id="chkreject_surface">不回填</mat-checkbox>
+              <!-- </section>-->
+              <!--
             <button nz-button nzType="primary" style="margin-left: 20px"
               (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)">新增表面處理</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteSurface()">刪除表面處理</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteSurface()">刪除表面處理</button>-->
 
             <ag-grid-angular #agGrid style="width:1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_SURFACE" [suppressDragLeaveHidesColumns]="true"
@@ -149,13 +280,23 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-          </mat-tab>
-
-          <mat-tab label="其他費用">
-
+            </div>
+         <!--  </mat-tab>-->
+        </nz-card>
+        <nz-card>
+         <!--  <mat-tab label="其他費用">-->
+          <div>
+            <h4>D.其他費用</h4>
+           
+            <button  nz-button class="mr-10"  (click)="addOther(addOtherTitleTp,OtherContentTp)"><i nz-icon nzType="plus"></i>新增其他費用</button>
+            <button nz-button class="mr-10"  (click)="deleteOther()"><i nz-icon nzType="delete"></i>刪除其他費用</button>
+             <!--<section class="example-section">-->
+              <mat-checkbox class="example-margin" id="chkreject_other">不回填</mat-checkbox>
+            <!-- </section>-->
+            <!--
             <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addOther(addOtherTitleTp,OtherContentTp)">新增其他</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteOther()">刪除其他費用</button>
+              (click)="addOther(addOtherTitleTp,OtherContentTp)">新增其他費用</button>
+            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteOther()">刪除其他費用</button>-->
 
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_OTHER" [suppressDragLeaveHidesColumns]="true"
@@ -164,11 +305,12 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-          </mat-tab>
-        </mat-tab-group>
-      </div>
-      <button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
-       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>
+            </div>
+          </nz-card>
+        <!--  </mat-tab>-->
+        <!--</mat-tab-group>-->
+     <!-- </div>-->
+    
        
       <table>
         <tr>
@@ -180,7 +322,7 @@
           <td></td>
         </tr>
       </table>
-    </div>
+
   </div>
 </body>
 <!--材料-->
