@@ -29,6 +29,8 @@ namespace Convience.Service.SRM
         public void Add(SrmQotH[] qoths);
         public void UpdateStatus(int status, SrmRfqH rfqH);
         public SrmQotH[] Get(QueryQot query);
+        public IEnumerable<SrmQotH> GetQotList();
+        public IEnumerable<SrmRfqH> GetQotList(QueryQotList query);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -79,6 +81,71 @@ namespace Convience.Service.SRM
                 return qotQurty.ToArray();
             }
         }
-        
+        public IEnumerable<SrmQotH> GetQotList()
+        {
+            IEnumerable<SrmQotH> result = _context.SrmQotHs.ToList();//.Where(p => p.Status == 0);
+            return result.ToList();
+            //return _context.SrmQotHs.Include(m => m.SrmRfqHs).ToList();
+
+        }
+
+        /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
+        {
+            
+            var qotlist = (from q in _context.SrmQotHs
+                           join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                           join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                           //where e.OwnerID == user.UID
+                           select new ViewSrmQotList
+                           {
+                               RFQ_NUM = r.RfqNum,
+                               RFQ_STATUS = r.Status,
+                               QOT_NUM = q.QotNum,
+                               VENDOR_ID = q.VendorId,
+                               MATNR_ID = q.MatnrId,
+                               CURRENCY = q.Currency,
+                               LEAD_TIME = q.LeadTime,
+                               MIN_QTY = q.MinQty,
+                               TOTAL_AMOUNT = q.TotalAmount,
+                               QSTATUS = q.Status,
+                               QCREATE_DATE = q.CreateDate,
+                               QCREATE_BY = q.CreateBy,
+                               QLAST_UPDATE_DATE = q.LastUpdateDate,
+                               QLAST_UPDATE_BY = q.LastUpdateBy,
+                               RSTATUS = r.Status,
+                               RCREATE_DATE = r.CreateDate,
+                               RCREATE_BY = r.CreateBy,
+                               RLAST_UPDATE_DATE = r.LastUpdateDate,
+                               RLAST_UPDATE_BY = r.LastUpdateBy,
+                               VENDOR = v.SapVendor,
+                               MATNR = m.SapMatnr,
+                           })
+                           .AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+                           .AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+                           .AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotlist = qotlist.Where(p => p.VENDOR_ID == query.vendor);
+            return qotlist;           
+        }*/
+
+        public IEnumerable<SrmRfqH> GetQotList(QueryQotList query)
+        {
+            /*var result = _context.SrmQotHs.ToList();
+            // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+            // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p => {
+                p.SrmRfqHs = _context.SrmRfqHs.Where(m => m.RfqId == p.RfqId).ToList();
+                p.SrmMatnrs = _context.SrmMatnrs.Where(m => m.MatnrId == p.MatnrId).ToList();
+            });*/
+
+
+            var result = _context.SrmRfqHs.ToList();
+            // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+            // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p => {
+                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+            });
+            return result;
+        }
     }
 }

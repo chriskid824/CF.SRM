@@ -21,6 +21,7 @@ export class QotlistComponent implements OnInit {
   form_searchQot: FormGroup = new FormGroup({});
   page: number = 1;//??
   size: number = 2;//??
+  total: number;
   detailCellRendererParams;
   detailCellRendererParams2;
   defaultColDef;
@@ -42,13 +43,13 @@ export class QotlistComponent implements OnInit {
       { field: '最後異動日期', resizable: true},
       { field: '最後異動人員', resizable: true },*/
 
-      {  headerName:'序號',field: 'RFQ_ID', resizable: true,cellRenderer: 'agGroupCellRenderer',},
-      {  headerName:'詢價單號',field: 'RFQ_NUM', resizable: true},
-      {  headerName:'狀態',field: 'STATUS', resizable: true},
-      {  headerName:'建立日期',field: 'CREATE_DATE', resizable: true },
-      {  headerName:'建立人員',field: 'CREATE_BY', resizable: true},
-      {  headerName:'最後異動日期',field: 'LAST_UPDATE_DATE', resizable: true},
-      {  headerName:'最後異動人員',field: 'LAST_UPDATE_BY', resizable: true },
+      {  headerName:'序號',field: 'RfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
+      {  headerName:'狀態',field: 'Status', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
+      {  headerName:'詢價單號',field: 'RfqNum', resizable: true},
+      {  headerName:'建立日期',field: 'CreateDate', resizable: true },
+      {  headerName:'建立人員',field: 'CreateBy', resizable: true},
+      {  headerName:'最後異動日期',field: 'LastUpdateDate', resizable: true},
+      {  headerName:'最後異動人員',field: 'LastUpdateBy', resizable: true },
 
     ];
     this.detailCellRendererParams = {
@@ -62,14 +63,14 @@ export class QotlistComponent implements OnInit {
           { field: '建立人員', minWidth: 150 },
           { field: '最後異動日期', minWidth: 150 },
           { field: '最後異動人員', minWidth: 150 },*/
-          { headerName:'序號',field: 'QOT_ID' },
-          { headerName:'報價單號',field: 'QOT_NUM' },
-          { headerName:'狀態',field: 'STATUS', minWidth: 150 },
-          { headerName:'料號',field: 'MATNR'},
-          { headerName:'建立日期',field: 'CREATE_DATE', minWidth: 150 },
-          { headerName:'建立人員',field: 'CREATE_BY', minWidth: 150 },
-          { headerName:'最後異動日期',field: 'LAST_UPDATE_DATE', minWidth: 150 },
-          { headerName:'最後異動人員',field: 'LAST_UPDATE_BY', minWidth: 150 },
+          { headerName:'序號',field: 'QotId' },
+          { headerName:'報價單號',field: 'QotNum' },
+          { headerName:'狀態',field: 'Status', minWidth: 150 },
+          { headerName:'料號',field: 'MatnrId'},
+          { headerName:'建立日期',field: 'CreateDate', minWidth: 150 },
+          { headerName:'建立人員',field: 'CreateBy', minWidth: 150 },
+          { headerName:'最後異動日期',field: 'LastUpdateDate', minWidth: 150 },
+          { headerName:'最後異動人員',field: 'LastUpdateBy', minWidth: 150 },
           
         ],
         defaultColDef: {
@@ -88,7 +89,9 @@ export class QotlistComponent implements OnInit {
     this.form_searchQot = this._formBuilder.group({
       rfqno: [null],
       qotstatus: [1],
-      qotmatnr:[null]
+      qotmatnr:[null],
+      //??
+      vendor:"2"
     });
   }
   searchQOT() {
@@ -98,11 +101,26 @@ export class QotlistComponent implements OnInit {
   }
   refresh() {
     var query = {
+
       RFQ_NUM: this.form_searchQot.value["rfqno"] == null ? "" : this.form_searchQot.value["rfqno"],
       MATNR: this.form_searchQot.value["qotmatnr"] == null ? "" : this.form_searchQot.value["qotmatnr"],
-      STATUS: this.form_searchQot.value["qotstatus"] == null ? "0" : this.form_searchQot.value["qotstatus"]
+      STATUS: this.form_searchQot.value["qotstatus"] == null ? "0" : this.form_searchQot.value["qotstatus"],
+      //????
+      VENDOR:"2"
     }
     this.getOotList(query);
+  }
+  pageChange() {
+    this.refresh();
+  }
+
+  /*open(id) {
+    window.open('../srm/qot?id=' + id);
+  }*/
+  //???
+  getVendorId()
+  {
+
   }
   getOotList(query){
     if(query==null)
@@ -110,15 +128,18 @@ export class QotlistComponent implements OnInit {
       query = {
         RFQ_NUM: "",
         MATNR: "",
-        STATUS: "0",
+        STATUS: "",
+        VENDOR:"", 
         page: this.page,
         size: this.size
       }
     }
+
     //???等function 寫好打開
     this._srmQotService.GetQotList(query)
        .subscribe((result) => {
          this.rowDataQot = result;
+         console.info(result);
        });
   }
 

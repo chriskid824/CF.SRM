@@ -30,7 +30,7 @@
 
     <nz-form-item>
       <nz-form-control>
-        <button nz-button nzType="primary">查詢</button>
+        <button nz-button  class="mr-10" nzType="primary">查詢</button>
       </nz-form-control>
     </nz-form-item>
   </form>
@@ -39,17 +39,25 @@
 
 
 <nz-card>
-<p style=" font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 30px;text-align:left;">待辦清單</p>
+<p style=" font-weight: bold; font-style: inherit;  font-size: 30px;text-align:left;">待辦清單</p>
 <ag-grid-angular style="width: 1600px; height: 650px;"
                  class="ag-theme-alpine"
-                 [rowData]="rowData"
+                 [rowData]="rowDataQot"
                  [columnDefs]="columnDefs"
                  (ng-click)="onRowClicked($event)"
                  [rowMultiSelectWithClick]=true
                  [masterDetail]="true"
                  [detailCellRendererParams]="detailCellRendererParams"
+                 [defaultColDef]="defaultColDef"
+                 [pagination]="true"
+                 [paginationPageSize]="15"
                 >
 </ag-grid-angular>
+<div class="mt-10">
+  <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                 nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+  </nz-pagination>
+</div>
 </nz-card>
 <!--<mat-tab-group style="font-family:微軟正黑體;">
 
