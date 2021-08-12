@@ -14,26 +14,36 @@ namespace Convience.Entity.Entity.SRM
     {
         public SrmQotH()
         {
-            SrmMatnrs = new HashSet<SrmMatnr>();
-            SrmRfqHs = new HashSet<SrmRfqH>();
+            //SrmMatnrs = new HashSet<SrmMatnr>();
+            //SrmRfqHs = new HashSet<SrmRfqH>();
         }
+
+        public string CreateBy { get; set; }
+
+        public DateTime? CreateDate { get; set; }
+
+        public string Currency { get; set; }
+
+        public string LastUpdateBy { get; set; }
+
+        public DateTime? LastUpdateDate { get; set; }
+
+        public double? LeadTime { get; set; }
+
+        public int? MatnrId { get; set; }
+
+        public float? MinQty { get; set; }
+
         [Key]
         public int QotId { get; set; }
+
         public string QotNum { get; set; }
-        public int? VendorId { get; set; }
-        public int? MatnrId { get; set; }
         public int? RfqId { get; set; }
-        public string Currency { get; set; }
-        public double? LeadTime { get; set; }
-        public float? MinQty { get; set; }
-        public decimal? TotalAmount { get; set; }
         public int? Status { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public string CreateBy { get; set; }
-        public DateTime? LastUpdateDate { get; set; }
-        public string LastUpdateBy { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public int? VendorId { get; set; }
         //public virtual ICollection<SrmQotH> SrmQotHs { get; set; }
-        public virtual ICollection<SrmMatnr> SrmMatnrs { get; set; }
-        public virtual ICollection<SrmRfqH> SrmRfqHs { get; set; }
+        //public virtual ICollection<SrmMatnr> SrmMatnrs { get; set; }
+        // public virtual ICollection<SrmRfqH> SrmRfqHs { get; set; }
     }
 }
