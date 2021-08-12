@@ -29,8 +29,8 @@ namespace Convience.Service.SRM
         public void Add(SrmQotH[] qoths);
         public void UpdateStatus(int status, SrmRfqH rfqH);
         public SrmQotH[] Get(QueryQot query);
-        public IEnumerable<SrmQotH> GetQotList();
-        public IEnumerable<SrmRfqH> GetQotList(QueryQotList query);
+        public IEnumerable<SrmRfqH> GetQotList();
+        public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -81,13 +81,7 @@ namespace Convience.Service.SRM
                 return qotQurty.ToArray();
             }
         }
-        public IEnumerable<SrmQotH> GetQotList()
-        {
-            IEnumerable<SrmQotH> result = _context.SrmQotHs.ToList();//.Where(p => p.Status == 0);
-            return result.ToList();
-            //return _context.SrmQotHs.Include(m => m.SrmRfqHs).ToList();
 
-        }
 
         /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
         {
@@ -127,25 +121,76 @@ namespace Convience.Service.SRM
             qotlist = qotlist.Where(p => p.VENDOR_ID == query.vendor);
             return qotlist;           
         }*/
-
-        public IEnumerable<SrmRfqH> GetQotList(QueryQotList query)
+        public IEnumerable<SrmRfqH> GetQotList()
         {
-            /*var result = _context.SrmQotHs.ToList();
+            //只帶供應商
+            var result = _context.SrmRfqHs
+                .ToList();
             // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
             // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
             result.ForEach(p => {
-                p.SrmRfqHs = _context.SrmRfqHs.Where(m => m.RfqId == p.RfqId).ToList();
-                p.SrmMatnrs = _context.SrmMatnrs.Where(m => m.MatnrId == p.MatnrId).ToList();
-            });*/
-
-
-            var result = _context.SrmRfqHs.ToList();
-            // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
-            // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
-            result.ForEach(p => {
-                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+                //p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
             });
             return result;
+
+        }
+        //原本的
+        /*public IEnumerable<SrmRfqH> GetQotList(QueryQotList query)
+        {
+            //只帶供應商
+            var result = _context.SrmRfqHs
+                .ToList();
+            // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+            // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p => {
+                //p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
+            });
+            return result;
+
+        }*/
+        //原本的
+
+
+        public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
+        {
+
+            var result = _context.SrmRfqHs.Join(
+                _context.SrmQotHs,
+                r => r.RfqId,
+                q => q.RfqId,
+                (r, q) => new ViewSrmQotList
+                {
+                    RFQ_NUM = r.RfqNum,
+                    RSTATUS = r.Status,
+                    RFQ_ID = r.RfqId,
+                    RCREATE_DATE = r.CreateDate,
+                    RCREATE_BY = r.CreateBy,
+                    RLAST_UPDATE_DATE = r.LastUpdateDate,
+                    RLAST_UPDATE_BY = r.LastUpdateBy,
+                    QOT_ID = q.QotId,
+                    QOT_NUM = q.QotNum,
+                    QSTATUS = q.Status,
+                    QCREATE_DATE = q.CreateDate,
+                    QCREATE_BY = q.CreateBy,
+                    QLAST_UPDATE_DATE = q.LastUpdateDate,
+                    QLAST_UPDATE_BY = q.LastUpdateBy,
+                    MATNR_ID = q.MatnrId,
+                    VENDOR_ID = q.VendorId
+                }
+                ).ToList();
+              
+            // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+            // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p =>
+            {
+                p.MATNR = _context.SrmMatnrs.Find(p.MATNR_ID).SapMatnr;
+                //p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
+            });
+            int vendor = query.vendor;
+            return result.Where(p => p.VendorId == vendor).ToList();
         }
     }
 }

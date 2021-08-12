@@ -82,6 +82,12 @@ namespace Convience.Model.Models.SRM
     }
     public class ViewSrmQotList : SrmQotH
     {
+        public ViewSrmQotList()
+        {
+            SrmQotHs = new HashSet<SrmQotH>();
+        }
+        public virtual ICollection<SrmQotH> SrmQotHs { get; set; }
+
         public string RFQ_NUM { get; set; }
         public int? RFQ_STATUS { get; set; }
         public int QOT_ID { get; set; }

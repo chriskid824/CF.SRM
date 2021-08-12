@@ -12,8 +12,9 @@ import { SrmQotService } from '../../../business/srm/srm-qot.service';
 import { Process } from '../model/Process';
 import { Surface } from '../model/Surface';
 import { Other } from '../model/Other';
-import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+//import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { QotH } from '../model/Qot';
+import { ViewChild } from '@angular/core';
 
 
 interface Food {
@@ -33,8 +34,9 @@ export class QotComponent implements OnInit {
     {value: 'pizza-1', viewValue: 'Pizza'},
     {value: 'tacos-2', viewValue: 'Tacos'}
   ];
+  @ViewChild('tree', { static: true })
   tree: any;
-  departmentNode: NzTreeNodeOptions[] = [];
+  //departmentNode: NzTreeNodeOptions[] = [];
   selectedDepartmentKey: string = '';
   editForm_Material: FormGroup = new FormGroup({});
   editForm_Process: FormGroup = new FormGroup({});

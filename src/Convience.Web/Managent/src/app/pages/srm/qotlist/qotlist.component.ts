@@ -43,13 +43,13 @@ export class QotlistComponent implements OnInit {
       { field: '最後異動日期', resizable: true},
       { field: '最後異動人員', resizable: true },*/
 
-      {  headerName:'序號',field: 'RfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
-      {  headerName:'狀態',field: 'Status', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
-      {  headerName:'詢價單號',field: 'RfqNum', resizable: true},
-      {  headerName:'建立日期',field: 'CreateDate', resizable: true },
-      {  headerName:'建立人員',field: 'CreateBy', resizable: true},
-      {  headerName:'最後異動日期',field: 'LastUpdateDate', resizable: true},
-      {  headerName:'最後異動人員',field: 'LastUpdateBy', resizable: true },
+      {  headerName:'序號',field: 'RFQ_ID', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
+      {  headerName:'狀態',field: 'RSTATUS', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
+      {  headerName:'詢價單號',field: 'RFQ_NUM', resizable: true},
+      {  headerName:'建立日期',field: 'RCREATE_DATE', resizable: true },
+      {  headerName:'建立人員',field: 'RCREATE_BY', resizable: true},
+      {  headerName:'最後異動日期',field: 'RLAST_UPDATE_DATE', resizable: true},
+      {  headerName:'最後異動人員',field: 'RLAST_UPDATE_BY', resizable: true },
 
     ];
     this.detailCellRendererParams = {
@@ -63,14 +63,14 @@ export class QotlistComponent implements OnInit {
           { field: '建立人員', minWidth: 150 },
           { field: '最後異動日期', minWidth: 150 },
           { field: '最後異動人員', minWidth: 150 },*/
-          { headerName:'序號',field: 'QotId' },
-          { headerName:'報價單號',field: 'QotNum' },
-          { headerName:'狀態',field: 'Status', minWidth: 150 },
-          { headerName:'料號',field: 'MatnrId'},
-          { headerName:'建立日期',field: 'CreateDate', minWidth: 150 },
-          { headerName:'建立人員',field: 'CreateBy', minWidth: 150 },
-          { headerName:'最後異動日期',field: 'LastUpdateDate', minWidth: 150 },
-          { headerName:'最後異動人員',field: 'LastUpdateBy', minWidth: 150 },
+          { headerName:'序號',field: 'QOT_ID' },
+          { headerName:'報價單號',field: 'QOT_NUM' },
+          { headerName:'狀態',field: 'QSTATUS', minWidth: 150 },
+          { headerName:'料號',field: 'MATNR'},
+          { headerName:'建立日期',field: 'QCREATE_DATE', minWidth: 150 },
+          { headerName:'建立人員',field: 'QCREATE_BY', minWidth: 150 },
+          { headerName:'最後異動日期',field: 'QLAST_UPDATE_DATE', minWidth: 150 },
+          { headerName:'最後異動人員',field: 'QLAST_UPDATE_BY', minWidth: 150 },
           
         ],
         defaultColDef: {
@@ -93,6 +93,7 @@ export class QotlistComponent implements OnInit {
       //??
       vendor:"2"
     });
+    this.refresh();
   }
   searchQOT() {
     this.refresh();
@@ -105,8 +106,9 @@ export class QotlistComponent implements OnInit {
       RFQ_NUM: this.form_searchQot.value["rfqno"] == null ? "" : this.form_searchQot.value["rfqno"],
       MATNR: this.form_searchQot.value["qotmatnr"] == null ? "" : this.form_searchQot.value["qotmatnr"],
       STATUS: this.form_searchQot.value["qotstatus"] == null ? "0" : this.form_searchQot.value["qotstatus"],
-      //????
-      VENDOR:"2"
+      //????待vendor
+      //getVendorId()
+      VENDOR:2
     }
     this.getOotList(query);
   }
