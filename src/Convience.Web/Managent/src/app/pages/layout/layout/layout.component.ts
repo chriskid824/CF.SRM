@@ -84,6 +84,13 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'deliveryl', routerLink: '/srm/deliveryl', iconType: 'fund-view', firstBreadcrumb: '出貨單', lastBreadcrumb: '出貨單查詢', name: '出貨單查詢', },
       ]
     },
+    {
+      canOperate: 'qot', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '報價',
+      children: [
+        { canOperate: 'qotlist', routerLink: '/srm/qotlist', iconType: 'fund-view', firstBreadcrumb: '報價單查詢', lastBreadcrumb: '報價單查詢', name: '報價單查詢', },
+        { canOperate: 'qot', routerLink: '/srm/qot', iconType: 'fund-view', firstBreadcrumb: '報價作業', lastBreadcrumb: '報價作業', name: '報價作業', },
+      ]
+    }
   ];
 
   // 面包渣数据
