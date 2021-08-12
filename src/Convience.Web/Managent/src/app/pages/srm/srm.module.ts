@@ -29,6 +29,7 @@ import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select'; 
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       { path: "deliveryl", component: DelyveryLComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
+      //{ path: "qotlist", component: QotlistComponent},
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
       { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
     ]),
@@ -73,6 +75,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     MatFormFieldModule,
     MatSelectModule,
     NzIconModule,
+    MatCheckboxModule
   ]
 })
 export class SrmModule { }
