@@ -120,8 +120,11 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query)
         {
             var result = _context.SrmDeliveryHs
+                .AndIfHaveValue(query.replyDeliveryDate_s, p => p.CreateDate >= query.replyDeliveryDate_s.Value.Date)
+                .AndIfHaveValue(query.replyDeliveryDate_e, p => p.CreateDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
-                .AndIfCondition(query.status != 0, p => p.Status == query.status).Select(p => new ViewSrmDeliveryH
+                .AndIfCondition(query.status != 0, p => p.Status == query.status)
+                .Select(p => new ViewSrmDeliveryH
                 {
                     DeliveryId = p.DeliveryId,
                     DeliveryNum = p.DeliveryNum,
@@ -131,9 +134,7 @@ namespace Convience.Service.SRM
                     LastUpdateDate = p.LastUpdateDate,
                     LastUpdateBy = p.LastUpdateBy
                 })
-                .AndIfHaveValue(query.replyDeliveryDate_s, p => p.CreateDate >= query.replyDeliveryDate_s.Value.Date)
-                .AndIfHaveValue(query.replyDeliveryDate_e, p => p.CreateDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
-                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList()
+
                 .ToList();
             result.ForEach(p =>
             {
@@ -153,11 +154,14 @@ namespace Convience.Service.SRM
                                        Matnr = matnr.SapMatnr,
                                        PoNum = poh.PoNum,
                                        Qty = pol.Qty,
+                                       Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
                                    })
                                    .Where(l => l.DeliveryId == p.DeliveryId)
-                                   .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1).ToList();
+                                   .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), l => l.PoNum.IndexOf(query.poNum) > -1).ToList()
+                                   .AndIfCondition(query.deliveryLId != 0, l => l.DeliveryLId == query.deliveryLId)
+                                   .ToList();
             });
             return result;
         }
@@ -227,6 +231,7 @@ namespace Convience.Service.SRM
 
             result.ForEach(p =>
             {
+                var list = _context.SrmMatnrs.Where(m => m.MatnrId == p.MatnrId).ToList();
                 p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).SapMatnr;
                 p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
                 p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);

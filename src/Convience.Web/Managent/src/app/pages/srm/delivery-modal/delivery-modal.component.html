@@ -40,7 +40,8 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
-          <td><qrcode style="float: right" [qrdata]="'www.google.com'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+          <!-- <td><qrcode style="float: right" [qrdata]="'/srm/deliveryreceive/${data.DeliveryLId}/${deliverydata.DeliveryNum}'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td> -->
+          <td><qrcode style="float: right" [qrdata]="data.Url" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
           <td>{{ data.DeliveryLId }}</td>
           <td>{{ data.Matnr }}</td>
           <td>{{ data.Description }}</td>

@@ -62,7 +62,7 @@ import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.co
       { path: "deliveryh", component: PoDetailComponent },
       { path: "deliveryl", component: DelyveryLComponent },
       { path: "deliverymodal", component: DeliveryModalComponent },
-      { path: "deliveryreceive", component: DeliveryReceiveComponent },
+      { path: "deliveryreceive/:deliveryLId/:deliveryNum", component: DeliveryReceiveComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       //{ path: "qotlist", component: QotlistComponent},

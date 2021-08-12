@@ -13,8 +13,8 @@ export class SrmDeliveryService {
   GetDelivery(query) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/GetDelivery`,query);
   }
-  GetDeliveryL(data) {
-    return this.httpClient.get(`${this.uriConstant.SrmPo}/GetDeliveryL?DeliveryId=${data.DeliveryId}&DeliveryLId=${data.DeliveryLId}`);
+  GetDeliveryL(query) {
+    return this.httpClient.get(`${this.uriConstant.SrmDelivery}/GetDeliveryL?DeliveryLId=${query.deliveryLId}&DeliveryNum=${query.deliveryNum}`);
   }
   AddDelivery(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/AddDelivery`,po);

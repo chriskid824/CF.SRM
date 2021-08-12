@@ -11,11 +11,13 @@ namespace Convience.Model.Models.SRM
     public class QueryPoList
     {
         public string buyer { get; set; }
+        public int deliveryLId { get; set; }
         public string deliveryNum { get; set; }
         public string poNum { get; set; }
         public DateTime? replyDeliveryDate_e { get; set; }
         public DateTime? replyDeliveryDate_s { get; set; }
         public int status { get; set; }
+        public string host { get; set; }
     }
 
     public class ViewSrmDeliveryH : SrmDeliveryH
@@ -36,6 +38,7 @@ namespace Convience.Model.Models.SRM
         public float? Qty { get; set; }
         public string WoItem { get; set; }
         public string WoNum { get; set; }
+        public string Url { get; set; }
     }
 
     public class ViewSrmPoL : SrmPoL

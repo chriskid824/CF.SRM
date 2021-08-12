@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { DatePipe } from '@angular/common'
+
 @Component({
   selector: 'app-delivery-modal',
   templateUrl: './delivery-modal.component.html',
@@ -87,7 +87,6 @@ export class DeliveryModalComponent implements OnInit {
     };
     this.deliverydata=this.data.data;
     this.rowData = this.data.data.SrmDeliveryLs;
-    console.info(this.data.data);
     this.Title=this.data.paramname+" - "+this.data.columnname+" - "+this.data.valuetype;
     this.sideBar = {
       toolPanels: [

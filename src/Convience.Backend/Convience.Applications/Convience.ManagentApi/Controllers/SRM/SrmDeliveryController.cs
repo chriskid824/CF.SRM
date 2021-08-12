@@ -27,6 +27,14 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             _srmPoService = srmPoService;
         }
+
+        [HttpPost("AddDelivery")]
+        public IActionResult AddDelivery(List<ViewSrmPoL> pols)
+        {
+            if (_srmPoService.AddDelivery(pols)) return Ok();
+            return BadRequest("出貨單生成失敗");
+        }
+
         [HttpPost("GetDelivery")]
         public string GetDelivery(JObject query)
         {
@@ -42,6 +50,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             //var aaa = query.Property("poNum");
             q.deliveryNum = query["deliveryNum"].ToString();
             q.status = (int)query["status"];
+            q.host = Request.Host.ToString();
             var aaa = _srmPoService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
@@ -50,11 +59,24 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
-        [HttpPost("AddDelivery")]
-        public IActionResult AddDelivery(List<ViewSrmPoL> pols)
+
+        [HttpGet("GetDeliveryL")]
+        public string GetDeliveryL(int deliveryLId, string deliveryNum)
         {
-            if(_srmPoService.AddDelivery(pols)) return Ok();
-            return BadRequest("出貨單生成失敗");
+            //var url=HttpContext.Current.Request.Url;
+            if ((string.IsNullOrEmpty(deliveryNum) || deliveryNum == "0") && deliveryLId == 0) return null;
+            QueryPoList q = new QueryPoList();
+            //var aaa = query.Property("poNum");
+            q.deliveryNum = deliveryNum;
+            q.deliveryLId = deliveryLId;
+            q.host = Request.Host.ToString();
+            var aaa = _srmPoService.GetDelivery(q);
+
+            return JsonConvert.SerializeObject(aaa, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
         }
     }
 }
