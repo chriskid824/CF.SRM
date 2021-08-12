@@ -23,25 +23,35 @@ namespace Convience.Service.SRM
 {
     public interface ISrmPoService
     {
+        public bool AddDelivery(List<ViewSrmPoL> data);
+
+        public bool CheckAllReply(int id);
+
         /// <summary>
         /// 取得全部角色
         /// </summary>
         public IEnumerable<SrmPoH> GetAll();
+
         public IEnumerable<SrmPoH> GetAll(QueryPoList query);
+
+        public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
+
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
-        public IEnumerable<SrmDeliveryH> GetDelivery(QueryPoList query);
+
         public bool UpdateReplyDeliveryDate(SrmPoL data);
+
         public bool UpdateStatus(int id, int status);
-        public bool AddDelivery(List<ViewSrmPoL> data);
-        public bool CheckAllReply(int id);
     }
+
     public class SrmPoService : ISrmPoService
     {
+        private readonly SRMContext _context;
+
         //private readonly IMapper _mapper;
         private readonly IRepository<SrmPoH> _srmPohRepository;
+
         private readonly IRepository<SrmPoL> _srmPolRepository;
-        private readonly SRMContext _context;
-        IMapper _mapper;
+        private IMapper _mapper;
 
         public SrmPoService(
             //IMapper mapper,
@@ -54,15 +64,49 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
+        public bool AddDelivery(List<ViewSrmPoL> data)
+        {
+            var neworder = _context.SrmDeliveryHs
+    .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
+            if (neworder == null) return false;
+            data.ForEach(p =>
+            {
+                SrmDeliveryL l = new SrmDeliveryL()
+                {
+                    DeliveryId = neworder.DeliveryId,
+                    PoId = p.PoId,
+                    PoLId = p.PoLId,
+                    DeliveryQty = p.DeliveryQty,
+                    QmQty = 0
+                };
+                _context.SrmDeliveryLs.Add(l);
+                SrmPoL pol = _context.SrmPoLs.Find(p.PoId, p.PoLId);
+                pol.Status = 14;
+                _context.SrmPoLs.Update(pol);
+            });
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool CheckAllReply(int id)
+        {
+            //必須是待接收 或是已接收狀態
+            if (_context.SrmPoHs.Find(id).Status == 21 || _context.SrmPoHs.Find(id).Status == 11)
+            {
+                if (_context.SrmPoLs.Any(p => p.PoId == id && p.ReplyDeliveryDate == null))
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public IEnumerable<SrmPoH> GetAll()
         {
-            IEnumerable<SrmPoH> result = _context.SrmPoHs.ToList();
-            //foreach (var item in result)
-            //{
-            //    item.SrmPoLs = (ICollection<SrmPoL>)_srmPolRepository.Get(r => r.PoId == item.PoId);
-            //}
             return _context.SrmPoHs.Include(m => m.SrmPoLs).ToList();
         }
+
         public IEnumerable<SrmPoH> GetAll(QueryPoList query)
         {
             var result = _context.SrmPoHs
@@ -72,73 +116,138 @@ namespace Convience.Service.SRM
 
             return result.Include(m => m.SrmPoLs).ToList();
         }
+
+        public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query)
+        {
+            var result = _context.SrmDeliveryHs
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
+                .AndIfCondition(query.status != 0, p => p.Status == query.status).Select(p => new ViewSrmDeliveryH
+                {
+                    DeliveryId = p.DeliveryId,
+                    DeliveryNum = p.DeliveryNum,
+                    Status = p.Status,
+                    CreateDate = p.CreateDate,
+                    CreateBy = p.CreateBy,
+                    LastUpdateDate = p.LastUpdateDate,
+                    LastUpdateBy = p.LastUpdateBy
+                })
+                .AndIfHaveValue(query.replyDeliveryDate_s, p => p.CreateDate >= query.replyDeliveryDate_s.Value.Date)
+                .AndIfHaveValue(query.replyDeliveryDate_e, p => p.CreateDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList()
+                .ToList();
+            result.ForEach(p =>
+            {
+                p.SrmDeliveryLs = (from l in _context.SrmDeliveryLs
+                                   join pol in _context.SrmPoLs on new { PoId = l.PoId.Value, PoLId = l.PoLId.Value } equals new { PoId = pol.PoId, PoLId = pol.PoLId }
+                                   join poh in _context.SrmPoHs on l.PoId equals poh.PoId
+                                   join matnr in _context.SrmMatnrs on pol.MatnrId equals matnr.MatnrId
+                                   select new ViewSrmDeliveryL
+                                   {
+                                       DeliveryLId = l.DeliveryLId,
+                                       DeliveryId = l.DeliveryId,
+                                       PoId = l.PoId,
+                                       PoLId = l.PoLId,
+                                       DeliveryQty = l.DeliveryQty,
+                                       QmQty = l.QmQty,
+                                       Description = pol.Description,
+                                       Matnr = matnr.SapMatnr,
+                                       PoNum = poh.PoNum,
+                                       Qty = pol.Qty,
+                                       //WoItem = pol.WoItem,
+                                       //WoNum = pol.WoNum,
+                                   })
+                                   .Where(l => l.DeliveryId == p.DeliveryId)
+                                   .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1).ToList();
+            });
+            return result;
+        }
+
+        public IEnumerable<SrmPoH> GetMatnrById(int id)
+        {
+            return _srmPohRepository.Get(r => r.PoId == id);
+        }
+
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query)
         {
-            var result = _context.SrmPoLs.Join(
-                _context.SrmPoHs,
-                l => l.PoId,
-                h => h.PoId,
-                (l, h) => new ViewSrmPoL
-                {
-                    PoNum = h.PoNum,
-                    PoLId = l.PoLId,
-                    PoId = l.PoId,
-                    MatnrId = l.MatnrId,
-                    Description = l.Description,
-                    Qty = l.Qty,
-                    Price = l.Price,
-                    DeliveryDate = l.DeliveryDate,
-                    ReplyDeliveryDate = l.ReplyDeliveryDate,
-                    DeliveryPlace = l.DeliveryPlace,
-                    CriticalPart = l.CriticalPart,
-                    InspectionTime = l.InspectionTime,
-                    Status = h.Status,
-                    VendorId = h.VendorId,
-                    TotalAmount = h.TotalAmount,
-                    Buyer = h.Buyer,                    
-                }
-                )
-                //.AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+            var result = (from l in _context.SrmPoLs
+                          join h in _context.SrmPoHs on l.PoId equals h.PoId
+                          select new ViewSrmPoL
+                          {
+                              PoNum = h.PoNum,
+                              PoLId = l.PoLId,
+                              PoId = l.PoId,
+                              MatnrId = l.MatnrId,
+                              Description = l.Description,
+                              Qty = l.Qty,
+                              Price = l.Price,
+                              DeliveryDate = l.DeliveryDate,
+                              ReplyDeliveryDate = l.ReplyDeliveryDate,
+                              DeliveryPlace = l.DeliveryPlace,
+                              CriticalPart = l.CriticalPart,
+                              InspectionTime = l.InspectionTime,
+                              Status = h.Status,
+                              VendorId = h.VendorId,
+                              TotalAmount = h.TotalAmount,
+                              Buyer = h.Buyer,
+                          })
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                 .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+
+            //var result = _context.SrmPoLs.Join(
+            //    _context.SrmPoHs,
+            //    l => l.PoId,
+            //    h => h.PoId,
+            //    (l, h) => new ViewSrmPoL
+            //    {
+            //        PoNum = h.PoNum,
+            //        PoLId = l.PoLId,
+            //        PoId = l.PoId,
+            //        MatnrId = l.MatnrId,
+            //        Description = l.Description,
+            //        Qty = l.Qty,
+            //        Price = l.Price,
+            //        DeliveryDate = l.DeliveryDate,
+            //        ReplyDeliveryDate = l.ReplyDeliveryDate,
+            //        DeliveryPlace = l.DeliveryPlace,
+            //        CriticalPart = l.CriticalPart,
+            //        InspectionTime = l.InspectionTime,
+            //        Status = h.Status,
+            //        VendorId = h.VendorId,
+            //        TotalAmount = h.TotalAmount,
+            //        Buyer = h.Buyer,
+            //    }
+            //    )
+            //    //.AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
+            //    .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+            //    .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
+            //    .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+            //    .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
             result.ForEach(p =>
             {
                 p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).SapMatnr;
                 p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
-                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q=>q.PoId==p.PoId &&q.PoLId==p.PoLId).Sum(q => q.DeliveryQty);
+                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);
             });
-
 
             //.AndIfCondition(query.status != 0, p => p.Status == query.status);
-            return result.Where(p=>p.RemainQty>0).ToList();
+            return result.Where(p => p.RemainQty > 0).ToList();
         }
-        public IEnumerable<SrmDeliveryH> GetDelivery(QueryPoList query)
-        {
-            var result = _context.SrmDeliveryHs
-    .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
-    .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
-            result.ForEach(p => {
-                p.SrmDeliveryLs = _context.SrmDeliveryLs.Where(m => m.DeliveryId == p.DeliveryId).ToList();
-            });
-            return result;
-        }
-        public IEnumerable<SrmPoH> GetMatnrById(int id)
-        {
-            return _srmPohRepository.Get(r => r.PoId == id);
-        }
+
         public IEnumerable<SrmPoL> GetPolById(int id)
         {
             return _srmPolRepository.Get(r => r.PoId == id);
         }
+
         public bool UpdateReplyDeliveryDate(SrmPoL data)
         {
             _context.SrmPoLs.Update(data);
             _context.SaveChanges();
             return true;
         }
+
         public bool UpdateStatus(int id, int status)
         {
             SrmPoH data = _context.SrmPoHs.Find(id);
@@ -156,37 +265,6 @@ namespace Convience.Service.SRM
             }
             _context.SaveChanges();
             return true;
-        }
-        public bool AddDelivery(List<ViewSrmPoL> data){
-            var neworder = _context.SrmDeliveryHs
-    .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
-            if(neworder==null) return false;
-            data.ForEach(p =>
-            {
-                SrmDeliveryL l = new SrmDeliveryL() {
-                    DeliveryId = neworder.DeliveryId,
-                    PoId=p.PoId,
-                    PoLId=p.PoLId,
-                    DeliveryQty=p.DeliveryQty,
-                    QmQty=0
-                };
-                _context.SrmDeliveryLs.Add(l);
-            });
-            _context.SaveChanges();
-            return true;
-        }
-        public bool CheckAllReply(int id)
-        {
-            //必須是待接收 或是已接收狀態
-            if (_context.SrmPoHs.Find(id).Status == 21 || _context.SrmPoHs.Find(id).Status==11)
-            {
-                if (_context.SrmPoLs.Any(p => p.PoId == id && p.ReplyDeliveryDate == null))
-                {
-                    return false;
-                }
-                return true;
-            }            
-            return false;
         }
     }
 }

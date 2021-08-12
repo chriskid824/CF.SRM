@@ -91,4 +91,6 @@ export class UriConfig {
     get SrmPrice(): string { return `${this._apiUri}/SrmPrice` };
 
     get SrmPo(): string { return `${this._apiUri}/SrmPo` };
+
+    get SrmDelivery(): string { return `${this._apiUri}/SrmDelivery` };
 }

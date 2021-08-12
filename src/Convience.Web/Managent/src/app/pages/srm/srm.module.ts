@@ -27,10 +27,14 @@ import { PoDetailComponent } from './po-detail/po-detail.component';
 import { QotlistComponent } from './qotlist/qotlist.component';
 import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select'; 
+import {MatSelectModule} from '@angular/material/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
+import { DeliveryModalComponent } from './delivery-modal/delivery-modal.component';
+import { MatDialogModule } from "@angular/material/dialog";
+import { QRCodeModule } from 'angularx-qrcode';
+import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +47,9 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
     PriceComponent,
     PoDetailComponent,
     QotlistComponent,
-    DelyveryLComponent
+    DelyveryLComponent,
+    DeliveryModalComponent,
+    DeliveryReceiveComponent
   ],
   imports: [
     CommonModule,
@@ -55,6 +61,8 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
       { path: "po", component: PoComponent },
       { path: "deliveryh", component: PoDetailComponent },
       { path: "deliveryl", component: DelyveryLComponent },
+      { path: "deliverymodal", component: DeliveryModalComponent },
+      { path: "deliveryreceive", component: DeliveryReceiveComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       //{ path: "qotlist", component: QotlistComponent},
@@ -78,6 +86,8 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
     NzIconModule,
     MatCheckboxModule,
     NzTreeModule,
+    MatDialogModule,
+    QRCodeModule,
   ]
 })
 export class SrmModule { }

@@ -1,0 +1,58 @@
+<nz-card [nzSize]="'small'" id="searchBar">
+  <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+    <nz-form-item>
+      <nz-form-label [nzFor]="'DELIVERY_NUM'">出貨單號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="出貨單號" [formControlName]="'DELIVERY_NUM'" [attr.id]="'DELIVERY_NUM'"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary">搜索</button>
+        <!--<button nz-button nzType="outline" type="button" class="ml-10"
+          (click)="resetSearchForm()">
+    重置
+  </button>-->
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+
+<nz-card>
+  <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false">
+    <thead>
+      <tr>
+        <th></th>
+        <th>項次</th>
+        <th>物料</th>
+        <th>物料說明</th>
+        <th>採購單號</th>
+        <th>採購項次</th>
+        <th>數量</th>
+        <th>單位</th>
+        <th>工單號碼</th>
+        <th>工單項次</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td><qrcode style="float: right" [qrdata]="'www.google.com'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+        <td>{{ data.DeliveryLId }}</td>
+        <td>{{ data.Matnr }}</td>
+        <td>{{ data.Description }}</td>
+        <td>{{ data.PoNum }}</td>
+        <td>{{ data.PoLId }}</td>
+        <td>{{ data.Qty }}</td>
+        <td></td>
+        <td>{{ data.WoNum }}</td>
+        <td>{{ data.WoItem }}</td>
+        <!-- <td>
+          <a>Action 一 {{ data.name }}</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a>Delete</a>
+        </td> -->
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>

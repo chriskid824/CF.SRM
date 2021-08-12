@@ -1,8 +1,10 @@
 // Custom Theming for NG-ZORRO
 // For more information: https://ng.ant.design/docs/customize-theme/en
-//@import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
 @import "~ng-zorro-antd/ng-zorro-antd.aliyun.less";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+//Wimport 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
+//import '../node_modules/antd-button-color/dist/css/style.css'; // or 'antd-button-color/dist/css/style.less'
 
 // Override less variables to here
 // View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
@@ -131,3 +133,35 @@ button {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/*
+move from component level css to style.css
+Here hiding is not required as the same is been displayed on screen
+
+@media screen {
+  #printable {
+      display: none;
+  }
+} */
+
+@media print {
+  body * {
+    visibility:hidden;
+  }
+  #printable, #printable * {
+    visibility:visible;
+  }
+  // #printable {
+  //   position:absolute;
+  //   left:0;
+  //   top:0;
+  // }
+}
+@page {
+  size: A4 landscape;
+  margin-top: 3cm;
+  margin-left: 3cm;
+}
+.ant-empty-description{
+   display: none;
+  }

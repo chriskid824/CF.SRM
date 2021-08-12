@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<div id="printThis">
+<!-- <h1 mat-dialog-title>{{Title}}</h1> -->
+<mat-dialog-content style="max-height: 80vh;" id="printable">
+  <nz-card>
+    <div class="row">
+      <img src="\assets\千附精密.png" style="float: left">
+      <qrcode style="float: right" [qrdata]="'www.google.com'" [width]="100" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode>
+    </div>
+    <h2 class="container" style="width: 100%;">
+      <div style="border:1px solid;height: 150px;" class="row">
+      <div class="col-md-2" style="margin-top: 15px;">出貨單號</div>
+      <div class="col-md-4" style="margin-top: 15px;">{{deliverydata.DeliveryNum}}</div>
+      <div class="col-md-2" style="margin-top: 15px;">供應商</div>
+      <div class="col-md-4" style="margin-top: 15px;">1{{deliverydata.VendorName}}</div>
+      <div class="col-md-2" style="margin-top: 15px;">出貨日期</div>
+      <div class="col-md-4" style="margin-top: 15px;">{{deliverydata.CreateDate| date}}</div>
+      <div class="col-md-2" style="margin-top: 15px;">供應商地址</div>
+      <div class="col-md-4" style="margin-top: 15px;">1{{deliverydata.Address}}</div>
+      <div class="col-md-2" style="margin-top: 15px;">送貨地址</div>
+      <div class="col-md-4" style="margin-top: 15px;">1{{deliverydata.DeliveryPlace}}</div>
+      <div class="col-md-2" style="margin-top: 15px;">供應商電話</div>
+      <div class="col-md-4" style="margin-top: 15px;">1{{deliverydata.TelPhone}}</div>
+      </div>
+    </h2>
+    <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th></th>
+          <th>項次</th>
+          <th>物料</th>
+          <th>物料說明</th>
+          <th>採購單號</th>
+          <th>採購項次</th>
+          <th>數量</th>
+          <th>單位</th>
+          <th>工單號碼</th>
+          <th>工單項次</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td><qrcode style="float: right" [qrdata]="'www.google.com'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+          <td>{{ data.DeliveryLId }}</td>
+          <td>{{ data.Matnr }}</td>
+          <td>{{ data.Description }}</td>
+          <td>{{ data.PoNum }}</td>
+          <td>{{ data.PoLId }}</td>
+          <td>{{ data.Qty }}</td>
+          <td></td>
+          <td>{{ data.WoNum }}</td>
+          <td>{{ data.WoItem }}</td>
+          <!-- <td>
+            <a>Action 一 {{ data.name }}</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a>Delete</a>
+          </td> -->
+        </tr>
+      </tbody>
+    </nz-table>
+    <!-- <ag-grid-angular #agGrid style="width: 100%; height: 400px;" id="myGrid" class="ag-theme-alpine"
+      [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowGroupPanelShow]="rowGroupPanelShow"
+      [rowGroupPanelShow]="true" [rowData]="rowData" (gridReady)="onGridReady($event)" [enableCharts]="true"
+      [enableRangeSelection]="true" [groupUseEntireRow]="false" [suppressAggFuncInHeader]="true"></ag-grid-angular> -->
+  </nz-card>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close mat-raised-button nbButton style="margin-right: 20px;">關閉</button>
+  <button mat-button cdkFocusInitial (click)="print()">列印</button>
+</mat-dialog-actions>
+</div>

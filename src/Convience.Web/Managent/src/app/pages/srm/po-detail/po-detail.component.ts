@@ -1,6 +1,7 @@
 import { Component, OnInit,ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
+import { SrmDeliveryService } from '../../../business/srm/srm-delivery.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 @Component({
   selector: 'app-po-detail',
@@ -22,7 +23,7 @@ export class PoDetailComponent implements OnInit {
   paginationNumberFormatter;
   rowData;
   searchForm: FormGroup = new FormGroup({});
-  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService) {
+  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService) {
     this.columnDefs = [
       {
         headerName:'採購單號',
@@ -57,9 +58,9 @@ export class PoDetailComponent implements OnInit {
         cellClassRules: {
           'rag-green': 'x == 12',
           'rag-amber': 'x == 11',
-          'rag-red': 'x == 10',
+          'rag-red': 'x == 21',
         },
-        valueFormatter:'switch(value){case 10 : return "待確認"; case 11 : return "已確認"; case 12 : return "已回覆"; default : return "未知";}'
+        valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return value;}'
       },
       {
         headerName:'採購單總金額',
@@ -218,7 +219,7 @@ export class PoDetailComponent implements OnInit {
     }
     let selectedData = selectedNodes.map(node => node.data);
     console.info(selectedData);
-    this._srmPoService.AddDelivery(selectedData)
+    this._srmDeliveryService.AddDelivery(selectedData)
     .subscribe((result) => {
       if(result==null) alert('出貨單生成成功');
     });

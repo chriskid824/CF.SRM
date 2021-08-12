@@ -76,29 +76,6 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
-        [HttpPost("GetDelivery")]
-        public string GetDelivery(JObject query)
-        {
-            if (query == null)
-            {
-                return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
-                    new JsonSerializerSettings()
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
-            }
-            QueryPoList q = new QueryPoList();
-            //var aaa = query.Property("poNum");
-            q.deliveryNum = query["deliveryNum"].ToString();
-            q.status = (int)query["status"];
-            var aaa = _srmPoService.GetDelivery(q);
-
-            return JsonConvert.SerializeObject(aaa, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        });
-        }
         [HttpPost("UpdateReplyDeliveryDate")]
         public IActionResult UpdateReplyDeliveryDate(JObject rfq)
         {
@@ -109,12 +86,6 @@ namespace Convience.ManagentApi.Controllers.SRM
                 _srmPoService.UpdateStatus(data.PoId, 12);
             }
             return Ok();
-        }
-        [HttpPost("AddDelivery")]
-        public IActionResult AddDelivery(List<ViewSrmPoL> pols)
-        {
-            if(_srmPoService.AddDelivery(pols)) return Ok();
-            return BadRequest("出貨單生成失敗");
         }
         [HttpGet("UpdateStatus")]
         public IActionResult UpdateStatus(int id)

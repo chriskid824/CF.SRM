@@ -112,7 +112,17 @@ export class PoComponent implements OnInit {
         }
       }
     ];
-    this.defaultColDef = { flex: 1 };
+    this.defaultColDef = {
+      editable: false,
+      enableRowGroup: true,
+      enablePivot: true,
+      enableValue: true,
+      sortable: true,
+      resizable: true,
+      filter: true,
+      flex: 1,
+      minWidth: 100,
+    };
     this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
       detailGridOptions: {
@@ -179,7 +189,17 @@ export class PoComponent implements OnInit {
           },
 
         ],
-        defaultColDef: { flex: 1 },
+        defaultColDef : {
+          editable: false,
+          enableRowGroup: true,
+          enablePivot: true,
+          enableValue: true,
+          sortable: true,
+          resizable: true,
+          filter: true,
+          flex: 1,
+          minWidth: 100,
+        },
       },
 
       getDetailRowData: function (params) {
