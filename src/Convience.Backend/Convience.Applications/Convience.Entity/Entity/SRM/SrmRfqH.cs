@@ -14,6 +14,11 @@ namespace Convience.Entity.Entity.SRM
     [Entity(DbContextType = typeof(SRMContext))]
     public partial class SrmRfqH
     {
+        public SrmRfqH()
+        {
+            SrmQotHs = new HashSet<SrmQotH>();
+        }
+
         public int RfqId { get; set; }
         public string RfqNum { get; set; }
         public int? Status { get; set; }
@@ -25,5 +30,6 @@ namespace Convience.Entity.Entity.SRM
         public string LastUpdateBy { get; set; }
         public DateTime? EndDate { get; set; }
         public string EndBy { get; set; }
+        public virtual ICollection<SrmQotH> SrmQotHs { get; set; }
     }
 }
