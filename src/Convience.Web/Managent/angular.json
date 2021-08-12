@@ -47,7 +47,8 @@
               "src/styles.less",
               "./node_modules/ag-grid-community/dist/styles/ag-grid.css",
               "./node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css",
-              "./node_modules/ag-grid-community/dist/styles/ag-theme-material.css"
+              "./node_modules/ag-grid-community/dist/styles/ag-theme-material.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js"

@@ -3,7 +3,7 @@
   <div class="right">
     <nz-card [nzSize]="'small'">
       <div class="col-md-12 colStyle">
-        <h1 id="heading001" class="head1" style="font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 24px; position: relative;">
+        <h1 id="heading001" class="head1" style="display:none; font-weight: bold; font-style: inherit; font-family: 微軟正黑體; font-size: 24px; position: relative;">
           詢價單
           <span style="font-size: 12px; float: right; text-align: left; font: small-caption ">
             單號:{{H.rfqNum}}
@@ -14,20 +14,21 @@
             <br>填單者:{{name}}
           </span>
         </h1>
-
-        <!--<div class="mr-auto">
-          單號:{{H.rfqNum}}
+        <div class="row">
+          <div class="col-3">
+            單號:{{H.rfqNum}}
+          </div>
+          <div class="col-3">
+            狀態:{{H.viewstatus}}
+          </div>
+          <div class="col-3">
+            申請日期:{{H.C_Date}}
+          </div>
+          <div class="col-3">
+            填單者:{{name}}
+          </div>
+</div>
         </div>
-        <div class="mr-auto">
-          狀態:{{H.viewstatus}}
-        </div>
-        <div class="mr-auto">
-          申請日期:{{H.C_Date}}
-        </div>
-        <div class="mr-auto">
-          填單者:{{name}}
-        </div>-->
-      </div>
       <div style="display: -webkit-box;margin-top:20px">
         <div>
           <form nz-form [formGroup]="formDetail">
@@ -80,7 +81,6 @@
                            (gridReady)="onGridReady($event)"
                            [enableCharts]="true"
                            [enableRangeSelection]="true"
-                           [masterDetail]="true"
                            [undoRedoCellEditing]="true"
                            [undoRedoCellEditingLimit]="5"
                            [detailRowAutoHeight]="true"
@@ -104,7 +104,6 @@
                            (gridReady)="onGridReady_VENDOR($event)"
                            [enableCharts]="true"
                            [enableRangeSelection]="true"
-                           [masterDetail]="true"
                            [undoRedoCellEditing]="true"
                            [undoRedoCellEditingLimit]="5"
                            [detailRowAutoHeight]="true"
@@ -137,7 +136,7 @@
     </nz-form-item>
     <button nz-button nzType="primary">搜索</button>
   </form>
-  <div style="height: 200px; overflow: auto; margin-left: 20px ">
+  <div style="height: 300px; overflow: auto; margin-left: 20px ">
     <!--<nz-checkbox-group [(ngModel)]="MatnrList"></nz-checkbox-group>-->
 
     <div class="mt-10">
@@ -150,7 +149,6 @@
             <th nzAlign="left" nzWidth="20px">料號</th>
             <th nzAlign="left" nzWidth="20px">物料內文</th>
             <th nzAlign="left" nzWidth="20px">物料群組</th>
-            <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
           </tr>
         </thead>
         <tbody>
@@ -161,9 +159,6 @@
             <td nzAlign="left">{{ data.srmMatnr1 }}</td>
             <td nzAlign="left">{{ data.description }}</td>
             <td nzAlign="left">{{ data.matnrGroup }}</td>
-            <!--<td nzAlign="center">
-          <nz-tag *ngIf="!data.isActive" [nzColor]="'red'">停用</nz-tag>
-        </td>-->
           </tr>
         </tbody>
       </nz-table>
@@ -191,7 +186,29 @@
     <button nz-button nzType="primary">搜索</button>
   </form>
   <div style="height: 300px; overflow: auto; margin-left: 20px ">
-    <nz-checkbox-group [(ngModel)]="VendorList"></nz-checkbox-group>
+    <!--<nz-checkbox-group [(ngModel)]="VendorList"></nz-checkbox-group>-->
+    <div class="mt-10">
+      <nz-table #dataTable nzSize="middle" [nzData]="VendorList" nzShowPagination="false" nzFrontPagination="false"
+                nzBordered="true">
+        <thead>
+          <tr>
+            <th nzWidth="10px"
+                [nzLeft]="fixedColumn"></th>
+            <th nzAlign="left" nzWidth="20px">供應商代碼</th>
+            <th nzAlign="left" nzWidth="20px">供應商名稱</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dataTable.data;let i = index" (click)="open(data.id)">
+            <td [nzLeft]="fixedColumn"
+                [nzShowCheckbox]="true"
+                [(nzChecked)]="data.checked"></td>
+            <td nzAlign="left">{{ data.srmVendor1 }}</td>
+            <td nzAlign="left">{{ data.vendorName }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
   </div>
   <form nz-form [formGroup]="vendorListForm" (ngSubmit)="submitVendorList()">
     <nz-form-item>

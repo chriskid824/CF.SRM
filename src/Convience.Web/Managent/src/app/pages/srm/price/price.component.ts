@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Rfq } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
 import datepickerFactory from 'jquery-datepicker';
+import { NzTreeNodeOptions, NzTreeNode, NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 
 declare const $: any;
 datepickerFactory($);
@@ -17,6 +18,7 @@ datepickerFactory($);
 })
 export class PriceComponent implements OnInit {
   matnrList: FormGroup = new FormGroup({});
+  mats: FormGroup = new FormGroup({});
   selectedMatnr;
   matnrs = [];
   rfq: Rfq;
@@ -41,16 +43,18 @@ export class PriceComponent implements OnInit {
   rowSelection = "multiple";
   components;
 
-  rowData_matnr;
-  rowData_material;
-  rowData_process;
-  rowData_surface;
-  rowData_other;
-  rowData_inforecord;
+  rowData_matnr=[];
+  rowData_material=[];
+  rowData_process=[];
+  rowData_surface=[];
+  rowData_other=[];
+  rowData_inforecord=[];
 
   gridApi_inforecord;
   columnApi_inforecord;;
   //gird
+
+  nodes: NzTreeNodeOptions[] = [];
 
   constructor(private activatedRoute: ActivatedRoute
     , private _formBuilder: FormBuilder
@@ -197,6 +201,7 @@ export class PriceComponent implements OnInit {
     this.matnrList = this._formBuilder.group({
       selectedMatnr: [null]
     });
+    this.mats = this._formBuilder.group({});
     this.init();
     this.initGrid();
   }
@@ -204,10 +209,14 @@ export class PriceComponent implements OnInit {
     this._srmRfqService.GetRfqData(this.rfqId).subscribe(result => {
       this.rfq = result;
       this.matnrs = [];
-      console.log(result);
       console.log(this.rfq);
       this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr, value: row.matnrId }));
       this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });
+
+      //this.nodes = [{ title: '组织结构', key: null, icon: 'global', expanded: true, children: [] }];;
+      this.nodes = [];
+      this.rfq.m.forEach(row => this.nodes.push({ title: row.srmMatnr, key: row.matnrId.toString(), iicon: 'appstore', children: [] }))
+      // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
     });
   }
@@ -599,6 +608,12 @@ export class PriceComponent implements OnInit {
       console.log(result);
     });
   }
+
+  changedMatnr(value) {
+    this.matnrList.setValue({ selectedMatnr: value.keys[0] });
+    this.search();
+  }
+
   onGridReady_inforecord(params) {
     this.gridApi_inforecord = params.api;
     this.columnApi_inforecord = params.columnApi;

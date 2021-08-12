@@ -45,8 +45,11 @@ namespace Convience.Service.SRM
 
         public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery)
         {
+            int[] werks = Array.ConvertAll(matnrQuery.Werks.ToString().Split(","), s => int.Parse(s));
             int skip = (matnrQuery.Page - 1) * matnrQuery.Size;
-            var resultQuery = _srmMatnrRepository.Get().AndIfHaveValue(matnrQuery.Matnr, r => r.SrmMatnr1.Contains(matnrQuery.Matnr));
+            var resultQuery = _srmMatnrRepository.Get()
+                .AndIfHaveValue(matnrQuery.Matnr, r => r.SrmMatnr1.Contains(matnrQuery.Matnr))
+                .Where(r => werks.Contains(r.Werks.Value));
             var matnrs = resultQuery.Skip(skip).Take(matnrQuery.Size).ToArray();
             return new PagingResultModel<SrmMatnr>
             {

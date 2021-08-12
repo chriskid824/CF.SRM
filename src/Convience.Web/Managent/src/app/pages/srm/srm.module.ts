@@ -30,6 +30,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select'; 
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { NzTreeModule } from 'ng-zorro-antd/tree';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatSelectModule,
     NzIconModule,
     MatCheckboxModule
+    NzTreeModule
   ]
 })
 export class SrmModule { }

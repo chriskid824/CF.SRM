@@ -11,10 +11,12 @@ namespace Convience.Model.Models.SRM
     public record QueryMatnrModel:PageQueryModel
     {
         public string Matnr { get; set; }
+        public string Werks { get; set; }
     }
     public record QueryVendorModel : PageQueryModel
     {
         public string Vendor { get; set; }
+        public string Werks { get; set; }
     }
     public class ViewSrmRfqM : SrmRfqM
     {
@@ -34,6 +36,12 @@ namespace Convience.Model.Models.SRM
         public string sourcerName { get; set; }
         public string viewstatus {
             get {return ((Status)Status).ToString(); }
+        }
+        public string C_date {
+            get { return CreateDate.HasValue? CreateDate.Value.ToString("yyyy/MM/dd"):""; }
+        }
+        public string C_by {
+            get; set;
         }
     }
     public record ResultRfqModel {
