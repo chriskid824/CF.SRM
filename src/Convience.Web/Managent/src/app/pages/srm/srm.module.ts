@@ -76,8 +76,8 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
     MatFormFieldModule,
     MatSelectModule,
     NzIconModule,
-    MatCheckboxModule
-    NzTreeModule
+    MatCheckboxModule,
+    NzTreeModule,
   ]
 })
 export class SrmModule { }
