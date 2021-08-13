@@ -222,7 +222,7 @@ namespace Convience.Service.SRM
                               })
                               //.ToList();
                               .Where(p => p.QVendorId.Value == query.vendor)
-                              .AndIfHaveValue(query.matnr, p => p.QMatnr == query.matnr)
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
                               .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
                               .ToList();            
             });
