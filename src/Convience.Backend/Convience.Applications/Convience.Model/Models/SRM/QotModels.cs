@@ -162,4 +162,53 @@ namespace Convience.Model.Models.SRM
         public string QVendor { get; set; }
         public string QMatnr { get; set; }
     }
+	public class ViewSummary :ViewSrmRfqH{
+        public string vendor { get; set; }
+        public string vendorName { get; set; }
+        public string matnr { get; set; }
+        public string material { get; set; }
+        public string volume { get; set; }
+        public string weight { get; set; }
+        public string machineName { get; set; }
+        public string qotId { get; set; }
+        public string qotNum { get; set; }
+        public string mMaterial { get; set; }
+        public string mPrice { get; set; }
+        public string mLength { get; set; }
+        public string mWidth { get; set; }
+        public string mHeight { get; set; }
+        public string mDensity { get; set; }
+        public string mWeight { get; set; }
+        public string mCostPrice { get; set; }
+        public string mNote { get; set; }
+        public string pMachine { get; set; }
+        public string pProcessNum { get; set; }
+        public string pHours { get; set; }
+        public string pPrice { get; set; }
+        public string pSubTotal { get; set; }
+        public string pNote { get; set; }
+        public string sProcess { get; set; }
+        public string sTimes { get; set; }
+        public string sPrice { get; set; }
+        public string sSubTotal { get; set; }
+        public string sMethod { get; set; }
+        public string sNote { get; set; }
+        public string oItem { get; set; }
+        public string oDescription { get; set; }
+        public string oPrice { get; set; }
+        public string oNote { get; set; }
+        public string aTotal { get; set; }
+        public string bTotal { get; set; }
+        public string cTotal { get; set; }
+        public string dTotal { get; set; }
+        public string price { get; set; }
+        public string unit { get; set; }
+        public string ekgry { get; set; }
+        public string leadTime { get; set; }
+        public string standQty { get; set; }
+        public string minQty { get; set; }
+        public string taxcode { get; set; }
+        public string effectiveDate { get; set; }
+        public string expirationDate { get; set; }
+    }
 }

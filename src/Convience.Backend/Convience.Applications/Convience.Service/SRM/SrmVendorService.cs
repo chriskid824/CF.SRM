@@ -26,6 +26,7 @@ namespace Convience.Service.SRM
         /// 取得全部角色
         /// </summary>
         public PagingResultModel<SrmVendor> GetVendor(QueryVendorModel vendorQuery);
+        public SrmVendor GetVendorById(int id);
     }
     class SrmVendorService:ISrmVendorService
     {
@@ -62,9 +63,9 @@ namespace Convience.Service.SRM
             };
         }
 
-        public IEnumerable<SrmVendor> GetVendorById(int id)
+        public SrmVendor GetVendorById(int id)
         {
-            return _srmVendorRepository.Get(r => r.VendorId == id);
+            return _srmVendorRepository.Get(r => r.VendorId == id).FirstOrDefault();
         }
 
     }

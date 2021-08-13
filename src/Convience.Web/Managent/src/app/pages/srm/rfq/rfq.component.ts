@@ -7,7 +7,8 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { DatePipe } from '@angular/common'
 import { StorageService } from '../../../services/storage.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutComponent } from '../../layout/layout/layout.component';
 
 @Component({
   selector: 'app-rfq',
@@ -60,12 +61,16 @@ export class RfqComponent implements OnInit {
     private _modalService: NzModalService,
     private _formBuilder: FormBuilder,
     private _srmRfqService: SrmRfqService,
-    public datepipe: DatePipe) {
+    public datepipe: DatePipe,
+    private _router: Router,
+    private _layout: LayoutComponent  ) {
     console.log(_storageService.costNo);
     this.H = {
     }
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.H.rfqId = params['id'];
+    //this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.params.subscribe(params => {
+      this.H.rfqId = params['id']; 
+      console.log(params['id']);
       console.log("RFQID:" + this.H.rfqId); // Print the parameter to the console.
     });
 
@@ -255,6 +260,7 @@ export class RfqComponent implements OnInit {
         this.H = result["h"];
         var c = new Date(this.H.createDate);
         this.H.C_Date = c.getFullYear() + '-' + (c.getMonth() + 1) + '-' + c.getDate();
+        this.name = this.H.c_by;
         this.rowData_MATNR = result["m"];
         this.rowData_VENDOR = result["v"];
         this.canModify = this.H.status == 1;
@@ -506,7 +512,9 @@ export class RfqComponent implements OnInit {
     this._srmRfqService.SAVE(rfq).subscribe(result => {
       console.log(result);
       alert('保存成功');
-      window.close();
+      //window.close();
+      this._layout.navigateTo('rfq-manage');
+      this._router.navigate(['srm/rfq-manage']);
     });
   }
 
@@ -532,7 +540,9 @@ export class RfqComponent implements OnInit {
     if (rfq.v.length == 0) { alert('供應商至少需一筆!'); return; }
     this._srmRfqService.StartUp(rfq).subscribe(result => {
       alert('上架成功');
-      window.close();
+      //window.close();
+      this._layout.navigateTo('rfq-manage');
+      this._router.navigate(['srm/rfq-manage']);
     });
   }
 
@@ -542,7 +552,9 @@ export class RfqComponent implements OnInit {
     rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Cancel(rfq.h).subscribe(result => {
       alert('作廢成功');
-      window.close();
+      //window.close();
+      this._layout.navigateTo('rfq-manage');
+      this._router.navigate(['srm/rfq-manage']);
     });
   }
 
@@ -551,7 +563,9 @@ export class RfqComponent implements OnInit {
     rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Delete(rfq.h).subscribe(result => {
       alert('刪除成功');
-      window.close();
+      //window.close();
+      this._layout.navigateTo('rfq-manage');
+      this._router.navigate(['srm/rfq-manage']);
     });
   }
 }

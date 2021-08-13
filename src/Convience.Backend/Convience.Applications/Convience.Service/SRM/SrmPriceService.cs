@@ -125,10 +125,10 @@ namespace Convience.Service.SRM
                 info.VendorName = _context.SrmVendors.Where(r => r.VendorId == info.VendorId).Select(r => r.VendorName).FirstOrDefault();
                 info.QotId = query[i].QotId;
                 info.MatnrId = query[i].MatnrId;
-                info.Atotal = price.material.Where(r => r.VendorId == info.VendorId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
-                info.Btotal = price.process.Where(r => r.VendorId == info.VendorId).Select(r => r.SubTotal).Sum();
-                info.Ctotal = price.surface.Where(r => r.VendorId == info.VendorId).Select(r => r.SubTotal).Sum();
-                info.Dtotal = price.other.Where(r => r.VendorId == info.VendorId && r.OPrice.HasValue).Select(r => r.OPrice).Sum().Value;
+                info.Atotal = price.material.Where(r => r.QotId == info.QotId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
+                info.Btotal = price.process.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
+                info.Ctotal = price.surface.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
+                info.Dtotal = price.other.Where(r => r.QotId == info.QotId && r.OPrice.HasValue).Select(r => r.OPrice).Sum().Value;
                 infos[i] = info;
             }
             price.infoRecord = infos;
@@ -180,7 +180,7 @@ namespace Convience.Service.SRM
             must.Add("ekgry", "採購群組");
             must.Add("leadTime", "計畫交貨時間");
             must.Add("standQty", "標準採購數量");
-            must.Add("minQty", "標準採購數量");
+            must.Add("minQty", "最小採購數量");
             must.Add("taxcode", "稅碼");
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");

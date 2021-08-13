@@ -1,27 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { SrmPriceService } from '../../../business/srm/srm-price.service';
 import { ActivatedRoute } from '@angular/router';
-import { Rfq } from '../model/rfq';
+import { Rfq, RfqM } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
 import datepickerFactory from 'jquery-datepicker';
 import { NzTreeNodeOptions, NzTreeNode, NzFormatEmitEvent } from 'ng-zorro-antd/tree';
+import { ButtonRendererComponent } from './button-cell-renderer.component';
 
 declare const $: any;
 datepickerFactory($);
 @Component({
   selector: 'app-price',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './price.component.html',
   styleUrls: ['./price.component.less']
 })
+
 export class PriceComponent implements OnInit {
   matnrList: FormGroup = new FormGroup({});
   mats: FormGroup = new FormGroup({});
+  editFrom: FormGroup = new FormGroup({});
   selectedMatnr;
   matnrs = [];
   rfq: Rfq;
+  rfqm : RfqM;
   rfqId;
   MaterialList;
   ProcessList;
@@ -32,6 +37,14 @@ export class PriceComponent implements OnInit {
 
   radioValue;
 
+  frameworkComponents: any;
+
+  @ViewChild('ctest1')
+  ctest1: TemplateRef<any>;
+
+  @ViewChild('ctest2')
+  ctest2: TemplateRef<any>;
+
   //grid
   columnDefs_matnr
   columnDefs_material;
@@ -39,28 +52,61 @@ export class PriceComponent implements OnInit {
   columnDefs_surface;
   columnDefs_other;
   columnDefs_inforecord;
+  columnDefs_summary;
   defaultColDef;
   rowSelection = "multiple";
   components;
+  isRowSelectable;
 
   rowData_matnr=[];
   rowData_material=[];
   rowData_process=[];
   rowData_surface=[];
   rowData_other=[];
-  rowData_inforecord=[];
+  rowData_inforecord = [];
+  rowData_summary: any;
 
   gridApi_inforecord;
   columnApi_inforecord;;
+
+  gridApi_summary;
+  columnApi_summary;;
   //gird
 
   nodes: NzTreeNodeOptions[] = [];
+  matnrIndex;
+  tplModal: NzModalRef;
+
+  //tempqotId;
+  //temppriceTotal;
+  //tempunit;
+  //tempekgry
+
+//  function add(title: TemplateRef<{}>, content: TemplateRef<{}>) {
+//  //console.log(this.content);
+//  //return;
+//  //this._modalService.open(this.content);
+
+
+//  this.tplModal = this._modalService.create({
+//    nzTitle: this.ctest1,
+//    nzContent: this.ctest2,
+//    nzFooter: null,
+//    nzClosable: true,
+//    nzMaskClosable: false,
+//    nzWidth: 1000,
+//  });
+//}
 
   constructor(private activatedRoute: ActivatedRoute
     , private _formBuilder: FormBuilder
     , private _srmRfqService: SrmRfqService
     , private _srmPriceService: SrmPriceService
-    , private _storageService: StorageService  ) {
+    , private _storageService: StorageService
+    , public _modalService: NzModalService,) {
+    this.frameworkComponents = {
+      buttonRenderer: ButtonRendererComponent,
+    }
     //this.activatedRoute.queryParams.subscribe(params => {
     //  this.rfqId = params['id'];
     //  //this.rfqId = 12;
@@ -79,7 +125,6 @@ export class PriceComponent implements OnInit {
       wrapText: true,
     };
   //gird
-
 
     this.components = { datePicker: getDatePicker() };
 
@@ -121,22 +166,367 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "100px",
       },
+//      {
+//        headerName: "總計金額",
+//        field: "price",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+///*        stopEditingWhenCellsLoseFocus:true,*/
+//      },
+//      {
+//        headerName: "價格單位",
+//        field: "unit",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "採購群組",
+//        field: "ekgry",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "計畫交貨時間",
+//        field: "leadTime",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "標準採購數量",
+//        field: "standQty",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "最小採購數量",
+//        field: "minQty",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "稅碼",
+//        field: "taxcode",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//      },
+//      {
+//        headerName: "生效日期",
+//        field: "effectiveDate",
+//        enableRowGroup: true,
+//        cellClass: "show-cell",
+//        width: "150px",
+//        editable: this.canModify,
+//        cellEditor: 'datePicker',
+//      },
+//      {
+//        headerName: "有效日期",
+//        field: "expirationDate",
+//        width: "150px",
+//        editable: this.canModify,
+//        cellEditor: 'datePicker',
+//      }
+    ]
+
+    this.isRowSelectable = function (rowNode) {
+      console.log(rowNode.data.rfqNum);
+      return rowNode.data.rfqNum ? true : false;
+    }
+
+    this.columnDefs_summary = [
       {
-        headerName: "總計金額",
+        headerName: '操作',
+        cellRenderer: 'buttonRenderer',
+        cellRendererParams: {
+          onClick: this.add.bind(this),
+          label: '',
+        },
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+        width: "120px",
+        pinned: 'left'
+      },
+      {
+        headerName: "詢價單號",
+        field: "rfqNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "詢價人員",
+        field: "sourcerName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "詢價截止日期",
+        field: "deadline_str",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "供應商",
+        field: "vendor",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "供應商名稱",
+        field: "vendorName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "料號",
+        field: "matnr",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料規格",
+        field: "material",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "成品尺寸",
+        field: "volume",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "工件重量(KG)",
+        field: "weight",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "機種名稱",
+        field: "machineName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "報假單號",
+        field: "qotNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "材料名稱",
+        field: "mMaterial",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "材料單價(NT/KG)",
+        field: "mPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "長(mm)",
+        field: "mLength",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "寬(mm)",
+        field: "mWidth",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "厚(mm)",
+        field: "mWidth",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "密度(g/cm3)",
+        field: "mDensity",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "重量(KG)",
+        field: "mWeight",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料成本(NT)",
+        field: "mCostPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "mNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "機台",
+        field: "pMachine",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "工序",
+        field: "pProcessNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "工時(時)",
+        field: "pHours",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "單價(時)",
+        field: "pPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "小計",
+        field: "pSubTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "備註",
+        field: "pNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "工序",
+        field: "sProcess",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "數量",
+        field: "sTimes",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "單價",
+        field: "sPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "小計",
+        field: "sSubTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "計價方式",
+        field: "sMethod",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "備註",
+        field: "sNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "項目",
+        field: "oItem",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "說明",
+        field: "oDescription",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "單價",
+        field: "oPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
+        headerName: "備註",
+        field: "oNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "A",
+        field: "aTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "B",
+        field: "bTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "C",
+        field: "cTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "D",
+        field: "dTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "總計(NT)",
         field: "price",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
-/*        stopEditingWhenCellsLoseFocus:true,*/
       },
       {
-        headerName: "價格單位",
+        headerName: "幣別",
         field: "unit",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "採購群組",
@@ -144,7 +534,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "計畫交貨時間",
@@ -152,7 +541,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "標準採購數量",
@@ -160,7 +548,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "最小採購數量",
@@ -168,7 +555,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "稅碼",
@@ -176,7 +562,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
       },
       {
         headerName: "生效日期",
@@ -184,17 +569,14 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
-        cellEditor: 'datePicker',
       },
       {
         headerName: "有效日期",
         field: "expirationDate",
+        enableRowGroup: true,
+        cellClass: "show-cell",
         width: "150px",
-        editable: this.canModify,
-        cellEditor: 'datePicker',
-      }
-    ]
+      },    ];
   }
 
   ngOnInit(): void {
@@ -202,9 +584,380 @@ export class PriceComponent implements OnInit {
       selectedMatnr: [null]
     });
     this.mats = this._formBuilder.group({});
+    this.editFrom = this._formBuilder.group({
+      qotId:[null],
+      price: [null],
+      unit: [null],
+      ekgry: [null],
+      leadTime: [null],
+      standQty: [null],
+      minQty: [null],
+      taxcode: [null],
+      effectiveDate: [null],
+      expirationDate: [null],
+    });
     this.init();
     this.initGrid();
   }
+
+  add(e) {
+    //this.temppriceTotal = e.rowData.price ? e.rowData.price:"";
+    //this.tempunit = e.rowData.unit ? e.rowData.unit:"";
+    this.editFrom.setValue({
+      qotId: e.rowData.qotId
+      , price: e.rowData.price ? e.rowData.price : ""
+      , unit: e.rowData.unit ? e.rowData.unit : ""
+      , ekgry: e.rowData.ekgry ? e.rowData.ekgry : ""
+      , leadTime: e.rowData.leadTime ? e.rowData.leadTime : ""
+      , standQty: e.rowData.standQty ? e.rowData.standQty : ""
+      , minQty: e.rowData.minQty ? e.rowData.minQty : ""
+      , taxcode: e.rowData.taxcode ? e.rowData.taxcode : ""
+      , effectiveDate: e.rowData.effectiveDate ? e.rowData.effectiveDate : ""
+      , expirationDate: e.rowData.expirationDate ? e.rowData.expirationDate : ""
+    });
+    console.log(e.rowData);
+/*    this.tempqotId = e.rowData.qotId;*/
+
+    this.tplModal = this._modalService.create({
+    nzTitle: this.ctest1,
+    nzContent: this.ctest2,
+    nzFooter: null,
+    nzClosable: true,
+    nzMaskClosable: false,
+  });
+  }
+
+  edit() {
+    //console.log(this.tempqotId);
+    var r = this.rowData_summary.find(r => r.qotId == this.editFrom.get('qotId').value);
+    r.price = this.editFrom.get('price').value;
+    r.unit = this.editFrom.get('unit').value;
+    r.ekgry = this.editFrom.get('ekgry').value;
+    r.leadTime = this.editFrom.get('leadTime').value;
+    r.standQty = this.editFrom.get('standQty').value;
+    r.minQty = this.editFrom.get('minQty').value;
+    r.taxcode = this.editFrom.get('taxcode').value;
+    r.effectiveDate = dateFormatter(this.editFrom.get('effectiveDate').value);
+    r.expirationDate = dateFormatter(this.editFrom.get('expirationDate').value);
+    this.tplModal.close();
+  }
+
+  cancelEdit() {
+    this.tplModal.close();
+  }
+
+  initSumary() {
+    this.columnDefs_summary = [
+      {
+        headerName: '操作',
+        cellRenderer: function (params) {
+          if (params.data.rfqNum != null) {
+            var eDiv = document.createElement('div');
+            eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">確認</button></span>';
+            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+            eButton.addEventListener('click',  this.add());
+            return eDiv;
+          }
+        }
+      },
+      {
+        headerName: "詢價單號",
+        field: "rfqNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "詢價人員",
+        field: "sourcerName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "詢價截止日期",
+        field: "deadline_str",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "供應商",
+        field: "vendor",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "供應商名稱",
+        field: "vendorName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "料號",
+        field: "matnr",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料規格",
+        field: "material",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "成品尺寸",
+        field: "volume",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "工件重量(KG)",
+        field: "weight",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "機種名稱",
+        field: "machineName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "報假單號",
+        field: "qotNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料名稱",
+        field: "mMaterial",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料單價(NT/KG)",
+        field: "mPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "長(mm)",
+        field: "mLength",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "寬(mm)",
+        field: "mWidth",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "厚(mm)",
+        field: "mWidth",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "密度(g/cm3)",
+        field: "mDensity",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "重量(KG)",
+        field: "mWeight",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料成本(NT)",
+        field: "mCostPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "mNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "機台",
+        field: "pMachine",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "工序",
+        field: "pProcessNum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "工時(時)",
+        field: "pHours",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價(時)",
+        field: "pPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "小計",
+        field: "pSubTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "pNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "工序",
+        field: "sProcess",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "數量",
+        field: "sTimes",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價",
+        field: "sPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "小計",
+        field: "sSubTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "計價方式",
+        field: "sMethod",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "sNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "項目",
+        field: "oItem",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "說明",
+        field: "oDescription",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價",
+        field: "oPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "oNote",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "A",
+        field: "aTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "B",
+        field: "bTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "C",
+        field: "cTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "D",
+        field: "dTotal",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "總計(NT)",
+        field: "price",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "幣別",
+        field: "unit",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },];
+}
+
   init() {
     this._srmRfqService.GetRfqData(this.rfqId).subscribe(result => {
       this.rfq = result;
@@ -212,12 +965,17 @@ export class PriceComponent implements OnInit {
       console.log(this.rfq);
       this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr, value: row.matnrId }));
       this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });
-
-      //this.nodes = [{ title: '组织结构', key: null, icon: 'global', expanded: true, children: [] }];;
       this.nodes = [];
-      this.rfq.m.forEach(row => this.nodes.push({ title: row.srmMatnr, key: row.matnrId.toString(), iicon: 'appstore', children: [] }))
+      this.nodes = [{ title: this.rfq.h.rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
+      this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
+    });
+    var query = {
+      rfqId: this.rfqId,
+    };
+    this._srmPriceService.GetSummary(query).subscribe(result => {
+      this.rowData_summary = result;
     });
   }
 
@@ -610,7 +1368,12 @@ export class PriceComponent implements OnInit {
   }
 
   changedMatnr(value) {
+    console.log(value);
     this.matnrList.setValue({ selectedMatnr: value.keys[0] });
+    //if (value.node.origin.index != null) {
+      this.matnrIndex = value.node.origin.index;
+    //}
+    console.log(this.matnrIndex);
     this.search();
   }
 
@@ -619,9 +1382,15 @@ export class PriceComponent implements OnInit {
     this.columnApi_inforecord = params.columnApi;
     this.gridApi_inforecord.sizeColumnsToFit();
   }
+
+  onGridReady_summary(params) {
+    this.gridApi_summary = params.api;
+    this.columnApi_summary = params.columnApi;
+  }
   start() {
-    this.gridApi_inforecord.stopEditing();
-    var selectedRows = this.gridApi_inforecord.getSelectedRows();
+    //this.gridApi_inforecord.stopEditing();
+    //var selectedRows = this.gridApi_inforecord.getSelectedRows();
+    var selectedRows = this.gridApi_summary.getSelectedRows();
     if (selectedRows.length == 0) { return;}
     var obj = {
       infos: selectedRows,
@@ -635,8 +1404,8 @@ export class PriceComponent implements OnInit {
 }
 
 function dateFormatter(data) {
-  if (data.value == null) return "";
-  var date = new Date(data.value);
+  if (!data) return "";
+  var date = new Date(data);
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 }
 function getDatePicker() {
@@ -657,7 +1426,7 @@ function getDatePicker() {
     this.eInput.select();
   };
   Datepicker.prototype.getValue = function () {
-    return dateFormatter(this.eInput);
+    return dateFormatter(this.eInput.value);
     //return this.eInput.value;
   };
   Datepicker.prototype.destroy = function () { };
