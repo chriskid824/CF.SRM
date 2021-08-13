@@ -35,6 +35,8 @@ import { DeliveryModalComponent } from './delivery-modal/delivery-modal.componen
 import { MatDialogModule } from "@angular/material/dialog";
 import { QRCodeModule } from 'angularx-qrcode';
 import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.component';
+import { ButtonRendererComponent } from './price/button-cell-renderer.component';
+
 
 @NgModule({
   declarations: [
@@ -49,7 +51,8 @@ import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.co
     QotlistComponent,
     DelyveryLComponent,
     DeliveryModalComponent,
-    DeliveryReceiveComponent
+    DeliveryReceiveComponent,
+	ButtonRendererComponent
   ],
   imports: [
     CommonModule,
@@ -69,7 +72,7 @@ import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.co
       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
       { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
     ]),
-    AgGridModule.withComponents([]),
+    AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
     NzFormModule,
     NzCardModule,

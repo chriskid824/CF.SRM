@@ -35,10 +35,13 @@ namespace Convience.Model.Models.SRM
     
         public string sourcerName { get; set; }
         public string viewstatus {
-            get {return ((Status)Status).ToString(); }
+            get {return Status.HasValue?((Status)Status).ToString():""; }
         }
         public string C_date {
             get { return CreateDate.HasValue? CreateDate.Value.ToString("yyyy/MM/dd"):""; }
+        }
+        public string deadline_str {
+            get { return Deadline.HasValue ? Deadline.Value.ToString("yyyy/MM/dd") : ""; }
         }
         public string C_by {
             get; set;

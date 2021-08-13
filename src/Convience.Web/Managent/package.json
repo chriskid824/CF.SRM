@@ -11,6 +11,8 @@
   },
   "private": true,
   "dependencies": {
+	"@ag-grid-community/angular": "^25.3.0",
+    "@ag-grid-community/core": "^25.3.0",
     "@angular/animations": "~11.2.3",
     "@angular/cdk": "^11.2.2",
     "@angular/common": "~11.2.3",

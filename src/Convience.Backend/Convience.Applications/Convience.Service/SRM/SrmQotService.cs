@@ -77,7 +77,8 @@ namespace Convience.Service.SRM
             {
                 var qotQurty = db.SrmQotHs.AsQueryable()
                     .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
-                    .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId);
+                    .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                    .OrderBy(r => r.MatnrId);
                 return qotQurty.ToArray();
             }
         }

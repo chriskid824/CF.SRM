@@ -9,6 +9,7 @@ export class RfqH {
   rfqNum?: string;
   status?: number;
   sourcer?: string;
+  sourcerName?: string;
   deadline?: Date;
   createDate?: Date;
   createBy?: string;
@@ -19,6 +20,7 @@ export class RfqH {
   viewstatus?: string;
   c_date?: string;
   c_by?: string;
+  deadline_str?: string;
 }
 export class RfqM {
   rfqMId?: number;
@@ -35,7 +37,7 @@ export class RfqM {
   qty?: number;
   note?: string;
   matnr?: string;
-  srmMatnr?: string;
+  srmMatnr1?: string;
 }
 
 export class RfqV {

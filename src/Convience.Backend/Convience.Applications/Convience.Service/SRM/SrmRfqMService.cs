@@ -64,7 +64,8 @@ namespace Convience.Service.SRM
                         where a.RfqId == RfqId
                         select new
                         {
-                            matnr = b.SapMatnr,
+                            srmMatnr1 = b.SrmMatnr1,
+                            sapMatnr = b.SapMatnr,
                             version = a.Version,
                             material = a.Material,
                             volume = a.Length+"X"+a.Width+"X"+a.Height,
@@ -80,7 +81,6 @@ namespace Convience.Service.SRM
                             rfqId = a.RfqId,
                             rfqMId = a.RfqMId,
                             matnrId = a.MatnrId,
-                            srmMatnr = b.SrmMatnr1
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }

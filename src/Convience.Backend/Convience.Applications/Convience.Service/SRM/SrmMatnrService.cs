@@ -26,6 +26,7 @@ namespace Convience.Service.SRM
         /// 取得全部角色
         /// </summary>
         public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery);
+        public SrmMatnr GetMatnrById(int id);
     }
     public class SrmMatnrService: ISrmMatnrService
     {
@@ -58,10 +59,10 @@ namespace Convience.Service.SRM
             };
             // return _srmMatnrRepository.Get(r=>string.IsNullOrWhiteSpace(matnrQuery.MATNR) ? true:r.Matnr.IndexOf(matnr)>=0).ToList().Skip(skip).Take(size).AsQueryable(); ;
         }
-        public IEnumerable<SrmMatnr> GetMatnrById(int id)
+        public SrmMatnr GetMatnrById(int id)
         {
             //using (var transaction = new TransactionScope())
-                return _srmMatnrRepository.Get(r => r.MatnrId == id);
+                return _srmMatnrRepository.Get(r => r.MatnrId == id).FirstOrDefault();
         }
     }
 }
