@@ -37,7 +37,7 @@ export class RfqM {
   qty?: number;
   note?: string;
   matnr?: string;
-  srmMatnr?: string;
+  srmMatnr1?: string;
 }
 
 export class RfqV {

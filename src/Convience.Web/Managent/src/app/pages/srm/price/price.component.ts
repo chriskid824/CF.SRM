@@ -963,11 +963,11 @@ export class PriceComponent implements OnInit {
       this.rfq = result;
       this.matnrs = [];
       console.log(this.rfq);
-      this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr, value: row.matnrId }));
+      this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr1, value: row.matnrId }));
       this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });
       this.nodes = [];
       this.nodes = [{ title: this.rfq.h.rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
-      this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
+      this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr1, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
     });
