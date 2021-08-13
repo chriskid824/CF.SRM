@@ -88,7 +88,7 @@ export class QotlistComponent implements OnInit {
     // throw new Error('Method not implemented.');
     this.form_searchQot = this._formBuilder.group({
       rfqno: [null],
-      qotstatus: [1],
+      qotstatus: [0],
       qotmatnr:[null],
       //??
       vendor:"2"
