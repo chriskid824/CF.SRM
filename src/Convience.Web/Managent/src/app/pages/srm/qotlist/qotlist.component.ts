@@ -42,8 +42,9 @@ export class QotlistComponent implements OnInit {
       { field: '建立人員', resizable: true},
       { field: '最後異動日期', resizable: true},
       { field: '最後異動人員', resizable: true },*/
-
-      {  headerName:'序號',field: 'VRfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
+      //{  headerName: "Row",valueGetter: "node.rowIndex + 1"},
+      //{  headerName:'序號',field: 'VRfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
+      {  headerName:'序號',valueGetter: "node.rowIndex + 1", resizable: true,cellRenderer: 'agGroupCellRenderer',},    
       {  headerName:'狀態',field: 'VStatus', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
       {  headerName:'詢價單號',field: 'VRfqNum', resizable: true},
       {  headerName:'建立日期',field: 'VCreateDate', resizable: true },
@@ -63,7 +64,8 @@ export class QotlistComponent implements OnInit {
           { field: '建立人員', minWidth: 150 },
           { field: '最後異動日期', minWidth: 150 },
           { field: '最後異動人員', minWidth: 150 },*/
-          { headerName:'序號',field: 'QQotId' },
+          //{ headerName:'序號',field: 'QQotId' },
+          {  headerName: "序號",valueGetter: "node.rowIndex + 1"},
           { headerName:'報價單號',field: 'QQotNum' },
           { headerName:'狀態',field: 'QStatus', minWidth: 150 },
           { headerName:'料號',field: 'QMatnr'},
@@ -78,7 +80,7 @@ export class QotlistComponent implements OnInit {
         },
       },
         getDetailRowData: params => {
-          params.successCallback(params.data.detail);
+          params.successCallback(params.data.SrmQotHs);
         }
 
     }
@@ -119,7 +121,7 @@ export class QotlistComponent implements OnInit {
   /*open(id) {
     window.open('../srm/qot?id=' + id);
   }*/
-  //???
+  //???供應商登入用VENDERCODE 
   getVendorId()
   {
 
