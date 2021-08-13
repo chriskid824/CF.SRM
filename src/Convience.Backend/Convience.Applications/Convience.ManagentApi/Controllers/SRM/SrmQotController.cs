@@ -49,10 +49,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             QueryQotList qot = new QueryQotList();
             //var aaa = query.Property("poNum");
-            var rfqno = (query["rfqno"] != null) ? query["rfqno"].ToString() : null;
-            var matnr = (query["matnr"] != null) ? query["matnr"].ToString() : null;
-            var status = (query["status"] != null) ? (int)query["status"] : 0;
-            var vendor = 2;// (int)query["vendor"]; 
+            var rfqno = (query["RFQ_NUM"] != null) ? query["RFQ_NUM"].ToString() : null;
+            var matnr = (query["MATNR"] != null) ? query["MATNR"].ToString() : null;
+            var status = (query["STATUS"] != null) ? (int)query["STATUS"] : 0;
+            var vendor = 2;// (int)query["VENDOR"]; 
             qot.rfqno = rfqno;
             qot.status = status;//(int)query["status"];
             qot.matnr = matnr;

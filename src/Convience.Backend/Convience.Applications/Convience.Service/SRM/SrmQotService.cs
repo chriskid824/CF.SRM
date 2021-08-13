@@ -29,8 +29,8 @@ namespace Convience.Service.SRM
         public void Add(SrmQotH[] qoths);
         public void UpdateStatus(int status, SrmRfqH rfqH);
         public SrmQotH[] Get(QueryQot query);
-        public IEnumerable<SrmRfqH> GetQotList();
-        public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query);
+        public IEnumerable<ViewQotListH> GetQotList();
+        public IEnumerable<ViewQotListH> GetQotList(QueryQotList query);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -121,16 +121,49 @@ namespace Convience.Service.SRM
             qotlist = qotlist.Where(p => p.VENDOR_ID == query.vendor);
             return qotlist;           
         }*/
-        public IEnumerable<SrmRfqH> GetQotList()
+        public IEnumerable<ViewQotListH> GetQotList()
         {
             //只帶供應商
-            var result = _context.SrmRfqHs
-                .ToList();
+            //var result = _context.SrmRfqHs
+            //    .ToList();
             // .AndIfCondition(!string.IsNullOrWhiteSpace(query.deliveryNum), p => p.DeliveryNum.IndexOf(query.deliveryNum) > -1)
             // .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
-            result.ForEach(p => {
-                //p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
-                p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
+            //result.ForEach(p => {
+            //    //p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();//.Select(new SrmRfqH { }).ToList();
+            //    p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
+            //});
+            //return result;
+            var result = _context.SrmRfqHs
+                .Select(p => new ViewQotListH
+                {
+                    VRfqId = p.RfqId,
+                    VRfqNum = p.RfqNum,
+                    VStatus = p.Status,
+                    VCreateDate = p.CreateDate,
+                    VCreateBy = p.CreateBy,
+                    VLastUpdateDate = p.LastUpdateDate,
+                    VLastUpdateBy = p.LastUpdateBy,
+                    VEndDate = p.EndDate
+                })
+                .ToList();
+
+            result.ForEach(p =>
+            {
+                p.SrmQotHs = (from q in _context.SrmQotHs
+                              join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                              join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                              select new ViewQotListL
+                              {
+                                  QStatus = q.Status,
+                                  QQotId = q.QotId,
+                                  QQotNum = q.QotNum,
+                                  QMatnr = m.SapMatnr,
+                                  QCreateBy = q.CreateBy,
+                                  QCreateDate = q.CreateDate,
+                                  QLastUpdateBy = q.LastUpdateBy,
+                                  QLastUpdateDate = q.LastUpdateDate,
+                              }).Where(p => p.Status !=5)             
+                              .ToList();
             });
             return result;
 
@@ -152,8 +185,51 @@ namespace Convience.Service.SRM
         }*/
         //原本的
 
+        public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
+        {
+            int venderid = query.vendor;
+            var result = _context.SrmRfqHs
+                .AndIfHaveValue(query.rfqno, p => p.RfqNum == query.rfqno)
+                .Select(p => new ViewQotListH
+                {
+                    VRfqId = p.RfqId,
+                    VRfqNum =p.RfqNum,
+                    VStatus = p.Status,
+                    VCreateDate = p.CreateDate,
+                    VCreateBy = p.CreateBy,
+                    VLastUpdateDate = p.LastUpdateDate,
+                    VLastUpdateBy = p.LastUpdateBy,
+                    VEndDate = p.EndDate
+                })
+                .ToList();
 
-        public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
+            result.ForEach(p =>
+            {
+                p.SrmQotHs = (from q in _context.SrmQotHs
+                              join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                              join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                              select new ViewQotListL
+                              {
+                                  QStatus = q.Status,
+                                  QQotId = q.QotId,
+                                  QQotNum = q.QotNum,
+                                  QMatnr = m.SapMatnr,
+                                  QCreateBy = q.CreateBy,
+                                  QCreateDate = q.CreateDate,
+                                  QLastUpdateBy = q.LastUpdateBy,
+                                  QLastUpdateDate = q.LastUpdateDate,
+                                  QVendorId = q.VendorId
+                              })
+                              //.ToList();
+                              .Where(p => p.QVendorId.Value == query.vendor)
+                              .AndIfHaveValue(query.matnr, p => p.QMatnr == query.matnr)
+                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+                              .ToList();            
+            });
+            return result;
+        }
+
+        /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
         {
 
             var result = _context.SrmRfqHs.Join(
@@ -190,7 +266,7 @@ namespace Convience.Service.SRM
                 p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
             });
             int vendor = query.vendor;
-            return result.Where(p => p.VendorId == vendor).ToList();
-        }
+            return result.Where(p => p.VENDOR_ID == vendor).ToList();
+        }*/
     }
 }

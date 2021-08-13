@@ -119,4 +119,47 @@ namespace Convience.Model.Models.SRM
         public string matnr { get; set; }
         public int vendor { get; set; }
     }
+
+    public class ViewQotListH : SrmRfqH
+    {
+        public int VRfqId { get; set; }
+        public string VRfqNum { get; set; }
+        public int? VStatus { get; set; }
+        public string VSourcer { get; set; }
+        public DateTime? VDeadline { get; set; }
+        public DateTime? VCreateDate { get; set; }
+        public string VCreateBy { get; set; }
+        public DateTime? VLastUpdateDate { get; set; }
+        public string VLastUpdateBy { get; set; }
+        public DateTime? VEndDate { get; set; }
+        public string VEndBy { get; set; }
+        public virtual ICollection<ViewQotListL> SrmQotHs { get; set; }
+    }
+    public class ViewQotListL : SrmQotH
+    {
+        public string QCreateBy { get; set; }
+
+        public DateTime? QCreateDate { get; set; }
+
+        public string QCurrency { get; set; }
+
+        public string QLastUpdateBy { get; set; }
+
+        public DateTime? QLastUpdateDate { get; set; }
+
+        public double? QLeadTime { get; set; }
+
+        public int? QMatnrId { get; set; }
+
+        public float? QMinQty { get; set; }
+
+        public int QQotId { get; set; }
+        public string QQotNum { get; set; }
+        public int? QRfqId { get; set; }
+        public int? QStatus { get; set; }
+        public decimal? QTotalAmount { get; set; }
+        public int? QVendorId { get; set; }
+        public string QVendor { get; set; }
+        public string QMatnr { get; set; }
+    }
 }

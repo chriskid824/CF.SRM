@@ -11,12 +11,7 @@ namespace Convience.Entity.Entity.SRM
 {
     [Entity(DbContextType = typeof(SRMContext))]
     public partial class SrmQotH
-    {
-        public SrmQotH()
-        {
-            //SrmMatnrs = new HashSet<SrmMatnr>();
-            //SrmRfqHs = new HashSet<SrmRfqH>();
-        }
+    { 
 
         public string CreateBy { get; set; }
 
@@ -42,8 +37,5 @@ namespace Convience.Entity.Entity.SRM
         public int? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public int? VendorId { get; set; }
-        //public virtual ICollection<SrmQotH> SrmQotHs { get; set; }
-        //public virtual ICollection<SrmMatnr> SrmMatnrs { get; set; }
-        // public virtual ICollection<SrmRfqH> SrmRfqHs { get; set; }
     }
 }
