@@ -123,7 +123,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             DateTime now = DateTime.Now.Date;
 
             if (h.Deadline < now) {
-                return BadRequest("截止日期已過");
+                return this.BadRequestResult("截止日期已過");
             }
 
             using (var transaction = new System.Transactions.TransactionScope()) {
@@ -158,7 +158,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 catch (Exception ex)
                 {
                     transaction.Dispose();
-                    return BadRequest(ex.Message);
+                    return this.BadRequestResult(ex.Message);
                 }
             }
         }
@@ -221,7 +221,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 catch (Exception ex)
                 {
                     transaction.Dispose();
-                    return BadRequest(ex.Message);
+                    return this.BadRequestResult(ex.Message);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return Ok();
             }catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return this.BadRequestResult(ex.Message);
             }
         }
         [HttpPost("GetSourcerList")]

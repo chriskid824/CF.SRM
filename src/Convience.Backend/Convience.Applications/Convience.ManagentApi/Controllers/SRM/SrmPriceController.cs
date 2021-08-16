@@ -196,7 +196,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 catch (Exception ex) {
                     transaction.Dispose();
-                    return BadRequest(ex.Message);
+                    return this.BadRequestResult(ex.Message);
                 }
             }
         }
