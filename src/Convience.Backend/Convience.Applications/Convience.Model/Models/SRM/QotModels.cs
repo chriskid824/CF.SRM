@@ -117,7 +117,8 @@ namespace Convience.Model.Models.SRM
         public string rfqno { get; set; }
         public int status { get; set; }
         public string matnr { get; set; }
-        public int vendor { get; set; }
+        public int vendorid { get; set; }
+        public string vendor { get; set; }
     }
 
     public class ViewQotListH : SrmRfqH
