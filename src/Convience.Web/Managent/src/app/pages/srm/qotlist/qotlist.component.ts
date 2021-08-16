@@ -5,6 +5,8 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SrmQotService } from 'src/app/business/srm/srm-qot.service';
+import { StorageService } from '../../../services/storage.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-qotlist',
@@ -31,7 +33,7 @@ export class QotlistComponent implements OnInit {
   rowData_Qot;
   columnApi;
   constructor(
-    private _formBuilder: FormBuilder,private http: HttpClient,private _srmQotService: SrmQotService
+    private _formBuilder: FormBuilder,private http: HttpClient,private _srmQotService: SrmQotService, private _storageService: StorageService,    private activatedRoute: ActivatedRoute,
   )
   {
     this.columnDefs = [
@@ -86,6 +88,7 @@ export class QotlistComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    console.log('username ='+this._storageService.userName);
     //查出全部待辦??? "詢價狀態不為確認"
     // throw new Error('Method not implemented.');
     this.form_searchQot = this._formBuilder.group({
@@ -93,7 +96,8 @@ export class QotlistComponent implements OnInit {
       qotstatus: [0],
       qotmatnr:[null],
       //??
-      vendor:"2"
+      //vendor:"2"
+      vendor:this._storageService.userName
     });
     this.refresh();
   }
@@ -110,7 +114,8 @@ export class QotlistComponent implements OnInit {
       STATUS: this.form_searchQot.value["qotstatus"] == null ? "0" : this.form_searchQot.value["qotstatus"],
       //????待vendor
       //getVendorId()
-      VENDOR:2
+      //VENDOR:2
+      vendor:this._storageService.userName
     }
     this.getOotList(query);
   }
