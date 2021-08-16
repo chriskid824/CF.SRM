@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { SrmQotService } from 'src/app/business/srm/srm-qot.service';
 import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutComponent } from '../../layout/layout/layout.component';
 
 @Component({
   selector: 'app-qotlist',
@@ -15,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 
 export class QotlistComponent implements OnInit {
+  qotid;
   rowDataQot;
   columnDefs;
   //rowData: [];
@@ -27,15 +29,24 @@ export class QotlistComponent implements OnInit {
   detailCellRendererParams;
   detailCellRendererParams2;
   defaultColDef;
-  rowSelection = "multiple";
+  rowSelection = "single";
   /**/
   public gridApi;
   rowData_Qot;
   columnApi;
+  QotH: any;
   constructor(
-    private _formBuilder: FormBuilder,private http: HttpClient,private _srmQotService: SrmQotService, private _storageService: StorageService,    private activatedRoute: ActivatedRoute,
+    private _formBuilder: FormBuilder,
+    private http: HttpClient,
+    private _srmQotService: SrmQotService, 
+    private _storageService: StorageService,    
+    private activatedRoute: ActivatedRoute,
+    private _layout: LayoutComponent,
+    private _router: Router,
   )
   {
+    this.activatedRoute.params.subscribe((params) => this.qotid = params['id']);
+
     this.columnDefs = [
      /* { field:'序號', resizable: true,cellRenderer: 'agGroupCellRenderer',},
       { field: '詢價單號', resizable: true},
@@ -67,6 +78,22 @@ export class QotlistComponent implements OnInit {
           { field: '最後異動日期', minWidth: 150 },
           { field: '最後異動人員', minWidth: 150 },*/
           //{ headerName:'序號',field: 'QQotId' },
+          { headerName: '操作', field: 'fieldName',
+          cellRenderer : function(params){
+            var eDiv = document.createElement('div');
+              eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檢視</button></span>';
+              var eButton = eDiv.querySelectorAll('.btn-simple')[0];  
+              eButton.addEventListener('click', function() {
+               alert(params.data.QQotId)
+               //this._layout.navigateTo('qot'); //???進不去
+               //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
+               //window.open('../srm/qot?id=' + id);
+               window.open('../srm/qot?id=' + params.data.QQotId);
+              });
+              return eDiv;
+              }
+          },
+          {  headerName: "序號",field: 'QQotId',hide:"true"},
           {  headerName: "序號",valueGetter: "node.rowIndex + 1"},
           { headerName:'報價單號',field: 'QQotNum' },
           { headerName:'狀態',field: 'QStatus', minWidth: 150 },
@@ -75,7 +102,6 @@ export class QotlistComponent implements OnInit {
           { headerName:'建立人員',field: 'QCreateBy', minWidth: 150 },
           { headerName:'最後異動日期',field: 'QLastUpdateDate', minWidth: 150 },
           { headerName:'最後異動人員',field: 'QLastUpdateBy', minWidth: 150 },
-          
         ],
         defaultColDef: {
           flex: 1,
@@ -243,5 +269,12 @@ export class QotlistComponent implements OnInit {
 
 //     // other grid options ...
 // }
+/*open(id) {
+  //alert(id.data["VRfqNum"])
+  console.info('qoooooooooooooooooooooooooooooooooot='+id.data)
+  this._layout.navigateTo('qot');
+  this._router.navigate(['srm/qot', { id: id }]);
+  //window.open('../srm/rfq?id=' + id);
+}*/
 
 }
