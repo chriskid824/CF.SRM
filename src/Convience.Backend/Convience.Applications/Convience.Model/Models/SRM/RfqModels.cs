@@ -11,12 +11,12 @@ namespace Convience.Model.Models.SRM
     public record QueryMatnrModel:PageQueryModel
     {
         public string Matnr { get; set; }
-        public string Werks { get; set; }
+        public int[] Werks { get; set; }
     }
     public record QueryVendorModel : PageQueryModel
     {
         public string Vendor { get; set; }
-        public string Werks { get; set; }
+        public int[] Werks { get; set; }
     }
     public class ViewSrmRfqM : SrmRfqM
     {
@@ -68,5 +68,9 @@ namespace Convience.Model.Models.SRM
         public string name { get; set; }
         public string costNo { get; set; }
         public int[] statuses { get; set; }
+        public int[] werks { get; set; }
+            //get {
+            //   return Array.ConvertAll(werks_str.Split(","), s => int.Parse(s));
+            //} } 
     }
 }

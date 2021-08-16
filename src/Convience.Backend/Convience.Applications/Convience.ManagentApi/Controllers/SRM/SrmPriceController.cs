@@ -52,6 +52,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmMatnrService = srmMatnrService;
         }
         [HttpPost("GetQotDetail")]
+        [Permission("price")]
         public IActionResult GetQotDetail(QueryQot query)
         {
             var qots = (_srmQotService.Get(query));
@@ -66,6 +67,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("GetSummary")]
+        [Permission("price")]
         public IActionResult GetSummary(QueryQot query) {
             var qots = (_srmQotService.Get(query));
             ViewSrmPriceDetail detail = _srmPriceService.GetDetail(qots);
@@ -165,7 +167,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("Start")]
+        [Permission("price")]
         public IActionResult Start(JObject jobj) {
+            int rfqId = (int)jobj["rfqId"];
+            var rfqH = _srmRfqHService.GetDataByRfqId(rfqId);
+            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.已核發) {
+                return this.BadRequestResult("詢價單狀態異常");
+            }
             viewSrmInfoRecord[] infos = jobj["infos"].ToObject<viewSrmInfoRecord[]>();
             string logonid = jobj["logonid"].ToString();
             DateTime now = DateTime.Now;
@@ -181,8 +189,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 try
                 {
-                    int? rfqId = _srmPriceService.Start(infos);
-                    if (rfqId.HasValue) { _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId.Value, LastUpdateDate = now, LastUpdateBy = logonid }); }
+                    //rfqId = _srmPriceService.Start(infos).Value;
+                    _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid }); 
                     transaction.Complete();
                     return Ok();
                 }

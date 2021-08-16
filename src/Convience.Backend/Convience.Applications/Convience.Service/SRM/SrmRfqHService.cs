@@ -291,6 +291,7 @@ namespace Convience.Service.SRM
                 return db.SrmRfqHs.AsQueryable().AndIfHaveValue(query.rfqNum, r => r.RfqNum == query.rfqNum)
                      .AndIfHaveValue(query.status, r => r.Status == query.status)
                      .AndIfHaveValue(query.statuses, r => query.statuses.Contains(r.Status.Value))
+                     .AndIfHaveValue(query.werks, r=>db.SrmEkgries.Where(e=>query.werks.Contains(e.Werks)).Select(e=>e.Empid).Contains(r.CreateBy))
                      .FirstOrDefault();
             }
         }

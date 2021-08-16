@@ -1,5 +1,5 @@
-<div class="content" style="width: 90%;">
-  <div class="left">
+<div class="content" style="width: 93%;">
+  <div class="left200">
     <nz-card [nzSize]="'small'">
       <form nz-form [formGroup]="matnrList">
         <nz-form-item>
@@ -20,7 +20,7 @@
       </form>
     </nz-card>
   </div>
-  <div class="right">
+  <div class="right200">
     <nz-card [nzSize]="'small'">
       <form nz-form [formGroup]="mats">
         <nz-form-item>
@@ -143,9 +143,9 @@
                 </nz-table>
               </div>-->
 
-              <div>
-                <button nz-button nzType="primary" style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
-              </div>
+              <h1>
+                <button nz-button style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
+              </h1>
                 <div>
                   <ag-grid-angular #agGrid
                                    style="width: 93%; height: 300px; border: solid"

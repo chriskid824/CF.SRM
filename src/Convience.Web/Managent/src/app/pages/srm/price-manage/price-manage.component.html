@@ -1,8 +1,9 @@
-<form nz-form [nzLayout]="'inline'" [formGroup]="form_searchRFQ" (ngSubmit)="searchRFQ()">
-  <nz-form-item>
-    <nz-form-label>詢價單號</nz-form-label>
-    <input nz-input placeholder="詢價單號" formControlName="rfqNum" autocomplete="off" />
-    <button nz-button nzType="primary" style="margin-left: 20px">查詢</button>
-  </nz-form-item>
-</form>
-
+<nz-card [nzSize]="'small'" id="rfqCard">
+  <form nz-form [nzLayout]="'inline'" [formGroup]="form_searchRFQ" (ngSubmit)="searchRFQ()">
+    <nz-form-item>
+      <nz-form-label>詢價單號</nz-form-label>
+      <input nz-input placeholder="詢價單號" formControlName="rfqNum" autocomplete="off" />
+      <button nz-button nzType="primary" style="margin-left: 20px">查詢</button>
+    </nz-form-item>
+  </form>
+  </nz-card>

@@ -175,8 +175,8 @@ namespace Convience.Service.SRM
             int? rfqId = null;
             //string[] must = new string[] { "price", "unit", "ekgry", "leadTime", "standQty", "minQty", "taxcode", "effectiveDate", "expirationDate" };
             Dictionary<string, string> must = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            must.Add("price", "總計金額");
-            must.Add("unit", "價格單位");
+            must.Add("price", "總計(NT)");
+            must.Add("unit", "幣別");
             must.Add("ekgry", "採購群組");
             must.Add("leadTime", "計畫交貨時間");
             must.Add("standQty", "標準採購數量");
@@ -189,20 +189,22 @@ namespace Convience.Service.SRM
                 {
                     var temp = prop.GetValue(info);
                     if (must.Keys.Contains(prop.Name,StringComparer.OrdinalIgnoreCase) && (temp == null || string.IsNullOrWhiteSpace(temp.ToString()))) {
-                        throw new Exception(must[prop.Name] + "未填");
+                        throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
                 }
 
 
                 if (!_context.SrmInforecords.Any(r => r.QotId == info.QotId)) {
                     _context.SrmInforecords.Add(info);
-                    var qot = _context.SrmQotHs.Where(r => r.QotId == info.QotId).FirstOrDefault();
-                    if (qot != null)
-                    {
-                        rfqId = qot.RfqId.Value;
-                    }
                 }
             }
+
+            var qot = _context.SrmQotHs.Where(r => r.QotId == infos[0].QotId).FirstOrDefault();
+            if (qot != null)
+            {
+                rfqId = qot.RfqId.Value;
+            }
+
             _context.SaveChanges();
             return rfqId;
         }
