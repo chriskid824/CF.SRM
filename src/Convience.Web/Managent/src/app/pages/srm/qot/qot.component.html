@@ -7,7 +7,7 @@
         報價作業<span style="font-size:12px;right:0px;float:right;">詢價單號:QOT00000012<br>狀態:初始</span><span
           style="float:left;font-size:12px;text-align: left;">申請日期:2021/07/13 11:13:38<br>填單者:陳嘉融</span></h1>
     </div>-->
-    <h1 style=" margin-left: 750px;"> 報價作業</h1>
+    <!--<h1 style=" margin-left: 750px;"> 報價作業</h1>-->
     <br>
 
     <!--<mat-form-field appearance="fill">
@@ -27,10 +27,10 @@
         </nz-card>
     </div>
     <div class="right">
-
+    <nz-card [nzSize]="'middle'" id="info1">
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
-        <table style="  text-align: center;">
+        <table style="  text-align: left;">
           <tr>
             <td class="content2" id="rfqno">建立日期</td>
             <td class="content2" id="currency">建立人員</td>
@@ -60,10 +60,11 @@
         </table>
       </div>
     </div>
-
+</nz-card>
+<nz-card [nzSize]="'middle'" id="info2">
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
-        <table style=" text-align: center;">
+        <table style=" text-align: left;">
           <tr>
             <td class="content2" id="rfqno">料號</td>
             <td class="content2" id="currency">材料規格</td>
@@ -93,6 +94,7 @@
         </table>
       </div>
     </div>
+  </nz-card>
     <!--<div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style=" font-family: 微軟正黑體;">
