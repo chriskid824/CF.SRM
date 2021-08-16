@@ -525,15 +525,15 @@ export class RfqComponent implements OnInit {
     if (rfq.m.length == 0) { alert('料號至少需一筆!'); return; }
     for (var i = 0; i < rfq.m.length; i++) {
       if (!rfq.m[i].qty) {
-        alert("料號" + rfq.m[i].matnr + "數量未填");
+        alert("料號" + rfq.m[i].srmMatnr1 + "數量未填");
         return;
       }
       if (isNaN(rfq.m[i].qty)) {
-        alert("料號" + rfq.m[i].matnr + "數量格式錯誤");
+        alert("料號" + rfq.m[i].srmMatnr1 + "數量格式錯誤");
         return;
       }
       if (!rfq.m[i].machineName) {
-        alert("料號" + rfq.m[i].matnr + "機碼未填");
+        alert("料號" + rfq.m[i].srmMatnr1 + "機種未填");
         return;
       }
     }

@@ -237,17 +237,26 @@ namespace Convience.Service.SRM
                 case Status.啟動:
                     if ((Status)rfq.Status != Status.初始)
                     {
-                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                        throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
                     }
                     break;
                 case Status.作廢:
                 case Status.刪除:
                     if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動)
                     {
-                        throw new Exception($"非底稿狀態無法{((Status)status).ToString()}");
+                        throw new Exception($"非初始或啟動狀態無法{((Status)status).ToString()}");
                     }
                     rfq.EndDate = DateTime.Now;
                     rfq.EndBy = rfqH.EndBy;
+                    break;
+                case Status.簽核中:
+                    if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.已核發)
+                    {
+                        throw new Exception($"狀態異常無法{((Status)status).ToString()}");
+                    }
+                    if ((Status)rfq.Status == Status.已核發) {
+                        return rfq;
+                    }
                     break;
                 default:
                     throw new Exception($"未定義{((Status)status).ToString()}");

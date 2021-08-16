@@ -189,7 +189,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 try
                 {
-                    //rfqId = _srmPriceService.Start(infos).Value;
+                    rfqId = _srmPriceService.Start(infos).Value;
                     _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid }); 
                     transaction.Complete();
                     return Ok();

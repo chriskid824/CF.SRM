@@ -30,6 +30,10 @@ export class PriceManageComponent implements OnInit {
     });
   }
   searchRFQ() {
+    if (!this.form_searchRFQ.value["rfqNum"]) {
+      alert("詢價單號必填");
+      return;
+    }
     this._srmRfqService.GetRfq({ rfqNum: this.form_searchRFQ.value["rfqNum"], statuses: [5, 8, 9], werks: this._storageService.werks.split(',') }).subscribe(result => {
 /*      console.log(result);*/
       if (result) {
