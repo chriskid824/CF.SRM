@@ -188,7 +188,7 @@ namespace Convience.Service.SRM
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
-            int venderid = query.vendor;
+            //int venderid = query.vendor;
             var result = _context.SrmRfqHs
                 .AndIfHaveValue(query.rfqno, p => p.RfqNum == query.rfqno)
                 .Select(p => new ViewQotListH
@@ -219,10 +219,12 @@ namespace Convience.Service.SRM
                                   QCreateDate = q.CreateDate,
                                   QLastUpdateBy = q.LastUpdateBy,
                                   QLastUpdateDate = q.LastUpdateDate,
-                                  QVendorId = q.VendorId
+                                  QVendorId = q.VendorId,
+                                  QVendor = v.SapVendor
                               })
                               //.ToList();
-                              .Where(p => p.QVendorId.Value == query.vendor)
+                              //.Where(p => p.QVendorId.Value == query.vendor)
+                              .Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
                               .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
                               .ToList();            
