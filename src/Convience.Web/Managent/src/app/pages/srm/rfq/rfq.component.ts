@@ -437,7 +437,7 @@ export class RfqComponent implements OnInit {
         }
       }
     }
-    this.rowData_MATNR.forEach(row => row.volume = row.length + 'X' + row.width + 'X' + row.height);
+    this.rowData_MATNR.forEach(row => row.volume = row.length + '*' + row.width + '*' + row.height);
     this.gridApi.setRowData(this.rowData_MATNR);
     console.log(this.rowData_MATNR);
     this.tplModal.close();
