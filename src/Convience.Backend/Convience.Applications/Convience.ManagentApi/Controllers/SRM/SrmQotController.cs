@@ -52,7 +52,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             var rfqno = (query["RFQ_NUM"] != null) ? query["RFQ_NUM"].ToString() : null;
             var matnr = (query["MATNR"] != null) ? query["MATNR"].ToString() : null;
             var status = (query["STATUS"] != null) ? (int)query["STATUS"] : 0;
-            var vendor = 2;// (int)query["VENDOR"]; 
+            var vendor = "2";// (int)query["VENDOR"];  //???
             qot.rfqno = rfqno;
             qot.status = status;//(int)query["status"];
             qot.matnr = matnr;
