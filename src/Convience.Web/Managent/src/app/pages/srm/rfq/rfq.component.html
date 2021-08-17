@@ -68,8 +68,8 @@
       <mat-tab-group>
         <mat-tab label="料號明細">
           <h1>
-            <button nz-button nzType="primary" style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addMatnrTitleTpl,MatnrContentTpl)">建立料號</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteMatnr()">刪除料號</button>
+            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addMatnrTitleTpl,MatnrContentTpl)"><i nz-icon nzType="plus"></i>建立料號</button>
+            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteMatnr()"><i nz-icon nzType="delete"></i>刪除料號</button>
           </h1>
           <ag-grid-angular #agGrid
                            style="width: 93%; height: 200px;border:solid"
@@ -91,8 +91,8 @@
         </mat-tab>
         <mat-tab label="供應商明細">
           <h1>
-            <button nz-button nzType="primary" style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addVendorTitleTpl,VendorContentTpl)">建立供應商</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteVendor()">刪除供應商</button>
+            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addVendorTitleTpl,VendorContentTpl)"><i nz-icon nzType="plus"></i>建立供應商</button>
+            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteVendor()"><i nz-icon nzType="delete"></i>刪除供應商</button>
           </h1>
           <ag-grid-angular #agGrid
                            style="width: 93%; height: 200px; border: solid"

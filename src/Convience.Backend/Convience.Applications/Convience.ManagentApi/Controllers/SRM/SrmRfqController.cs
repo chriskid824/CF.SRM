@@ -25,7 +25,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class SrmRfqController : ControllerBase
     {
         private readonly ISrmMatnrService _srmMatnrService;
@@ -54,16 +54,19 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("GetMatnr")]
+        [Permission("rfq")]
         public IActionResult GetMatnr(QueryMatnrModel matnrQuery)
         {
             return Ok(_srmMatnrService.GetMatnr(matnrQuery));
         }
 
         [HttpPost("GetVendor")]
+        [Permission("rfq")]
         public IActionResult GetVendor(QueryVendorModel vendorQuery) {
             return Ok(_srmVendorService.GetVendor(vendorQuery));
         }
         [HttpPost("Save")]
+        [Permission("rfq")]
         public IActionResult Save(JObject rfq) {
             SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
             SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
@@ -75,6 +78,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpGet("GetRfqData")]
+        [Permission("rfq")]
         public IActionResult GetRfqData(int id) {
             ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer,Page=1,Size=1 }).Data[0].Name;
@@ -97,6 +101,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("GetRfqList")]
+        [Permission("rfq-manage")]
         public IActionResult GetRfqList(JObject query)
         {
             QueryRfqList q = new QueryRfqList();
@@ -110,6 +115,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok(h);
         }
         [HttpPost("StartUp")]
+        [Permission("rfq")]
         public IActionResult StartUp(JObject rfq) {
             SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
             SrmRfqM[] matnrs = rfq["m"].ToObject<SrmRfqM[]>();
@@ -117,7 +123,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             DateTime now = DateTime.Now.Date;
 
             if (h.Deadline < now) {
-                return BadRequest("截止日期已過");
+                return this.BadRequestResult("截止日期已過");
             }
 
             using (var transaction = new System.Transactions.TransactionScope()) {
@@ -152,7 +158,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 catch (Exception ex)
                 {
                     transaction.Dispose();
-                    return BadRequest(ex.Message);
+                    return this.BadRequestResult(ex.Message);
                 }
             }
         }
@@ -161,6 +167,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         //    return Ok(_userService.GetUsers(userQuery));
         //}
         [HttpPost("Cancel")]
+        [Permission("rfq")]
         public IActionResult Cancel(SrmRfqH rfqH) {
             using (var transaction = new System.Transactions.TransactionScope())
             {
@@ -214,11 +221,12 @@ namespace Convience.ManagentApi.Controllers.SRM
                 catch (Exception ex)
                 {
                     transaction.Dispose();
-                    return BadRequest(ex.Message);
+                    return this.BadRequestResult(ex.Message);
                 }
             }
         }
         [HttpPost("Delete")]
+        [Permission("rfq")]
         public IActionResult Delete(SrmRfqH rfqH)
         {
             try
@@ -228,7 +236,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return Ok();
             }catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return this.BadRequestResult(ex.Message);
             }
         }
         [HttpPost("GetSourcerList")]
@@ -242,6 +250,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             //return Ok(_srmRfqHService.GetSourcer(users));
         }
         [HttpPost("GetRfq")]
+        [Permission("price")]
+        [Permission("rfq")]
         public IActionResult GetRfq(QueryRfq query) {
             return Ok(_srmRfqHService.GetRfq(query));
         }

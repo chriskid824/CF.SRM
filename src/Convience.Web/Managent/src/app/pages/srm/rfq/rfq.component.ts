@@ -169,7 +169,7 @@ export class RfqComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("matnr")?.value,
-      werks: this._storageService.werks,
+      werks: this._storageService.werks.split(','),
       page: this.page,
       size: this.size
     }
@@ -190,7 +190,7 @@ export class RfqComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["vendor"],
-      werks: this._storageService.werks,
+      werks: this._storageService.werks.split(','),
       page: this.page,
       size: this.size
     }
@@ -437,7 +437,7 @@ export class RfqComponent implements OnInit {
         }
       }
     }
-    this.rowData_MATNR.forEach(row => row.volume = row.length + 'X' + row.width + 'X' + row.height);
+    this.rowData_MATNR.forEach(row => row.volume = row.length + '*' + row.width + '*' + row.height);
     this.gridApi.setRowData(this.rowData_MATNR);
     console.log(this.rowData_MATNR);
     this.tplModal.close();
@@ -525,15 +525,15 @@ export class RfqComponent implements OnInit {
     if (rfq.m.length == 0) { alert('料號至少需一筆!'); return; }
     for (var i = 0; i < rfq.m.length; i++) {
       if (!rfq.m[i].qty) {
-        alert("料號" + rfq.m[i].matnr + "數量未填");
+        alert("料號" + rfq.m[i].srmMatnr1 + "數量未填");
         return;
       }
       if (isNaN(rfq.m[i].qty)) {
-        alert("料號" + rfq.m[i].matnr + "數量格式錯誤");
+        alert("料號" + rfq.m[i].srmMatnr1 + "數量格式錯誤");
         return;
       }
       if (!rfq.m[i].machineName) {
-        alert("料號" + rfq.m[i].matnr + "機碼未填");
+        alert("料號" + rfq.m[i].srmMatnr1 + "機種未填");
         return;
       }
     }

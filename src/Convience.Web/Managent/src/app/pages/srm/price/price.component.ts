@@ -1394,7 +1394,8 @@ export class PriceComponent implements OnInit {
     if (selectedRows.length == 0) { return;}
     var obj = {
       infos: selectedRows,
-      logonid: this._storageService.userName
+      logonid: this._storageService.userName,
+      rfqId: this.rfqId
     };
     this._srmPriceService.Start(obj).subscribe(result => {
       console.log("s");

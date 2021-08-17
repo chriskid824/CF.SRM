@@ -14,6 +14,7 @@ import { LayoutComponent } from '../../layout/layout/layout.component';
 export class RfqManageComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   data;
+  status;
 
   page: number = 1;
   size: number = 2;
@@ -72,7 +73,7 @@ export class RfqManageComponent implements OnInit {
       this.data = result["data"];
       this.total = result["total"];
     })
-
+    this.status = query.status;
     //this.data = [
     //  { RFQ_ID: 1, RFQ_NUM: 'order 1', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST'},
     //  { RFQ_ID: 2, RFQ_NUM: 'order 2', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
@@ -100,6 +101,11 @@ export class RfqManageComponent implements OnInit {
   open(id) {
     this._layout.navigateTo('rfq');
     this._router.navigate(['srm/rfq', { id: id }]);
+    //window.open('../srm/rfq?id=' + id);
+  }
+  openPrice(id) {
+    this._layout.navigateTo('price');
+    this._router.navigate(['srm/price', { id: id  }]);
     //window.open('../srm/rfq?id=' + id);
   }
   addRfq() {
