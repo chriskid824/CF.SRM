@@ -9,6 +9,7 @@ import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutComponent } from '../../layout/layout/layout.component';
 
+
 @Component({
   selector: 'app-qotlist',
   templateUrl: './qotlist.component.html',
@@ -45,7 +46,7 @@ export class QotlistComponent implements OnInit {
     private _router: Router,
   )
   {
-    this.activatedRoute.params.subscribe((params) => this.qotid = params['id']);
+    //this.activatedRoute.params.subscribe((params) => this.qotid = params['id']);
 
     this.columnDefs = [
      /* { field:'序號', resizable: true,cellRenderer: 'agGroupCellRenderer',},
@@ -85,10 +86,9 @@ export class QotlistComponent implements OnInit {
               var eButton = eDiv.querySelectorAll('.btn-simple')[0];  
               eButton.addEventListener('click', function() {
                alert(params.data.QQotId)
+               window.open('../srm/qot?id=' + params.data.QQotId);
                //this._layout.navigateTo('qot'); //???進不去
                //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
-               //window.open('../srm/qot?id=' + id);
-               window.open('../srm/qot?id=' + params.data.QQotId);
               });
               return eDiv;
               }

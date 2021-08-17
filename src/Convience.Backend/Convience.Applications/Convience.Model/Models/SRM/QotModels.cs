@@ -120,6 +120,27 @@ namespace Convience.Model.Models.SRM
         public int vendorid { get; set; }
         public string vendor { get; set; }
     }
+    public class ViewQot : SrmQotH 
+    {
+        public string Matnr { get; set; }
+        public string  Size { get; set; }
+        public string RfqNum { get; set; }
+        #region SrmRfqM
+        public int RfqMId { get; set; }
+        public int? RfqId { get; set; }
+        public int? MatnrId { get; set; }
+        public string Version { get; set; }
+        public string Material { get; set; }
+        public double? Length { get; set; }
+        public double? Width { get; set; }
+        public double? Height { get; set; }
+        public string Density { get; set; }
+        public double? Weight { get; set; }
+        public string MachineName { get; set; }
+        public double? Qty { get; set; }
+        public string Note { get; set; }
+        #endregion
+    }
 
     public class ViewQotListH : SrmRfqH
     {
@@ -162,6 +183,7 @@ namespace Convience.Model.Models.SRM
         public int? QVendorId { get; set; }
         public string QVendor { get; set; }
         public string QMatnr { get; set; }
+       
     }
 	public class ViewSummary :ViewSrmRfqH{
         public string vendor { get; set; }
@@ -211,5 +233,13 @@ namespace Convience.Model.Models.SRM
         public string taxcode { get; set; }
         public string effectiveDate { get; set; }
         public string expirationDate { get; set; }
+    }
+    public record ResultQotModel
+    {
+        //public ViewSrmRfqH h { get; set; }
+        //public ViewSrmRfqM[] m { get; set; }
+        //public ViewSrmRfqV[] v { get; set; }
+        public System.Linq.IQueryable q { get; set; }
+        //public ViewSrmRfqV[] v { get; set; }
     }
 }

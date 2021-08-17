@@ -22,79 +22,111 @@
 
     <div class="left">
         <nz-card [nzSize]="'small'">
-            <button nz-button class="mb-10" (click)="refreshtree()"><i nz-icon nzType="sync"></i>刷新数据</button>
+            <!--<button nz-button class="mb-10" (click)="refreshtree()"><i nz-icon nzType="sync"></i>刷新数据</button>-->
+            <nz-card [nzSize]="'small'">
+              <form nz-form [formGroup]="matnrList">
+                <nz-form-item>
+                  <!--<nz-select style="width: 20%"
+                     nzShowSearch
+                     formControlName="selectedMatnr"
+                     (ngModelChange)="search()">
+            <nz-option *ngFor="let item of matnrs" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
+          </nz-select>-->
+                  <nz-tree [nzData]="nodes" nzShowIcon="true" (nzClick)="changedMatnr($event)" [nzExpandedIcon]="mutiExpandedIconTpl">
+                    <ng-template #mutiExpandedIconTpl let-node>
+                      <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isExpanded ? 'caret-down' : 'caret-right'"
+                         style="color: lightgray;"></i>
+                      <i *ngIf="node.origin.isLeaf" nz-icon nzType="team" class="ant-tree-switcher-line-icon"></i>
+                    </ng-template>
+                  </nz-tree>
+                </nz-form-item>
+              </form>
+            </nz-card>
             <!--<app-department-tree #tree (selectedNodeChanged)="selectedChanged($event)"></app-department-tree>-->
         </nz-card>
     </div>
     <div class="right">
+    <form nz-form [formGroup]="info1">
     <nz-card [nzSize]="'middle'" id="info1">
+      <nz-form-item>
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style="  text-align: left;">
           <tr>
-            <td class="content2" id="rfqno">建立日期</td>
-            <td class="content2" id="currency">建立人員</td>
-            <td class="content2" id="leadtime">狀態</td>
-            <td class="content2" id="min_qty">詢價單號</td>
-            <td class="content2" id="min_qty">報價單號</td>
+            <td class="content2" id="tdcreateddate">建立日期</td>
+            <td class="content2" id="tdcreatedby">建立人員</td>
+            <td class="content2" id="tdstatus">狀態</td>
+            <td class="content2" id="tdrfqnum">詢價單號</td>
+            <td class="content2" id="tdqotnum">報價單號</td>
+
           </tr>
           <tr id="rowtype2">
             <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">2021/07/13</label>
+              <label class="content2" type="text" id="createddate" name="createddate" disabled value="">{{qotv==null?"":qotv.q[0].createDate}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">AA</label>
+              <label class="content2" type="text" id="createdby" name="createdby" disabled value="">{{qotv==null?"":qotv.q[0].createBy}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">初始</label>
+              <label class="content2" type="text" id="status" name="status" disabled value="">{{qotv==null?"":qotv.q[0].status}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value="">RFQ00000001</label>
+              <label class="content2" type="text" id="rfqnum" name="rfqnum" disabled
+                value="">{{qotv==null?"":qotv.q[0].rfqNum}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value="">QOT00001-1</label>
+              <label class="content2" type="text" id="qotnum" name="qotnum" disabled
+                value="">{{qotv==null?"":qotv.q[0].qotNum}}</label>
             </td>
+            
+          
           </tr>
         </table>
       </div>
     </div>
+    </nz-form-item>
 </nz-card>
+</form>
+<form nz-form [formGroup]="info2">
 <nz-card [nzSize]="'middle'" id="info2">
+  <nz-form-item>
     <div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style=" text-align: left;">
           <tr>
-            <td class="content2" id="rfqno">料號</td>
-            <td class="content2" id="currency">材料規格</td>
-            <td class="content2" id="leadtime">成本尺寸</td>
-            <td class="content2" id="min_qty">工件重量(KG)</td>
-            <td class="content2" id="min_qty">機種名稱</td>
+            <td class="content2" id="tdmatnr">料號</td>
+            <td class="content2" id="tdmaterial">材料規格</td>
+            <td class="content2" id="tdsize">成本尺寸</td>
+  
+            <td class="content2" id="tdweight">工件重量(KG)</td>
+            <td class="content2" id="tdmachinename">機種名稱</td>
           </tr>
           <tr id="rowtype2">
             <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">ZAT42-31653</label>
+              <label class="content2" type="text" id="matnr" name="matnr" disabled value="">{{qotv==null?"":qotv.q[0].matnr}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">SUS304</label>
+              <label class="content2" type="text" id="material" name="material" disabled value="">{{qotv==null?"":qotv.q[0].material}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">3739*562mm</label>
+              <label class="content2" type="text" id="size" name="size" disabled value="">{{qotv==null?"":qotv.q[0].size}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value="">1850</label>
+              <label class="content2" type="text" id="weight" name="weight" disabled
+                value="">{{qotv==null?"":qotv.q[0].weight}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value="">25KTOP</label>
+              <label class="content2" type="text" id="machinename" name="machinename" disabled
+                value="">{{qotv==null?"":qotv.q[0].machineName}}</label>
             </td>
+          
           </tr>
         </table>
       </div>
     </div>
+    </nz-form-item>
   </nz-card>
+  </form>
     <!--<div class="child">
       <div class="cc" style="margin: 0px auto;">
         <table style=" font-family: 微軟正黑體;">

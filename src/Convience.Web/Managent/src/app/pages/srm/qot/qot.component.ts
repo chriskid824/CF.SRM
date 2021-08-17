@@ -13,9 +13,10 @@ import { Process } from '../model/Process';
 import { Surface } from '../model/Surface';
 import { Other } from '../model/Other';
 //import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
-import { QotH } from '../model/Qot';
+import { Qot, QotH, QotV } from '../model/Qot';
 import { ViewChild } from '@angular/core';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 
 interface Food {
   value: string;
@@ -36,7 +37,12 @@ export class QotComponent implements OnInit {
   ];
   @ViewChild('tree', { static: true })
   tree: any;
+   matnrs = [];
   //departmentNode: NzTreeNodeOptions[] = [];
+  selectedMatnr;
+  matnrList: FormGroup = new FormGroup({});
+  info2: FormGroup = new FormGroup({});
+  info1: FormGroup = new FormGroup({});
   selectedDepartmentKey: string = '';
   editForm_Material: FormGroup = new FormGroup({});
   editForm_Process: FormGroup = new FormGroup({});
@@ -68,11 +74,18 @@ export class QotComponent implements OnInit {
   columnDefs_PROCESS;
   columnDefs_SURFACE;
   columnDefs_OTHER;
-  rowSelection = "multiple";
+  rowSelection = "single";
   columnApi;
   columnApi_Process;
   columnApi_Surface;
   columnApi_Other;
+  qotId;
+  id;
+  route;
+  qot: QotH;
+  qotv: Qot;
+  matnrIndex;
+  nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
@@ -81,9 +94,11 @@ export class QotComponent implements OnInit {
     private _menuService: MenuService,
     private _messageService: NzMessageService,
     private _srmQotService: SrmQotService,
- 
-
+    private activatedRoute: ActivatedRoute,
+    private _router: Router,
   ) {  
+    //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
+    //alert('qoooooooooooooooooooooooot = '+this.qotId)
     this.rowData_Material = [];
     this.data1 = [];
     this.rowData_Process = [];
@@ -289,7 +304,28 @@ export class QotComponent implements OnInit {
 
   //this.rowData_MATNR = [];
   ngOnInit(): void {
+    //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
+    //alert(this.qotId)
+    this.activatedRoute.queryParams
+      .subscribe(params => {
+        console.log(params); // { orderby: "price" }
+        this.id = params.id;
+        console.log(this.id); // price
+        //alert('qqqqqqqqqqqqqqqqqqqotid='+this.id)
+      }
+    );
+    this.matnrList = this._formBuilder.group({
+      selectedMatnr: [null]
+    });
+    this.info1 = this._formBuilder.group({
+
+     });
+    this.info2 = this._formBuilder.group({ });
+    
+    this.init();
+    //this.initGrid();
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
+  
   }
   
    
@@ -781,4 +817,65 @@ export class QotComponent implements OnInit {
     this.data = array;
   }
   /**/
+  //init() {
+  //  this._srmRfqService.GetRfqData(this.rfqId).subscribe(result => {
+  //    this.rfq = result;
+  //    this.matnrs = [];
+  //    console.log(this.rfq);
+  //    this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr1, value: row.matnrId }));
+  //    this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });
+  //    this.nodes = [];
+  //    this.nodes = [{ title: this.rfq.h.rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
+  //    this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr1, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
+  //    // { title: department.name, key: department.id, icon: 'appstore', children: [] };
+  //    //this.radioValue = this.matnrs[0].value;
+  //  });
+  //  var query = {
+  //    rfqId: this.rfqId,
+  //  };
+    /*this._srmPriceService.GetSummary(query).subscribe(result => {
+      this.rowData_summary = result;
+    });*/
+  //}
+
+
+  init() {
+    //alert('aaaa='+this.id)
+    this._srmQotService.GetQotData(this.id).subscribe(result => {
+      this.qotv = result;     
+      //console.info("resultttttttt="+this.qotv);
+      console.log(this.qotv);
+      console.log(this.qotv.q);
+      console.log(this.qotv.q[0]);
+      console.log('test');
+      console.log(this.qotv.q[0].createBy);
+
+      //this.qotv.q.forEach(row => this.matnrs.push({ label: row.srmMatnr1, value: row.matnrId }));//???
+      //this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });//???
+      this.nodes = [];
+      this.nodes = [{ title: this.qotv.q[0].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
+      //this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr1, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
+
+
+      // { title: department.name, key: department.id, icon: 'appstore', children: [] };
+      //this.radioValue = this.matnrs[0].value;
+    });
+    console.info('data ='+this.qot);
+    var query = {
+      rfqId: this.qotId,
+    };
+    /*this._srmPriceService.GetSummary(query).subscribe(result => {
+      this.rowData_summary = result;
+    });*/
+  }
+  
+  changedMatnr(value) {
+   /* console.log(value);
+    this.matnrList.setValue({ selectedMatnr: value.keys[0] });
+    //if (value.node.origin.index != null) {
+      this.matnrIndex = value.node.origin.index;
+    //}
+    console.log(this.matnrIndex);
+    this.search();*/
+  }
 }

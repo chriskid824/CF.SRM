@@ -31,10 +31,16 @@ namespace Convience.Service.SRM
         public SrmQotH[] Get(QueryQot query);
         public IEnumerable<ViewQotListH> GetQotList();
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query);
+        //public IEnumerable<ViewQot> GetDataBQotId(int QotId);
+        public IQueryable GetQotData(int QotId);
+
+        //public ViewQotListL GetDataByRfqId(int RfqId);
     }
     public class SrmQotService : ISrmQotService
     {
+        private readonly IRepository<SrmRfqM> _srmRfqMRepository;
         private readonly IRepository<SrmQotH> _srmQotHRepository;
+        private readonly IRepository<SrmMatnr> _srmSrmMatnrRepository;
         private readonly SRMContext _context;
 
         public SrmQotService(
@@ -151,6 +157,10 @@ namespace Convience.Service.SRM
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
+
+                              join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                             
+
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
                               select new ViewQotListL
@@ -207,6 +217,9 @@ namespace Convience.Service.SRM
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
+
+                              join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
                               select new ViewQotListL
@@ -271,5 +284,69 @@ namespace Convience.Service.SRM
             int vendor = query.vendor;
             return result.Where(p => p.VENDOR_ID == vendor).ToList();
         }*/
+        
+        public IQueryable GetQotData(int QotId)
+        {
+            var qotlist = (from q in _context.SrmQotHs
+                           join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                           join rm in _context.SrmRfqMs on r.RfqId equals rm.RfqId
+                           join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+
+                           //where e.OwnerID == user.UID
+                           select new 
+                           {
+                              
+                               RfqNum = r.RfqNum,
+                               CreateBy = q.CreateBy,
+                               CreateDate = q.CreateDate,
+                               QotId = q.QotId,
+                               QotNum = q.QotNum,
+                               Status = q.Status.HasValue ? ((Status)q.Status).ToString() : "",
+                               Matnr = m.SapMatnr,
+                               Material = rm.Material,
+                               Weight = rm.Weight,
+                               MachineName = rm.MachineName,
+                               Size = rm.Length + "*" + rm.Width + "*" + rm.Height,
+                               Length = rm.Length,
+                               Width = rm.Width,
+                               Height = rm.Height
+                           });
+            //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+            //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+            //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotlist = qotlist.Where(p => p.QotId == QotId) ;
+            return qotlist;
+        }
+        /*public IEnumerable<ViewQot> GetDataBQotId(int QotId)
+        {
+            var qotlist = (from q in _context.SrmQotHs
+                           join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                           join rm in _context.SrmRfqMs on r.RfqId equals rm.RfqId
+                           join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+
+                           //where e.OwnerID == user.UID
+                           select new ViewQot
+                           {
+                               CreateBy = q.CreateBy,
+                               CreateDate = q.CreateDate,
+                               QotId = q.QotId,
+                               QotNum = q.QotNum,
+                               Status = q.Status,
+                               Matnr = m.SapMatnr,
+                               Material = rm.Material,
+                               Weight = rm.Weight,
+                               MachineName = rm.MachineName,
+                               Size = rm.Length +"*" + rm.Width +"*" + rm.Height,
+                               Length = rm.Length,
+                               Width = rm.Width,
+                               Height = rm.Height
+                           }).ToList();
+                            //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+                            //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+                            //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotlist = qotlist.Where(p => p.QotId == QotId).ToList(); ;
+            return qotlist;
+        }*/
+
     }
 }

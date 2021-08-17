@@ -15,4 +15,7 @@ export class SrmQotService {
   GetQotList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
   }
+  GetQotData(id) {
+    return this.httpClient.get(`${this.uriConstant.SrmQot}/GetQotData?id=${id}`)
+  }
 }

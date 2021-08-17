@@ -66,5 +66,39 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
+        //[HttpGet("GetQotData")]
+        //public IActionResult GetQotData(int id)
+        //{
+        //    //ViewQot qot = (ViewQot)_srmQotService.GetDataBQotId(id);          
+        //    //return this.BadRequestResult("12334");
+        //    return Ok(
+        //        );
+        //}
+
+        [HttpGet("GetQotData")]
+        public IActionResult GetQotData(int id)
+        {
+            //for tree?
+            //ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
+            //h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer, Page = 1, Size = 1 }).Data[0].Name;
+            //h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
+            System.Linq.IQueryable QotV = _srmQotService.GetQotData(id); //表單欄位用
+            //ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
+            //Newtonsoft.Json.JsonSerializer js = new Newtonsoft.Json.JsonSerializer();
+            //js.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+            ////JObject rfq = new JObject() {
+            ////    { "h",JObject.FromObject(h,js)},
+            ////    { "m",JArray.FromObject(m,js)},
+            ////    { "v",JArray.FromObject(v,js)},
+            ////};
+            ResultQotModel qot = new ResultQotModel()
+            {
+                //h = h,
+                q = QotV,
+                //v = v
+            };
+            //return this.BadRequestResult("12334");
+            return Ok(qot);
+        }
     }
 }
