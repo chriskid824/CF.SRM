@@ -1,7 +1,8 @@
 export class Qot {
   //h?: RfqH;
-  //m?: RfqM[];
+  m?: matnr[];
   q?: QotV;
+  
 }
 
 export class QotH {
@@ -43,4 +44,13 @@ export class QotH {
     //lastUpdateDate ?: Date;
     //lastUpdateBy ?: string;
   }
+  export class matnr {
+    qotId?: number;
+    rfqId?: number;
+    vendorId?: number;
+    matnr?: string;
+    rfqNum?: string;
+    matnrId?: number;
+  }
+
   

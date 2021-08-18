@@ -76,13 +76,15 @@ namespace Convience.ManagentApi.Controllers.SRM
         //}
 
         [HttpGet("GetQotData")]
-        public IActionResult GetQotData(int id)
+        public IActionResult GetQotData(int id,int rfqid,int vendorid)
         {
             //for tree?
             //ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             //h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer, Page = 1, Size = 1 }).Data[0].Name;
             //h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
             System.Linq.IQueryable QotV = _srmQotService.GetQotData(id); //表單欄位用
+            System.Linq.IQueryable matnr = _srmQotService.GetMatnrData(rfqid,vendorid); //表單欄位用
+
             //ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
             //Newtonsoft.Json.JsonSerializer js = new Newtonsoft.Json.JsonSerializer();
             //js.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
@@ -93,12 +95,27 @@ namespace Convience.ManagentApi.Controllers.SRM
             ////};
             ResultQotModel qot = new ResultQotModel()
             {
+                m= matnr,
                 //h = h,
                 q = QotV,
                 //v = v
             };
             //return this.BadRequestResult("12334");
             return Ok(qot);
+        }
+        [HttpPost("GetQotDetail")]
+        //[Permission("price")]
+        public IActionResult GetQotDetail(QueryQot query)
+        {
+            var qots = (_srmQotService.Get(query));
+            ViewSrmPriceDetail detail = _srmQotService.GetDetail(qots);
+            SrmRfqM m = new SrmRfqM()
+            {
+                RfqId = query.rfqId,
+                MatnrId = query.matnrId
+            };
+            detail.matnr = _srmRfqMService.GetRfqMData(m);
+            return Ok(detail);
         }
     }
 }

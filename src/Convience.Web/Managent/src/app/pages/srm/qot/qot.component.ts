@@ -81,10 +81,19 @@ export class QotComponent implements OnInit {
   columnApi_Other;
   qotId;
   id;
+  rfqid;
+  vendorid;
   route;
   qot: QotH;
   qotv: Qot;
   matnrIndex;
+  radioValue;
+  rowData_material=[];
+  rowData_process=[];
+  rowData_surface=[];
+  rowData_other=[];
+  rowData_matnr=[];
+  rowData_inforecord=[];
   nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
   //editForm: FormGroup = new FormGroup({});
@@ -310,6 +319,12 @@ export class QotComponent implements OnInit {
       .subscribe(params => {
         console.log(params); // { orderby: "price" }
         this.id = params.id;
+        this.vendorid = params.vendorid;
+        this.rfqid = params.rfqid;
+        //alert(this.vendorid)
+        //alert(this.rfqid)
+        console.log(this.vendorid);
+        console.log(this.rfqid);
         console.log(this.id); // price
         //alert('qqqqqqqqqqqqqqqqqqqotid='+this.id)
       }
@@ -738,11 +753,6 @@ export class QotComponent implements OnInit {
     });
   }
   /*0730*/
-
-  
-
-
-
   addProcess(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editForm_Process= this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
@@ -808,6 +818,9 @@ export class QotComponent implements OnInit {
     });
 
   }
+  
+
+
   //0812
   refreshtree() {
     this.tree.initNodes();
@@ -841,20 +854,23 @@ export class QotComponent implements OnInit {
 
   init() {
     //alert('aaaa='+this.id)
-    this._srmQotService.GetQotData(this.id).subscribe(result => {
+    this._srmQotService.GetQotData(this.id,this.rfqid,this.vendorid).subscribe(result => {
       this.qotv = result;     
       //console.info("resultttttttt="+this.qotv);
+      console.log(this.qotv.m);
       console.log(this.qotv);
       console.log(this.qotv.q);
       console.log(this.qotv.q[0]);
       console.log('test');
       console.log(this.qotv.q[0].createBy);
-
-      //this.qotv.q.forEach(row => this.matnrs.push({ label: row.srmMatnr1, value: row.matnrId }));//???
-      //this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });//???
+      this.matnrs = [];
+      this.qotv.m.forEach(row => this.matnrs.push({ label: row.matnr, value: row.matnrId }));//???
+      console.log(this.matnrs);
+      this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });//???
+      console.log(this.matnrs[0].value);
       this.nodes = [];
       this.nodes = [{ title: this.qotv.q[0].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
-      //this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr1, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
+      this.qotv.m.forEach((row, index) => this.nodes[0].children.push({ title: row.matnr, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
 
 
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
@@ -870,12 +886,45 @@ export class QotComponent implements OnInit {
   }
   
   changedMatnr(value) {
-   /* console.log(value);
+    console.log(value);
     this.matnrList.setValue({ selectedMatnr: value.keys[0] });
     //if (value.node.origin.index != null) {
       this.matnrIndex = value.node.origin.index;
     //}
     console.log(this.matnrIndex);
-    this.search();*/
+    this.search();
   }
+  search() {
+    this.radioValue = this.matnrList.get('selectedMatnr').value;
+    this.rowData_material = [];
+    this.rowData_process = [];
+    this.rowData_surface = [];
+    this.rowData_other = [];
+    //alert('ppppppppp')
+    //alert(this.radioValue)
+    if (!(this.id) || !(this.radioValue)) {
+      return;
+    }
+    var query={
+      qotid: this.id,
+      matnrId: this.radioValue,
+      vendorid :this.vendorid,
+      rfqid :this.rfqid
+    };
+    this._srmQotService.GetQotDetail(query).subscribe(result => {
+      this.rowData_matnr = [result["matnr"]];
+      this.rowData_material = result["material"];
+      this.rowData_process = result["process"];
+      this.rowData_surface = result["surface"];
+      this.rowData_other = result["other"];
+      //this.rowData_inforecord = result["infoRecord"];
+      console.log(result);
+    });
+  }
+  RejectQot(){}
+  SaveQot(){}
+  BackQot(){
+    window.open('../srm/qotlist');
+  }
+  SendQot(){}
 }

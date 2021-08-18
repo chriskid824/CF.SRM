@@ -85,15 +85,17 @@ export class QotlistComponent implements OnInit {
               eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檢視</button></span>';
               var eButton = eDiv.querySelectorAll('.btn-simple')[0];  
               eButton.addEventListener('click', function() {
-               alert(params.data.QQotId)
-               window.open('../srm/qot?id=' + params.data.QQotId);
+               //alert( params.data.QVendorId)
+               window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
                //this._layout.navigateTo('qot'); //???進不去
                //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
               });
               return eDiv;
               }
           },
-          {  headerName: "序號",field: 'QQotId',hide:"true"},
+          {  headerName: "QVendorId",field: 'QVendorId',hide:"true"},
+          {  headerName: "QRfqId",field: 'QRfqId',hide:"true"},
+          {  headerName: "QQotId",field: 'QQotId',hide:"true"},
           {  headerName: "序號",valueGetter: "node.rowIndex + 1"},
           { headerName:'報價單號',field: 'QQotNum' },
           { headerName:'狀態',field: 'QStatus', minWidth: 150 },
@@ -230,7 +232,7 @@ export class QotlistComponent implements OnInit {
   onRowClicked(event) {
   //event.data The selected row data, event.event is the mouse event, etc. You can log to see for yourself
     console.log('a row was clicked', event);
-    alert(event.data["報價單號"])
+    //alert(event.data["報價單號"])
     //alert(event.data[0].序號)
     //var itxst = JSON.stringify(event.data);
     //alert(itxst);

@@ -15,7 +15,11 @@ export class SrmQotService {
   GetQotList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
   }
-  GetQotData(id) {
-    return this.httpClient.get(`${this.uriConstant.SrmQot}/GetQotData?id=${id}`)
+  GetQotData(id,rfqid,vendorid) {
+    //return this.httpClient.get(`${this.uriConstant.SrmQot}/GetQotData?id=${id}`)
+    return this.httpClient.get(`${this.uriConstant.SrmQot}/GetQotData?id=${id}&rfqid=${rfqid}&vendorid=${vendorid}`)
   }
+  GetQotDetail(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotDetail`, query);
+  } 
 }

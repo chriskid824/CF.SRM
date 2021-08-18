@@ -155,13 +155,21 @@
       </div>
     </div>-->
     <nz-card [nzSize]="'small'" id="btnBar">
-      <button id="btnRejectQot"  nz-button class="mr-10"  ><i nz-icon nzType="default"></i>拒絕報價</button>
-      <button id=" btnSaveQot" nz-button class="mr-10" ><i nz-icon nzType="save"></i>儲存</button>
-      <button id="btnBackQot" nz-button class="mr-10"  ><i nz-icon nzType="arrow-left"></i>返回</button>
-      <button id="btnSendQot" nz-button class="mr-10" ><i nz-icon nzType="arrow-right"></i>送出</button>
+      <!--<div>
+        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="save()"><i nz-icon nzType="save"></i>保存</button>
+        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
+        <button *ngIf="canCxl" nz-button disabled="{{canCxl==false}}" (click)="cancel()"><i nz-icon nzType="delete"></i>作廢</button>
+        <button *ngIf="canDel" nz-button disabled="{{canDel==false}}" (click)="delete()"><i nz-icon nzType="delete"></i>刪除</button>
+      </div>-->
+      <div>
+      <button id="btnRejectQot"  nz-button class="mr-10"  (click)="RejectQot()"><i nz-icon nzType="default"></i>拒絕報價</button>
+      <button id=" btnSaveQot" nz-button class="mr-10" (click)="SaveQot()"><i nz-icon nzType="save"></i>儲存</button>
+      <button id="btnBackQot" nz-button class="mr-10"  (click)="BackQot()"><i nz-icon nzType="arrow-left"></i>返回</button>
+      <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()"><i nz-icon nzType="arrow-right"></i>送出</button>
       <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
-      </nz-card>
+      </div>
+    </nz-card>
     <!--
     <div class="child">
       <div class="cc" style="margin: 0px auto;">

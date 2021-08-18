@@ -241,6 +241,7 @@ namespace Convience.Model.Models.SRM
         //public ViewSrmRfqM[] m { get; set; }
         //public ViewSrmRfqV[] v { get; set; }
         public System.Linq.IQueryable q { get; set; }
+        public System.Linq.IQueryable m { get; set; }
         //public ViewSrmRfqV[] v { get; set; }
     }
 }
