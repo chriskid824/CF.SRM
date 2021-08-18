@@ -223,10 +223,38 @@ namespace Convience.Service.SRM
 
         public ViewSrmRfqH GetDataByRfqId(int RfqId)
         {
-            var rfq = _srmRfqHRepository.Get(r => r.RfqId == RfqId).First();
-            string temp = JsonConvert.SerializeObject(rfq);
-            ViewSrmRfqH result = JsonConvert.DeserializeObject<ViewSrmRfqH>(temp);
-            return result;
+            var rfq = (from rfqH in _context.SrmRfqHs
+                       join sourcer in _context.AspNetUsers on rfqH.Sourcer equals sourcer.UserName
+                       join create in _context.AspNetUsers on rfqH.CreateBy equals create.UserName
+                       where rfqH.RfqId.Equals(RfqId)
+                       select new ViewSrmRfqH
+                       {
+                           CreateBy = rfqH.CreateBy,
+                           CreateDate = rfqH.CreateDate,
+                           C_by = create.Name,
+                           Deadline = rfqH.Deadline,
+                           EndDate = rfqH.EndDate,
+                           EndBy = rfqH.EndBy,
+                           LastUpdateBy = rfqH.LastUpdateBy,
+                           LastUpdateDate = rfqH.LastUpdateDate,
+                           RfqId = rfqH.RfqId,
+                           RfqNum = rfqH.RfqNum,
+                           Sourcer = rfqH.Sourcer,
+                           sourcerName = sourcer.Name,
+                           Status = rfqH.Status,
+                       }).First();
+
+
+            //var rfq = _srmRfqHRepository.Get(r => r.RfqId == RfqId).DefaultIfEmpty().Join(_context.AspNetUsers,a=>a.Sourcer,b=>b.UserName,(a,b)=>new ViewSrmRfqH { 
+            // CreateBy = a.CreateBy,
+            // CreateDate = a.CreateDate,
+            // C_by =     
+            //    ,b.Name
+            //}).First();
+
+            //string temp = JsonConvert.SerializeObject(rfq);
+            //ViewSrmRfqH result = JsonConvert.DeserializeObject<ViewSrmRfqH>(temp);
+            return rfq;
         }
 
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH)
