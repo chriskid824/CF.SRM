@@ -135,8 +135,6 @@ export class PriceComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
       },
       {
         headerName: "A",
