@@ -117,5 +117,17 @@ namespace Convience.ManagentApi.Controllers.SRM
             detail.matnr = _srmRfqMService.GetRfqMData(m);
             return Ok(detail);
         }
+        //[HttpPost("Save")]
+        ////[Permission("rfq")]
+        //public IActionResult Save(JObject rfq)
+        //{
+        //    SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
+        //    SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
+        //    SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
+        //    DateTime now = DateTime.Now;
+        //    h.LastUpdateDate = now;
+        //    _srmRfqHService.Save(h, ms, vs);
+        //    return Ok();
+        //}
     }
 }
