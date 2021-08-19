@@ -76,14 +76,14 @@ namespace Convience.ManagentApi.Controllers.SRM
         //}
 
         [HttpGet("GetQotData")]
-        public IActionResult GetQotData(int id,int rfqid,int vendorid)
+        public IActionResult GetQotData(int id, int rfqid, int vendorid)
         {
             //for tree?
             //ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             //h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer, Page = 1, Size = 1 }).Data[0].Name;
             //h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
             System.Linq.IQueryable QotV = _srmQotService.GetQotData(id); //表單欄位用
-            System.Linq.IQueryable matnr = _srmQotService.GetMatnrData(rfqid,vendorid); //表單欄位用
+            System.Linq.IQueryable matnr = _srmQotService.GetMatnrData(rfqid, vendorid); //表單欄位用
 
             //ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
             //Newtonsoft.Json.JsonSerializer js = new Newtonsoft.Json.JsonSerializer();
@@ -95,7 +95,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             ////};
             ResultQotModel qot = new ResultQotModel()
             {
-                m= matnr,
+                m = matnr,
                 //h = h,
                 q = QotV,
                 //v = v
@@ -117,17 +117,35 @@ namespace Convience.ManagentApi.Controllers.SRM
             detail.matnr = _srmRfqMService.GetRfqMData(m);
             return Ok(detail);
         }
-        //[HttpPost("Save")]
-        ////[Permission("rfq")]
-        //public IActionResult Save(JObject rfq)
-        //{
-        //    SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
-        //    SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
-        //    SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
-        //    DateTime now = DateTime.Now;
-        //    h.LastUpdateDate = now;
-        //    _srmRfqHService.Save(h, ms, vs);
-        //    return Ok();
-        //}
+
+        [HttpPost("Save")]
+        //[Permission("rfq")]//???
+        public IActionResult Save(JObject qot)
+        {
+            SrmQotH q = qot["q"].ToObject<SrmQotH>();
+            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+            DateTime now = DateTime.Now;
+            q.LastUpdateDate = now;
+            _srmQotService.Save(q, m, s, p, o);
+            return Ok();
+        }
+        [HttpPost("Reject")]
+        //[Permission("rfq")]
+        public IActionResult Reject(SrmQotH qotH)
+        {
+            try
+            {
+                qotH.LastUpdateDate = DateTime.Now;
+                _srmQotService.UpdateQotStatus(((int)Status.拒絕), qotH);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
+        }
     }
 }

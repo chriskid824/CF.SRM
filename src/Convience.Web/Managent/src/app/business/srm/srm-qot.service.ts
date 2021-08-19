@@ -9,9 +9,9 @@ export class SrmQotService {
 
    constructor(private httpClient: HttpClient,
    private uriConstant: UriConfig) { }
-   SaveQotMatnr(qot) {
+   Save(qot) {
      return this.httpClient.post(`${this.uriConstant.SrmQot}/Save`, qot);
-  }
+   }
   GetQotList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
   }
@@ -22,4 +22,7 @@ export class SrmQotService {
   GetQotDetail(query) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotDetail`, query);
   } 
+  Reject(qot) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/Reject`, qot);
+  }
 }
