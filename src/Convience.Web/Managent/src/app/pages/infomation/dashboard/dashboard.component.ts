@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   chartArray = [];
 
-  // 仪表盘图对象
+  // 首頁图对象
   cpuChart;
 
   // 内存折线图
@@ -312,7 +312,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const val = data[0].value;
     const lineWidth = 25;
     chart.annotation().clear(true);
-    // 绘制仪表盘背景
+    // 绘制首頁背景
     chart.annotation().arc({
       top: false,
       start: [0, 1],

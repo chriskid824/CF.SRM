@@ -14,7 +14,7 @@ export class SrmDeliveryService {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/GetDelivery`,query);
   }
   GetDeliveryL(query) {
-    return this.httpClient.get(`${this.uriConstant.SrmDelivery}/GetDeliveryL?DeliveryLId=${query.deliveryLId}&DeliveryNum=${query.deliveryNum}`);
+    return this.httpClient.post(`${this.uriConstant.SrmDelivery}/GetDeliveryL`,query);
   }
   AddDelivery(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/AddDelivery`,po);

@@ -1,5 +1,6 @@
 ﻿using Convience.Entity.Entity.SRM;
 using Convience.Model.Models.SystemManage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace Convience.Model.Models.SRM
         new public virtual ICollection<ViewSrmDeliveryL> SrmDeliveryLs { get; set; }
         public string TelPhone { get; set; }
         public string VendorName { get; set; }
+        public string StatusDesc { get; set; }
     }
 
     public class ViewSrmDeliveryL : SrmDeliveryL
@@ -38,7 +40,7 @@ namespace Convience.Model.Models.SRM
         public float? Qty { get; set; }
         public string WoItem { get; set; }
         public string WoNum { get; set; }
-        public string Url { get; set; }
+        public string Url { get { return this.DeliveryId + "/" + this.DeliveryLId; } }
     }
 
     public class ViewSrmPoL : SrmPoL
@@ -49,9 +51,16 @@ namespace Convience.Model.Models.SRM
         public string Matnr { get; set; }
         public string PoNum { get; set; }
         public float? RemainQty { get; set; }
-        public int? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public int? VendorId { get; set; }
         public string VendorName { get; set; }
+        public string StatusDesc { get; set; }
+    }
+    public class ViewSrmPoH : SrmPoH
+    {
+        public string StatusDesc { get; set; }
+        public string VendorName { get; set; }
+        public string OrgName { get; set; }
+        new public virtual ICollection<ViewSrmPoL> SrmPoLs { get; set; }
     }
 }

@@ -30,9 +30,9 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public IEnumerable<SrmPoH> GetAll();
+        public IEnumerable<ViewSrmPoH> GetAll();
 
-        public IEnumerable<SrmPoH> GetAll(QueryPoList query);
+        public IEnumerable<ViewSrmPoH> GetAll(QueryPoList query);
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
 
@@ -102,19 +102,69 @@ namespace Convience.Service.SRM
             return false;
         }
 
-        public IEnumerable<SrmPoH> GetAll()
+        public IEnumerable<ViewSrmPoH> GetAll()
         {
-            return _context.SrmPoHs.Include(m => m.SrmPoLs).ToList();
+            return GetAll(new QueryPoList());
         }
 
-        public IEnumerable<SrmPoH> GetAll(QueryPoList query)
+        public IEnumerable<ViewSrmPoH> GetAll(QueryPoList query)
         {
-            var result = _context.SrmPoHs
+            var result = (from poh in _context.SrmPoHs
+                          join status in _context.SrmStatuses on poh.Status equals status.Status
+                          join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
+                          select new ViewSrmPoH
+                          {
+                              PoId = poh.PoId,
+                              PoNum = poh.PoNum,
+                              VendorId = poh.VendorId,
+                              Status = poh.Status,
+                              Buyer = poh.Buyer,
+                              Org = poh.Org,
+                              DocDate = poh.DocDate,
+                              ReplyDate = poh.ReplyDate,
+                              CreateDate = poh.CreateDate,
+                              CreateBy = poh.CreateBy,
+                              LastUpdateDate = poh.LastUpdateDate,
+                              LastUpdateBy = poh.LastUpdateBy,
+                              TotalAmount = poh.TotalAmount,
+                              StatusDesc = status.StatusDesc,
+                              VendorName = vendor.VendorName,
+                              //SrmPoLs = poh.SrmPoLs,
+                          })
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
-                .AndIfCondition(query.status != 0, p => p.Status == query.status);
-
-            return result.Include(m => m.SrmPoLs).ToList();
+                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p =>
+            {
+                p.SrmPoLs = (from l in _context.SrmPoLs
+                             join h in _context.SrmPoHs on l.PoId equals h.PoId
+                             join status in _context.SrmStatuses on l.Status equals status.Status
+                             join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                             join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
+                             select new ViewSrmPoL
+                             {
+                                 PoNum = h.PoNum,
+                                 PoLId = l.PoLId,
+                                 PoId = l.PoId,
+                                 MatnrId = l.MatnrId,
+                                 Description = l.Description,
+                                 Qty = l.Qty,
+                                 Price = l.Price,
+                                 DeliveryDate = l.DeliveryDate,
+                                 ReplyDeliveryDate = l.ReplyDeliveryDate,
+                                 DeliveryPlace = l.DeliveryPlace,
+                                 CriticalPart = l.CriticalPart,
+                                 InspectionTime = l.InspectionTime,
+                                 Status = h.Status,
+                                 VendorId = h.VendorId,
+                                 VendorName = vendor.VendorName,
+                                 TotalAmount = h.TotalAmount,
+                                 Buyer = h.Buyer,
+                                 StatusDesc = status.StatusDesc,
+                                 Matnr = matnr.SapMatnr
+                             }).Where(l => l.PoId == p.PoId).ToList();
+            });
+            return result.ToList();
         }
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query)
@@ -133,9 +183,7 @@ namespace Convience.Service.SRM
                     CreateBy = p.CreateBy,
                     LastUpdateDate = p.LastUpdateDate,
                     LastUpdateBy = p.LastUpdateBy
-                })
-
-                .ToList();
+                }).ToList();
             result.ForEach(p =>
             {
                 p.SrmDeliveryLs = (from l in _context.SrmDeliveryLs
@@ -154,7 +202,7 @@ namespace Convience.Service.SRM
                                        Matnr = matnr.SapMatnr,
                                        PoNum = poh.PoNum,
                                        Qty = pol.Qty,
-                                       Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
+                                       //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
                                    })
@@ -175,6 +223,9 @@ namespace Convience.Service.SRM
         {
             var result = (from l in _context.SrmPoLs
                           join h in _context.SrmPoHs on l.PoId equals h.PoId
+                          join status in _context.SrmStatuses on l.Status equals status.Status
+                          join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
                           select new ViewSrmPoL
                           {
                               PoNum = h.PoNum,
@@ -191,8 +242,11 @@ namespace Convience.Service.SRM
                               InspectionTime = l.InspectionTime,
                               Status = h.Status,
                               VendorId = h.VendorId,
+                              VendorName = vendor.VendorName,
                               TotalAmount = h.TotalAmount,
                               Buyer = h.Buyer,
+                              StatusDesc = status.StatusDesc,
+                              Matnr = matnr.SapMatnr
                           })
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
@@ -231,9 +285,6 @@ namespace Convience.Service.SRM
 
             result.ForEach(p =>
             {
-                var list = _context.SrmMatnrs.Where(m => m.MatnrId == p.MatnrId).ToList();
-                p.Matnr = _context.SrmMatnrs.Find(p.MatnrId).SapMatnr;
-                p.VendorName = _context.SrmVendors.Find(p.VendorId).VendorName;
                 p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);
             });
 

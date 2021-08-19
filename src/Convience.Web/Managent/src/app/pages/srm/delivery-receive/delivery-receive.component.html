@@ -1,4 +1,12 @@
+<!-- <div *ngIf="availableDevices">
+  <select (change)="onDeviceSelectChange($event.target.value)">
+      <option value="" [selected]="!selectedDevice">No Device</option>
+      <option *ngFor="let device of availableDevices" [value]="device.deviceId" [selected]="selectedDevice && device.deviceId === selectedDevice.deviceId">{{ device.label }}</option>
+  </select>
+</div> -->
+
 <nz-card [nzSize]="'small'" id="searchBar">
+
   <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
     <nz-form-item>
       <nz-form-label [nzFor]="'DELIVERY_NUM'">出貨單號</nz-form-label>
@@ -23,7 +31,34 @@
   </button>-->
       </nz-form-control>
     </nz-form-item>
+    <!-- <zxing-scanner
+  #scanner
+  [formats]="['QR_CODE', 'EAN_13']"
+  (camerasFound)="cameraFound($event)"
+  (camerasNotFound)="camerasNotFound($event)"
+  (scanSuccess)="onScanSuccess($event)"
+>
+</zxing-scanner> -->
+<button nz-button [nzType]="'primary'" (click)="showModal()"><span>掃描Qr Code</span></button>
+
   </form>
+  <!-- <zxing-scanner (scanSuccess)="onCodeResult($event)"></zxing-scanner> -->
+
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+      <zxing-scanner #scanner class="test-class" start="true" [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)" cssClass="small-video" (camerasFound)="camerasFoundHandler($event)"></zxing-scanner>
+    </ng-container>
+  </nz-modal>
+
+
+
+<section class="results" *ngIf="qrResultString">
+  <div>
+    <small>Result</small>
+    <strong>{{ qrResultString }}</strong>
+  </div>
+  <button mat-icon-button (click)="clearResult()">&times;</button>
+</section>
 </nz-card>
 
 <nz-card>

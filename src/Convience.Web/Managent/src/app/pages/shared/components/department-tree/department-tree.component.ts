@@ -33,7 +33,7 @@ export class DepartmentTreeComponent implements OnInit {
   }
 
   initNodes() {
-    let nodes: NzTreeNodeOptions[] = [{ title: '组织结构', key: null, icon: 'global', expanded: true, children: [] }];
+    let nodes: NzTreeNodeOptions[] = [{ title: '組織結構', key: null, icon: 'global', expanded: true, children: [] }];
     this._departmentService.getAll().subscribe((result: any) => {
       this.data = result;
       this.makeNodes(null, nodes[0], this.data);

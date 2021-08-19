@@ -7,6 +7,7 @@ using Convience.Service.SRM;
 using Convience.Util.Extension;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -50,7 +51,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             //var aaa = query.Property("poNum");
             q.deliveryNum = query["deliveryNum"].ToString();
             q.status = (int)query["status"];
-            q.host = Request.Host.ToString();
+            q.host = Request.Headers["Referer"].ToString() + "srm/deliveryreceive";
             var aaa = _srmPoService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
@@ -60,16 +61,16 @@ namespace Convience.ManagentApi.Controllers.SRM
                         });
         }
 
-        [HttpGet("GetDeliveryL")]
-        public string GetDeliveryL(int deliveryLId, string deliveryNum)
+        [HttpPost("GetDeliveryL")]
+        public string GetDeliveryL(JObject query)
         {
             //var url=HttpContext.Current.Request.Url;
-            if ((string.IsNullOrEmpty(deliveryNum) || deliveryNum == "0") && deliveryLId == 0) return null;
+            if (query == null) return null;
             QueryPoList q = new QueryPoList();
             //var aaa = query.Property("poNum");
-            q.deliveryNum = deliveryNum;
-            q.deliveryLId = deliveryLId;
-            q.host = Request.Host.ToString();
+            q.deliveryNum = query["deliveryNum"].ToString();
+            q.deliveryLId = string.IsNullOrWhiteSpace(query["deliveryLId"].ToString()) ? 0 : (int)query["deliveryLId"];
+            if (string.IsNullOrWhiteSpace(q.deliveryNum) && q.deliveryLId == 0) return null;
             var aaa = _srmPoService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,

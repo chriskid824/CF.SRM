@@ -83,7 +83,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmPoService.UpdateReplyDeliveryDate(data);
             if (_srmPoService.CheckAllReply(data.PoId))
             {
-                _srmPoService.UpdateStatus(data.PoId, 12);
+                _srmPoService.UpdateStatus(data.PoId, 15);
             }
             return Ok();
         }

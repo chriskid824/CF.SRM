@@ -37,7 +37,8 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { QRCodeModule } from 'angularx-qrcode';
 import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.component';
 import { ButtonRendererComponent } from './price/button-cell-renderer.component';
-
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -66,7 +67,7 @@ import { ButtonRendererComponent } from './price/button-cell-renderer.component'
       { path: "deliveryh", component: PoDetailComponent },
       { path: "deliveryl", component: DelyveryLComponent },
       { path: "deliverymodal", component: DeliveryModalComponent },
-      { path: "deliveryreceive/:deliveryLId/:deliveryNum", component: DeliveryReceiveComponent },
+      { path: "deliveryreceive", component: DeliveryReceiveComponent },
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       //{ path: "qotlist", component: QotlistComponent},
@@ -93,6 +94,8 @@ import { ButtonRendererComponent } from './price/button-cell-renderer.component'
     NzTreeModule,
     MatDialogModule,
     QRCodeModule,
+    ZXingScannerModule,
+    NzModalModule,
   ]
 })
 export class SrmModule { }

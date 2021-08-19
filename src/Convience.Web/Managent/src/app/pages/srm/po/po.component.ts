@@ -50,13 +50,7 @@ export class PoComponent implements OnInit {
       },
       {
         headerName:'狀態',
-        field: 'Status',
-        cellClassRules: {
-          'rag-green': 'x == 12',
-          'rag-amber': 'x == 11',
-          'rag-red': 'x == 21',
-        },
-        valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return "未知";}'
+        field: 'StatusDesc',
       },
       {
         headerName:'採購單總金額',
@@ -101,8 +95,10 @@ export class PoComponent implements OnInit {
               alert('採購單號:'+params.data.PoNum+'已接收');
               params.data.Status=11;
               params.data.ReplyDate=new Date();
+              params.data.StatusDesc="待回覆";
               params.data.SrmPoLs.forEach(element => {
                 element.Status=11;
+                element.StatusDesc="待回覆";
               });
               params.api.refreshCells();
             });
@@ -167,14 +163,18 @@ export class PoComponent implements OnInit {
           },
           {
             headerName:'狀態',
-            field: 'Status',
-            cellClassRules: {
-              'rag-green': 'x == 12',
-              'rag-amber': 'x == 11',
-              'rag-red': 'x == 21',
-            },
-            valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return "未知";}'
+            field: 'StatusDesc',
           },
+          // {
+          //   headerName:'狀態',
+          //   field: 'Status',
+          //   cellClassRules: {
+          //     'rag-green': 'x == 12',
+          //     'rag-amber': 'x == 11',
+          //     'rag-red': 'x == 21',
+          //   },
+          //   valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return "未知";}'
+          // },
           {
             headerName:'交貨地點',
             field: 'DeliveryPlace',

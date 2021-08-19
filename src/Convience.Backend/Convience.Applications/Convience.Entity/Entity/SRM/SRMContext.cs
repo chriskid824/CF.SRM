@@ -38,6 +38,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmDeliveryL> SrmDeliveryLs { get; set; }
         public virtual DbSet<SrmCurrency> SrmCurrencies { get; set; }
         public virtual DbSet<SrmTaxcode> SrmTaxcodes { get; set; }
+        public virtual DbSet<SrmStatus> SrmStatuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -903,7 +904,23 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("TAXCODE_NAME")
                     .HasComment("稅碼名稱");
             });
+            modelBuilder.Entity<SrmStatus>(entity =>
+            {
+                entity.HasKey(e => e.Status)
+                    .HasName("PK__SRM_STAT__AA8A8F01A18570E4");
 
+                entity.ToTable("SRM_STATUS");
+
+                entity.Property(e => e.Status)
+                    .ValueGeneratedNever()
+                    .HasColumnName("STATUS")
+                    .HasComment("代碼");
+
+                entity.Property(e => e.StatusDesc)
+                    .HasMaxLength(10)
+                    .HasColumnName("STATUS_DESC")
+                    .HasComment("說明");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

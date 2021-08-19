@@ -54,13 +54,7 @@ export class PoDetailComponent implements OnInit {
       },
       {
         headerName:'狀態',
-        field: 'Status',
-        cellClassRules: {
-          'rag-green': 'x == 12',
-          'rag-amber': 'x == 11',
-          'rag-red': 'x == 21',
-        },
-        valueFormatter:'switch(value){case 21 : return "待接收"; case 11 : return "已接收"; case 12 : return "已回覆";case 14 : return "已交貨";case 15 : return "待交貨"; default : return value;}'
+        field: 'StatusDesc',
       },
       {
         headerName:'採購單總金額',
@@ -189,7 +183,7 @@ export class PoDetailComponent implements OnInit {
   refresh() {
     var query = {
       poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
-      status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
+      status: "15",
       replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
       replyDeliveryDate_e: this.searchForm.value["ReplyDeliveryDate_e"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_e"],
     }
@@ -200,7 +194,7 @@ export class PoDetailComponent implements OnInit {
     {
       query = {
         poNum: "",
-        status: "0",
+        status: "15",
         replyDeliveryDate_s: null,
         replyDeliveryDate_e: null,
       }
@@ -222,6 +216,7 @@ export class PoDetailComponent implements OnInit {
     this._srmDeliveryService.AddDelivery(selectedData)
     .subscribe((result) => {
       if(result==null) alert('出貨單生成成功');
+      this.refresh();
     });
   }
 }
