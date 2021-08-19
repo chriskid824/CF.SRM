@@ -100,7 +100,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 SrmVendor vendor = _srmVendorService.GetVendorById(qot.VendorId.Value);
                 ViewSrmRfqM matnr = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
                 temp[0].RfqNum = rfqH.RfqNum;
-                temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId);
+                temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId) || qot.Status.GetValueOrDefault()!=(int)Status.確認;
                 temp[0].Status = rfqH.Status;
                 temp[0].sourcerName = rfqH.sourcerName;
                 temp[0].Deadline = rfqH.Deadline;
@@ -239,6 +239,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult GetEkgry(int[] werks)
         {
             return Ok(_srmPriceService.GetEkgry(werks));
+        }
+
+        [HttpPost("QueryInfoRecord")]
+        [Permission("price")]
+        public IActionResult QueryInfoRecord(QueryInfoRecordModels query)
+        {
+            return Ok(_srmInfoRecordService.Query(query));
         }
     }
 }

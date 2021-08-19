@@ -67,10 +67,10 @@ export class LayoutComponent implements OnInit {
     {
       canOperate: 'rfqmanage', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '詢價單',
       children: [
-        { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '價格資訊', name: '價格資訊', },
-        { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '價格資訊查詢', name: '價格資訊查詢', },
-        { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
         { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單', name: '詢價單', },
+        { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
+        { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '價格資訊', name: '價格資訊', },
+        { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
       ]
     },
     {
