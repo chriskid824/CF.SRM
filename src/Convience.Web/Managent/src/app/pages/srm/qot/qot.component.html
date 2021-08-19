@@ -163,7 +163,7 @@
       </div>-->
       <div>
       <button id="btnRejectQot"  nz-button class="mr-10"  (click)="RejectQot()"><i nz-icon nzType="default"></i>拒絕報價</button>
-      <button id=" btnSaveQot" nz-button class="mr-10" (click)="SaveQot()"><i nz-icon nzType="save"></i>儲存</button>
+      <button id=" btnSaveQot" nz-button class="mr-10" (click)="Save()"><i nz-icon nzType="save"></i>儲存</button>
       <button id="btnBackQot" nz-button class="mr-10"  (click)="BackQot()"><i nz-icon nzType="arrow-left"></i>返回</button>
       <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()"><i nz-icon nzType="arrow-right"></i>送出</button>
       <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
@@ -472,7 +472,7 @@
           </nz-form-control>
         </td>
       </tr>
-      <tr>
+      <!--<tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_totalcost'">總金額</nz-form-label>
         </td>
@@ -482,7 +482,7 @@
               autocomplete="off" (ngModelChange)="checktype($event)" />
           </nz-form-control>
         </td>
-      </tr>
+      </tr>-->
       <tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_note'">備註</nz-form-label>

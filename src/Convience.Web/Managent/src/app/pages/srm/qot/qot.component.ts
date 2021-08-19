@@ -17,6 +17,10 @@ import { Qot, QotH, QotV } from '../model/Qot';
 import { ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { runInThisContext } from 'node:vm';
+import { StorageService } from '../../../services/storage.service';
+import { LayoutComponent } from '../../layout/layout/layout.component';
+
 
 interface Food {
   value: string;
@@ -94,6 +98,7 @@ export class QotComponent implements OnInit {
   rowData_other=[];
   rowData_matnr=[];
   rowData_inforecord=[];
+  Q: any;
   nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
   //editForm: FormGroup = new FormGroup({});
@@ -105,7 +110,11 @@ export class QotComponent implements OnInit {
     private _srmQotService: SrmQotService,
     private activatedRoute: ActivatedRoute,
     private _router: Router,
+    private _storageService: StorageService,
+    private _layout: LayoutComponent,   
   ) {  
+    this.Q = {
+    }
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     //alert('qoooooooooooooooooooooooot = '+this.qotId)
     this.rowData_Material = [];
@@ -118,7 +127,7 @@ export class QotComponent implements OnInit {
     this.columnDefs = [
       {
         headerName: "素材材質",
-        field: "M_MATERIAL",
+        field: "MMATERIAL",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "240px",
@@ -128,14 +137,14 @@ export class QotComponent implements OnInit {
       },
       {
         headerName: "材料單價",
-        field: "M_PRICE",
+        field: "MPRICE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "材料成本價",
-        field: "M_COST_PRICE",
+        field: "MCOSTPRICE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -200,7 +209,7 @@ export class QotComponent implements OnInit {
     this.columnDefs_PROCESS = [
       {
         headerName: "工序代碼",
-        field: "P_PROCESS_NUM",
+        field: "PPROCESSNUM",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "250px",
@@ -210,21 +219,21 @@ export class QotComponent implements OnInit {
       },
       {
         headerName: "工時(時)",
-        field: "P_HOURS",
+        field: "PHOURS",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "單價(時)",
-        field: "P_PRICE",
+        field: "PPRICE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "機台",
-        field: "P_MACHINE",
+        field: "PMACHINE",
         enableRowGroup: true,
         cellClass: "show-cell",
         autoHeight: true,
@@ -232,7 +241,7 @@ export class QotComponent implements OnInit {
       },
       {
         headerName: "備註",
-        field: "P_NOTE",
+        field: "PNOTE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -242,7 +251,7 @@ export class QotComponent implements OnInit {
      this.columnDefs_SURFACE = [
       {
         headerName: "工序",
-        field: "S_PROCESS",
+        field: "SPROCESS",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "250px",
@@ -252,21 +261,21 @@ export class QotComponent implements OnInit {
       },
       {
         headerName: "次數",
-        field: "S_TIMES",
+        field: "STIMES",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "單價(時)",
-        field: "S_PRICE",
+        field: "SPRICE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "備註",
-        field: "S_NOTE",
+        field: "SNOTE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -276,7 +285,7 @@ export class QotComponent implements OnInit {
      this.columnDefs_OTHER = [
       {
         headerName: "項目",
-        field: "O_ITEM",
+        field: "OITEM",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "250px",
@@ -286,21 +295,21 @@ export class QotComponent implements OnInit {
       },
       {
         headerName: "說明",
-        field: "O_DESCRIPTION",
+        field: "ODESCRIPTION",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "單價",
-        field: "O_PRICE",
+        field: "OPRICE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
       },
       {
         headerName: "備註",
-        field: "O_NOTE",
+        field: "ONOTE",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -427,9 +436,8 @@ export class QotComponent implements OnInit {
   this.gridApi = params.api;
   this.columnApi = params.columnApi;
   console.log(params.api);
-
   //this.gridApi.sizeColumnsToFit();
-}
+  }
 
   onGridReady_Surface(params) {
     function myRowClickedHandler(event) {
@@ -566,11 +574,11 @@ export class QotComponent implements OnInit {
       /*寫入grid */
       
       this.rowData_Process.push({
-        "P_PROCESS_NUM": this.editedProcess.processno,
-        "P_HOURS":this.editedProcess.p_hour, 
-        "P_PRICE":this.editedProcess.price,
-        "P_MACHINE":this.editedProcess.machine,
-        "P_NOTE":this.editedProcess.note
+        "PPROCESS_NUM": this.editedProcess.processno,
+        "PHOURS":this.editedProcess.p_hour, 
+        "PPRICE":this.editedProcess.price,
+        "PMACHINE":this.editedProcess.machine,
+        "PNOTE":this.editedProcess.note
       });
       //alert('aaaaa+ '+ this.rowData_Process.value)
       console.log(this.gridApi);
@@ -598,21 +606,21 @@ export class QotComponent implements OnInit {
       this.editedMatetial.height = this.editForm_Material.value['material_height'];
       this.editedMatetial.density = this.editForm_Material.value['material_density'];
       this.editedMatetial.weight = this.editForm_Material.value['material_weight'];
-      this.editedMatetial.totalcost = this.editForm_Material.value['material_totalcost'];
+      //this.editedMatetial.totalcost = this.editForm_Material.value['material_totalcost'];
       this.editedMatetial.note = this.editForm_Material.value['material_note'];
       console.info(this.editForm_Material.value);
       //alert('name = '+this.editedMatetial.name)
       /*寫入grid */
       
       this.rowData_Material.push({
-        "M_MATERIAL":this.editedMatetial.name,
-        "M_PRICE":this.editedMatetial.price, 
-        "M_COST_PRICE":this.editedMatetial.cost,
+        "MMATERIAL":this.editedMatetial.name,
+        "MPRICE":this.editedMatetial.price, 
+        "MCOST_PRICE":this.editedMatetial.cost,
         "LENGTH":this.editedMatetial.length,
         "WIDTH":this.editedMatetial.width,
         "HEIGHT":this.editedMatetial.height,
         "DENSITY":this.editedMatetial.density,
-        "M_TOTAL_COST":this.editedMatetial.totalcost,
+        //"M_TOTAL_COST":this.editedMatetial.totalcost,
         "WEIGHT":this.editedMatetial.weight, 
         "NOTE":this.editedMatetial.note,
       });
@@ -648,7 +656,7 @@ export class QotComponent implements OnInit {
       material_height: [this.editedMatetial.height, [Validators.required,]],
       material_density: [this.editedMatetial.density, [Validators.required]],
       material_weight: [this.editedMatetial.weight, [Validators.required]],
-      material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
+      //material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
       material_note: [this.editedMatetial.note,]
       //menus: [[]]
     });
@@ -676,10 +684,10 @@ export class QotComponent implements OnInit {
       /*寫入grid */
       
       this.rowData_Other.push({
-        "O_ITEM":this.editedOther.item,
-        "O_PRICE": this.editedOther.price,
-        "O_DESCRIPTION":this.editedOther.description,
-        "O_NOTE":this.editedOther.note
+        "OITEM":this.editedOther.item,
+        "OPRICE": this.editedOther.price,
+        "ODESCRIPTION":this.editedOther.description,
+        "ONOTE":this.editedOther.note
       });
 
       this.gridApi_Other.setRowData(this.rowData_Other);
@@ -705,10 +713,10 @@ export class QotComponent implements OnInit {
       /*寫入grid */
       
       this.rowData_Surface.push({
-        "S_PROCESS":this.editedSurface.process,
-        "S_TIMES":this.editedSurface.times,
-        "S_PRICE":this.editedSurface.price,
-        "S_NOTE":this.editedSurface.note
+        "SPROCESS":this.editedSurface.process,
+        "STIMES":this.editedSurface.times,
+        "SPRICE":this.editedSurface.price,
+        "SNOTE":this.editedSurface.note
       });
 
       this.gridApi_Surface.setRowData(this.rowData_Surface);
@@ -768,9 +776,84 @@ export class QotComponent implements OnInit {
       nzFooter: null,
     });
   }
-
   /**/
-  saveqotmatnr() {
+  getqot() {
+    var qot = {
+     q:null, material: null,process :null,surface:null,other:null
+    }
+   
+    qot.q = this.Q;
+    //this.Q = result["h"];
+    //qot["q"] = this.Q;
+    qot.q.LASTUPDATEBY = this._storageService.userName;
+    qot.q.QotId = this.id;
+    qot.q.RfqId = this.rfqid;
+    /*
+    var rfq = {
+      h: null, m: null, v: null
+    }
+    var date = new Date();
+    this.H.SOURCER = this.formDetail.value["sourcer"];
+
+    rfq.h = this.H;
+    console.log('dead' + this.formDetail.get('deadline').value);
+    if (this.formDetail.value["deadline"] != null) {
+      var deadline = new Date(this.formDetail.value["deadline"]);
+      rfq.h.deadLine = deadline.getFullYear() + '-' + (deadline.getMonth() + 1) + '-' + deadline.getDate();
+    } else {
+      rfq.h.deadLine = null;
+    }
+    rfq.h.LASTUPDATEBY = this._storageService.userName;
+    */
+    
+    qot.material =[]
+    qot.process =[];
+    qot.surface=[];
+    qot.other=[];
+   
+    this.gridApi.forEachNode(node => qot.material.push(node.data));
+    this.gridApi_Process.forEachNode(node => qot.process.push(node.data));
+    this.gridApi_Surface.forEachNode(node => qot.surface.push(node.data));
+    this.gridApi_Other.forEachNode(node => qot.other.push(node.data));
+    return qot;
+  }
+
+  Save() {
+    var qot = this.getqot();
+    this._srmQotService.Save(qot).subscribe(result => {
+      console.log(result);
+      alert('保存成功');
+      this._layout.navigateTo('qotlist');
+      this._router.navigate(['srm/qotlist']);
+    });
+  }
+  RejectQot(){  
+    
+    /*var rfq = this.getrfq();
+    console.log(rfq);
+    rfq.h.endBy = this._storageService.userName;
+    this._srmRfqService.Cancel(rfq.h).subscribe(result => {
+      alert('作廢成功');
+      //window.close();
+      this._layout.navigateTo('rfq-manage');
+      this._router.navigate(['srm/rfq-manage']);
+    });*/
+
+
+    var qot = {
+      q:null
+     }
+    //qot.q = this.qot.qotId;
+    qot.q = this.id;
+    this._srmQotService.Reject(qot.q).subscribe(result => {
+      console.log(result);
+      alert('拒絕報價成功');
+      this._layout.navigateTo('qotlist');
+      this._router.navigate(['srm/qotlist']);
+    });
+  }
+
+  /*saveqotmatnr() {
     for (const i in this.editForm_Material.controls) {
       this.editForm_Material.controls[i].markAsDirty();
       this.editForm_Material.controls[i].updateValueAndValidity();
@@ -813,11 +896,11 @@ export class QotComponent implements OnInit {
     //alert('aaaa=' + qot.material)
     //console.log('aaaa='+ qot.material)
     
-    this._srmQotService.SaveQotMatnr(qot).subscribe(result => {
+    this._srmQotService.Save(qot).subscribe(result => {
       console.log(result);
     });
 
-  }
+  }*/
   
 
 
@@ -921,8 +1004,8 @@ export class QotComponent implements OnInit {
       console.log(result);
     });
   }
-  RejectQot(){}
-  SaveQot(){}
+  
+  
   BackQot(){
     window.open('../srm/qotlist');
   }

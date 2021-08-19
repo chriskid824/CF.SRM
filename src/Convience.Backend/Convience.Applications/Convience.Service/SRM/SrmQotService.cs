@@ -35,11 +35,13 @@ namespace Convience.Service.SRM
         public IQueryable GetQotData(int QotId);
         public IQueryable GetMatnrData(int rfqid,int vendorid);
         public ViewSrmPriceDetail GetDetail(SrmQotH[] query);
-
+        public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers);
+        public SrmQotH UpdateQotStatus(int status, SrmQotH qotH);
         //public ViewQotListL GetDataByRfqId(int RfqId);
     }
     public class SrmQotService : ISrmQotService
     {
+        private readonly IRepository<SrmRfqH> _srmRfqRepository;
         private readonly IRepository<SrmRfqM> _srmRfqMRepository;
         private readonly IRepository<SrmQotH> _srmQotHRepository;
         private readonly IRepository<SrmMatnr> _srmSrmMatnrRepository;
@@ -77,6 +79,69 @@ namespace Convience.Service.SRM
             _context.UpdateRange(qots);
             _context.SaveChanges();
             //}
+        }
+        public bool IfCanUpdate(SrmQotH qotH)
+        {
+            bool ifcanupdate = true;
+            var rfq = _srmRfqRepository.Get(r => r.RfqId == qotH.RfqId).First();
+            if ((Status)rfq.Status != Status.確認)
+            {
+                ifcanupdate = false;
+            }
+            DateTime today = DateTime.Now.Date;
+            if (today > rfq.EndDate)
+            {
+                ifcanupdate = false;
+            }
+            return ifcanupdate;
+        }
+        public SrmQotH UpdateQotStatus(int status, SrmQotH qotH)
+        {
+            bool ifcanupdate = IfCanUpdate(qotH);
+            if (ifcanupdate) 
+            {
+            }
+            var qot = _srmQotHRepository.Get(r => r.QotId == qotH.QotId).First();
+            switch ((Status)status)
+            {
+                case Status.拒絕:
+                    if ((Status)qot.Status != Status.初始)
+                    {
+                        throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
+                    }
+                    break;
+                //case Status.作廢:
+                //case Status.刪除:
+                //    if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動)
+                //    {
+                //        throw new Exception($"非初始或啟動狀態無法{((Status)status).ToString()}");
+                //    }
+                //    rfq.EndDate = DateTime.Now;
+                //    rfq.EndBy = rfqH.EndBy;
+                //    break;
+                //case Status.簽核中:
+                //    if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.已核發)
+                //    {
+                //        throw new Exception($"狀態異常無法{((Status)status).ToString()}");
+                //    }
+                //    if ((Status)rfq.Status == Status.已核發)
+                //    {
+                //        return rfq;
+                //    }
+                //    break;
+                //default:
+                //    throw new Exception($"未定義{((Status)status).ToString()}");
+                //    break;
+            }
+            qot.Status = status;
+            qot.LastUpdateDate = qotH.LastUpdateDate;
+            qot.LastUpdateBy = qotH.LastUpdateBy;
+            using (SRMContext db = new SRMContext())
+            {
+                db.Update(qot);
+                db.SaveChanges();
+                return qot;
+            }
         }
 
         public SrmQotH[] Get(QueryQot query)
@@ -516,5 +581,190 @@ namespace Convience.Service.SRM
             //}
             return price;
         }
+        public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers)
+        {
+            DateTime now = DateTime.Now;
+            //qotH.LastUpdateDate = now;
+
+            using (var db = new SRMContext())
+            {
+                var qot = new SrmQotH() { QotId = qotH.QotId };
+                db.SrmQotHs.Attach(qot);
+                qot.LastUpdateDate = now;
+                qot.LastUpdateBy = qotH.LastUpdateBy;
+                db.Entry(qot).Property(p => p.LastUpdateBy).IsModified = true;
+                db.Entry(qot).Property(p => p.LastUpdateDate).IsModified = true;
+               
+                var result = db.SaveChanges();
+                //return result;
+            }
+            //using (var db = new SRMContext())
+            //{
+            //db.Database.BeginTransaction();
+            //try
+            //{
+            //var oldQotHs = _context.SrmQotHs.Where(r => r.QotId == qotH.QotId);
+            
+            
+            //foreach (var oldQotH in oldQotHs)
+            //{
+            //    oldQotH.QotId = qotH.QotId;
+            //    qotH.CreateBy = oldQotH.CreateBy;
+            //    qotH.CreateDate = oldQotH.CreateDate;
+            //    qotH.MatnrId = oldQotH.MatnrId;
+            //    qotH.VendorId = oldQotH.VendorId;
+            //    qotH.Status = oldQotH.Status;
+            //}
+            
+            //初始才能修改
+
+            if (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始))
+            {
+                throw new Exception("非初始無法修改");
+            }
+            //_context.SrmQotHs.Update(qotH);
+            
+            #region material
+            foreach (var srmQotMaterial in qotMaterials)
+            {
+                srmQotMaterial.QotId = qotH.QotId;
+                if (srmQotMaterial.QotMId == 0)
+                {
+                    _context.SrmQotMaterial.Add(srmQotMaterial);
+                }
+                else
+                {
+                    _context.SrmQotMaterial.Update(srmQotMaterial);
+                }
+            }
+            var oldQotMaterials = _context.SrmQotMaterial.Where(r => r.QotId == qotH.QotId);
+            foreach (var oldQotMaterial in oldQotMaterials)
+            {
+                if (qotMaterials.AsEnumerable().Where(item => item.QotMId == oldQotMaterial.QotMId).Count() == 0)
+                {
+                    _context.SrmQotMaterial.Remove(oldQotMaterial);
+                }
+            }
+            #endregion
+            #region surface
+            foreach (var srmQotSurface in qotSurfaces)
+            {
+                srmQotSurface.QotId = qotH.QotId;
+                if (srmQotSurface.QotSId == 0)
+                {
+                    _context.SrmQotSurfaces.Add(srmQotSurface);
+                }
+                else
+                {
+                    _context.SrmQotSurfaces.Update(srmQotSurface);
+                }
+            }
+            var oldqotSurfaces = _context.SrmQotSurfaces.Where(r => r.QotId == qotH.QotId);
+            foreach (var oldqotSurface in oldqotSurfaces)
+            {
+                if (qotSurfaces.AsEnumerable().Where(item => item.QotSId == oldqotSurface.QotSId).Count() == 0)
+                {
+                    _context.SrmQotSurfaces.Remove(oldqotSurface);
+                }
+            }
+            #endregion
+            #region process
+            foreach (var srmQotProcess in qotProcesses)
+            {
+                srmQotProcess.QotId = qotH.QotId;
+                if (srmQotProcess.QotPId == 0)
+                {
+                    _context.SrmQotProcesses.Add(srmQotProcess);
+                }
+                else
+                {
+                    _context.SrmQotProcesses.Update(srmQotProcess);
+                }
+            }
+            var oldqotProcesss = _context.SrmQotProcesses.Where(r => r.QotId == qotH.QotId);
+            foreach (var oldqotProcess in oldqotProcesss)
+            {
+                if (qotProcesses.AsEnumerable().Where(item => item.QotPId == oldqotProcess.QotPId).Count() == 0)
+                {
+                    _context.SrmQotProcesses.Remove(oldqotProcess);
+                }
+            }
+            #endregion
+            #region other
+            foreach (var srmQotOther in qotOthers)
+            {
+                srmQotOther.QotId = qotH.QotId;
+                if (srmQotOther.QotOId == 0)
+                {
+                    _context.SrmQotOthers.Add(srmQotOther);
+                }
+                else
+                {
+                    _context.SrmQotOthers.Update(srmQotOther);
+                }
+            }
+            var oldqotOthers = _context.SrmQotOthers.Where(r => r.QotId == qotH.QotId);
+            foreach (var oldqotOther in oldqotOthers)
+            {
+                if (qotOthers.AsEnumerable().Where(item => item.QotOId == oldqotOther.QotOId).Count() == 0)
+                {
+                    _context.SrmQotOthers.Remove(oldqotOther);
+                }
+            }
+            #endregion
+            _context.SaveChanges();
+            //    db.Database.CommitTransaction();
+            //}
+            //catch (Exception ex)
+            //{
+            //    db.Database.RollbackTransaction();
+            //    throw;
+            //}
+            //}
+        }
+        //public SrmQotH UpdateQotStatus(int status, SrmQotH qotH)
+        //{
+        //    var rfq = _srmRfqHRepository.Get(r => r.RfqId == rfqH.RfqId).First();
+        //    switch ((Status)status)
+        //    {
+        //        case Status.啟動:
+        //            if ((Status)rfq.Status != Status.初始)
+        //            {
+        //                throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
+        //            }
+        //            break;
+        //        case Status.作廢:
+        //        case Status.刪除:
+        //            if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動)
+        //            {
+        //                throw new Exception($"非初始或啟動狀態無法{((Status)status).ToString()}");
+        //            }
+        //            rfq.EndDate = DateTime.Now;
+        //            rfq.EndBy = rfqH.EndBy;
+        //            break;
+        //        case Status.簽核中:
+        //            if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.已核發)
+        //            {
+        //                throw new Exception($"狀態異常無法{((Status)status).ToString()}");
+        //            }
+        //            if ((Status)rfq.Status == Status.已核發)
+        //            {
+        //                return rfq;
+        //            }
+        //            break;
+        //        default:
+        //            throw new Exception($"未定義{((Status)status).ToString()}");
+        //            break;
+        //    }
+        //    rfq.Status = status;
+        //    rfq.LastUpdateDate = rfqH.LastUpdateDate;
+        //    rfq.LastUpdateBy = rfqH.LastUpdateBy;
+        //    using (SRMContext db = new SRMContext())
+        //    {
+        //        db.Update(rfq);
+        //        db.SaveChanges();
+        //        return rfq;
+        //    }
+        //}
     }
 }
