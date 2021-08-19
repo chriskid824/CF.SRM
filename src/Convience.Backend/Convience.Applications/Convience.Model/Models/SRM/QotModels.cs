@@ -71,9 +71,14 @@ namespace Convience.Model.Models.SRM
         public viewSrmInfoRecord() { }
         public viewSrmInfoRecord(SrmInforecord parent)
         {
-            foreach (PropertyInfo prop in parent.GetType().GetProperties())
-                GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
+            if (parent != null)
+            {
+                foreach (PropertyInfo prop in parent.GetType().GetProperties())
+                    GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
+            }
         }
+        public string currencyName { get; set; }
+        public string taxcodeName { get; set; }
         public string VendorName { get; set; }
         public decimal Atotal { get; set; }
         public decimal Btotal { get; set; }
@@ -187,9 +192,12 @@ namespace Convience.Model.Models.SRM
        
     }
 	public class ViewSummary :ViewSrmRfqH{
+        public bool isStarted { get; set; }
         public string vendor { get; set; }
+        public int vendorId { get; set; }
         public string vendorName { get; set; }
         public string matnr { get; set; }
+        public int matnrId { get; set; }
         public string material { get; set; }
         public string volume { get; set; }
         public string weight { get; set; }
@@ -227,11 +235,14 @@ namespace Convience.Model.Models.SRM
         public string dTotal { get; set; }
         public string price { get; set; }
         public string unit { get; set; }
+        public string currency { get; set; }
+        public string currencyName { get; set; }
         public string ekgry { get; set; }
         public string leadTime { get; set; }
         public string standQty { get; set; }
         public string minQty { get; set; }
         public string taxcode { get; set; }
+        public string taxcodeName { get; set; }
         public string effectiveDate { get; set; }
         public string expirationDate { get; set; }
     }

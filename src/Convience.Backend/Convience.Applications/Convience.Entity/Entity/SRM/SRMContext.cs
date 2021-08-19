@@ -36,6 +36,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmInforecord> SrmInforecords { get; set; }
         public virtual DbSet<SrmDeliveryH> SrmDeliveryHs { get; set; }
         public virtual DbSet<SrmDeliveryL> SrmDeliveryLs { get; set; }
+        public virtual DbSet<SrmCurrency> SrmCurrencies { get; set; }
+        public virtual DbSet<SrmTaxcode> SrmTaxcodes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -774,7 +776,6 @@ namespace Convience.Entity.Entity.SRM
                 entity.ToTable("SRM_INFORECORD");
 
                 entity.Property(e => e.InfoId)
-                    .ValueGeneratedNever()
                     .HasColumnName("INFO_ID");
 
                 entity.Property(e => e.CreateBy)
@@ -864,6 +865,43 @@ namespace Convience.Entity.Entity.SRM
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.AspNetUserRoles)
                     .HasForeignKey(d => d.UserId);
+            });
+
+            modelBuilder.Entity<SrmCurrency>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("SRM_CURRENCY");
+
+                entity.Property(e => e.Currency)
+                    .IsRequired()
+                    .HasMaxLength(3)
+                    .HasColumnName("CURRENCY")
+                    .HasComment("幣別");
+
+                entity.Property(e => e.CurrencyName)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .HasColumnName("CURRENCY_NAME")
+                    .HasComment("幣別名稱");
+            });
+
+            modelBuilder.Entity<SrmTaxcode>(entity =>
+            {
+                entity.HasKey(e => e.Taxcode);
+
+                entity.ToTable("SRM_TAXCODE");
+
+                entity.Property(e => e.Taxcode)
+                    .HasMaxLength(2)
+                    .HasColumnName("TAXCODE")
+                    .HasComment("稅碼");
+
+                entity.Property(e => e.TaxcodeName)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnName("TAXCODE_NAME")
+                    .HasComment("稅碼名稱");
             });
 
             OnModelCreatingPartial(modelBuilder);

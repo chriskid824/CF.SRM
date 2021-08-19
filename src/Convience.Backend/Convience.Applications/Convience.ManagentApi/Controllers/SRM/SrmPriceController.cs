@@ -35,6 +35,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmRfqHService _srmRfqHService;
         private readonly ISrmVendorService _srmVendorService;
         private readonly ISrmMatnrService _srmMatnrService;
+        private readonly ISrmInfoRecordService _srmInfoRecordService;
 
         public SrmPriceController(ISrmPriceService srmPriceService
             , ISrmQotService srmQotService
@@ -42,6 +43,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             , ISrmRfqMService srmRfqMService
             , ISrmVendorService srmVendorService
             , ISrmMatnrService srmMatnrService
+            ,ISrmInfoRecordService srmInfoRecordService
             )
         {
             _srmQotService = srmQotService;
@@ -50,6 +52,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqHService = srmRfqHService;
             _srmVendorService = srmVendorService;
             _srmMatnrService = srmMatnrService;
+            _srmInfoRecordService = srmInfoRecordService;
         }
         [HttpPost("GetQotDetail")]
         [Permission("price")]
@@ -69,7 +72,12 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetSummary")]
         [Permission("price")]
         public IActionResult GetSummary(QueryQot query) {
-            var qots = (_srmQotService.Get(query));
+            //(from s in _context.AspNetUsers
+            // join sa in _context.SrmEkgries on s.UserName equals sa.Empid
+            // where werks.Contains(sa.Werks)
+
+            var qots = _srmQotService.Get(query);
+            var infos = _srmInfoRecordService.Get(new QueryInfoRecordModels() { qotIds = qots.Select(r => r.QotId).ToArray() });
             ViewSrmPriceDetail detail = _srmPriceService.GetDetail(qots);
             ViewSrmRfqH rfqH = _srmRfqHService.GetDataByRfqId(query.rfqId.Value);
             List<ViewSummary> summ = new List<ViewSummary>();
@@ -92,12 +100,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                 SrmVendor vendor = _srmVendorService.GetVendorById(qot.VendorId.Value);
                 ViewSrmRfqM matnr = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
                 temp[0].RfqNum = rfqH.RfqNum;
+                temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId);
                 temp[0].Status = rfqH.Status;
                 temp[0].sourcerName = rfqH.sourcerName;
                 temp[0].Deadline = rfqH.Deadline;
                 temp[0].vendor = vendor.SrmVendor1;
+                temp[0].vendorId = vendor.VendorId;
                 temp[0].vendorName = vendor.VendorName;
                 temp[0].matnr = matnr.srmMatnr;
+                temp[0].matnrId = matnr.MatnrId.Value;
                 temp[0].material = matnr.Material;
                 temp[0].volume = $"{matnr.Length}*{matnr.Width}*{matnr.Height}";
                 temp[0].weight = matnr.Weight.HasValue? matnr.Weight.Value.ToString():"";
@@ -151,6 +162,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[item.i].bTotal = item.value.Btotal.ToString();
                     temp[item.i].cTotal = item.value.Ctotal.ToString();
                     temp[item.i].dTotal = item.value.Dtotal.ToString();
+                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.ToString():"";
+                    temp[item.i].unit = (item.value.Unit.HasValue)?item.value.Unit.Value.ToString():"";
+                    temp[item.i].currency = item.value.Currency;
+                    temp[item.i].currencyName = item.value.currencyName;
+                    temp[item.i].leadTime = (item.value.LeadTime.HasValue)?item.value.LeadTime.Value.ToString():"";
+                    temp[item.i].standQty = (item.value.StandQty.HasValue)?item.value.StandQty.Value.ToString():"";
+                    temp[item.i].minQty = (item.value.MinQty.HasValue)?item.value.MinQty.Value.ToString():"";
+                    temp[item.i].ekgry = item.value.Ekgry;
+                    temp[item.i].taxcode = item.value.Taxcode;
+                    temp[item.i].taxcodeName = item.value.taxcodeName;
+                    temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue)?item.value.EffectiveDate.Value.ToString("yyyy/MM/dd"):"";
+                    temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue)?item.value.ExpirationDate.Value.ToString("yyyy/MM/dd"):"";
                 }
                 summ.AddRange(temp.ToList());
             }
@@ -199,6 +222,23 @@ namespace Convience.ManagentApi.Controllers.SRM
                     return this.BadRequestResult(ex.Message);
                 }
             }
+        }
+        [HttpPost("GetTaxcodes")]
+        [Permission("price")]
+        public IActionResult GetTaxcodes() {
+            return Ok(_srmPriceService.GetTaxcodes());
+        }
+        [HttpPost("GetCurrency")]
+        [Permission("price")]
+        public IActionResult GetCurrency()
+        {
+            return Ok(_srmPriceService.GetCurrency());
+        }
+        [HttpPost("GetEkgry")]
+        [Permission("price")]
+        public IActionResult GetEkgry(int[] werks)
+        {
+            return Ok(_srmPriceService.GetEkgry(werks));
         }
     }
 }

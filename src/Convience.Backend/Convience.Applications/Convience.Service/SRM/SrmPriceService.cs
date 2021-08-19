@@ -14,6 +14,9 @@ namespace Convience.Service.SRM
     {
         public ViewSrmPriceDetail GetDetail(SrmQotH[] query);
         public int? Start(viewSrmInfoRecord[] infos);
+        public SrmCurrency[] GetCurrency();
+        public SrmTaxcode[] GetTaxcodes();
+        public SrmEkgry[] GetEkgry(int[] werks);
     }
     public class SrmPriceService:ISrmPriceService
     {
@@ -120,16 +123,19 @@ namespace Convience.Service.SRM
             viewSrmInfoRecord[] infos = new viewSrmInfoRecord[query.Count()];
             for (int i = 0; i < infos.Length; i++)
             {
-                viewSrmInfoRecord info = new viewSrmInfoRecord();
-                info.VendorId = query[i].VendorId;
-                info.VendorName = _context.SrmVendors.Where(r => r.VendorId == info.VendorId).Select(r => r.VendorName).FirstOrDefault();
-                info.QotId = query[i].QotId;
-                info.MatnrId = query[i].MatnrId;
-                info.Atotal = price.material.Where(r => r.QotId == info.QotId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
-                info.Btotal = price.process.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
-                info.Ctotal = price.surface.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
-                info.Dtotal = price.other.Where(r => r.QotId == info.QotId && r.OPrice.HasValue).Select(r => r.OPrice).Sum().Value;
-                infos[i] = info;
+                SrmInforecord info = _context.SrmInforecords.Where(r => r.QotId == query[i].QotId).FirstOrDefault();
+                viewSrmInfoRecord Vinfo = new viewSrmInfoRecord(info);
+                if (!string.IsNullOrWhiteSpace(Vinfo.Currency)) { Vinfo.currencyName = _context.SrmCurrencies.Where(r => r.Currency.Equals(Vinfo.Currency)).Select(r=>r.CurrencyName).FirstOrDefault(); }
+                if (!string.IsNullOrWhiteSpace(Vinfo.Taxcode)) { Vinfo.taxcodeName = _context.SrmTaxcodes.Where(r => r.Taxcode.Equals(Vinfo.Taxcode)).Select(r => r.TaxcodeName).FirstOrDefault(); }
+                Vinfo.VendorId = query[i].VendorId;
+                Vinfo.VendorName = _context.SrmVendors.Where(r => r.VendorId == Vinfo.VendorId).Select(r => r.VendorName).FirstOrDefault();
+                Vinfo.QotId = query[i].QotId;
+                Vinfo.MatnrId = query[i].MatnrId;
+                Vinfo.Atotal = price.material.Where(r => r.QotId == Vinfo.QotId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
+                Vinfo.Btotal = price.process.Where(r => r.QotId == Vinfo.QotId).Select(r => r.SubTotal).Sum();
+                Vinfo.Ctotal = price.surface.Where(r => r.QotId == Vinfo.QotId).Select(r => r.SubTotal).Sum();
+                Vinfo.Dtotal = price.other.Where(r => r.QotId == Vinfo.QotId && r.OPrice.HasValue).Select(r => r.OPrice).Sum().Value;
+                infos[i] = Vinfo;
             }
             price.infoRecord = infos;
             //price.infoRecord = price.material.GroupBy(r => r.VendorName).Select(g => new
@@ -193,9 +199,17 @@ namespace Convience.Service.SRM
                     }
                 }
 
+                if (info.ExpirationDate <= info.EffectiveDate) {
+                    throw new Exception($"有效日期需大於生效日期");
+                }
 
                 if (!_context.SrmInforecords.Any(r => r.QotId == info.QotId)) {
-                    _context.SrmInforecords.Add(info);
+                    SrmInforecord t = new SrmInforecord();
+
+                    foreach (PropertyInfo prop in t.GetType().GetProperties())
+                        t.GetType().GetProperty(prop.Name).SetValue(t, prop.GetValue(info, null), null);
+
+                    _context.SrmInforecords.Add(t);
                 }
             }
 
@@ -207,6 +221,21 @@ namespace Convience.Service.SRM
 
             _context.SaveChanges();
             return rfqId;
+        }
+
+        public SrmCurrency[] GetCurrency()
+        {
+            return _context.SrmCurrencies.ToArray();
+        }
+
+        public SrmTaxcode[] GetTaxcodes()
+        {
+            return _context.SrmTaxcodes.ToArray();
+        }
+
+        public SrmEkgry[] GetEkgry(int[] werks )
+        {
+            return _context.SrmEkgries.Where(r => werks.Contains(r.Werks)).ToArray();
         }
     }
 }

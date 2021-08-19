@@ -21,8 +21,9 @@ import { QotComponent } from './qot/qot.component';
 import { AgGridDatePickerComponent } from './po/AGGridDatePickerCompponent';
 import 'ag-grid-enterprise';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { PriceManageComponent } from './price-manage/price-manage.component';
+import { PriceWorkComponent } from './price-work/price-work.component';
 import { PriceComponent } from './price/price.component';
+import { PriceManageComponent } from './price-manage/price-manage.component';
 import { PoDetailComponent } from './po-detail/po-detail.component';
 import { QotlistComponent } from './qotlist/qotlist.component';
 import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
@@ -37,7 +38,6 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.component';
 import { ButtonRendererComponent } from './price/button-cell-renderer.component';
 
-
 @NgModule({
   declarations: [
     RfqComponent,
@@ -45,14 +45,15 @@ import { ButtonRendererComponent } from './price/button-cell-renderer.component'
     PoComponent,
     AgGridDatePickerComponent,
     QotComponent,
-    PriceManageComponent,
+    PriceWorkComponent,
     PriceComponent,
+    PriceManageComponent,
     PoDetailComponent,
     QotlistComponent,
     DelyveryLComponent,
     DeliveryModalComponent,
     DeliveryReceiveComponent,
-	ButtonRendererComponent
+    ButtonRendererComponent,
   ],
   imports: [
     CommonModule,
@@ -69,8 +70,9 @@ import { ButtonRendererComponent } from './price/button-cell-renderer.component'
       { path: "qot", component: QotComponent },
       { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
       //{ path: "qotlist", component: QotlistComponent},
-      { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
-      { path: "price", component: PriceComponent, canActivate: [LoginGuard] }
+      { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
+      { path: "price", component: PriceComponent, canActivate: [LoginGuard] },
+      { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] }
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

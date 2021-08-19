@@ -10,7 +10,7 @@ namespace Convience.Entity.Entity.SRM
     public partial class SrmInforecord
     {
         public int InfoId { get; set; }
-        public int? InfoNum { get; set; }
+        public string InfoNum { get; set; }
         public int? QotId { get; set; }
         public int? MatnrId { get; set; }
         public int? VendorId { get; set; }

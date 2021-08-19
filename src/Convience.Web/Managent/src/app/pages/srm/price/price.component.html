@@ -281,17 +281,30 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24">價格單位</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input placeholder="價格單位" formControlName="unit"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24">幣別</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input placeholder="幣別" formControlName="unit"
-               autocomplete="off" />
+        <!--<input nz-input placeholder="幣別" formControlName="unit"
+       autocomplete="off" />-->
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" [formControl]="currency">
+          <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24">採購群組</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input placeholder="採購群組" formControlName="ekgry"
-               autocomplete="off" />
+        <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
+         autocomplete="off" />-->
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組" [formControl]="ekgry">
+          <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -318,8 +331,11 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24">稅碼</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input placeholder="稅碼" formControlName="taxcode"
-               autocomplete="off" />
+        <!--<input nz-input placeholder="稅碼" formControlName="taxcode"
+      autocomplete="off" />-->
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" [formControl]="taxcode">
+          <nz-option *ngFor="let option of TaxcodeList" [nzLabel]="option.taxcodeName" [nzValue]="option.taxcode"></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -339,7 +355,7 @@
         <button nz-button nzType="primary">提交</button>
         <button nz-button type="reset" (click)="cancelEdit()">取消</button>
       </nz-form-control>
-      </nz-form-item>
-      </form>
+    </nz-form-item>
+  </form>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />

@@ -17,7 +17,7 @@ export class RfqManageComponent implements OnInit {
   status;
 
   page: number = 1;
-  size: number = 2;
+  size: number = 6;
   total: number;
   t = "";
   constructor(private _formBuilder: FormBuilder,

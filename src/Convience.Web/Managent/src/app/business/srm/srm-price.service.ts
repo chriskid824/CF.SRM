@@ -18,4 +18,13 @@ export class SrmPriceService {
   GetSummary(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetSummary`, query);
   }
+  GetTaxcodes() {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetTaxcodes`,null);
+  }
+  GetCurrency() {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetCurrency`, null);
+  }
+  GetEkgry(werks) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, werks);
+  }
 }
