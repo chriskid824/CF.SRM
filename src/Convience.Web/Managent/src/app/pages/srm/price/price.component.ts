@@ -558,7 +558,7 @@ export class PriceComponent implements OnInit {
     this.editForm = this._formBuilder.group({
       qotId: [null, [Validators.required]],
       //price: ['', [Validators.pattern(/^(0|([1-9](\d)*))(\.(\d)*)?$/)]],
-      price: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      price: [null, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       unit: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
       currency: [null, [Validators.required]],
       ekgry: [null, [Validators.required]],

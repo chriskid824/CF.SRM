@@ -84,11 +84,11 @@ namespace Convience.Model.Models.SRM
         public string oDescription { get; set; }
         public string oPrice { get; set; }
         public string oNote { get; set; }
-        public decimal aTotal { get; set; }
-        public decimal bTotal { get; set; }
-        public decimal cTotal { get; set; }
-        public decimal dTotal { get; set; }
-        public decimal price { get; set; }
+        public string aTotal { get; set; }
+        public string bTotal { get; set; }
+        public string cTotal { get; set; }
+        public string dTotal { get; set; }
+        public string price { get; set; }
         public string unit { get; set; }
         public string currency { get; set; }
         public string currencyName { get; set; }

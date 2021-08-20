@@ -118,13 +118,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                 temp[0].qotId = qot.QotId.ToString();
                 foreach (var item in material.Select((value, i) => new { i, value })) {
                     temp[item.i].mMaterial = item.value.MMaterial;
-                    temp[item.i].mPrice = item.value.MPrice?.ToString()??"";
+                    temp[item.i].mPrice = item.value.MPrice?.NormalizeTwoDigits()??"";
                     temp[item.i].mLength = item.value.Length?.ToString()??"";
                     temp[item.i].mWidth = item.value.Width?.ToString()??"";
                     temp[item.i].mHeight = item.value.Height?.ToString() ?? "";
                     temp[item.i].mDensity = item.value.Density?.ToString() ?? "";
                     temp[item.i].mWeight = item.value.Weight?.ToString()??"";
-                    temp[item.i].mCostPrice = item.value.MCostPrice?.ToString() ?? "";
+                    temp[item.i].mCostPrice = item.value.MCostPrice?.NormalizeTwoDigits() ?? "";
                     temp[item.i].mNote = item.value.Note?.ToString() ?? "";
                 }
 
@@ -133,8 +133,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[item.i].pMachine = item.value.PMachine;
                     temp[item.i].pProcessNum = item.value.PProcessNum?.ToString() ?? "";
                     temp[item.i].pHours = item.value.PHours?.ToString() ?? "";
-                    temp[item.i].pPrice = item.value.PPrice?.ToString() ?? "";
-                    temp[item.i].pSubTotal = item.value.SubTotal.ToString();
+                    temp[item.i].pPrice = item.value.PPrice?.NormalizeTwoDigits() ?? "";
+                    temp[item.i].pSubTotal = item.value.SubTotal.NormalizeTwoDigits();
                     temp[item.i].pNote = item.value.PNote;
                 }
 
@@ -142,8 +142,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     temp[item.i].sProcess = item.value.SProcess;
                     temp[item.i].sTimes = item.value.STimes?.ToString() ?? "";
-                    temp[item.i].sPrice = item.value.SPrice?.ToString() ?? "";
-                    temp[item.i].sSubTotal = item.value.SubTotal.ToString();
+                    temp[item.i].sPrice = item.value.SPrice?.NormalizeTwoDigits() ?? "";
+                    temp[item.i].sSubTotal = item.value.SubTotal.NormalizeTwoDigits();
                     //todo 哀
                     //temp[item.i].sMethod = item.value.method.ToString();
                     temp[item.i].sNote = item.value.SNote;
@@ -153,28 +153,28 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     temp[item.i].oItem = item.value.OItem;
                     temp[item.i].oDescription = item.value.ODescription;
-                    temp[item.i].oPrice = item.value.OPrice?.ToString() ?? "";
+                    temp[item.i].oPrice = item.value.OPrice?.NormalizeTwoDigits();
                     temp[item.i].oNote = item.value.ONote;
                 }
 
                 foreach (var item in infoRecord.Select((value, i) => new { i, value }))
                 {
-                    temp[item.i].aTotal = item.value.Atotal.Normalize();
-                    temp[item.i].bTotal = item.value.Btotal.Normalize();
-                    temp[item.i].cTotal = item.value.Ctotal.Normalize();
-                    temp[item.i].dTotal = item.value.Dtotal.Normalize();
-                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.Normalize() : 0;
-                    temp[item.i].unit = (item.value.Unit.HasValue)?item.value.Unit.Value.ToString():"";
-                    temp[item.i].currency = item.value.Currency;
-                    temp[item.i].currencyName = item.value.currencyName;
-                    temp[item.i].leadTime = (item.value.LeadTime.HasValue)?item.value.LeadTime.Value.ToString():"";
-                    temp[item.i].standQty = (item.value.StandQty.HasValue)?item.value.StandQty.Value.ToString():"";
-                    temp[item.i].minQty = (item.value.MinQty.HasValue)?item.value.MinQty.Value.ToString():"";
-                    temp[item.i].ekgry = item.value.Ekgry;
-                    temp[item.i].taxcode = item.value.Taxcode;
-                    temp[item.i].taxcodeName = item.value.taxcodeName;
-                    temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue)?item.value.EffectiveDate.Value.ToString("yyyy/MM/dd"):"";
-                    temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue)?item.value.ExpirationDate.Value.ToString("yyyy/MM/dd"):"";
+                    temp[item.i].aTotal = item.value.Atotal.NormalizeTwoDigits();
+                    temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
+                    temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
+                    temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
+                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal+item.value.Btotal+item.value.Ctotal+item.value.Dtotal).NormalizeTwoDigits();
+                    temp[item.i].unit = (item.value.Unit.HasValue)?item.value.Unit.Value.ToString():"1";
+                    temp[item.i].currency =  item.value.Currency?.ToString()??"TWD";
+                    temp[item.i].currencyName = item.value.currencyName?.ToString()?? "新台幣元";
+                    temp[item.i].leadTime = (item.value.LeadTime.HasValue)?item.value.LeadTime.Value.ToString():"1";
+                    temp[item.i].standQty = (item.value.StandQty.HasValue)?item.value.StandQty.Value.ToString():"1";
+                    temp[item.i].minQty = (item.value.MinQty.HasValue)?item.value.MinQty.Value.ToString():"1";
+                    temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
+                    temp[item.i].taxcode = item.value.Taxcode?.ToString()??"V4";
+                    temp[item.i].taxcodeName = item.value.taxcodeName?.ToString()?? "進項稅5%";
+                    temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue)?item.value.EffectiveDate.Value.ToString("yyyy/MM/dd"):DateTime.Now.ToString("yyyy/MM/dd");
+                    temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue)?item.value.ExpirationDate.Value.ToString("yyyy/MM/dd"):new DateTime(DateTime.Now.Year+1,1,1).AddDays(-1).ToString("yyyy/MM/dd");
                 }
                 summ.AddRange(temp.ToList());
             }
