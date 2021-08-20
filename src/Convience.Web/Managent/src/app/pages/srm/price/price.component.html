@@ -265,7 +265,7 @@
   <span>修改總計</span>
 </ng-template>
 <ng-template #ctest2>
-  <form nz-form [formGroup]="editFrom" (ngSubmit)="edit()">
+  <form nz-form [formGroup]="editForm" (ngSubmit)="edit()">
     <nz-form-item *ngIf="false">
       <nz-form-label>QotID</nz-form-label>
       <nz-form-control>
@@ -274,79 +274,99 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">總計(NT)</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input placeholder="總計(NT)" formControlName="price"
-               autocomplete="off" />
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">總計(NT)</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="priceErrorTpl">
+        <input placeholder="總計(NT)" formControlName="price"
+               autocomplete="off" nz-input>
+        <ng-template #priceErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">價格單位</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">價格單位</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="unitErrorTpl">
         <input nz-input placeholder="價格單位" formControlName="unit"
                autocomplete="off" />
       </nz-form-control>
+      <ng-template #unitErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+      </ng-template>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">幣別</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">幣別</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="幣別" formControlName="unit"
        autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" [formControl]="currency">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" formControlName="currency" >
           <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">採購群組</nz-form-label>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzErrorTip="欄位必填">採購群組</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
          autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組" [formControl]="ekgry">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組"  formControlName="ekgry" >
           <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">計畫交貨時間</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">計畫交貨時間</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="leadTimeErrorTpl">
         <input nz-input placeholder="計畫交貨時間" formControlName="leadTime"
                autocomplete="off" />
+        <ng-template #leadTimeErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">標準採購數量</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">標準採購數量</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="standQtyErrorTpl">
         <input nz-input placeholder="標準採購數量" formControlName="standQty"
                autocomplete="off" />
+        <ng-template #standQtyErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">最小採購數量</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">最小採購數量</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="minQtyErrorTpl">
         <input nz-input placeholder="最小採購數量" formControlName="minQty"
                autocomplete="off" />
+        <ng-template #minQtyErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">稅碼</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">稅碼</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="稅碼" formControlName="taxcode"
       autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" [formControl]="taxcode">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" formControlName="taxcode" >
           <nz-option *ngFor="let option of TaxcodeList" [nzLabel]="option.taxcodeName" [nzValue]="option.taxcode"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">生效日期</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">生效日期</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" formControlName="effectiveDate"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24">有效日期</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">有效日期</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" formControlName="expirationDate"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>

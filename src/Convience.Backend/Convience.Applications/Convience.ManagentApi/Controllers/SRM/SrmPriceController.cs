@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Convience.ManagentApi.Controllers.Extension;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -158,11 +159,11 @@ namespace Convience.ManagentApi.Controllers.SRM
 
                 foreach (var item in infoRecord.Select((value, i) => new { i, value }))
                 {
-                    temp[item.i].aTotal = item.value.Atotal.ToString();
-                    temp[item.i].bTotal = item.value.Btotal.ToString();
-                    temp[item.i].cTotal = item.value.Ctotal.ToString();
-                    temp[item.i].dTotal = item.value.Dtotal.ToString();
-                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.ToString():"";
+                    temp[item.i].aTotal = item.value.Atotal.Normalize();
+                    temp[item.i].bTotal = item.value.Btotal.Normalize();
+                    temp[item.i].cTotal = item.value.Ctotal.Normalize();
+                    temp[item.i].dTotal = item.value.Dtotal.Normalize();
+                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.Normalize() : 0;
                     temp[item.i].unit = (item.value.Unit.HasValue)?item.value.Unit.Value.ToString():"";
                     temp[item.i].currency = item.value.Currency;
                     temp[item.i].currencyName = item.value.currencyName;

@@ -39,6 +39,7 @@ import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.co
 import { ButtonRendererComponent } from './price/button-cell-renderer.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzInputModule } from 'ng-zorro-antd/input';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -96,6 +97,10 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     QRCodeModule,
     ZXingScannerModule,
     NzModalModule,
+    NzInputModule
   ]
 })
-export class SrmModule { }
+export class SrmModule {
+  static decimal = /^(0|([1-9](\d)*))(\.(\d)*)?$/;
+  static number = /^(0|([1-9](\d)*))$/;
+}

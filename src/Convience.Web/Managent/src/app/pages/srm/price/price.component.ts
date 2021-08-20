@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { SrmPriceService } from '../../../business/srm/srm-price.service';
@@ -9,6 +9,7 @@ import { StorageService } from '../../../services/storage.service';
 import datepickerFactory from 'jquery-datepicker';
 import { NzTreeNodeOptions, NzTreeNode, NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 import { ButtonRendererComponent } from './button-cell-renderer.component';
+import { SrmModule } from '../srm.module';
 
 declare const $: any;
 datepickerFactory($);
@@ -22,7 +23,7 @@ datepickerFactory($);
 export class PriceComponent implements OnInit {
   matnrList: FormGroup = new FormGroup({});
   mats: FormGroup = new FormGroup({});
-  editFrom: FormGroup = new FormGroup({});
+  editForm: FormGroup = new FormGroup({});
   selectedMatnr;
   matnrs = [];
   rfq: Rfq;
@@ -34,11 +35,11 @@ export class PriceComponent implements OnInit {
   OtherList;
 
   TaxcodeList;
-  taxcode: FormControl;
+  //taxcode: FormControl;
   CurrencyList;
-  currency: FormControl;
+/*  currency: FormControl;*/
   EkgryList;
-  ekgry: FormControl;
+  //ekgry: FormControl;
 
 
   canModify = true;
@@ -116,13 +117,10 @@ export class PriceComponent implements OnInit {
       buttonRenderer: ButtonRendererComponent,
     }
 
-    this.taxcode = _formBuilder.control([]);
-    this.currency = _formBuilder.control([]);
-    this.ekgry = _formBuilder.control([]);
-    //this.activatedRoute.queryParams.subscribe(params => {
-    //  this.rfqId = params['id'];
-    //  //this.rfqId = 12;
-    //});
+    //this.taxcode = _formBuilder.control([]);
+    //this.currency = _formBuilder.control([]);
+    //this.ekgry = _formBuilder.control([]);
+
     this.activatedRoute.params.subscribe((params) => this.rfqId = params['id']);
 
     //grid 
@@ -176,79 +174,6 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "100px",
       },
-//      {
-//        headerName: "總計金額",
-//        field: "price",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-///*        stopEditingWhenCellsLoseFocus:true,*/
-//      },
-//      {
-//        headerName: "價格單位",
-//        field: "unit",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "採購群組",
-//        field: "ekgry",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "計畫交貨時間",
-//        field: "leadTime",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "標準採購數量",
-//        field: "standQty",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "最小採購數量",
-//        field: "minQty",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "稅碼",
-//        field: "taxcode",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//      },
-//      {
-//        headerName: "生效日期",
-//        field: "effectiveDate",
-//        enableRowGroup: true,
-//        cellClass: "show-cell",
-//        width: "150px",
-//        editable: this.canModify,
-//        cellEditor: 'datePicker',
-//      },
-//      {
-//        headerName: "有效日期",
-//        field: "expirationDate",
-//        width: "150px",
-//        editable: this.canModify,
-//        cellEditor: 'datePicker',
-//      }
     ]
 
     this.isRowSelectable = function (rowNode) {
@@ -615,17 +540,6 @@ export class PriceComponent implements OnInit {
       selectedMatnr: [null]
     });
     this.mats = this._formBuilder.group({});
-    this.editFrom = this._formBuilder.group({
-      qotId:[null],
-      price: [null],
-      unit: [null],
-      ekgry: [null],
-      leadTime: [null],
-      standQty: [null],
-      minQty: [null],
-      effectiveDate: [null],
-      expirationDate: [null],
-    });
     this.init();
     this.initGrid();
     this.initTaxCode();
@@ -636,25 +550,41 @@ export class PriceComponent implements OnInit {
   add(e) {
     //this.temppriceTotal = e.rowData.price ? e.rowData.price:"";
     //this.tempunit = e.rowData.unit ? e.rowData.unit:"";
-    console.log(e.rowData.taxcode);
-    this.currency.setValue(e.rowData.currency);
-    this.taxcode.setValue(e.rowData.taxcode);
-    this.ekgry.setValue(e.rowData.ekgry);
+    //console.log(e.rowData.taxcode);
+    //this.currency.setValue(e.rowData.currency);
+    //this.taxcode.setValue(e.rowData.taxcode);
+    //this.ekgry.setValue(e.rowData.ekgry);
 
-    this.editFrom.setValue({
+    this.editForm = this._formBuilder.group({
+      qotId: [null, [Validators.required]],
+      //price: ['', [Validators.pattern(/^(0|([1-9](\d)*))(\.(\d)*)?$/)]],
+      price: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      unit: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
+      currency: [null, [Validators.required]],
+      ekgry: [null, [Validators.required]],
+      leadTime: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      standQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      minQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      taxcode: [null, [Validators.required]],
+      effectiveDate: [null, [Validators.required]],
+      expirationDate: [null, [Validators.required]],
+    });
+
+
+    this.editForm.setValue({
       qotId: e.rowData.qotId
       , price: e.rowData.price ? e.rowData.price : ""
       , unit: e.rowData.unit ? e.rowData.unit : ""
+      , currency: e.rowData.currency ? e.rowData.currency : ""
       , ekgry: e.rowData.ekgry ? e.rowData.ekgry : ""
       , leadTime: e.rowData.leadTime ? e.rowData.leadTime : ""
       , standQty: e.rowData.standQty ? e.rowData.standQty : ""
       , minQty: e.rowData.minQty ? e.rowData.minQty : ""
-      //, taxcode: e.rowData.taxcode ? e.rowData.taxcode : ""
+      , taxcode: e.rowData.taxcode ? e.rowData.taxcode : ""
       , effectiveDate: e.rowData.effectiveDate ? e.rowData.effectiveDate : ""
       , expirationDate: e.rowData.expirationDate ? e.rowData.expirationDate : ""
     });
     console.log(e.rowData);
-/*    this.tempqotId = e.rowData.qotId;*/
 
     this.tplModal = this._modalService.create({
     nzTitle: this.ctest1,
@@ -666,23 +596,30 @@ export class PriceComponent implements OnInit {
   }
 
   edit() {
-    console.log(this.CurrencyList.find(r => r.currency == this.currency.value).currencyName);
+    //console.log(this.CurrencyList.find(r => r.currency == this.currency.value)?.currencyName);
     //console.log(this.tempqotId);
-    var r = this.rowData_summary.find(r => r.qotId == this.editFrom.get('qotId').value);
-    r.price = this.editFrom.get('price').value;
-    r.unit = this.editFrom.get('unit').value;
-    r.ekgry = this.ekgry.value;
-    r.leadTime = this.editFrom.get('leadTime').value;
-    r.standQty = this.editFrom.get('standQty').value;
-    r.minQty = this.editFrom.get('minQty').value;
-    r.taxcode = this.taxcode.value;//this.editFrom.get('taxcode').value;
-    r.taxcodeName = this.TaxcodeList.find(r => r.taxcode == this.taxcode.value).taxcodeName;
-    r.currency = this.currency.value;
-    r.currencyName = this.CurrencyList.find(r => r.currency == this.currency.value).currencyName;
-    r.effectiveDate = dateFormatter(this.editFrom.get('effectiveDate').value);
-    r.expirationDate = dateFormatter(this.editFrom.get('expirationDate').value);
-    this.gridApi_summary.setRowData(this.rowData_summary);
-    this.tplModal.close();
+    console.log(this.editForm);
+    for (const i in this.editForm.controls) {
+      this.editForm.controls[i].markAsDirty();
+      this.editForm.controls[i].updateValueAndValidity();
+    }
+    if (this.editForm.valid) {
+      var r = this.rowData_summary.find(r => r.qotId == this.editForm.get('qotId').value);
+      r.price = this.editForm.get('price').value;
+      r.unit = this.editForm.get('unit').value;
+      r.ekgry = this.editForm.get('ekgry').value;
+      r.leadTime = this.editForm.get('leadTime').value;
+      r.standQty = this.editForm.get('standQty').value;
+      r.minQty = this.editForm.get('minQty').value;
+      r.taxcode = this.editForm.get('taxcode').value;//.editForm.get('ekgry').value;
+      r.taxcodeName = this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
+      r.currency = this.editForm.get('currency').value;
+      r.currencyName = this.CurrencyList.find(r => r.currency == this.editForm.get('currency').value)?.currencyName;
+      r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
+      r.expirationDate = dateFormatter(this.editForm.get('expirationDate').value);
+      this.gridApi_summary.setRowData(this.rowData_summary);
+      this.tplModal.close();
+    }
   }
 
   cancelEdit() {
@@ -982,119 +919,7 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "240px",
       }
-    ]
-
-    //this.columnDefs_inforecord = [
-    //  {
-    //    headerName: "供應商",
-    //    field: "vendorName",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    headerCheckboxSelection: true,
-    //    checkboxSelection: true,
-    //  },
-    //  {
-    //    headerName: "A",
-    //    field: "atotal",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "100px",
-    //  },
-    //  {
-    //    headerName: "B",
-    //    field: "btotal",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "100px",
-    //  },
-    //  {
-    //    headerName: "C",
-    //    field: "ctotal",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "100px",
-    //  },
-    //  {
-    //    headerName: "D",
-    //    field: "dtotal",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "100px",
-    //  },
-    //  {
-    //    headerName: "總計金額",
-    //    field: "price",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "價格單位",
-    //    field: "unit",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "採購群組",
-    //    field: "ekgry",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "計畫交貨時間",
-    //    field: "leadTime",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "標準採購數量",
-    //    field: "standQty",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "最小採購數量",
-    //    field: "minQty",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "稅碼",
-    //    field: "taxcode",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //  },
-    //  {
-    //    headerName: "生效日期",
-    //    field: "effectiveDate",
-    //    enableRowGroup: true,
-    //    cellClass: "show-cell",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //    cellEditor: getDatePicker(),
-    //  },
-    //  {
-    //    headerName: "有效日期",
-    //    field: "expirationDate",
-    //    width: "150px",
-    //    editable: this.canModify,
-    //    cellEditor: this.getDatePicker(),
-    //  }
-    //]
+    ]    
   }
   search() {
     this.radioValue = this.matnrList.get('selectedMatnr').value;
