@@ -97,41 +97,11 @@ namespace Convience.Service.SRM
         }
         public SrmQotH UpdateQotStatus(int status, SrmQotH qotH)
         {
-            bool ifcanupdate = IfCanUpdate(qotH);
-            if (ifcanupdate) 
-            {
-            }
             var qot = _srmQotHRepository.Get(r => r.QotId == qotH.QotId).First();
-            switch ((Status)status)
+
+            if ((Status)qot.Status != Status.初始)
             {
-                case Status.拒絕:
-                    if ((Status)qot.Status != Status.初始)
-                    {
-                        throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
-                    }
-                    break;
-                //case Status.作廢:
-                //case Status.刪除:
-                //    if ((Status)rfq.Status != Status.初始 && (Status)rfq.Status != Status.啟動)
-                //    {
-                //        throw new Exception($"非初始或啟動狀態無法{((Status)status).ToString()}");
-                //    }
-                //    rfq.EndDate = DateTime.Now;
-                //    rfq.EndBy = rfqH.EndBy;
-                //    break;
-                //case Status.簽核中:
-                //    if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.已核發)
-                //    {
-                //        throw new Exception($"狀態異常無法{((Status)status).ToString()}");
-                //    }
-                //    if ((Status)rfq.Status == Status.已核發)
-                //    {
-                //        return rfq;
-                //    }
-                //    break;
-                //default:
-                //    throw new Exception($"未定義{((Status)status).ToString()}");
-                //    break;
+                throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
             }
             qot.Status = status;
             qot.LastUpdateDate = qotH.LastUpdateDate;
@@ -207,27 +177,34 @@ namespace Convience.Service.SRM
             //    p.SrmQotHs = _context.SrmQotHs.Where(m => m.RfqId == p.RfqId).ToList();
             //});
             //return result;
-            var result = _context.SrmRfqHs
-                .Select(p => new ViewQotListH
-                {
-                    VRfqId = p.RfqId,
-                    VRfqNum = p.RfqNum,
-                    VStatus = p.Status,
-                    VCreateDate = p.CreateDate,
-                    VCreateBy = p.CreateBy,
-                    VLastUpdateDate = p.LastUpdateDate,
-                    VLastUpdateBy = p.LastUpdateBy,
-                    VEndDate = p.EndDate
-                })
-                .ToList();
+            var result = (from r in _context.SrmRfqHs
+                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                          join status in _context.SrmStatuses on r.Status equals status.Status
+                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
+                          select new ViewQotListH
+                          {
+                              VRfqId = r.RfqId,
+                              VRfqNum = r.RfqNum,
+                              VStatusDesc = status.StatusDesc,
+                              VCreateDate = r.CreateDate,
+                              VCreateBy = r.CreateBy,
+                              VLastUpdateDate = r.LastUpdateDate,
+                              VLastUpdateBy = r.LastUpdateBy,
+                              VEndDate = r.EndDate,
+                              VVendor = vendor.VendorName
+
+                          })
+                          .Where(p => p.VStatus ==7)
+                          .Distinct()
+                          .ToList();
 
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
 
                               join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
-                             
 
+                              join status in _context.SrmStatuses on q.Status equals status.Status
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
                               select new ViewQotListL
@@ -241,7 +218,9 @@ namespace Convience.Service.SRM
                                   QCreateDate = q.CreateDate,
                                   QLastUpdateBy = q.LastUpdateBy,
                                   QLastUpdateDate = q.LastUpdateDate,
-                              }).Where(p => p.Status !=5)             
+                                  QStatusDesc = status.StatusDesc
+                              }).Where(p => p.Status !=5)
+                              .Where(l => l.RfqId == p.RfqId)
                               .ToList();
             });
             return result;
@@ -267,27 +246,40 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
             //int venderid = query.vendor;
-            var result = _context.SrmRfqHs
-                .AndIfHaveValue(query.rfqno, p => p.RfqNum == query.rfqno)
-                .Select(p => new ViewQotListH
-                {
-                    VRfqId = p.RfqId,
-                    VRfqNum =p.RfqNum,
-                    VStatus = p.Status,
-                    VCreateDate = p.CreateDate,
-                    VCreateBy = p.CreateBy,
-                    VLastUpdateDate = p.LastUpdateDate,
-                    VLastUpdateBy = p.LastUpdateBy,
-                    VEndDate = p.EndDate
-                })
-                .ToList();
+            var result = (from r in _context.SrmRfqHs
+                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                          join status in _context.SrmStatuses on r.Status equals status.Status
+                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
+                          select new ViewQotListH
+                          {
+                              VRfqId = r.RfqId,
+                              VRfqNum = r.RfqNum,
+                              VStatus = r.Status,
+                              VStatusDesc = status.StatusDesc,
+                              VCreateDate = r.CreateDate,
+                              VCreateBy = r.CreateBy,
+                              VLastUpdateDate = r.LastUpdateDate,
+                              VLastUpdateBy = r.LastUpdateBy,
+                              VEndDate = r.EndDate,
+                              VVendor = vendor.SapVendor,
+
+
+                          })
+                        .Where(p => p.VVendor == query.vendor)
+                        .Where(p => p.VStatus == 7)
+                            //.Where()
+                            //.AndIfCondition(query.status != 0, p => p.Status == 7)
+                            //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
+                            .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
+                        .Distinct()
+                        .ToList();
 
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
 
                               join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
-
+                              join status in _context.SrmStatuses on q.Status equals status.Status
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
                               select new ViewQotListL
@@ -302,13 +294,18 @@ namespace Convience.Service.SRM
                                   QLastUpdateBy = q.LastUpdateBy,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
-                                  QVendor = v.SapVendor
+                                  QVendor = v.SapVendor,
+                                  QStatusDesc = status.StatusDesc,
+                                  QRfqNum = r.RfqNum
                               })
                               //.ToList();
                               //.Where(p => p.QVendorId.Value == query.vendor)
+                     
                               .Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
+                              .Where(l => l.QRfqId.Value == p.VRfqId)
+                          
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
-                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+                              //.AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
                               .ToList();            
             });
             return result;

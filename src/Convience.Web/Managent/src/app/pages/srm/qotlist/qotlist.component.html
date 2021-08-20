@@ -20,10 +20,11 @@
       <nz-form-control>
         <nz-select [formControlName]="'qotstatus'"  style="width: 100px;">
           <nz-option nzValue="0" nzLabel="全部"></nz-option>
-          <nz-option nzValue="10" nzLabel="初始"></nz-option>
-          <nz-option nzValue="20" nzLabel="已回覆"></nz-option>         
-          <nz-option nzValue="30" nzLabel="確認"></nz-option><!--確認表示該詢價單所有報價單皆回覆-->
-          <nz-option nzValue="40" nzLabel="拒絕"></nz-option>
+          <nz-option nzValue="1" nzLabel="初始"></nz-option><!--初始、儲存-->
+          <!--<nz-option nzValue="20" nzLabel="已回覆"></nz-option>-->       
+          <nz-option nzValue="5" nzLabel="確認"></nz-option><!--確認表示該詢價單所有報價單皆回覆-->
+          <nz-option nzValue="6" nzLabel="拒絕"></nz-option>
+          <!--<nz-option nzValue="17" nzLabel="失效"></nz-option>--><!--失效表詢價結束，無法查到..-->
         </nz-select>
       </nz-form-control>
     </nz-form-item>

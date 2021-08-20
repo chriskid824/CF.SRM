@@ -134,6 +134,7 @@ namespace Convience.Model.Models.SRM
     {
         public int VRfqId { get; set; }
         public string VRfqNum { get; set; }
+        public string VStatusDesc { get; set; }
         public int? VStatus { get; set; }
         public string VSourcer { get; set; }
         public DateTime? VDeadline { get; set; }
@@ -144,6 +145,7 @@ namespace Convience.Model.Models.SRM
         public DateTime? VEndDate { get; set; }
         public string VEndBy { get; set; }
         public virtual ICollection<ViewQotListL> SrmQotHs { get; set; }
+        public string VVendor { get; set; }
     }
     public class ViewQotListL : SrmQotH
     {
@@ -167,11 +169,11 @@ namespace Convience.Model.Models.SRM
         public string QQotNum { get; set; }
         public int? QRfqId { get; set; }
         public int? QStatus { get; set; }
+        public string QStatusDesc { get; set; }
         public decimal? QTotalAmount { get; set; }
         public int? QVendorId { get; set; }
         public string QVendor { get; set; }
         public string QMatnr { get; set; }
-       
     }
 
     public record ResultQotModel

@@ -52,7 +52,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             var rfqno = (query["RFQ_NUM"] != null) ? query["RFQ_NUM"].ToString() : null;
             var matnr = (query["MATNR"] != null) ? query["MATNR"].ToString() : null;
             var status = (query["STATUS"] != null) ? (int)query["STATUS"] : 0;
-            var vendor = "2";// (int)query["VENDOR"];  //???
+            var vendor = "VAD00198";//(string)query["vendor"];
             qot.rfqno = rfqno;
             qot.status = status;//(int)query["status"];
             qot.matnr = matnr;
@@ -134,12 +134,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
         [HttpPost("Reject")]
         //[Permission("rfq")]
-        public IActionResult Reject(SrmQotH qotH)
+        public IActionResult Reject(JObject qot)
         {
             try
             {
-                qotH.LastUpdateDate = DateTime.Now;
-                _srmQotService.UpdateQotStatus(((int)Status.拒絕), qotH);
+                SrmQotH q = qot["q"].ToObject<SrmQotH>();
+                q.LastUpdateDate = DateTime.Now;
+                _srmQotService.UpdateQotStatus(((int)Status.拒絕), q);
                 return Ok();
             }
             catch (Exception ex)

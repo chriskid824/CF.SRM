@@ -98,7 +98,7 @@ export class QotComponent implements OnInit {
   rowData_other=[];
   rowData_matnr=[];
   rowData_inforecord=[];
-  Q: any;
+  Q;
   nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
   //editForm: FormGroup = new FormGroup({});
@@ -838,14 +838,15 @@ export class QotComponent implements OnInit {
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
     });*/
-
-
     var qot = {
       q:null
-     }
+    }
+    qot.q = this.Q;
     //qot.q = this.qot.qotId;
-    qot.q = this.id;
-    this._srmQotService.Reject(qot.q).subscribe(result => {
+    qot.q.LASTUPDATEBY = this._storageService.userName;
+    qot.q.QotId = this.id;
+    qot.q.RfqId = this.rfqid;
+    this._srmQotService.Reject(qot).subscribe(result => {
       console.log(result);
       alert('拒絕報價成功');
       this._layout.navigateTo('qotlist');

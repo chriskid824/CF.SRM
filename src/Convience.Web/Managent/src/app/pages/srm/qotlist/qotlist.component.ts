@@ -59,7 +59,8 @@ export class QotlistComponent implements OnInit {
       //{  headerName: "Row",valueGetter: "node.rowIndex + 1"},
       //{  headerName:'序號',field: 'VRfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
       {  headerName:'序號',valueGetter: "node.rowIndex + 1", resizable: true,cellRenderer: 'agGroupCellRenderer',},    
-      {  headerName:'狀態',field: 'VStatus', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
+      //{  headerName:'狀態',field: 'VStatus', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
+      {  headerName:'狀態',field: 'VStatusDesc'},
       {  headerName:'詢價單號',field: 'VRfqNum', resizable: true},
       {  headerName:'建立日期',field: 'VCreateDate', resizable: true },
       {  headerName:'建立人員',field: 'VCreateBy', resizable: true},
@@ -121,7 +122,7 @@ export class QotlistComponent implements OnInit {
     // throw new Error('Method not implemented.');
     this.form_searchQot = this._formBuilder.group({
       rfqno: [null],
-      qotstatus: [0],
+      qotstatus: [null],
       qotmatnr:[null],
       //??
       //vendor:"2"
