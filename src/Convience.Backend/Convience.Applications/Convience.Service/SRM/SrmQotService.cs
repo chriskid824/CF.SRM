@@ -295,8 +295,7 @@ namespace Convience.Service.SRM
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
                                   QVendor = v.SapVendor,
-                                  QStatusDesc = status.StatusDesc,
-                                  QRfqNum = r.RfqNum
+                                  QStatusDesc = status.StatusDesc
                               })
                               //.ToList();
                               //.Where(p => p.QVendorId.Value == query.vendor)
