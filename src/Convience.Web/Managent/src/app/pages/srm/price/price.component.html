@@ -354,7 +354,7 @@
         <!--<input nz-input placeholder="稅碼" formControlName="taxcode"
       autocomplete="off" />-->
         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" formControlName="taxcode" >
-          <nz-option *ngFor="let option of TaxcodeList" [nzLabel]="option.taxcodeName" [nzValue]="option.taxcode"></nz-option>
+          <nz-option *ngFor="let option of TaxcodeList" [nzLabel]="option.taxcode + ' ' + option.taxcodeName" [nzValue]="option.taxcode"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>

@@ -172,7 +172,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[item.i].minQty = (item.value.MinQty.HasValue)?item.value.MinQty.Value.ToString():"1";
                     temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
                     temp[item.i].taxcode = item.value.Taxcode?.ToString()??"V4";
-                    temp[item.i].taxcodeName = item.value.taxcodeName?.ToString()?? "進項稅5%";
+                    temp[item.i].taxcodeName = item.value.taxcodeName?.ToString()?? "V4 進項稅5%";
                     temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue)?item.value.EffectiveDate.Value.ToString("yyyy/MM/dd"):DateTime.Now.ToString("yyyy/MM/dd");
                     temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue)?item.value.ExpirationDate.Value.ToString("yyyy/MM/dd"):new DateTime(DateTime.Now.Year+1,1,1).AddDays(-1).ToString("yyyy/MM/dd");
                 }
