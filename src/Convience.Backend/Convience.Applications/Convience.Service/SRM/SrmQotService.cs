@@ -39,6 +39,7 @@ namespace Convience.Service.SRM
         public SrmQotH UpdateQotStatus(int status, SrmQotH qotH);
         public SrmQotH[] GetByVendor(QueryQot query);
         //public ViewQotListL GetDataByRfqId(int RfqId);
+        public IEnumerable<ViewQotListH> GetQotListByAdmin(QueryQotList query);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -255,6 +256,73 @@ namespace Convience.Service.SRM
 
         }*/
         //原本的
+        public IEnumerable<ViewQotListH> GetQotListByAdmin(QueryQotList query)
+        {
+            //int venderid = query.vendor;
+            var result = (from r in _context.SrmRfqHs
+                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                          join status in _context.SrmStatuses on r.Status equals status.Status
+                          //join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
+                          select new ViewQotListH
+                          {
+                              VRfqId = r.RfqId,
+                              VRfqNum = r.RfqNum,
+                              VStatus = r.Status,
+                              VStatusDesc = status.StatusDesc,
+                              VCreateDate = r.CreateDate,
+                              VCreateBy = r.CreateBy,
+                              VLastUpdateDate = r.LastUpdateDate,
+                              VLastUpdateBy = r.LastUpdateBy,
+                              VEndDate = r.EndDate,
+                              //VVendor = vendor.SapVendor,
+
+
+                          })
+                        //.Where(p => p.VVendor == query.vendor)
+                        .Where(p => p.VStatus == 7)
+                            //.Where()
+                            //.AndIfCondition(query.status != 0, p => p.Status == 7)
+                            //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
+                            .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
+                        .Distinct()
+                        .ToList();
+
+            result.ForEach(p =>
+            {
+                p.SrmQotHs = (from q in _context.SrmQotHs
+
+                              join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                              join status in _context.SrmStatuses on q.Status equals status.Status
+                              join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                              //join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                              select new ViewQotListL
+                              {
+                                  QRfqId = q.RfqId,
+                                  QStatus = q.Status,
+                                  QQotId = q.QotId,
+                                  QQotNum = q.QotNum,
+                                  QMatnr = m.SapMatnr,
+                                  QCreateBy = q.CreateBy,
+                                  QCreateDate = q.CreateDate,
+                                  QLastUpdateBy = q.LastUpdateBy,
+                                  QLastUpdateDate = q.LastUpdateDate,
+                                  QVendorId = q.VendorId,
+                                  //QVendor = v.SapVendor,
+                                  QStatusDesc = status.StatusDesc
+                              })
+                              //.ToList();
+                              //.Where(p => p.QVendorId.Value == query.vendor)
+
+                              //.Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
+                              .Where(l => l.QRfqId.Value == p.VRfqId)
+
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
+                              //.AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+                              .ToList();
+            });
+            return result;
+        }
+
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {

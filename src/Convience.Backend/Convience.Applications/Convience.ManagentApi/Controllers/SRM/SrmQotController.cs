@@ -57,8 +57,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             qot.status = status;//(int)query["status"];
             qot.matnr = matnr;
             qot.vendor = vendor;
-
-            var result = _srmQotService.GetQotList(qot);
+            var result =  _srmQotService.GetQotList(qot);
+            if (query["vendor"].ToString().IndexOf("admin") != -1)
+            {
+                result = _srmQotService.GetQotListByAdmin(qot);
+            }
+            
+            //var result = _srmQotService.GetQotListByAdmin(qot); 
 
             return JsonConvert.SerializeObject(result, Formatting.None,
                         new JsonSerializerSettings()
