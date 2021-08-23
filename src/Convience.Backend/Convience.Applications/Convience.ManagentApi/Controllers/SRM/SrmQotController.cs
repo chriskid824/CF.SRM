@@ -103,12 +103,12 @@ namespace Convience.ManagentApi.Controllers.SRM
             //return this.BadRequestResult("12334");
             return Ok(qot);
         }
-        [HttpPost("GetQotDetail")]
-        //[Permission("price")]
+        [HttpPost("GetQotInfo")]
         public IActionResult GetQotDetail(QueryQot query)
         {
-            var qots = (_srmQotService.Get(query));
-            ViewSrmPriceDetail detail = _srmQotService.GetDetail(qots);
+
+            var qots = (_srmQotService.GetByVendor(query));
+            ViewQotResult detail = _srmQotService.GetDetail(qots);
             SrmRfqM m = new SrmRfqM()
             {
                 RfqId = query.rfqId,

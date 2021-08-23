@@ -34,9 +34,10 @@ namespace Convience.Service.SRM
         //public IEnumerable<ViewQot> GetDataBQotId(int QotId);
         public IQueryable GetQotData(int QotId);
         public IQueryable GetMatnrData(int rfqid,int vendorid);
-        public ViewSrmPriceDetail GetDetail(SrmQotH[] query);
+        public ViewQotResult GetDetail(SrmQotH[] query);
         public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers);
         public SrmQotH UpdateQotStatus(int status, SrmQotH qotH);
+        public SrmQotH[] GetByVendor(QueryQot query);
         //public ViewQotListL GetDataByRfqId(int RfqId);
     }
     public class SrmQotService : ISrmQotService
@@ -121,6 +122,18 @@ namespace Convience.Service.SRM
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
                 .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                .OrderBy(r => r.MatnrId);
+            return qotQurty.ToArray();
+            //}
+        }
+        public SrmQotH[] GetByVendor(QueryQot query)
+        {
+            //using (SRMContext db = new SRMContext())
+            //{
+            var qotQurty = _context.SrmQotHs.AsQueryable()
+                .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
+                .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                .AndIfHaveValue(query.vendorId, r => r.VendorId == query.vendorId)
                 .OrderBy(r => r.MatnrId);
             return qotQurty.ToArray();
             //}
@@ -431,18 +444,18 @@ namespace Convience.Service.SRM
             qotlist = qotlist.Where(p => p.QotId == QotId).ToList(); ;
             return qotlist;
         }*/
-        public ViewSrmPriceDetail GetDetail(SrmQotH[] query)
+        public ViewQotResult GetDetail(SrmQotH[] query)
         {
             //.AsEnumerable().Select(r => r.Field<string>("Name")).ToArray();
             int[] qotIds = query.AsEnumerable().Select(r => r.QotId).ToArray();
             int[] vendorIds = query.AsEnumerable().Select(r => r.VendorId.Value).Distinct().ToArray();
             var temp = query.AsEnumerable().Select(r => new { a = r.RfqId, b = r.VendorId }).ToArray();
-            ViewSrmPriceDetail price = new ViewSrmPriceDetail();
-            price.qot = query;
+            ViewQotResult qotinfo = new ViewQotResult();
+            qotinfo.qot = query;
             //using (SRMContext _context = new SRMContext())
             //{
 
-            price.material = (from material in _context.SrmQotMaterial
+            qotinfo.material = (from material in _context.SrmQotMaterial
                               join qot in _context.SrmQotHs
                               on material.QotId equals qot.QotId
                               join vendor in _context.SrmVendors
@@ -467,7 +480,7 @@ namespace Convience.Service.SRM
             //price.material = (from material in db.SrmQotMaterial
             //           where qotIds.Contains(material.QotId.Value)
             //           select material).ToArray();
-            price.process = (from process in _context.SrmQotProcesses
+            qotinfo.process = (from process in _context.SrmQotProcesses
                              join qot in _context.SrmQotHs
                              on process.QotId equals qot.QotId
                              join vendor in _context.SrmVendors
@@ -482,7 +495,7 @@ namespace Convience.Service.SRM
             //price.process = (from process in db.SrmQotProcesses
             //                             where qotIds.Contains(process.QotId.Value)
             //                             select process).ToArray();
-            price.surface = (from surface in _context.SrmQotSurfaces
+            qotinfo.surface = (from surface in _context.SrmQotSurfaces
                              join qot in _context.SrmQotHs
              on surface.QotId equals qot.QotId
                              join vendor in _context.SrmVendors
@@ -494,7 +507,7 @@ namespace Convience.Service.SRM
                                  VendorName = vendor.VendorName,
                                  SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value
                              }).ToArray();
-            price.other = (from other in _context.SrmQotOthers
+            qotinfo.other = (from other in _context.SrmQotOthers
                            join qot in _context.SrmQotHs
              on other.QotId equals qot.QotId
                            join vendor in _context.SrmVendors
@@ -507,75 +520,9 @@ namespace Convience.Service.SRM
                            }).ToArray();
 
 
-            //(from material in db.SrmQotMaterial
-            // join qot in db.SrmQotHs
-            // on material.QotId equals qot.QotId
-            // join vendor in db.SrmVendors
-            // on qot.VendorId equals vendor.VendorId
-            // where qotIds.Contains(material.QotId.Value)
-            // select new viewSrmQotMaterial(material)
-            // {
-            //     VendorId = vendor.VendorId,
-            //     VendorName = vendor.VendorName
-            // })
-            // .GroupBy(r => r.VendorName).Select(g => new
-            // {
-            //     VendorId = g.Key,
-            //     count = g.Sum(s => s.MCostPrice)
-            // });
-
-            viewSrmInfoRecord[] infos = new viewSrmInfoRecord[query.Count()];
-            for (int i = 0; i < infos.Length; i++)
-            {
-                viewSrmInfoRecord info = new viewSrmInfoRecord();
-                info.VendorId = query[i].VendorId;
-                info.VendorName = _context.SrmVendors.Where(r => r.VendorId == info.VendorId).Select(r => r.VendorName).FirstOrDefault();
-                info.QotId = query[i].QotId;
-                info.MatnrId = query[i].MatnrId;
-                info.Atotal = price.material.Where(r => r.QotId == info.QotId && r.MCostPrice.HasValue).Select(r => r.MCostPrice).Sum().Value;
-                info.Btotal = price.process.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
-                info.Ctotal = price.surface.Where(r => r.QotId == info.QotId).Select(r => r.SubTotal).Sum();
-                info.Dtotal = price.other.Where(r => r.QotId == info.QotId && r.OPrice.HasValue).Select(r => r.OPrice).Sum().Value;
-                infos[i] = info;
-            }
-            price.infoRecord = infos;
-            //price.infoRecord = price.material.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.MCostPrice)
-            //}).GroupJoin(
-            //price.process.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.SubTotal)
-            //}), a => a.VendorId, b => b.VendorId, (material, process) => new
-            //{
-            //    material = material,
-            //    process = process.DefaultIfEmpty()
-            //}).GroupJoin(
-            //price.surface.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.SubTotal)
-            //}), r => r.material.VendorId, c => c.VendorId, (infoRecord, surface) => new
-            //{
-            //    infoRecord,
-            //    surface = surface.DefaultIfEmpty()
-            //}).GroupJoin(
-            //price.other.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.OPrice)
-            //}), r => r.infoRecord.material.VendorId, d => d.VendorId, (infoRecord, other) => new viewSrmQotInfoRecord
-            //{
-            //    Atotal = infoRecord.infoRecord.material.count.Value,
-            //    Btotal = infoRecord.infoRecord.process.,
-            //    Ctotal = infoRecord.surface.count,
-            //    Dtotal = other.count.Value
-            //}).DefaultIfEmpty().ToArray();
-
-            //}
-            return price;
+      
+            
+            return qotinfo;
         }
         public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers)
         {

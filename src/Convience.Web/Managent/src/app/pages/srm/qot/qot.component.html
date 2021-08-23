@@ -62,21 +62,25 @@
           </tr>
           <tr id="rowtype2">
             <td class="content2">
-              <label class="content2" type="text" id="createddate" name="createddate" disabled value="">{{qotv==null?"":qotv.q[0].createDate}}</label>
+                                                                                                     
+            <label class="content2" type="text" id="createddate" name="createddate" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createDate}}</label>
+              
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="createdby" name="createdby" disabled value="">{{qotv==null?"":qotv.q[0].createBy}}</label>
+              <label class="content2" type="text" id="createdby" name="createdby" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createBy}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="status" name="status" disabled value="">{{qotv==null?"":qotv.q[0].status}}</label>
+              <label class="content2" type="text" id="status" name="status" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].status}}</label>
             </td>
             <td class="content2">
               <label class="content2" type="text" id="rfqnum" name="rfqnum" disabled
-                value="">{{qotv==null?"":qotv.q[0].rfqNum}}</label>
+                value="">{{matnrIndex==null?"":qotv.q[0].rfqNum}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="qotnum" name="qotnum" disabled
-                value="">{{qotv==null?"":qotv.q[0].qotNum}}</label>
+              <!--{{matnrIndex==null?"": rfq.m[matnrIndex].density}}
+              <label class="content2" type="text" id="qotnum" name="qotnum" disabled value="">{{qotv==null?"":qotv.q[0].qotNum}}</label>-->
+              <label class="content2" type="text" id="qotnum" name="qotnum" disabled value="">{{matnrIndex==null?"": qotv.q[matnrIndex].qotNum}}</label>
+              
             </td>
             
           
@@ -103,21 +107,21 @@
           </tr>
           <tr id="rowtype2">
             <td class="content2">
-              <label class="content2" type="text" id="matnr" name="matnr" disabled value="">{{qotv==null?"":qotv.q[0].matnr}}</label>
+              <label class="content2" type="text" id="matnr" name="matnr" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].matnr}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="material" name="material" disabled value="">{{qotv==null?"":qotv.q[0].material}}</label>
+              <label class="content2" type="text" id="material" name="material" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].material}}</label>
             </td>
             <td class="content2">
-              <label class="content2" type="text" id="size" name="size" disabled value="">{{qotv==null?"":qotv.q[0].size}}</label>
+              <label class="content2" type="text" id="size" name="size" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].size}}</label>
             </td>
             <td class="content2">
               <label class="content2" type="text" id="weight" name="weight" disabled
-                value="">{{qotv==null?"":qotv.q[0].weight}}</label>
+                value="">{{matnrIndex==null?"":qotv.q[matnrIndex].weight}}</label>
             </td>
             <td class="content2">
               <label class="content2" type="text" id="machinename" name="machinename" disabled
-                value="">{{qotv==null?"":qotv.q[0].machineName}}</label>
+                value="">{{matnrIndex==null?"":qotv.q[matnrIndex].machineName}}</label>
             </td>
           
           </tr>

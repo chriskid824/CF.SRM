@@ -124,198 +124,6 @@ export class QotComponent implements OnInit {
     this.rowData_Other = [];
     /**********/
     /*material*/
-    this.columnDefs = [
-      {
-        headerName: "素材材質",
-        field: "MMATERIAL",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "240px",
-        cellRenderer: 'agGroupCellRenderer',
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
-      },
-      {
-        headerName: "材料單價",
-        field: "MPRICE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "材料成本價",
-        field: "MCOSTPRICE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "長",
-        field: "LENGTH",
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "寬",
-        field: "WIDTH",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "高",
-        field: "HEIGHT",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "密度",
-        field: "DENSITY",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "重量",
-        field: "WEIGHT",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        editable: true,
-        width: "150px",
-      },
-      {
-        headerName: "備註",
-        field: "NOTE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        editable: true,
-        width: "150px",
-      }
-      
-    ]
-    this.defaultColDef = {
-      filter: "agTextColumnFilter",
-      allowedAggFuncs: ['sum', 'min', 'max'],
-      enableValue: true,
-      enableRowGroup: true,
-      enablePivot: true,
-      // floatingFilter: true,
-      resizable: true,
-      rowSelection: "multiple",
-      wrapText: true,
-    };
-    /*process*/
-    this.columnDefs_PROCESS = [
-      {
-        headerName: "工序代碼",
-        field: "PPROCESSNUM",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "250px",
-        cellRenderer: 'agGroupCellRenderer',
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
-      },
-      {
-        headerName: "工時(時)",
-        field: "PHOURS",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "單價(時)",
-        field: "PPRICE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "機台",
-        field: "PMACHINE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        autoHeight: true,
-        wrapText: true,
-      },
-      {
-        headerName: "備註",
-        field: "PNOTE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      }
-    ]
-     /*surface*/
-     this.columnDefs_SURFACE = [
-      {
-        headerName: "工序",
-        field: "SPROCESS",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "250px",
-        cellRenderer: 'agGroupCellRenderer',
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
-      },
-      {
-        headerName: "次數",
-        field: "STIMES",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "單價(時)",
-        field: "SPRICE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "備註",
-        field: "SNOTE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      }
-    ]
-     /*other*/
-     this.columnDefs_OTHER = [
-      {
-        headerName: "項目",
-        field: "OITEM",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "250px",
-        cellRenderer: 'agGroupCellRenderer',
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
-      },
-      {
-        headerName: "說明",
-        field: "ODESCRIPTION",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "單價",
-        field: "OPRICE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      },
-      {
-        headerName: "備註",
-        field: "ONOTE",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-      }
-    ]
-    /**********/
   }
 
  
@@ -324,6 +132,7 @@ export class QotComponent implements OnInit {
   ngOnInit(): void {
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     //alert(this.qotId)
+    this.matnrIndex = 0;
     this.activatedRoute.queryParams
       .subscribe(params => {
         console.log(params); // { orderby: "price" }
@@ -347,7 +156,8 @@ export class QotComponent implements OnInit {
     this.info2 = this._formBuilder.group({ });
     
     this.init();
-    //this.initGrid();
+    this.initGrid();
+    this.search();
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
   
   }
@@ -379,9 +189,9 @@ export class QotComponent implements OnInit {
     { field: '機台', resizable: true },
     { field: '備註', resizable: true }
   ];
-  MatnrList;
 
-  OriMatnrList;
+
+  
 
   rowDataprocess = [
     { 序號: '01', 工序代碼: '0101', '工時(時)': '5', '單價(時)': '20', 機台: 'machine', 備註: 'A' },
@@ -446,7 +256,7 @@ export class QotComponent implements OnInit {
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi_Surface = params.api;
     this.columnApi_Surface = params.columnApi;
- 
+    
     //this.gridApi_Surface.sizeColumnsToFit();
   }
   
@@ -913,27 +723,6 @@ export class QotComponent implements OnInit {
   selectedChanged(array: QotH[]) {
     this.data = array;
   }
-  /**/
-  //init() {
-  //  this._srmRfqService.GetRfqData(this.rfqId).subscribe(result => {
-  //    this.rfq = result;
-  //    this.matnrs = [];
-  //    console.log(this.rfq);
-  //    this.rfq.m.forEach(row => this.matnrs.push({ label: row.srmMatnr1, value: row.matnrId }));
-  //    this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });
-  //    this.nodes = [];
-  //    this.nodes = [{ title: this.rfq.h.rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
-  //    this.rfq.m.forEach((row, index) => this.nodes[0].children.push({ title: row.srmMatnr1, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
-  //    // { title: department.name, key: department.id, icon: 'appstore', children: [] };
-  //    //this.radioValue = this.matnrs[0].value;
-  //  });
-  //  var query = {
-  //    rfqId: this.rfqId,
-  //  };
-    /*this._srmPriceService.GetSummary(query).subscribe(result => {
-      this.rowData_summary = result;
-    });*/
-  //}
 
 
   init() {
@@ -960,25 +749,223 @@ export class QotComponent implements OnInit {
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
     });
-    console.info('data ='+this.qot);
-    var query = {
+    console.log('----------------------------init-----------------------------')
+    console.info(this.qot);
+    /*var query = {
       rfqId: this.qotId,
     };
-    /*this._srmPriceService.GetSummary(query).subscribe(result => {
+    this._srmPriceService.GetSummary(query).subscribe(result => {
       this.rowData_summary = result;
     });*/
   }
-  
+  initGrid(){
+    this.columnDefs = [
+      {
+        headerName: "素材材質",
+        field: "MMATERIAL",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "240px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "材料單價",
+        field: "MPRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "材料成本價",
+        field: "MCOSTPRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "長",
+        field: "LENGTH",
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "寬",
+        field: "WIDTH",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "高",
+        field: "HEIGHT",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "密度",
+        field: "DENSITY",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "重量",
+        field: "WEIGHT",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: true,
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "NOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: true,
+        width: "150px",
+      }
+      
+    ]
+    this.defaultColDef = {
+      filter: "agTextColumnFilter",
+      allowedAggFuncs: ['sum', 'min', 'max'],
+      enableValue: true,
+      enableRowGroup: true,
+      enablePivot: true,
+      // floatingFilter: true,
+      resizable: true,
+      rowSelection: "multiple",
+      wrapText: true,
+    };
+    /*process*/
+    this.columnDefs_PROCESS = [
+      {
+        headerName: "工序代碼",
+        field: "PPROCESSNUM",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "工時(時)",
+        field: "PHOURS",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價(時)",
+        field: "PPRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "機台",
+        field: "PMACHINE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        autoHeight: true,
+        wrapText: true,
+      },
+      {
+        headerName: "備註",
+        field: "PNOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+     /*surface*/
+     this.columnDefs_SURFACE = [
+      {
+        headerName: "工序",
+        field: "SPROCESS",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "次數",
+        field: "STIMES",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價(時)",
+        field: "SPRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "SNOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+     /*other*/
+     this.columnDefs_OTHER = [
+      {
+        headerName: "項目",
+        field: "OITEM",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "250px",
+        cellRenderer: 'agGroupCellRenderer',
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+      },
+      {
+        headerName: "說明",
+        field: "ODESCRIPTION",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "單價",
+        field: "OPRICE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "備註",
+        field: "ONOTE",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }
+    ]
+    /**********/
+  }
   changedMatnr(value) {
+
     console.log(value);
     this.matnrList.setValue({ selectedMatnr: value.keys[0] });
     //if (value.node.origin.index != null) {
       this.matnrIndex = value.node.origin.index;
     //}
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     console.log(this.matnrIndex);
     this.search();
   }
+  
   search() {
+    //alert('-------search-------')
     this.radioValue = this.matnrList.get('selectedMatnr').value;
     this.rowData_material = [];
     this.rowData_process = [];
@@ -986,9 +973,12 @@ export class QotComponent implements OnInit {
     this.rowData_other = [];
     //alert('ppppppppp')
     //alert(this.radioValue)
+    //alert(this.id)
+    //alert(this.radioValue)
     if (!(this.id) || !(this.radioValue)) {
       return;
     }
+    //alert('-------query-------')
     var query={
       qotid: this.id,
       matnrId: this.radioValue,
@@ -996,12 +986,13 @@ export class QotComponent implements OnInit {
       rfqid :this.rfqid
     };
     this._srmQotService.GetQotDetail(query).subscribe(result => {
+      //alert('aaaaaa')
       this.rowData_matnr = [result["matnr"]];
       this.rowData_material = result["material"];
       this.rowData_process = result["process"];
       this.rowData_surface = result["surface"];
       this.rowData_other = result["other"];
-      //this.rowData_inforecord = result["infoRecord"];
+      console.log('!!!!!!search!!!!');
       console.log(result);
     });
   }

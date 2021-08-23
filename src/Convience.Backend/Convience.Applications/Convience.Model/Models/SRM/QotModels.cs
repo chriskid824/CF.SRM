@@ -13,6 +13,7 @@ namespace Convience.Model.Models.SRM
         public int? rfqId { get; set; }
         public int? matnrId { get; set; }
         public Status? status { get; set; }
+        public int? vendorId { get; set; }
     }
     public class ViewSrmPriceDetail {
         public ViewSrmRfqM matnr { get; set; }
@@ -23,7 +24,7 @@ namespace Convience.Model.Models.SRM
         public viewSrmQotOther[] other { get; set; }
         public viewSrmInfoRecord[] infoRecord { get; set; }
     }
-    public class viewSrmQotMaterial: SrmQotMaterial
+    public class viewSrmQotMaterial : SrmQotMaterial
     {
         public viewSrmQotMaterial() { }
         public viewSrmQotMaterial(SrmQotMaterial parent)
@@ -108,10 +109,10 @@ namespace Convience.Model.Models.SRM
         public int vendorid { get; set; }
         public string vendor { get; set; }
     }
-    public class ViewQot : SrmQotH 
+    public class ViewQot : SrmQotH
     {
         public string Matnr { get; set; }
-        public string  Size { get; set; }
+        public string Size { get; set; }
         public string RfqNum { get; set; }
         #region SrmRfqM
         public int RfqMId { get; set; }
@@ -128,6 +129,14 @@ namespace Convience.Model.Models.SRM
         public double? Qty { get; set; }
         public string Note { get; set; }
         #endregion
+    }
+    public class ViewQotResult {
+        public ViewSrmRfqM matnr { get; set; }
+        public SrmQotH[] qot { get; set; }
+        public viewSrmQotMaterial[] material { get; set; }
+        public viewSrmQotProcess[] process { get; set; }
+        public viewSrmQotSurface[] surface { get; set; }
+        public viewSrmQotOther[] other { get; set; }      
     }
 
     public class ViewQotListH : SrmRfqH

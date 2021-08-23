@@ -99,7 +99,7 @@ export class QotlistComponent implements OnInit {
           {  headerName: "QQotId",field: 'QQotId',hide:"true"},
           {  headerName: "序號",valueGetter: "node.rowIndex + 1"},
           { headerName:'報價單號',field: 'QQotNum' },
-          { headerName:'狀態',field: 'QStatus', minWidth: 150 },
+          { headerName:'狀態',field: 'QStatusDesc', minWidth: 150 },
           { headerName:'料號',field: 'QMatnr'},
           { headerName:'建立日期',field: 'QCreateDate', minWidth: 150 },
           { headerName:'建立人員',field: 'QCreateBy', minWidth: 150 },
