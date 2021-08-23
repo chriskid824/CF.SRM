@@ -29,12 +29,19 @@ namespace Convience.Model.Models.SRM
         }
         public string currencyName { get; set; }
         public string taxcodeName { get; set; }
+        public string srmMatnr1 { get; set; }
+        public string srmVendor1 { get; set; }
         public string VendorName { get; set; }
+        public string MatnrName { get; set; }
         public decimal Atotal { get; set; }
         public decimal Btotal { get; set; }
         public decimal Ctotal { get; set; }
         public decimal Dtotal { get; set; }
+        public string rfqNum { get; set; }
         public string qotNum { get; set; }
+        public string viewstatus { get; set; }
+        public string EffectiveDate_str { get { return EffectiveDate?.ToString("yyyy/MM/dd"); } }
+        public string ExpirationDate_str { get { return ExpirationDate?.ToString("yyyy/MM/dd"); } }
     }
 
 

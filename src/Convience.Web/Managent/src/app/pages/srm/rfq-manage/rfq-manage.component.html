@@ -57,19 +57,17 @@
                   nzBordered="true" [nzScroll]="{ x: '180px' }">
           <thead>
             <tr>
-
-              <th nzAlign="center" nzWidth="20px" nzLeft>狀態</th>
               <th nzAlign="center" nzWidth="20px">詢價單號</th>
               <th nzAlign="center" nzWidth="20px">詢價人員</th>
               <th nzAlign="center" nzWidth="20px">建立人員</th>
               <th nzAlign="center" nzWidth="20px">建立日期</th>
+              <th nzAlign="center" nzWidth="20px">狀態</th>
               <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
               <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let data of dataTable.data;let i = index">
-              <td nzAlign="center">{{ data.viewstatus }}</td>
               <!--<td nzAlign="center"  (click)="open(data.id)">{{ data.rfqNum }}</td>-->
               <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.id)"> {{ data.rfqNum }}</a></td>
               <td nzAlign="center">{{ data.sourcerName }}</td>
@@ -83,6 +81,7 @@
                      nzType="send"></i>
                 </button>
               </td>
+              <td nzAlign="center">{{ data.viewstatus }}</td>
             </tr>
           </tbody>
         </nz-table>

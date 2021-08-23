@@ -1,0 +1,194 @@
+<div class="two-column" style="width: 93%;">
+  <div class="right">
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm">
+        <nz-form-item>
+          <nz-form-label>料號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="料號" formControlName="matnr"
+                   autocomplete="off" readonly="readonly" (click)="add(addMatnrTitleTpl,MatnrContentTpl)"/>
+            <!--<button nz-button style="margin-left: 20px" (click)="add(addMatnrTitleTpl,MatnrContentTpl)"><i nz-icon nzType="search"></i>查詢料號</button>-->
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>供應商</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="供應商" formControlName="vendor"
+                   autocomplete="off" readonly="readonly" (click)="add(addVendorTitleTpl,VendorContentTpl)"/>
+            <!--<button nz-button style="margin-left: 20px" (click)="add(addVendorTitleTpl,VendorContentTpl)"><i nz-icon nzType="search"></i>查詢供應商</button>-->
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'status'" ngModel="1">
+              <nz-option nzValue="1" nzLabel="初始"></nz-option>
+              <nz-option nzValue="9" nzLabel="已核發"></nz-option>
+              <nz-option nzValue="17" nzLabel="刪除"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary" (click)="submitSearch()">搜索 </button>
+            <button nz-button style="margin-left: 20px" (click)="reset()">重置 </button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+          (click)="resetSearchForm()">
+    重置
+  </button>-->
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+
+    <nz-card [nzSize]="'small'">
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+                  nzBordered="true" [nzScroll]="{ x: '180px' }">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="20px">資訊記錄號碼</th>
+              <th nzAlign="center" nzWidth="20px">料號</th>
+              <th nzAlign="center" nzWidth="20px">供應商</th>
+              <th nzAlign="center" nzWidth="20px">單價</th>
+              <th nzAlign="center" nzWidth="20px">價格單位</th>
+              <th nzAlign="center" nzWidth="20px">幣別</th>
+              <th nzAlign="center" nzWidth="20px">計劃交貨時間</th>
+              <th nzAlign="center" nzWidth="20px">標準採購單數量</th>
+              <th nzAlign="center" nzWidth="20px">最小採購單數量</th>
+              <th nzAlign="center" nzWidth="20px">採購群組</th>
+              <th nzAlign="center" nzWidth="20px">稅碼</th>
+              <th nzAlign="center" nzWidth="20px">生效日期</th>
+              <th nzAlign="center" nzWidth="20px">有效期限</th>
+              <th nzAlign="center" nzWidth="20px">詢價單識別碼</th>
+              <th nzAlign="center" nzWidth="20px">報價單識別碼</th>
+              <th nzAlign="center" nzWidth="20px">狀態</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <td nzAlign="center">{{ data.infoNum }}</td>
+              <td nzAlign="center">{{ data.srmMatnr1 }}</td>
+              <td nzAlign="center">{{ data.srmVendor1 }}</td>
+              <td nzAlign="center">{{ data.price }}</td>
+              <td nzAlign="center">{{ data.unit }}</td>
+              <td nzAlign="center">{{ data.currencyName }}</td>
+              <td nzAlign="center">{{ data.leadTime }}</td>
+              <td nzAlign="center">{{ data.standQty }}</td>
+              <td nzAlign="center">{{ data.minQty }}</td>
+              <td nzAlign="center">{{ data.ekgry }}</td>
+              <td nzAlign="center">{{ data.taxcodeName }}</td>
+              <td nzAlign="center">{{ data.effectiveDate_str }}</td>
+              <td nzAlign="center">{{ data.expirationDate_str }}</td>
+              <td nzAlign="center">{{ data.rfqNum }}</td>
+              <td nzAlign="center">{{ data.qotNum }}</td>
+              <td nzAlign="center">{{ data.viewstatus }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+        </nz-pagination>
+      </div>
+    </nz-card>
+
+  </div>
+</div>
+
+
+<ng-template #addMatnrTitleTpl>
+  <span>選擇料號</span>
+</ng-template>
+<ng-template #addVendorTitleTpl>
+  <span>選擇供應商</span>
+</ng-template>
+
+<ng-template #MatnrContentTpl>
+  <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="searchMatnrList()">
+    <nz-form-item>
+      <nz-form-label>料號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="料號" formControlName="queryMatnr"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzType="primary">搜索</button>
+  </form>
+  <div style="height: 300px; overflow: auto; margin-left: 20px ">
+    <!--<nz-checkbox-group [(ngModel)]="MatnrList"></nz-checkbox-group>-->
+
+    <div class="mt-10">
+      <nz-table #dataTable nzSize="middle" [nzData]="MatnrList" nzShowPagination="false" nzFrontPagination="false"
+                nzBordered="true" [nzScroll]="{ x: '180px' }">
+        <thead>
+          <tr>
+            <th nzWidth="10px"
+                [nzLeft]="fixedColumn"></th>
+            <th nzAlign="left" nzWidth="20px">料號</th>
+            <th nzAlign="left" nzWidth="20px">物料內文</th>
+            <th nzAlign="left" nzWidth="20px">物料群組</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dataTable.data;let i = index" (click)="selectedMatnr(data)">
+            <td nzAlign="left">{{ data.srmMatnr1 }}</td>
+            <td nzAlign="left">{{ data.description }}</td>
+            <td nzAlign="left">{{ data.matnrGroup }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+  </div>
+  <form nz-form [formGroup]="matnrListForm" (ngSubmit)="submitMatnrList()">
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary" class="mr-10">提交</button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+<ng-template #VendorContentTpl>
+  <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="searchVendorList()">
+    <nz-form-item>
+      <nz-form-label>供應商</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="供應商" formControlName="queryVendor"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzType="primary">搜索</button>
+  </form>
+  <div style="height: 300px; overflow: auto; margin-left: 20px ">
+    <!--<nz-checkbox-group [(ngModel)]="VendorList"></nz-checkbox-group>-->
+    <div class="mt-10">
+      <nz-table #dataTable nzSize="middle" [nzData]="VendorList" nzShowPagination="false" nzFrontPagination="false"
+                nzBordered="true">
+        <thead>
+          <tr>
+            <th nzAlign="left" nzWidth="20px">供應商代碼</th>
+            <th nzAlign="left" nzWidth="20px">供應商名稱</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dataTable.data;let i = index" (click)="selectedVendor(data)">
+            <td nzAlign="left">{{ data.srmVendor1 }}</td>
+            <td nzAlign="left">{{ data.vendorName }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <form nz-form [formGroup]="vendorListForm" (ngSubmit)="submitVendorList()">
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary" class="mr-10">提交</button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>

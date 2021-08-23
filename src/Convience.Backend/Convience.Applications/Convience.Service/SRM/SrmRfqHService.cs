@@ -226,6 +226,8 @@ namespace Convience.Service.SRM
             var rfq = (from rfqH in _context.SrmRfqHs
                        join sourcer in _context.AspNetUsers on rfqH.Sourcer equals sourcer.UserName
                        join create in _context.AspNetUsers on rfqH.CreateBy equals create.UserName
+                       join ekgry in _context.SrmEkgries on rfqH.Sourcer equals ekgry.Empid into egrouping
+                       from ekgry in egrouping.DefaultIfEmpty()
                        where rfqH.RfqId.Equals(RfqId)
                        select new ViewSrmRfqH
                        {
@@ -242,6 +244,7 @@ namespace Convience.Service.SRM
                            Sourcer = rfqH.Sourcer,
                            sourcerName = sourcer.Name,
                            Status = rfqH.Status,
+                           ekgry = ekgry.Ekgry
                        }).First();
 
 

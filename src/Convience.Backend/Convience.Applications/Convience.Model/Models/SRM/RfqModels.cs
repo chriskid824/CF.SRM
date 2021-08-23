@@ -46,6 +46,9 @@ namespace Convience.Model.Models.SRM
         public string C_by {
             get; set;
         }
+        public string ekgry {
+            get;set;
+        }
     }
     public record ResultRfqModel {
         public ViewSrmRfqH h { get; set; }

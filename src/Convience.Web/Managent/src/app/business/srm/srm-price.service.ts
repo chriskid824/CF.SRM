@@ -27,4 +27,7 @@ export class SrmPriceService {
   GetEkgry(werks) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, werks);
   }
+  QueryInfoRecord(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/QueryInfoRecord`, query);
+  }
 }
