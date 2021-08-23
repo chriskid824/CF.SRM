@@ -73,7 +73,7 @@ namespace Convience.Service.SRM
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = process.PPrice.Value * (decimal)process.PHours.Value
+                                 SubTotal = process.PPrice.GetValueOrDefault() * (decimal)process.PHours.GetValueOrDefault()
                              }).ToArray();
             //price.process = (from process in db.SrmQotProcesses
             //                             where qotIds.Contains(process.QotId.Value)
@@ -88,7 +88,7 @@ namespace Convience.Service.SRM
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value
+                                 SubTotal = surface.SPrice.GetValueOrDefault() * (decimal)surface.STimes.GetValueOrDefault()
                              }).ToArray();
             price.other = (from other in _context.SrmQotOthers
                            join qot in _context.SrmQotHs

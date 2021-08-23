@@ -279,7 +279,7 @@ export class PriceComponent implements OnInit {
         headerClass: "rfq",
         width: "150px",
       }, {
-        headerName: "報假單號",
+        headerName: "報價單號",
         field: "qotNum",
         enableRowGroup: true,
         cellClass: "show-cell",
