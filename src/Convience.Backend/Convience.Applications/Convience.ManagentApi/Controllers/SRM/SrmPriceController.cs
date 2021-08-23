@@ -102,6 +102,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ViewSrmRfqM matnr = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
                 temp[0].RfqNum = rfqH.RfqNum;
                 temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId) || qot.Status.GetValueOrDefault()!=(int)Status.確認;
+                temp[0].qotStatus = ((Status)qot.Status.GetValueOrDefault());
                 temp[0].Status = rfqH.Status;
                 temp[0].sourcerName = rfqH.sourcerName;
                 temp[0].Deadline = rfqH.Deadline;
@@ -159,22 +160,25 @@ namespace Convience.ManagentApi.Controllers.SRM
 
                 foreach (var item in infoRecord.Select((value, i) => new { i, value }))
                 {
-                    temp[item.i].aTotal = item.value.Atotal.NormalizeTwoDigits();
-                    temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
-                    temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
-                    temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
-                    temp[item.i].price = (item.value.Price.HasValue)? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal+item.value.Btotal+item.value.Ctotal+item.value.Dtotal).NormalizeTwoDigits();
-                    temp[item.i].unit = (item.value.Unit.HasValue)?item.value.Unit.Value.ToString():"1";
-                    temp[item.i].currency =  item.value.Currency?.ToString()??"TWD";
-                    temp[item.i].currencyName = item.value.currencyName?.ToString()?? "新台幣元";
-                    temp[item.i].leadTime = (item.value.LeadTime.HasValue)?item.value.LeadTime.Value.ToString():"1";
-                    temp[item.i].standQty = (item.value.StandQty.HasValue)?item.value.StandQty.Value.ToString():"1";
-                    temp[item.i].minQty = (item.value.MinQty.HasValue)?item.value.MinQty.Value.ToString():"1";
-                    temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
-                    temp[item.i].taxcode = item.value.Taxcode?.ToString()??"V4";
-                    temp[item.i].taxcodeName = item.value.taxcodeName?.ToString()?? "V4 進項稅5%";
-                    temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue)?item.value.EffectiveDate.Value.ToString("yyyy/MM/dd"):DateTime.Now.ToString("yyyy/MM/dd");
-                    temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue)?item.value.ExpirationDate.Value.ToString("yyyy/MM/dd"):new DateTime(DateTime.Now.Year+1,1,1).AddDays(-1).ToString("yyyy/MM/dd");
+                    if (temp[item.i].qotStatus == Status.確認)
+                    {
+                        temp[item.i].aTotal = item.value.Atotal.NormalizeTwoDigits();
+                        temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
+                        temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
+                        temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
+                        temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
+                        temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : "1";
+                        temp[item.i].currency = item.value.Currency?.ToString() ?? "TWD";
+                        temp[item.i].currencyName = item.value.currencyName?.ToString() ?? "新台幣元";
+                        temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() : "1";
+                        temp[item.i].standQty = (item.value.StandQty.HasValue) ? item.value.StandQty.Value.ToString() : "1";
+                        temp[item.i].minQty = (item.value.MinQty.HasValue) ? item.value.MinQty.Value.ToString() : "1";
+                        temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
+                        temp[item.i].taxcode = item.value.Taxcode?.ToString() ?? "V4";
+                        temp[item.i].taxcodeName = string.IsNullOrWhiteSpace(item.value.Taxcode) ? "V4 進項稅5%" : $"{item.value.Taxcode} {item.value.taxcodeName}";
+                        temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue) ? item.value.EffectiveDate.Value.ToString("yyyy/MM/dd") : DateTime.Now.ToString("yyyy/MM/dd");
+                        temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue) ? item.value.ExpirationDate.Value.ToString("yyyy/MM/dd") : new DateTime(DateTime.Now.Year + 1, 1, 1).AddDays(-1).ToString("yyyy/MM/dd");
+                    }
                 }
                 summ.AddRange(temp.ToList());
             }

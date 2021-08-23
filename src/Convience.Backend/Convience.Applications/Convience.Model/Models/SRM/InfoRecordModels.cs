@@ -48,6 +48,7 @@ namespace Convience.Model.Models.SRM
     public class ViewSummary : ViewSrmRfqH
     {
         public bool isStarted { get; set; }
+        public Status qotStatus { get; set; }
         public string vendor { get; set; }
         public int vendorId { get; set; }
         public string vendorName { get; set; }

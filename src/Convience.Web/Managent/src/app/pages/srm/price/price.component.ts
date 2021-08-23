@@ -67,6 +67,8 @@ export class PriceComponent implements OnInit {
   components;
   isRowSelectable;
 
+  getRowStyle;
+
   rowData_matnr=[];
   rowData_material=[];
   rowData_process=[];
@@ -115,6 +117,12 @@ export class PriceComponent implements OnInit {
     , public _modalService: NzModalService,) {
     this.frameworkComponents = {
       buttonRenderer: ButtonRendererComponent,
+    }
+
+    this.getRowStyle = params => {
+      if (params.node.rowIndex % 2 === 0) {
+        return { background: '#D0D0D0' };
+      }
     }
 
     //this.taxcode = _formBuilder.control([]);
@@ -199,6 +207,7 @@ export class PriceComponent implements OnInit {
         field: "rfqNum",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass:"rfq",
         width: "150px",
       },
       {
@@ -206,6 +215,7 @@ export class PriceComponent implements OnInit {
         field: "sourcerName",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       },
       {
@@ -213,6 +223,7 @@ export class PriceComponent implements OnInit {
         field: "deadline_str",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       },
       {
@@ -220,12 +231,14 @@ export class PriceComponent implements OnInit {
         field: "vendor",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       }, {
         headerName: "供應商名稱",
         field: "vendorName",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       },
       {
@@ -233,6 +246,7 @@ export class PriceComponent implements OnInit {
         field: "matnr",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       },
       {
@@ -240,6 +254,7 @@ export class PriceComponent implements OnInit {
         field: "material",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       },
       {
@@ -247,18 +262,21 @@ export class PriceComponent implements OnInit {
         field: "volume",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       }, {
         headerName: "工件重量(KG)",
         field: "weight",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       }, {
         headerName: "機種名稱",
         field: "machineName",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "rfq",
         width: "150px",
       }, {
         headerName: "報假單號",
@@ -271,30 +289,35 @@ export class PriceComponent implements OnInit {
         field: "mMaterial",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       }, {
         headerName: "材料單價(NT/KG)",
         field: "mPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       }, {
         headerName: "長(mm)",
         field: "mLength",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       }, {
         headerName: "寬(mm)",
         field: "mWidth",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       }, {
         headerName: "厚(mm)",
         field: "mWidth",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       },
       {
@@ -302,6 +325,7 @@ export class PriceComponent implements OnInit {
         field: "mDensity",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       },
       {
@@ -309,6 +333,7 @@ export class PriceComponent implements OnInit {
         field: "mWeight",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       },
       {
@@ -316,6 +341,7 @@ export class PriceComponent implements OnInit {
         field: "mCostPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       },
       {
@@ -323,102 +349,119 @@ export class PriceComponent implements OnInit {
         field: "mNote",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "material",
         width: "150px",
       }, {
         headerName: "機台",
         field: "pMachine",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "工序",
         field: "pProcessNum",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "工時(時)",
         field: "pHours",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "單價(時)",
         field: "pPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "小計",
         field: "pSubTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "備註",
         field: "pNote",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "process",
         width: "150px",
       }, {
         headerName: "工序",
         field: "sProcess",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "數量",
         field: "sTimes",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "單價",
         field: "sPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "小計",
         field: "sSubTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "計價方式",
         field: "sMethod",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "備註",
         field: "sNote",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "surface",
         width: "150px",
       }, {
         headerName: "項目",
         field: "oItem",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "other",
         width: "150px",
       }, {
         headerName: "說明",
         field: "oDescription",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "other",
         width: "150px",
       }, {
         headerName: "單價",
         field: "oPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "other",
         width: "150px",
       }, {
         headerName: "備註",
         field: "oNote",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "other",
         width: "150px",
       },
       {
@@ -426,6 +469,7 @@ export class PriceComponent implements OnInit {
         field: "aTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -433,6 +477,7 @@ export class PriceComponent implements OnInit {
         field: "bTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -440,6 +485,7 @@ export class PriceComponent implements OnInit {
         field: "cTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -447,6 +493,7 @@ export class PriceComponent implements OnInit {
         field: "dTotal",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -454,6 +501,7 @@ export class PriceComponent implements OnInit {
         field: "price",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -461,6 +509,7 @@ export class PriceComponent implements OnInit {
         field: "unit",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -468,6 +517,7 @@ export class PriceComponent implements OnInit {
         field: "currencyName",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       //{
@@ -482,6 +532,7 @@ export class PriceComponent implements OnInit {
         field: "ekgry",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -489,6 +540,7 @@ export class PriceComponent implements OnInit {
         field: "leadTime",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -496,6 +548,7 @@ export class PriceComponent implements OnInit {
         field: "standQty",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -503,6 +556,7 @@ export class PriceComponent implements OnInit {
         field: "minQty",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -510,6 +564,7 @@ export class PriceComponent implements OnInit {
         field: "taxcodeName",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       //{
@@ -524,6 +579,7 @@ export class PriceComponent implements OnInit {
         field: "effectiveDate",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },
       {
@@ -531,6 +587,7 @@ export class PriceComponent implements OnInit {
         field: "expirationDate",
         enableRowGroup: true,
         cellClass: "show-cell",
+        headerClass: "summary",
         width: "150px",
       },    ];
   }

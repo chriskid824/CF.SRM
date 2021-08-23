@@ -12,6 +12,7 @@ using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public PagingResultModel<SrmVendor> GetVendor(QueryVendorModel vendorQuery);
+        public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery);
         public SrmVendor GetVendorById(int id);
     }
     class SrmVendorService:ISrmVendorService
@@ -48,7 +49,7 @@ namespace Convience.Service.SRM
             int skip = (page - 1) * size;
             return _srmVendorRepository.Get(r => string.IsNullOrWhiteSpace(vendor) ? true : r.VendorName.IndexOf(vendor) >= 0).ToList().Skip(skip).Take(size).AsQueryable(); ;
         }
-        public PagingResultModel<SrmVendor> GetVendor(QueryVendorModel vendorQuery)
+        public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery)
         {
             //int[] werks = Array.ConvertAll(vendorQuery.Werks.ToString().Split(","), s => int.Parse(s));
             int skip = (vendorQuery.Page - 1) * vendorQuery.Size;
@@ -56,9 +57,9 @@ namespace Convience.Service.SRM
                 .AndIfHaveValue(vendorQuery.Vendor, r => r.SapVendor.Contains(vendorQuery.Vendor))
                 .Where(r => vendorQuery.Werks.Contains(r.Ekorg.Value));
             var vendors =resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray(); ;
-            return new PagingResultModel<SrmVendor>
+            return new PagingResultModel<ViewSrmVendor> 
             {
-                Data = vendors,
+                Data = JsonConvert.DeserializeObject<ViewSrmVendor[]>(JsonConvert.SerializeObject(vendors)) ,
                 Count = resultQuery.Count()
             };
         }

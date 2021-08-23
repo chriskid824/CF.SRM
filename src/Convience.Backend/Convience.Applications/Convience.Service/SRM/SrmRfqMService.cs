@@ -81,6 +81,7 @@ namespace Convience.Service.SRM
                             rfqId = a.RfqId,
                             rfqMId = a.RfqMId,
                             matnrId = a.MatnrId,
+                            viewstatus = ((Status)b.Status.Value).ToString()
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }
