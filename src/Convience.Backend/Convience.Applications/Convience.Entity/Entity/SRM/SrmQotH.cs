@@ -27,7 +27,7 @@ namespace Convience.Entity.Entity.SRM
 
         public int? MatnrId { get; set; }
 
-        public float? MinQty { get; set; }
+        public double? MinQty { get; set; }
 
         [Key]
         public int QotId { get; set; }
