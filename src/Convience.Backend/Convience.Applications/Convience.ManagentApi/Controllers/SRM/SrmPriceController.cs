@@ -213,6 +213,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                     info.CreateBy = logonid;
                     info.LastUpdateDate = now;
                     info.LastUpdateBy = logonid;
+                var matnr = _srmMatnrService.GetMatnrById(info.MatnrId.Value);
+                if (string.IsNullOrWhiteSpace(matnr.SapMatnr)) { 
+                    return this.BadRequestResult($"報價單號:{info.qotNum}，料號:{matnr.SrmMatnr1}，SapMatnr未存在");
+                }
             }
             using (var transaction = new System.Transactions.TransactionScope())
             {
