@@ -28,7 +28,9 @@ namespace Convience.Service.SRM
         public void Save(SrmRfqH rfqH);
         public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
         public ViewSrmRfqH GetDataByRfqId(int RfqId);
+        public void End(QueryRfqList q);
         public PagingResultModel<ViewSrmRfqH> GetRfqList(QueryRfqList q, int page, int size);
+        public ViewSrmRfqH[] GetRfqList(QueryRfqList q);
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
         public PagingResultModel<AspNetUser> GetSourcer(string name, int[] werks, int size, int page);
         public SrmRfqH GetRfq(QueryRfq query);
@@ -38,16 +40,14 @@ namespace Convience.Service.SRM
     {
         private readonly IRepository<SrmRfqH> _srmRfqHRepository;
         private readonly SRMContext _context;
-        private readonly IRepository<SystemUser> _userRepository;
         public SrmRfqHService(
             //IMapper mapper,
-            IRepository<SrmRfqH> srmRfqHRepository, SRMContext dbContext, IRepository<SystemUser> userRepository)
+            IRepository<SrmRfqH> srmRfqHRepository, SRMContext dbContext)
         //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
         {
             //_mapper = mapper;
             _srmRfqHRepository = srmRfqHRepository;
             _context = dbContext;
-            _userRepository = userRepository;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
         public void Save(SrmRfqH rfqH)
@@ -153,6 +153,21 @@ namespace Convience.Service.SRM
             //}
         }
 
+        public void End(QueryRfqList q) {
+            var rfqHs = GetRfqList(q);
+            foreach (ViewSrmRfqH rfq in rfqHs) {
+                rfq.Status = (int)Status.確認;
+                _context.Entry(rfq).Property(x => x.Status).IsModified = true;
+
+                var Qots = _context.SrmQotHs.Where(r => r.Status == (int)Status.初始 && r.RfqId == rfq.RfqId);
+                foreach (var qot in Qots) {
+                    qot.Status = (int)Status.失效;
+                    _context.Entry(qot).Property(x => x.Status).IsModified = true;
+                }
+                _context.SaveChanges();
+            }
+        }
+
 
         public ViewSrmRfqH[] GetRfqList(QueryRfqList q)
         {
@@ -178,6 +193,7 @@ namespace Convience.Service.SRM
                            CreateBy = rfq.CreateBy,
                            CreateDate = rfq.CreateDate,
                            C_by = u.Name,
+                           Deadline = rfq.Deadline
                        };
             return rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name))
                 .AndIfCondition(q.end,r=>r.Status==7 && r.Deadline.Value.AddDays(1)<=DateTime.Now.Date)
