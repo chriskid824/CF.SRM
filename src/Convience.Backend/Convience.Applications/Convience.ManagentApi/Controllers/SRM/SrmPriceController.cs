@@ -170,7 +170,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : "1";
                         temp[item.i].currency = item.value.Currency?.ToString() ?? "TWD";
                         temp[item.i].currencyName = item.value.currencyName?.ToString() ?? "新台幣元";
-                        temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() : "1";
+                        temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() :qot.LeadTime.GetValueOrDefault().ToString();
                         temp[item.i].standQty = (item.value.StandQty.HasValue) ? item.value.StandQty.Value.ToString() : "1";
                         temp[item.i].minQty = (item.value.MinQty.HasValue) ? item.value.MinQty.Value.ToString() : "1";
                         temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;

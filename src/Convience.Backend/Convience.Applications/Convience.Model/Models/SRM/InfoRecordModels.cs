@@ -37,6 +37,10 @@ namespace Convience.Model.Models.SRM
         public decimal Btotal { get; set; }
         public decimal Ctotal { get; set; }
         public decimal Dtotal { get; set; }
+        public decimal total {
+            get {
+                return Atotal + Btotal + Ctotal + Dtotal;
+            } } 
         public string rfqNum { get; set; }
         public string qotNum { get; set; }
         public string viewstatus { get; set; }

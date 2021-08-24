@@ -182,6 +182,13 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "100px",
       },
+      {
+        headerName: "加總",
+        field: "total",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "100px",
+      },
     ]
 
     this.isRowSelectable = function (rowNode) {

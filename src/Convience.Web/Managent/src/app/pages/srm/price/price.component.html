@@ -28,9 +28,12 @@
             <div class="col-6">
               詢價人員:{{rfq==null?"":rfq.h.sourcerName}}
             </div>
-            <div class="col-6">
+            <div class="col-3">
               詢價截止日期:{{rfq==null?"":rfq.h.deadline_str}}
             </div><!--材料規格	長	寬	高	重量	密度	機種名稱	詢價數量-->
+            <div class="col-3">
+              詢價單狀態:{{rfq==null?"":rfq.h.viewstatus}}
+            </div>
             <div class="col-3">
               材料規格:{{matnrIndex==null?"": rfq.m[matnrIndex].material}}
             </div>

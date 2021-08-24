@@ -152,6 +152,37 @@ namespace Convience.Service.SRM
             //}
             //}
         }
+
+
+        //public IQueryable[] GetRfqList(QueryRfqList q) {
+        //    var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
+        //.AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
+
+        //    rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
+
+        //    var rfqs = from rfq in rfqQuery
+        //               join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
+        //               join u in _context.AspNetUsers on rfq.CreateBy equals u.UserName
+        //               join s in _context.AspNetUsers on rfq.Sourcer equals s.UserName
+        //               into gj
+        //               from x in gj.DefaultIfEmpty()
+        //               where q.werks.Contains(e.Werks)
+        //               select new
+        //               {
+        //                   id = rfq.RfqId,
+        //                   status = rfq.Status,
+        //                   rfqNum = rfq.RfqNum,
+        //                   sourcer = rfq.Sourcer,
+        //                   sourcerName = x.Name,
+        //                   createBy = rfq.CreateBy,
+        //                   createDate = rfq.CreateDate,
+        //                   c_by = u.Name,
+        //                   c_Date = rfq.CreateDate.Value.ToString("yyyy-MM-dd"),
+        //                   viewstatus = ((Status)rfq.Status).ToString(),
+        //               };
+        //    return rfqs.AndIfHaveValue(q.name, r => r.c_by.Contains(q.name)).Distinct().ToArray().t;
+        //}
+
         public JObject GetRfqList(QueryRfqList q, int page, int size)
         {
             int skip = (page - 1) * size;

@@ -73,6 +73,7 @@
               <td nzAlign="center">{{ data.sourcerName }}</td>
               <td nzAlign="center">{{ data.c_by }}</td>
               <td nzAlign="center">{{ data.c_Date }}</td>
+              <td nzAlign="center">{{ data.viewstatus }}</td>
               <td *ngIf="status==5" nzAlign="center" nzRight>
                 <button nz-button nzType="default" nzShape="circle"
                         (click)="openPrice(data.id)" class="mr-10"
@@ -81,7 +82,6 @@
                      nzType="send"></i>
                 </button>
               </td>
-              <td nzAlign="center">{{ data.viewstatus }}</td>
             </tr>
           </tbody>
         </nz-table>
