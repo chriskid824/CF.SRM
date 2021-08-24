@@ -227,7 +227,10 @@
                                [rowSelection]="rowSelection"
                                [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
             </mat-tab>
-            <mat-tab label="其他費用">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span [ngClass]="{'color-red': isError?'red':'black'}">其他費用</span>
+              </ng-template>
               <ag-grid-angular #agGrid
                                style="width: 100%; height: 300px; border: solid"
                                id="myGrid"
@@ -303,8 +306,8 @@
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">幣別</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="幣別" formControlName="unit"
-       autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" formControlName="currency" >
+      autocomplete="off" />-->
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" formControlName="currency">
           <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option>
         </nz-select>
       </nz-form-control>
@@ -313,8 +316,8 @@
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzErrorTip="欄位必填">採購群組</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
-         autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組"  formControlName="ekgry" >
+       autocomplete="off" />-->
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組" formControlName="ekgry">
           <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option>
         </nz-select>
       </nz-form-control>
@@ -357,7 +360,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="稅碼" formControlName="taxcode"
       autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" formControlName="taxcode" >
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇稅碼" formControlName="taxcode">
           <nz-option *ngFor="let option of TaxcodeList" [nzLabel]="option.taxcode + ' ' + option.taxcodeName" [nzValue]="option.taxcode"></nz-option>
         </nz-select>
       </nz-form-control>
@@ -365,13 +368,21 @@
     <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">生效日期</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
-        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" formControlName="effectiveDate"></nz-date-picker>
+        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="effectiveDate" formControlName="effectiveDate"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">有效日期</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
-        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" formControlName="expirationDate"></nz-date-picker>
+        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="expirationDate" formControlName="expirationDate"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">備註</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
+        <textarea nz-input
+                  placeholder="備註"
+                  [nzAutosize]="{ minRows: 2 }" formControlName="note"></textarea>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

@@ -190,6 +190,7 @@ namespace Convience.Service.SRM
             must.Add("taxcode", "稅碼");
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");
+            must.Add("note", "備註");
             foreach (viewSrmInfoRecord info in infos) {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
                 {

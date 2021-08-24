@@ -105,5 +105,6 @@ namespace Convience.Model.Models.SRM
         public string taxcodeName { get; set; }
         public string effectiveDate { get; set; }
         public string expirationDate { get; set; }
+        public string note { get; set; }
     }
 }

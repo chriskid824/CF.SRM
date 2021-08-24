@@ -840,6 +840,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Unit).HasColumnName("UNIT");
 
                 entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
+
+                entity.Property(e => e.Note)
+                    .HasColumnName("NOTE")
+                    .HasComment("備註");
             });
 
             modelBuilder.Entity<AspNetRole>(entity =>

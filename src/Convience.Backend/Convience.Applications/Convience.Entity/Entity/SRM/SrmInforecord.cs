@@ -24,6 +24,7 @@ namespace Convience.Entity.Entity.SRM
         public string Taxcode { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
+        public string Note { get; set; }
         public int? Status { get; set; }
         public DateTime? CreateDate { get; set; }
         public string CreateBy { get; set; }
