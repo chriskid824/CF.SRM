@@ -28,7 +28,7 @@ namespace Convience.Service.SRM
         public void Save(SrmRfqH rfqH);
         public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
         public ViewSrmRfqH GetDataByRfqId(int RfqId);
-        public JObject GetRfqList(QueryRfqList q, int page, int size);
+        public PagingResultModel<ViewSrmRfqH> GetRfqList(QueryRfqList q, int page, int size);
         public SrmRfqH UpdateStatus(int status, SrmRfqH rfqH);
         public PagingResultModel<AspNetUser> GetSourcer(string name, int[] werks, int size, int page);
         public SrmRfqH GetRfq(QueryRfq query);
@@ -154,43 +154,10 @@ namespace Convience.Service.SRM
         }
 
 
-        //public IQueryable[] GetRfqList(QueryRfqList q) {
-        //    var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
-        //.AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
-
-        //    rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
-
-        //    var rfqs = from rfq in rfqQuery
-        //               join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
-        //               join u in _context.AspNetUsers on rfq.CreateBy equals u.UserName
-        //               join s in _context.AspNetUsers on rfq.Sourcer equals s.UserName
-        //               into gj
-        //               from x in gj.DefaultIfEmpty()
-        //               where q.werks.Contains(e.Werks)
-        //               select new
-        //               {
-        //                   id = rfq.RfqId,
-        //                   status = rfq.Status,
-        //                   rfqNum = rfq.RfqNum,
-        //                   sourcer = rfq.Sourcer,
-        //                   sourcerName = x.Name,
-        //                   createBy = rfq.CreateBy,
-        //                   createDate = rfq.CreateDate,
-        //                   c_by = u.Name,
-        //                   c_Date = rfq.CreateDate.Value.ToString("yyyy-MM-dd"),
-        //                   viewstatus = ((Status)rfq.Status).ToString(),
-        //               };
-        //    return rfqs.AndIfHaveValue(q.name, r => r.c_by.Contains(q.name)).Distinct().ToArray().t;
-        //}
-
-        public JObject GetRfqList(QueryRfqList q, int page, int size)
+        public ViewSrmRfqH[] GetRfqList(QueryRfqList q)
         {
-            int skip = (page - 1) * size;
-
-            //int[] werks = _dbContext.SrmEkgries.Where(r => r.Empid == "").Select(r=>r.Werks).ToArray();
-
             var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
-                .AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
+        .AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
 
             rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
 
@@ -201,55 +168,65 @@ namespace Convience.Service.SRM
                        into gj
                        from x in gj.DefaultIfEmpty()
                        where q.werks.Contains(e.Werks)
-                       select new
+                       select new ViewSrmRfqH
                        {
-                           id = rfq.RfqId,
-                           status = rfq.Status,
-                           rfqNum = rfq.RfqNum,
-                           sourcer = rfq.Sourcer,
+                           RfqId = rfq.RfqId,
+                           Status = rfq.Status,
+                           RfqNum = rfq.RfqNum,
+                           Sourcer = rfq.Sourcer,
                            sourcerName = x.Name,
-                           createBy = rfq.CreateBy,
-                           createDate = rfq.CreateDate,
-                           c_by = u.Name,
-                           c_Date = rfq.CreateDate.Value.ToString("yyyy-MM-dd"),
-                           viewstatus = ((Status)rfq.Status).ToString(),
+                           CreateBy = rfq.CreateBy,
+                           CreateDate = rfq.CreateDate,
+                           C_by = u.Name,
                        };
-            var result = rfqs.AndIfHaveValue(q.name, r => r.c_by.Contains(q.name)).Distinct().ToArray();
+            return rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name))
+                .AndIfCondition(q.end,r=>r.Status==7 && r.Deadline.Value.AddDays(1)<=DateTime.Now.Date)
+                .Distinct().ToArray();
+        }
 
+        public PagingResultModel<ViewSrmRfqH> GetRfqList(QueryRfqList q, int page, int size)
+        {
+            int skip = (page - 1) * size;
 
+            //var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
+            //    .AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
 
-            //var rfqs = rfqQuery.ToList().Join(_userRepository.Get().ToList(), a => a.CreateBy, b => b.UserName, (_srmRfqHRepository, _userRepository) => new
-            //{
-            //    id = _srmRfqHRepository.RfqId,
-            //    status = _srmRfqHRepository.Status,
-            //    rfqNum = _srmRfqHRepository.RfqNum,
-            //    sourcer = _srmRfqHRepository.Sourcer,
-            //    createBy = _srmRfqHRepository.CreateBy,
-            //    createDate = _srmRfqHRepository.CreateDate,
-            //    c_by = _userRepository.Name,
-            //    c_Date = _srmRfqHRepository.CreateDate.Value.ToString("yyyy-MM-dd"),
-            //    viewstatus = ((Status)_srmRfqHRepository.Status).ToString(),
-            //    costNo = _userRepository.CostNo
-            //}).Where(r => werks.Contains()).DefaultIfEmpty().Join(_userRepository.Get().ToList(), a => a?.sourcer ?? "", b => b.UserName, (a, b) => new
-            //{
-            //    id = a.id,
-            //    status = a.status,
-            //    rfqNum = a.rfqNum,
-            //    sourcer = a.sourcer,
-            //    sourcerName = b.Name,
-            //    createBy = a.createBy,
-            //    createDate = a.createDate,
-            //    c_by = a.c_by,
-            //    c_Date = a.c_Date,
-            //    viewstatus = a.viewstatus,
-            //})
-            //.AndIfHaveValue(q.name, r => r.c_by.Contains(q.name));
-            var r = result.Skip(skip).Take(size);
-            JObject obj = new JObject() {
-                { "data",JArray.FromObject(r)},
-                { "total",result.Count()}
+            //rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
+
+            //var rfqs = from rfq in rfqQuery
+            //           join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
+            //           join u in _context.AspNetUsers on rfq.CreateBy equals u.UserName
+            //           join s in _context.AspNetUsers on rfq.Sourcer equals s.UserName
+            //           into gj
+            //           from x in gj.DefaultIfEmpty()
+            //           where q.werks.Contains(e.Werks)
+            //           select new
+            //           {
+            //               id = rfq.RfqId,
+            //               status = rfq.Status,
+            //               rfqNum = rfq.RfqNum,
+            //               sourcer = rfq.Sourcer,
+            //               sourcerName = x.Name,
+            //               createBy = rfq.CreateBy,
+            //               createDate = rfq.CreateDate,
+            //               c_by = u.Name,
+            //               c_Date = rfq.CreateDate.Value.ToString("yyyy-MM-dd"),
+            //               viewstatus = ((Status)rfq.Status).ToString(),
+            //           };
+            //var result = rfqs.AndIfHaveValue(q.name, r => r.c_by.Contains(q.name)).Distinct().ToArray();
+
+            var result = GetRfqList(q);
+            var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);
+            return new PagingResultModel<ViewSrmRfqH>
+            {
+                Data = r,
+                Count = result.Count()
             };
-            return obj;
+            //JObject obj = new JObject() {
+            //    { "data",JArray.FromObject(r)},
+            //    { "total",result.Count()}
+            //};
+            //return obj;
         }
 
         public ViewSrmRfqH GetDataByRfqId(int RfqId)

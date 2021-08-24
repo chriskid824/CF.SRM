@@ -92,6 +92,7 @@ namespace Convience.Model.Models.SRM
         public string name { get; set; }
         public int[] statuses { get; set; }
         public int[] werks { get; set; }
+        public bool end { get; set; }
     }
     public class QueryRfq
     {

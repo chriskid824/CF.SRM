@@ -68,15 +68,15 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of dataTable.data;let i = index">
-              <!--<td nzAlign="center"  (click)="open(data.id)">{{ data.rfqNum }}</td>-->
-              <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.id)"> {{ data.rfqNum }}</a></td>
+              <!--<td nzAlign="center"  (click)="open(data.rfqId)">{{ data.rfqNum }}</td>-->
+              <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.rfqId)"> {{ data.rfqNum }}</a></td>
               <td nzAlign="center">{{ data.sourcerName }}</td>
               <td nzAlign="center">{{ data.c_by }}</td>
-              <td nzAlign="center">{{ data.c_Date }}</td>
+              <td nzAlign="center">{{ data.c_date }}</td>
               <td nzAlign="center">{{ data.viewstatus }}</td>
               <td *ngIf="status==5" nzAlign="center" nzRight>
                 <button nz-button nzType="default" nzShape="circle"
-                        (click)="openPrice(data.id)" class="mr-10"
+                        (click)="openPrice(data.rfqId)" class="mr-10"
                         data-toggle="tooltip" title="價格資訊">
                   <i nz-icon
                      nzType="send"></i>

@@ -71,7 +71,8 @@ export class RfqManageComponent implements OnInit {
     console.log(query);
     this._srmRfqService.GetRfqList(query).subscribe(result => {
       this.data = result["data"];
-      this.total = result["total"];
+      this.total = result["count"];
+      console.log(this.data);
     })
     this.status = query.status;
     //this.data = [
