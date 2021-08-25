@@ -58,10 +58,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             qot.matnr = matnr;
             qot.vendor = vendor;
             var result =  _srmQotService.GetQotList(qot);
-            if (query["vendor"].ToString().IndexOf("admin") != -1)
-            {
-                result = _srmQotService.GetQotListByAdmin(qot);
-            }
+            //if (query["vendor"].ToString().IndexOf("admin") != -1)
+            //{
+            //    result = _srmQotService.GetQotListByAdmin(qot);
+            //}
             
             //var result = _srmQotService.GetQotListByAdmin(qot); 
 
@@ -87,7 +87,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             //ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             //h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer, Page = 1, Size = 1 }).Data[0].Name;
             //h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
-            System.Linq.IQueryable QotV = _srmQotService.GetQotData(id); //表單欄位用
+            
+            
+            System.Linq.IQueryable QotV = _srmQotService.GetQotData(rfqid, vendorid,id); //表單欄位用
             System.Linq.IQueryable matnr = _srmQotService.GetMatnrData(rfqid, vendorid); //表單欄位用
 
             //ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
@@ -111,15 +113,16 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetQotInfo")]
         public IActionResult GetQotDetail(QueryQot query)
         {
-
             var qots = (_srmQotService.GetByVendor(query));
-            ViewQotResult detail = _srmQotService.GetDetail(qots);
+            //var qots = (_srmQotService.Get(query)); //因admin需看到全部
+            ViewQotResult detail = _srmQotService.GetDetail(query);
             SrmRfqM m = new SrmRfqM()
             {
                 RfqId = query.rfqId,
                 MatnrId = query.matnrId
             };
             detail.matnr = _srmRfqMService.GetRfqMData(m);
+            detail.qot = _srmQotService.GetQot( query);
             return Ok(detail);
         }
 
@@ -137,15 +140,18 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmQotService.Save(q, m, s, p, o);
             return Ok();
         }
+
+        
         [HttpPost("Reject")]
         //[Permission("rfq")]
         public IActionResult Reject(JObject qot)
         {
             try
             {
-                SrmQotH q = qot["q"].ToObject<SrmQotH>();
+                SrmQotUpdateMaterial q = qot["q"].ToObject<SrmQotUpdateMaterial>();           
                 q.LastUpdateDate = DateTime.Now;
                 _srmQotService.UpdateQotStatus(((int)Status.拒絕), q);
+                _srmQotService.InsertRejectReason(q);
                 return Ok();
             }
             catch (Exception ex)
@@ -153,5 +159,30 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return this.BadRequestResult(ex.Message);
             }
         }
+
+        [HttpPost("Send")]
+        //[Permission("rfq")]//???
+        public IActionResult Send(JObject qot)
+        {
+            SrmQotH q = qot["q"].ToObject<SrmQotH>();
+            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+            DateTime now = DateTime.Now;
+            q.LastUpdateDate = now;
+            _srmQotService.Save(q, m, s, p, o);
+            SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
+            _srmQotService.UpdateQotStatus(((int)Status.確認), qu);
+            //確認所有qot
+            bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
+            //更新rfq
+            if (IfUpdateRfq) 
+            {
+                _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
+            }
+            return Ok();
+        }
+
     }
 }

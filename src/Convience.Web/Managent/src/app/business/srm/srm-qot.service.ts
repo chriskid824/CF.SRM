@@ -7,11 +7,11 @@ import { UriConfig } from 'src/app/configs/uri-config';
 })
 export class SrmQotService {
 
-   constructor(private httpClient: HttpClient,
-   private uriConstant: UriConfig) { }
-   Save(qot) {
-     return this.httpClient.post(`${this.uriConstant.SrmQot}/Save`, qot);
-   }
+  constructor(private httpClient: HttpClient,
+  private uriConstant: UriConfig) { }
+  Save(qot) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/Save`, qot);
+  }
   GetQotList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
   }
@@ -25,5 +25,8 @@ export class SrmQotService {
   } 
   Reject(qot) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/Reject`, qot);
+  }
+  Send(qot) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/Send`, qot);
   }
 }

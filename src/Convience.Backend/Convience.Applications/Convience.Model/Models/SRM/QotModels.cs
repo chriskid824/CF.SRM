@@ -14,6 +14,7 @@ namespace Convience.Model.Models.SRM
         public int? matnrId { get; set; }
         public Status? status { get; set; }
         public int? vendorId { get; set; }
+        public int? qotId { get; set; }
     }
     public class ViewSrmPriceDetail {
         public ViewSrmRfqM matnr { get; set; }
@@ -32,9 +33,19 @@ namespace Convience.Model.Models.SRM
             foreach (PropertyInfo prop in parent.GetType().GetProperties())
                 GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
         }
+        
         public int VendorId { get; set; }
         public string VendorName { get; set; }
     }
+
+    public class viewSrmQotMaterialS : SrmQotMaterial
+    {
+        public viewSrmQotMaterialS() { }
+
+        public int VendorId { get; set; }
+        public string VendorName { get; set; }
+    }
+
     public class viewSrmQotProcess : SrmQotProcess {
         public viewSrmQotProcess() { }
         public viewSrmQotProcess(SrmQotProcess parent) {
@@ -132,11 +143,12 @@ namespace Convience.Model.Models.SRM
     }
     public class ViewQotResult {
         public ViewSrmRfqM matnr { get; set; }
-        public SrmQotH[] qot { get; set; }
+        public SrmQotH qot { get; set; }
         public viewSrmQotMaterial[] material { get; set; }
         public viewSrmQotProcess[] process { get; set; }
         public viewSrmQotSurface[] surface { get; set; }
-        public viewSrmQotOther[] other { get; set; }      
+        public viewSrmQotOther[] other { get; set; }  
+        
     }
 
     public class ViewQotListH : SrmRfqH
@@ -193,5 +205,9 @@ namespace Convience.Model.Models.SRM
         public System.Linq.IQueryable q { get; set; }
         public System.Linq.IQueryable m { get; set; }
         //public ViewSrmRfqV[] v { get; set; }
+    }
+    public class SrmQotUpdateMaterial : SrmQotH
+    {
+        public string reason { get; set; }
     }
 }

@@ -2,7 +2,7 @@ export class Qot {
   //h?: RfqH;
   m?: matnr[];
   q?: QotV;
-  
+  reject?:reject;
 }
 
 export class QotH {
@@ -51,6 +51,10 @@ export class QotH {
     matnr?: string;
     rfqNum?: string;
     matnrId?: number;
+  }
+
+  export class reject {
+    reason?: string;
   }
 
   
