@@ -445,6 +445,27 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(8)
                     .HasColumnName("VENDOR_ID")
                     .HasComment("供應商識別碼");
+
+                entity.Property(e => e.MEmptyFlag)
+                    .HasMaxLength(1)
+                    .HasColumnName("M_EMPTY_FLAG")
+                    .HasComment("材料空值指示碼");
+
+                entity.Property(e => e.PEmptyFlag)
+                    .HasMaxLength(1)
+                    .HasColumnName("P_EMPTY_FLAG")
+                    .HasComment("加工工序空值指示碼");
+
+                entity.Property(e => e.SEmptyFlag)
+                   .HasMaxLength(1)
+                   .HasColumnName("S_EMPTY_FLAG")
+                   .HasComment("表面處理空值指示碼");
+
+                entity.Property(e => e.OEmptyFlag)
+                   .HasMaxLength(1)
+                   .HasColumnName("O_EMPTY_FLAG")
+                   .HasComment("其他費用空值指示碼");
+
             });
 
             modelBuilder.Entity<SrmEkgry>(entity =>
