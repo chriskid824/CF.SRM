@@ -44,6 +44,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
                         }
                     }
                     this.showErrorService.publishError(msg);
+                    this.router.navigate(['/account/login']);
                 }
             )
         );
