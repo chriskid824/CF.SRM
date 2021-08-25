@@ -277,7 +277,7 @@ export class PriceComponent implements OnInit {
         width: "150px",
       }, {
         headerName: "厚(mm)",
-        field: "mWidth",
+        field: "mHeight",
         enableRowGroup: true,
         cellClass: "show-cell",
         headerClass: "material",
