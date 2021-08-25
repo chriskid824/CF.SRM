@@ -37,5 +37,9 @@ namespace Convience.Entity.Entity.SRM
         public int? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public int? VendorId { get; set; }
+        public string MEmptyFlag { get; set; }
+        public string PEmptyFlag { get; set; }
+        public string SEmptyFlag { get; set; }
+        public string OEmptyFlag { get; set; }
     }
 }
