@@ -105,11 +105,20 @@ namespace Convience.Service.SRM
         public void UpdateQotStatus(int status, SrmQotUpdateMaterial qotH)
         {
             //0825
-            QueryQot q = new QueryQot();
+            var qotid = qotH.QotId;
+            if (qotH.MatnrId != null)
+            {
+                QueryQot query = new QueryQot();
+                query.rfqId = qotH.RfqId;
+                query.vendorId = qotH.VendorId;
+                query.matnrId = qotH.MatnrId;
+                qotid = GetQotId(query);
+            }
+            /*QueryQot q = new QueryQot();
             q.matnrId = qotH.MatnrId;
             q.vendorId = qotH.VendorId;
             q.rfqId = qotH.RfqId;
-            var qotid = GetQotId(q);
+            var qotid = GetQotId(q);*/
             //0825
             var qot = _srmQotHRepository.Get(r => r.QotId == qotid).First(); //qotH.QotId).First();
 
@@ -957,11 +966,16 @@ namespace Convience.Service.SRM
             DateTime now = DateTime.Now;
             //qotH.LastUpdateDate = now;
             //0825
-            QueryQot query = new QueryQot();
-            query.rfqId = qotH.RfqId;
-            query.vendorId = qotH.VendorId;
-            query.matnrId = qotH.MatnrId;
-            var qotid = GetQotId(query);
+            var qotid = qotH.QotId;
+            if (qotH.MatnrId != null)
+            {
+                QueryQot query = new QueryQot();
+                query.rfqId = qotH.RfqId;
+                query.vendorId = qotH.VendorId;
+                query.matnrId = qotH.MatnrId;
+                qotid = GetQotId(query);
+            }
+           
             //0825
             using (var db = new SRMContext())
             {
