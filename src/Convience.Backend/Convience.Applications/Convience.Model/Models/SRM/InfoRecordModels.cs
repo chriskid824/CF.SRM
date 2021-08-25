@@ -37,6 +37,10 @@ namespace Convience.Model.Models.SRM
         public decimal Btotal { get; set; }
         public decimal Ctotal { get; set; }
         public decimal Dtotal { get; set; }
+        public decimal total {
+            get {
+                return Atotal + Btotal + Ctotal + Dtotal;
+            } } 
         public string rfqNum { get; set; }
         public string qotNum { get; set; }
         public string viewstatus { get; set; }
@@ -48,6 +52,7 @@ namespace Convience.Model.Models.SRM
     public class ViewSummary : ViewSrmRfqH
     {
         public bool isStarted { get; set; }
+        public Status qotStatus { get; set; }
         public string vendor { get; set; }
         public int vendorId { get; set; }
         public string vendorName { get; set; }
@@ -100,5 +105,6 @@ namespace Convience.Model.Models.SRM
         public string taxcodeName { get; set; }
         public string effectiveDate { get; set; }
         public string expirationDate { get; set; }
+        public string note { get; set; }
     }
 }

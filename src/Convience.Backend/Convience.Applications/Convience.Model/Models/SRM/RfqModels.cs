@@ -3,12 +3,13 @@ using Convience.Model.Models.SystemManage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
-    public record QueryMatnrModel:PageQueryModel
+    public record QueryMatnrModel : PageQueryModel
     {
         public string Matnr { get; set; }
         public int[] Werks { get; set; }
@@ -26,10 +27,38 @@ namespace Convience.Model.Models.SRM
         public string srmMatnr { get; set; }
     }
 
+    public class ViewSrmMatnr : SrmMatnr
+    {
+        public ViewSrmMatnr() { }
+        public ViewSrmMatnr(SrmMatnr parent)
+        {
+            foreach (PropertyInfo prop in parent.GetType().GetProperties())
+                GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
+        }
+        public string viewstatus {
+            get { return ((Status)Status.Value).ToString(); }
+        }
+    }
+
+    public class ViewSrmVendor : SrmVendor{
+        public ViewSrmVendor() { }
+        public ViewSrmVendor(SrmVendor parent)
+        {
+            foreach (PropertyInfo prop in parent.GetType().GetProperties())
+                GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
+        }
+        public string viewstatus {
+            get { return ((Status)Status.Value).ToString(); }
+        }
+    }
+
     public class ViewSrmRfqV : SrmVendor
     {
         public int rfqVId { get; set; }
         public int rfqId { get; set; }
+        public string viewstatus {
+            get { return ((Status)Status.Value).ToString(); }
+        }
     }
     public class ViewSrmRfqH : SrmRfqH { 
     
@@ -63,6 +92,7 @@ namespace Convience.Model.Models.SRM
         public string name { get; set; }
         public int[] statuses { get; set; }
         public int[] werks { get; set; }
+        public bool end { get; set; }
     }
     public class QueryRfq
     {

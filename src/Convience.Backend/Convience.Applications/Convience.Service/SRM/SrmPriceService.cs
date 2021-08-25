@@ -73,7 +73,7 @@ namespace Convience.Service.SRM
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = process.PPrice.Value * (decimal)process.PHours.Value
+                                 SubTotal = process.PPrice.GetValueOrDefault() * (decimal)process.PHours.GetValueOrDefault()
                              }).ToArray();
             //price.process = (from process in db.SrmQotProcesses
             //                             where qotIds.Contains(process.QotId.Value)
@@ -88,7 +88,7 @@ namespace Convience.Service.SRM
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value
+                                 SubTotal = surface.SPrice.GetValueOrDefault() * (decimal)surface.STimes.GetValueOrDefault()
                              }).ToArray();
             price.other = (from other in _context.SrmQotOthers
                            join qot in _context.SrmQotHs
@@ -190,6 +190,7 @@ namespace Convience.Service.SRM
             must.Add("taxcode", "稅碼");
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");
+            must.Add("note", "備註");
             foreach (viewSrmInfoRecord info in infos) {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
                 {

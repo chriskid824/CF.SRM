@@ -156,7 +156,7 @@ export class RfqComponent implements OnInit {
       },
       {
         headerName: "狀態",
-        field: "status",
+        field: "viewstatus",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -345,7 +345,7 @@ export class RfqComponent implements OnInit {
       },
       {
         headerName: "狀態",
-        field: "status",
+        field: "viewstatus",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",

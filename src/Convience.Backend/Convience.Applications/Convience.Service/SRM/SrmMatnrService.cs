@@ -12,6 +12,7 @@ using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery);
+        public PagingResultModel<ViewSrmMatnr> GetMatnr(QueryMatnrModel matnrQuery);
         public SrmMatnr GetMatnrById(int id);
     }
     public class SrmMatnrService: ISrmMatnrService
@@ -44,7 +45,7 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public PagingResultModel<SrmMatnr> GetMatnr(QueryMatnrModel matnrQuery)
+        public PagingResultModel<ViewSrmMatnr> GetMatnr(QueryMatnrModel matnrQuery)
         {
             //int[] werks = Array.ConvertAll(matnrQuery.Werks.ToString().Split(","), s => int.Parse(s));
             int skip = (matnrQuery.Page - 1) * matnrQuery.Size;
@@ -52,9 +53,9 @@ namespace Convience.Service.SRM
                 .AndIfHaveValue(matnrQuery.Matnr, r => r.SrmMatnr1.Contains(matnrQuery.Matnr))
                 .Where(r => matnrQuery.Werks.Contains(r.Werks.Value));
             var matnrs = resultQuery.Skip(skip).Take(matnrQuery.Size).ToArray();
-            return new PagingResultModel<SrmMatnr>
+            return new PagingResultModel<ViewSrmMatnr>
             {
-                Data = matnrs,
+                Data = JsonConvert.DeserializeObject<ViewSrmMatnr[]>(JsonConvert.SerializeObject(matnrs)),
                 Count = resultQuery.Count()
             };
             // return _srmMatnrRepository.Get(r=>string.IsNullOrWhiteSpace(matnrQuery.MATNR) ? true:r.Matnr.IndexOf(matnr)>=0).ToList().Skip(skip).Take(size).AsQueryable(); ;
