@@ -108,7 +108,8 @@ namespace Convience.Service.SRM
                             RfqId = a.RfqId,
                             RfqMId = a.RfqMId,
                             MatnrId = a.MatnrId,
-                            srmMatnr = b.SrmMatnr1
+                            srmMatnr = b.SrmMatnr1,
+                            description = b.Description
                         };
             return query.FirstOrDefault();
         }

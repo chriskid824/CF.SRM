@@ -191,27 +191,33 @@ namespace Convience.Service.SRM
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");
             must.Add("note", "備註");
-            foreach (viewSrmInfoRecord info in infos) {
+            foreach (viewSrmInfoRecord info in infos)
+            {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
                 {
                     var temp = prop.GetValue(info);
-                    if (must.Keys.Contains(prop.Name,StringComparer.OrdinalIgnoreCase) && (temp == null || string.IsNullOrWhiteSpace(temp.ToString()))) {
+                    if (must.Keys.Contains(prop.Name, StringComparer.OrdinalIgnoreCase) && (temp == null || string.IsNullOrWhiteSpace(temp.ToString())))
+                    {
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
                 }
 
-                if (info.ExpirationDate <= info.EffectiveDate) {
+                if (info.ExpirationDate <= info.EffectiveDate)
+                {
                     throw new Exception($"有效日期需大於生效日期");
                 }
 
-                if (!_context.SrmInforecords.Any(r => r.QotId == info.QotId)) {
-                    SrmInforecord t = new SrmInforecord();
-
-                    foreach (PropertyInfo prop in t.GetType().GetProperties())
-                        t.GetType().GetProperty(prop.Name).SetValue(t, prop.GetValue(info, null), null);
-
-                    _context.SrmInforecords.Add(t);
+                if (_context.SrmInforecords.Any(r => r.QotId == info.QotId))
+                {
+                    throw new Exception($"已啟動過簽核");
                 }
+
+                SrmInforecord t = new SrmInforecord();
+
+                foreach (PropertyInfo prop in t.GetType().GetProperties())
+                    t.GetType().GetProperty(prop.Name).SetValue(t, prop.GetValue(info, null), null);
+
+                _context.SrmInforecords.Add(t);
             }
 
             var qot = _context.SrmQotHs.Where(r => r.QotId == infos[0].QotId).FirstOrDefault();

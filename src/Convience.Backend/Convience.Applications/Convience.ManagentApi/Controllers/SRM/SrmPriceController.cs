@@ -22,6 +22,9 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Convience.ManagentApi.Controllers.Extension;
+using BPMAPI;
+using System.ServiceModel;
+using System.Data;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -100,6 +103,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 SrmVendor vendor = _srmVendorService.GetVendorById(qot.VendorId.Value);
                 ViewSrmRfqM matnr = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
+                temp[0].RfqId = rfqH.RfqId;
                 temp[0].RfqNum = rfqH.RfqNum;
                 temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId) || qot.Status.GetValueOrDefault()!=(int)Status.確認;
                 temp[0].qotStatus = ((Status)qot.Status.GetValueOrDefault());
@@ -160,17 +164,18 @@ namespace Convience.ManagentApi.Controllers.SRM
 
                 foreach (var item in infoRecord.Select((value, i) => new { i, value }))
                 {
+                    temp[item.i].aTotal = item.value.Atotal.NormalizeTwoDigits();
+                    temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
+                    temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
+                    temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
+                    temp[item.i].beforePrice = (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
                     if (temp[item.i].qotStatus == Status.確認)
                     {
-                        temp[item.i].aTotal = item.value.Atotal.NormalizeTwoDigits();
-                        temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
-                        temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
-                        temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
                         temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
                         temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : "1";
                         temp[item.i].currency = item.value.Currency?.ToString() ?? "TWD";
                         temp[item.i].currencyName = item.value.currencyName?.ToString() ?? "新台幣元";
-                        temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() :qot.LeadTime.GetValueOrDefault().ToString();
+                        temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() : qot.LeadTime.GetValueOrDefault().ToString();
                         temp[item.i].standQty = (item.value.StandQty.HasValue) ? item.value.StandQty.Value.ToString() : "1";
                         temp[item.i].minQty = (item.value.MinQty.HasValue) ? item.value.MinQty.Value.ToString() : "1";
                         temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
@@ -223,7 +228,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 try
                 {
                     rfqId = _srmPriceService.Start(infos).Value;
-                    _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid }); 
+                    _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid });
+                    RunBorg(infos);
                     transaction.Complete();
                     return Ok();
                 }
@@ -233,6 +239,126 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
             }
         }
+
+
+
+        public void RunBorg(viewSrmInfoRecord[] infos)
+        {
+            BasicHttpBinding binding = new BasicHttpBinding();
+
+            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
+
+            BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
+
+            CallMethodParams callMethodParm = new CallMethodParams();
+            JObject param = new JObject();
+            param.Add("logonid", "137680");
+            param.Add("signType", "採購資訊紀錄簽核單");
+            Dictionary<string, object> Variables = new Dictionary<string, object>();
+            Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
+            Dictionary<string, object> FormControls = new Dictionary<string, object>();
+            DataSet ds = new DataSet();
+            DataTable InfoRecord = new DataTable("CF_InfoRecord");
+            InfoRecord.Columns.Add("SapMatnr");
+            InfoRecord.Columns.Add("DESCRIPTION");
+            InfoRecord.Columns.Add("QTY");
+            InfoRecord.Columns.Add("Height");
+            InfoRecord.Columns.Add("Length");
+            InfoRecord.Columns.Add("Width");
+            InfoRecord.Columns.Add("Weight");
+            InfoRecord.Columns.Add("VendorName");
+            InfoRecord.Columns.Add("ATotal");
+            InfoRecord.Columns.Add("BTotal");
+            InfoRecord.Columns.Add("CTotal");
+            InfoRecord.Columns.Add("DTotal");
+            InfoRecord.Columns.Add("Price");
+            InfoRecord.Columns.Add("NegotiatedPrice");
+            InfoRecord.Columns.Add("HistoricalPrice");
+            InfoRecord.Columns.Add("HistoricalDate");
+            InfoRecord.Columns.Add("LastPrice");
+            InfoRecord.Columns.Add("LastDate");
+            InfoRecord.Columns.Add("BargainingRate");
+            InfoRecord.Columns.Add("LastBargainingRate");
+            InfoRecord.Columns.Add("ExpirationDate");
+            InfoRecord.Columns.Add("InfoId");
+            InfoRecord.Columns.Add("Img1");
+            InfoRecord.Columns.Add("Img2");
+            InfoRecord.Columns.Add("Note");
+            var rfqH = _srmRfqHService.GetDataByRfqId(int.Parse(infos[0].rfqId));
+            foreach (var info in infos) {
+                var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
+                DataRow dr = InfoRecord.NewRow();
+                dr["SapMatnr"] = rfqM.matnr;
+                dr["DESCRIPTION"] = rfqM.description;
+                dr["QTY"] = rfqM.Qty;
+                dr["Height"] = rfqM.Height;
+                dr["Length"] = rfqM.Length;
+                dr["Width"] = rfqM.Width;
+                dr["Weight"] = rfqM.Weight;
+                dr["VendorName"] = info.VendorName;
+                dr["ATotal"] = info.Atotal;
+                dr["BTotal"] = info.Btotal;
+                dr["CTotal"] = info.Ctotal;
+                dr["DTotal"] = info.Dtotal;
+                dr["Price"] = info.Price;
+                dr["InfoId"] = info.InfoId;
+                dr["Img1"] = "/BPM/images/logo.jpg";
+                dr["Img2"] = "/BPM/images/logo2.png";
+                dr["Note"] = info.Note;
+                InfoRecord.Rows.Add(dr);
+            }
+
+            ds.Tables.Add(InfoRecord);
+            param.Add("Variables",JObject.FromObject(Variables));
+            param.Add("FormControls",JObject.FromObject(FormControls));
+            param.Add("ds", JObject.FromObject(ds));
+            callMethodParm.Method = "Sign";
+            callMethodParm.Options = JsonConvert.SerializeObject(param);
+
+            Task<CallMethodResponse> testResponseTask = client.CallMethodAsync(callMethodParm);
+            CallMethodResult result = testResponseTask.Result.Body.CallMethodResult;
+            if (!result.Success) {
+                throw new Exception(result.Message);
+            }
+            //var bpm = new BPMAPISoapClient(new BPMAPISoapClient.EndpointConfiguration());
+            //JObject param = new JObject();
+            //param.Add("logonid", Request.QueryString["logon"]);
+            //param.Add("signType", "文件新增變更申請單");
+            //Dictionary<string, object> Variables = new Dictionary<string, object>();
+            //Variables.Add("SUBJECT", $"文件編號:{obj.doc_no} 文件名稱:{obj.doc_name} 申請類別:{(isNew ? "新增" : "改版")}");
+            //Dictionary<string, object> FormControls = new Dictionary<string, object>();
+            //setUser(ViewState["logonid"].ToString(), FormControls);
+            //FormControls.Add("txtdoc_id", ViewState["doc_id"].ToString());
+            //FormControls.Add("txtfolder_id", ViewState["folder_id"].ToString());
+            //FormControls.Add("rblAppType", isNew ? "新增" : "改版");
+            //FormControls.Add("txtdoc_no", obj.doc_no);
+            //FormControls.Add("txtdoc_name", obj.doc_name);
+            //FormControls.Add("txtversion_major", obj.version_major);
+            //FormControls.Add("txtversion_minor", obj.version_minor);
+            //FormControls.Add("txtVersion", obj.version);
+            //FormControls.Add("txtwriter", obj.writer);
+            //FormControls.Add("txtdms_type", dms_type);
+            //FormControls.Add("txtAppDescription", obj.change_desc);
+            //FormControls.Add("txtworkflow_id", workflow_id);
+            //FormControls.Add("txtFolderPath", Utility.GetVirtualPath(ViewState["folder_id"].ToString()));
+            //Variables.Add("APPLYDEPT", FormControls["ddlDept"].ToString());
+            //param.Add("Variables", JObject.FromObject(Variables));
+            //param.Add("FormControls", JObject.FromObject(FormControls));
+            //IZ.WebFileManager.BPMAPI.CallMethodParams cmp = new IZ.WebFileManager.BPMAPI.CallMethodParams()
+            //{
+            //    Token = "",
+            //    Method = "Sign",
+            //    Options = JsonConvert.SerializeObject(param)
+            //};
+            //IZ.WebFileManager.BPMAPI.CallMethodResult result = bpm.CallMethod(cmp);
+            //if (!result.Success)
+            //{
+            //    throw new Exception(result.Message);
+            //}
+            //return;
+        }
+
+
         [HttpPost("GetTaxcodes")]
         [Permission("price")]
         public IActionResult GetTaxcodes() {
