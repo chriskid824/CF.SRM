@@ -206,7 +206,7 @@ namespace Convience.Model.Models.SRM
         public System.Linq.IQueryable m { get; set; }
         //public ViewSrmRfqV[] v { get; set; }
     }
-    public class SrmQotUpdateMaterial : SrmQotH
+    public class SrmQotUpdateMaterial:SrmQotH
     {
         public string reason { get; set; }
     }
