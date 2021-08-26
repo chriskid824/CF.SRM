@@ -44,11 +44,12 @@ namespace Convience.Service.SRM
         public void InsertRejectReason(SrmQotUpdateMaterial qotH);
         public SrmQotH GetQot(QueryQot query);
         public bool CheckAllQot(SrmQotH qotH);
-        public void UpdateRfqStatus(int status, SrmQotUpdateMaterial qotH);
+        public void UpdateRfqStatus(int status, SrmQotUpdateMaterial qoth);
+        public int GetRowNum(SrmQotH qotH);
     }
     public class SrmQotService : ISrmQotService
     {
-        private readonly IRepository<SrmRfqH> _srmRfqRepository;
+        private readonly IRepository<SrmRfqH> _srmRfqHRepository;
         private readonly IRepository<SrmRfqM> _srmRfqMRepository;
         private readonly IRepository<SrmQotH> _srmQotHRepository;
         private readonly IRepository<SrmMatnr> _srmSrmMatnrRepository;
@@ -169,10 +170,13 @@ namespace Convience.Service.SRM
         }
         #endregion
         #region 更新rfq 狀態
-        public void UpdateRfqStatus(int status, SrmQotUpdateMaterial qotH)
+        public void UpdateRfqStatus(int status, SrmQotUpdateMaterial qoth)
         {
-            var rfq = _srmRfqRepository.Get(r => r.RfqId == qotH.RfqId).First();
+            //int rfqid = qotH.RfqId.Value;
 
+            var rfq = _context.SrmRfqHs.Where(r => r.RfqId == qoth.RfqId.Value).FirstOrDefault();
+            //var rfq = _srmRfqHRepository.Get().First();
+            //var qot = _srmQotHRepository.Get(r => r.QotId == qotid).First();
             if ((Status)rfq.Status != Status.啟動)
             {
                 throw new Exception($"非啟動狀態無法{((Status)status).ToString()}");
@@ -180,10 +184,10 @@ namespace Convience.Service.SRM
             DateTime now = DateTime.Now;
             using (var db = new SRMContext())
             {
-                var rfqh = new SrmRfqH() { RfqId = qotH.RfqId.Value };//qotH.QotId };
+                var rfqh = new SrmRfqH() { RfqId = qoth.RfqId.Value };//qotH.QotId };
                 db.SrmRfqHs.Attach(rfqh);
                 rfqh.LastUpdateDate = now;
-                rfqh.LastUpdateBy = qotH.LastUpdateBy;
+                rfqh.LastUpdateBy = qoth.LastUpdateBy;
                 rfqh.Status = status;
                 db.Entry(rfqh).Property(p => p.LastUpdateBy).IsModified = true;
                 db.Entry(rfqh).Property(p => p.LastUpdateDate).IsModified = true;
@@ -588,12 +592,13 @@ namespace Convience.Service.SRM
                                oPEmptyFlag = q.OEmptyFlag
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
-            //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+            //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
             qotlist = qotlist
             .Where(p => p.RfqId == rfqid)
             .Where(p => p.VendorId == vendorid);
-           //.Where(p => p.QotId == qotid);
+            //.AndIfHaveValue(matnrid , p => p.QotId == qotid);
+            //.Where(p => p.QotId == qotid);
             return qotlist;
         }
         /*public IEnumerable<ViewQot> GetDataBQotId(int QotId)
@@ -1188,5 +1193,24 @@ namespace Convience.Service.SRM
                 //return result;
             }
         }
+        #region
+        public int GetRowNum(SrmQotH qotH) 
+        {
+            int index = -1;
+            SrmQotH[] qs = _context.SrmQotHs.AsQueryable()
+                .Where(p => p.RfqId == qotH.RfqId)
+                .Where(p =>p.VendorId == qotH.VendorId).ToArray();
+            foreach (var q in qs)
+            {
+                if (q.QotId == qotH.QotId)
+                {
+                    return index;
+                }
+                index ++;
+            }
+            //檢核該rfq的所有qot loop 檢核
+            return index;
+        }
+        #endregion
     }
 }

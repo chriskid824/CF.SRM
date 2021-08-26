@@ -87,6 +87,7 @@ export class QotlistComponent implements OnInit {
               var eButton = eDiv.querySelectorAll('.btn-simple')[0];  
               eButton.addEventListener('click', function() {
                //alert( params.data.QVendorId)
+               //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
                window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
                //this._layout.navigateTo('qot'); //???進不去
                //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
@@ -98,13 +99,13 @@ export class QotlistComponent implements OnInit {
           {  headerName: "QRfqId",field: 'QRfqId',hide:"true"},
           {  headerName: "QQotId",field: 'QQotId',hide:"true"},
           {  headerName: "序號",valueGetter: "node.rowIndex + 1"},
-          { headerName:'報價單號',field: 'QQotNum' },
-          { headerName:'狀態',field: 'QStatusDesc', minWidth: 150 },
-          { headerName:'料號',field: 'QMatnr'},
-          { headerName:'建立日期',field: 'QCreateDate', minWidth: 150 },
-          { headerName:'建立人員',field: 'QCreateBy', minWidth: 150 },
-          { headerName:'最後異動日期',field: 'QLastUpdateDate', minWidth: 150 },
-          { headerName:'最後異動人員',field: 'QLastUpdateBy', minWidth: 150 },
+          {  headerName:'報價單號',field: 'QQotNum' },
+          {  headerName:'狀態',field: 'QStatusDesc', minWidth: 150 },
+          {  headerName:'料號',field: 'QMatnr'},
+          {  headerName:'建立日期',field: 'QCreateDate', minWidth: 150 },
+          {  headerName:'建立人員',field: 'QCreateBy', minWidth: 150 },
+          {  headerName:'最後異動日期',field: 'QLastUpdateDate', minWidth: 150 },
+          {  headerName:'最後異動人員',field: 'QLastUpdateBy', minWidth: 150 },
         ],
         defaultColDef: {
           flex: 1,

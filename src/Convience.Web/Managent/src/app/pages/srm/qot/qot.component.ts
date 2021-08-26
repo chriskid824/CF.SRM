@@ -97,7 +97,7 @@ export class QotComponent implements OnInit {
   qotv: Qot;
   matnrIndex;
   radioValue;
-  
+  matnrId;
   rowData_matnr=[];
   rowData_inforecord=[];
   Q;
@@ -144,6 +144,7 @@ export class QotComponent implements OnInit {
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     //alert(this.qotId)
     this.matnrIndex = 0;
+    
     this.activatedRoute.queryParams
       .subscribe(params => {
         //console.log(params); // { orderby: "price" }
@@ -165,7 +166,22 @@ export class QotComponent implements OnInit {
 
      });
     this.info2 = this._formBuilder.group({ });
-    
+    /* */
+    var qot = {
+      q:null
+    }
+    qot.q = this.Q;
+    //qot.q = this.qot.qotId;
+    qot.q.id = this.id;
+    qot.q.rfqid = this.rfqid;
+    qot.q.vendorid = this.vendorid;
+    //this.matnrIndex = this._srmQotService.GetRowNum(qot) ;
+    this._srmQotService.GetRowNum(qot).subscribe(result => {
+      console.log(result);
+      this.matnrIndex = result;
+    });
+
+    /* */
     this.init();
     this.initGrid();
     this.search();
@@ -786,6 +802,8 @@ export class QotComponent implements OnInit {
 
 
   init() {
+   
+    //alert(this.radioValue)
     //alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa='+ 'init')
     this._srmQotService.GetQotData(this.id,this.rfqid,this.vendorid).subscribe(result => {
       //console.log(result);
