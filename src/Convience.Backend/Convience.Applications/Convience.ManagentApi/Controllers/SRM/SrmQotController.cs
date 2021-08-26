@@ -152,6 +152,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                 q.LastUpdateDate = DateTime.Now;
                 _srmQotService.UpdateQotStatus(((int)Status.拒絕), q);
                 _srmQotService.InsertRejectReason(q);
+                //確認所有qot
+                bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
+                //更新rfq
+                if (IfUpdateRfq)
+                {                   
+                    _srmQotService.UpdateRfqStatus(((int)Status.確認), q);
+                }
                 return Ok();
             }
             catch (Exception ex)
@@ -184,5 +191,16 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok();
         }
 
-    }
+        
+        [HttpPost("GetRowNum")]
+        //[Permission("rfq")]//???
+        public int GetRowNum(JObject qot)
+        {
+            int index = 0;
+
+            SrmQotH q = qot["q"].ToObject<SrmQotH>();
+            index = _srmQotService.GetRowNum(q);
+            return index;
+        }
+     }
 }
