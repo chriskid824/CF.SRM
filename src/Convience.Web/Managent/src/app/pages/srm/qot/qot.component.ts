@@ -172,7 +172,7 @@ export class QotComponent implements OnInit {
     }
     qot.q = this.Q;
     //qot.q = this.qot.qotId;
-    qot.q.id = this.id;
+    qot.q.qotId = this.id;
     qot.q.rfqid = this.rfqid;
     qot.q.vendorid = this.vendorid;
     //this.matnrIndex = this._srmQotService.GetRowNum(qot) ;

@@ -546,7 +546,7 @@ namespace Convience.Service.SRM
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
                                RfqNum = r.RfqNum,
-                               Matnr = m.SapMatnr,
+                               Matnr = m.SapMatnr + "(" + s.StatusDesc + ")",
                                MatnrId = q.MatnrId,
                                QotNum = q.QotNum,
                                Status = s.StatusDesc
@@ -554,7 +554,7 @@ namespace Convience.Service.SRM
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
-            qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid );
+            qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid ).OrderBy(p => p.QotId);
             return qotlist;
         }
         public IQueryable GetQotData(int rfqid,int vendorid,int qotid)
@@ -1199,14 +1199,16 @@ namespace Convience.Service.SRM
             int index = -1;
             SrmQotH[] qs = _context.SrmQotHs.AsQueryable()
                 .Where(p => p.RfqId == qotH.RfqId)
-                .Where(p =>p.VendorId == qotH.VendorId).ToArray();
+                .Where(p =>p.VendorId == qotH.VendorId).OrderBy(p =>p.QotId).ToArray();
             foreach (var q in qs)
             {
+                index++;
                 if (q.QotId == qotH.QotId)
                 {
+                    
                     return index;
                 }
-                index ++;
+                
             }
             //檢核該rfq的所有qot loop 檢核
             return index;
