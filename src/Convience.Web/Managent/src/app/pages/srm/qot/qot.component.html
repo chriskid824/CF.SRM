@@ -269,8 +269,8 @@
             <div>
               <h4>A.材料</h4>
              
-              <button  nz-button class="mr-10"  (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"disabled="{{canModifymaterial==false}}" ><i nz-icon nzType="plus"></i>新增材料費用</button>
-              <button nz-button class="mr-10"  (click)="deleteMaterial()" disabled="{{canModifymaterial==false}}"><i nz-icon nzType="delete" ></i>刪除材料費用</button>
+              <button id="btnaddm" nz-button class="mr-10"  (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"disabled="{{canModifymaterial==false}}" ><i nz-icon nzType="plus"></i>新增材料費用</button>
+              <button id="btndeletem"nz-button class="mr-10"  (click)="deleteMaterial()" disabled="{{canModifymaterial==false}}"><i nz-icon nzType="delete" ></i>刪除材料費用</button>
                <!--<section class="example-section">-->
                 <mat-checkbox class="example-margin" id="chkreject_material" (change)="checkCheckBoxvalue_M($event)" disabled="{{canModify==false}}" [checked] ="IfCheck_M">不回填</mat-checkbox>
               <!-- </section>-->
@@ -293,8 +293,8 @@
             <div>
               <h4>B.加工</h4>
               
-              <button  nz-button class="mr-10"  (click)="addProcess(addProcessTitleTp,ProcessContentTp)" disabled="{{canModifyprocess==false}}"><i nz-icon nzType="plus"></i>新增加工費用</button>
-              <button nz-button class="mr-10"  (click)="deleteProcess()"  disabled="{{canModifyprocess==false}}"><i nz-icon nzType="delete"></i>刪除加工費用</button>
+              <button id="btnaddp" nz-button class="mr-10"  (click)="addProcess(addProcessTitleTp,ProcessContentTp)" disabled="{{canModifyprocess==false}}"><i nz-icon nzType="plus"></i>新增加工費用</button>
+              <button id="btndeletep" nz-button class="mr-10"  (click)="deleteProcess()"  disabled="{{canModifyprocess==false}}"><i nz-icon nzType="delete"></i>刪除加工費用</button>
               <!--<section class="example-section">-->
                 <mat-checkbox class="example-margin" id="chkreject_process" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_P($event)" [checked] ="IfCheck_P">不回填</mat-checkbox>
               <!-- </section>-->
@@ -318,8 +318,8 @@
             <div>
               <h4>C.表面處理</h4>
              
-              <button  nz-button class="mr-10"  (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)" disabled="{{canModifysurface==false}}"><i nz-icon nzType="plus"></i>新增表面處理</button>
-              <button nz-button class="mr-10"  (click)="deleteSurface()" disabled="{{canModifysurface==false}}"><i nz-icon nzType="delete" ></i>刪除表面處理</button>
+              <button id="btnadds" nz-button class="mr-10"  (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)" disabled="{{canModifysurface==false}}"><i nz-icon nzType="plus"></i>新增表面處理</button>
+              <button id="btndeletes" nz-button class="mr-10"  (click)="deleteSurface()" disabled="{{canModifysurface==false}}"><i nz-icon nzType="delete" ></i>刪除表面處理</button>
                <!--<section class="example-section">-->
                 <mat-checkbox class="example-margin" id="chkreject_surface" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_S($event)" [checked] ="IfCheck_S" >不回填</mat-checkbox>
               <!-- </section>-->
@@ -343,8 +343,8 @@
           <div>
             <h4>D.其他費用</h4>
            
-            <button  nz-button class="mr-10"  (click)="addOther(addOtherTitleTp,OtherContentTp)" disabled="{{canModifyother==false}}"><i nz-icon nzType="plus"></i>新增其他費用</button>
-            <button nz-button class="mr-10"  (click)="deleteOther()" disabled="{{canModifyother==false}}"><i nz-icon nzType="delete" ></i>刪除其他費用</button>
+            <button  id="btnaddo"  nz-button class="mr-10"  (click)="addOther(addOtherTitleTp,OtherContentTp)" disabled="{{canModifyother==false}}"><i nz-icon nzType="plus"></i>新增其他費用</button>
+            <button id="btndeleteo"  nz-button class="mr-10"  (click)="deleteOther()" disabled="{{canModifyother==false}}"><i nz-icon nzType="delete" ></i>刪除其他費用</button>
              <!--<section class="example-section">-->
               <mat-checkbox class="example-margin" id="chkreject_other" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_O($event)"  [checked] ="IfCheck_O">不回填</mat-checkbox>
             <!-- </section>-->

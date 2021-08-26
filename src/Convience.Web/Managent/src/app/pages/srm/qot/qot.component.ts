@@ -7,7 +7,7 @@ import { RoleService } from 'src/app/business/system-manage/role.service';
 import { MenuService } from 'src/app/business/system-manage/menu.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Material } from 'src/app/pages/srm/model/material';
-import { QotApiService} from './qot-api.service';
+import { QotApiService } from './qot-api.service';
 import { SrmQotService } from '../../../business/srm/srm-qot.service';
 import { Process } from '../model/Process';
 import { Surface } from '../model/Surface';
@@ -29,19 +29,19 @@ interface Food {
 
 
 @Component({
-  selector: 'app-qot', 
+  selector: 'app-qot',
   templateUrl: './qot.component.html',
   styleUrls: ['./qot.component.less']
 })
 export class QotComponent implements OnInit {
   foods: Food[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
+    { value: 'steak-0', viewValue: 'Steak' },
+    { value: 'pizza-1', viewValue: 'Pizza' },
+    { value: 'tacos-2', viewValue: 'Tacos' }
   ];
   @ViewChild('tree', { static: true })
   tree: any;
-   matnrs = [];
+  matnrs = [];
   //departmentNode: NzTreeNodeOptions[] = [];
   selectedMatnr;
   matnrList: FormGroup = new FormGroup({});
@@ -57,7 +57,7 @@ export class QotComponent implements OnInit {
   editedProcess: Process = new Process();
   editedSurface: Surface = new Surface();
   editedOther: Other = new Other();
-  editedReject:reject = new reject();
+  editedReject: reject = new reject();
 
   //reject: Other = new Material();
 
@@ -98,10 +98,10 @@ export class QotComponent implements OnInit {
   matnrIndex;
   radioValue;
   matnrId;
-  rowData_matnr=[];
-  rowData_inforecord=[];
+  rowData_matnr = [];
+  rowData_inforecord = [];
   Q;
-  canModify ;
+  canModify;
   canModifymaterial;
   canModifyprocess;
   canModifysurface;
@@ -122,8 +122,8 @@ export class QotComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private _router: Router,
     private _storageService: StorageService,
-    private _layout: LayoutComponent,   
-  ) {  
+    private _layout: LayoutComponent,
+  ) {
     this.Q = {
     }
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
@@ -137,14 +137,14 @@ export class QotComponent implements OnInit {
     /*material*/
   }
 
- 
+
 
   //this.rowData_MATNR = [];
   ngOnInit(): void {
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     //alert(this.qotId)
     this.matnrIndex = 0;
-    
+
     this.activatedRoute.queryParams
       .subscribe(params => {
         //console.log(params); // { orderby: "price" }
@@ -158,17 +158,17 @@ export class QotComponent implements OnInit {
         //console.log(this.id); // price
         //alert('qqqqqqqqqqqqqqqqqqqotid='+this.id)
       }
-    );
+      );
     this.matnrList = this._formBuilder.group({
       selectedMatnr: [null]
     });
     this.info1 = this._formBuilder.group({
 
-     });
-    this.info2 = this._formBuilder.group({ });
+    });
+    this.info2 = this._formBuilder.group({});
     /* */
     var qot = {
-      q:null
+      q: null
     }
     qot.q = this.Q;
     //qot.q = this.qot.qotId;
@@ -188,10 +188,10 @@ export class QotComponent implements OnInit {
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
     // this.canModify = this.H.status == 1;
 
-    
+
   }
-  
-   
+
+
   columnDefsmaterial = [
     { field: '序號', resizable: true },
     { field: '素材材質', resizable: true },
@@ -220,7 +220,7 @@ export class QotComponent implements OnInit {
   ];
 
 
-  
+
 
   rowDataprocess = [
     { 序號: '01', 工序代碼: '0101', '工時(時)': '5', '單價(時)': '20', 機台: 'machine', 備註: 'A' },
@@ -257,7 +257,7 @@ export class QotComponent implements OnInit {
   data: QotH[] = [];
   editedRole: Role = new Role();
   data1: Material[] = [];
- 
+
   page: number = 1;
   size: number = 10;
   total: number = 0;
@@ -269,13 +269,13 @@ export class QotComponent implements OnInit {
 
   onGridReady(params) {
     function myRowClickedHandler(event) {
-    //console.log('The row was clicked');
-  }
-  params.api.addEventListener('rowClicked', myRowClickedHandler);
-  this.gridApi = params.api;
-  this.columnApi = params.columnApi;
-  //console.log(params.api);
-  //this.gridApi.sizeColumnsToFit();
+      //console.log('The row was clicked');
+    }
+    params.api.addEventListener('rowClicked', myRowClickedHandler);
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
+    //console.log(params.api);
+    //this.gridApi.sizeColumnsToFit();
   }
 
   onGridReady_Surface(params) {
@@ -285,10 +285,10 @@ export class QotComponent implements OnInit {
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi_Surface = params.api;
     this.columnApi_Surface = params.columnApi;
-    
+
     //this.gridApi_Surface.sizeColumnsToFit();
   }
-  
+
   onGridReady_Process(params) {
     function myRowClickedHandler(event) {
       //console.log('The row was clicked');
@@ -395,7 +395,7 @@ export class QotComponent implements OnInit {
     });
   }
   //addRole(title: TemplateRef<{}>, content: TemplateRef<{}>){}
-  submitProcessList(){
+  submitProcessList() {
     /**/
     for (const i in this.editForm_Process.controls) {
       this.editForm_Process.controls[i].markAsDirty();
@@ -409,23 +409,23 @@ export class QotComponent implements OnInit {
       this.editedProcess.note = this.editForm_Process.value['process_remark'];
       this.editedProcess.machine = this.editForm_Process.value['process_machine'];
       console.info(this.editForm_Process.value);
-    
+
       /*寫入grid */
-      
+
       this.rowData_Process.push({
         "pProcessNum": this.editedProcess.processno,
-        "pHours":this.editedProcess.p_hour, 
-        "pPrice":this.editedProcess.price,
-        "pMachine":this.editedProcess.machine,
-        "pNote":this.editedProcess.note
+        "pHours": this.editedProcess.p_hour,
+        "pPrice": this.editedProcess.price,
+        "pMachine": this.editedProcess.machine,
+        "pNote": this.editedProcess.note
       });
       //alert('aaaaa+ '+ this.rowData_Process.value)
       //console.log(this.gridApi);
       //console.log('-------------');
       //console.log(this.gridApi_Process);
-      this.gridApi_Process.setRowData(this.rowData_Process);     
+      this.gridApi_Process.setRowData(this.rowData_Process);
       this.tplModal.close();
-      
+
     }
   }
   /**/
@@ -450,21 +450,21 @@ export class QotComponent implements OnInit {
       console.info(this.editForm_Material.value);
       //alert('name = '+this.editedMatetial.name)
       /*寫入grid */
-      
+
       this.rowData_Material.push({
-        "mMaterial":this.editedMatetial.name,
-        "mPrice":this.editedMatetial.price, 
-        "mCostPrice":this.editedMatetial.cost,
-        "length":this.editedMatetial.length,
-        "width":this.editedMatetial.width,
-        "height":this.editedMatetial.height,
-        "density":this.editedMatetial.density,
+        "mMaterial": this.editedMatetial.name,
+        "mPrice": this.editedMatetial.price,
+        "mCostPrice": this.editedMatetial.cost,
+        "length": this.editedMatetial.length,
+        "width": this.editedMatetial.width,
+        "height": this.editedMatetial.height,
+        "density": this.editedMatetial.density,
         //"M_TOTAL_COST":this.editedMatetial.totalcost,
-        "weight":this.editedMatetial.weight, 
-        "note":this.editedMatetial.note,
+        "weight": this.editedMatetial.weight,
+        "note": this.editedMatetial.note,
       });
       //console.log('rowData_Material='+this.rowData_Material);
-    
+
       this.gridApi.setRowData(this.rowData_Material);
       this.tplModal.close();
     }
@@ -489,13 +489,13 @@ export class QotComponent implements OnInit {
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
       //0824 送出才檢核
       material_name: [this.editedMatetial.name,],
-      material_price: [this.editedMatetial.price, ],
-      material_cost: [this.editedMatetial.cost, ],
-      material_length: [this.editedMatetial.length, ],
-      material_width: [this.editedMatetial.width, ],
-      material_height: [this.editedMatetial.height, ],
-      material_density: [this.editedMatetial.density, ],
-      material_weight: [this.editedMatetial.weight, ],
+      material_price: [this.editedMatetial.price,],
+      material_cost: [this.editedMatetial.cost,],
+      material_length: [this.editedMatetial.length,],
+      material_width: [this.editedMatetial.width,],
+      material_height: [this.editedMatetial.height,],
+      material_density: [this.editedMatetial.density,],
+      material_weight: [this.editedMatetial.weight,],
 
       //material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
       material_note: [this.editedMatetial.note,]
@@ -508,7 +508,7 @@ export class QotComponent implements OnInit {
     });
   }
   /*0730*/
-  submitOtherList(){ 
+  submitOtherList() {
     for (const i in this.editForm_Other.controls) {
       this.editForm_Other.controls[i].markAsDirty();
       this.editForm_Other.controls[i].updateValueAndValidity();
@@ -519,21 +519,22 @@ export class QotComponent implements OnInit {
       this.editedOther.price = this.editForm_Other.value['other_price'];
       this.editedOther.note = this.editForm_Other.value['other_note'];
       this.editedOther.description = this.editForm_Other.value['other_desc'];
-     
+
       console.info(this.editForm_Other.value);
       //alert('name = '+this.editedOther.item)
       /*寫入grid */
-      
+
       this.rowData_Other.push({
-        "oItem":this.editedOther.item,
+        "oItem": this.editedOther.item,
         "oPrice": this.editedOther.price,
-        "oDescription":this.editedOther.description,
-        "oNote":this.editedOther.note
+        "oDescription": this.editedOther.description,
+        "oNote": this.editedOther.note
       });
 
       this.gridApi_Other.setRowData(this.rowData_Other);
       this.tplModal.close();
-    }}
+    }
+  }
 
   submitSurfaceList() {
     /**/
@@ -547,24 +548,24 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
-     
-     
+
+
       //console.info(this.editForm_Surface.value);
       //alert('name = '+this.editedSurface.process)
       /*寫入grid */
-      
+
       this.rowData_Surface.push({
-        "sProcess":this.editedSurface.process,
-        "sTimes":this.editedSurface.times,
-        "sPrice":this.editedSurface.price,
-        "sNote":this.editedSurface.note
+        "sProcess": this.editedSurface.process,
+        "sTimes": this.editedSurface.times,
+        "sPrice": this.editedSurface.price,
+        "sNote": this.editedSurface.note
       });
 
       this.gridApi_Surface.setRowData(this.rowData_Surface);
       this.tplModal.close();
     }
   }
-  checktype(number:number){
+  checktype(number: number) {
     if (isNaN(number)) {
       alert("欄位格式錯誤");
       return;
@@ -590,10 +591,10 @@ export class QotComponent implements OnInit {
     this.editedOther = new Other();
     this.editForm_Other = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
-      other_item: [this.editedOther.item, ],
+      other_item: [this.editedOther.item,],
       other_desc: [this.editedOther.description],
       other_price: [this.editedOther.price,],
-      other_note: [this.editedOther.note, ]
+      other_note: [this.editedOther.note,]
     });
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -603,13 +604,13 @@ export class QotComponent implements OnInit {
   }
   /*0730*/
   addProcess(title: TemplateRef<{}>, content: TemplateRef<{}>) {
-    this.editForm_Process= this._formBuilder.group({
+    this.editForm_Process = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
-      process_no: [this.editedProcess.processno, ],
-      process_cost: [this.editedProcess.price, ],
-      process_hour: [this.editedProcess.p_hour, ],
-      process_machine: [this.editedProcess.machine, ],
-      process_remark: [this.editedProcess.note],     
+      process_no: [this.editedProcess.processno,],
+      process_cost: [this.editedProcess.price,],
+      process_hour: [this.editedProcess.p_hour,],
+      process_machine: [this.editedProcess.machine,],
+      process_remark: [this.editedProcess.note],
     });
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -620,9 +621,9 @@ export class QotComponent implements OnInit {
   /**/
   getqot() {
     var qot = {
-     q:null, material: null,process :null,surface:null,other:null
+      q: null, material: null, process: null, surface: null, other: null
     }
-   
+
     qot.q = this.Q;
     //this.Q = result["h"];
     //qot["q"] = this.Q;
@@ -632,10 +633,10 @@ export class QotComponent implements OnInit {
     qot.q.QotId = this.id;
     qot.q.RfqId = this.rfqid;
     /*不回填flag*/
-    qot.q.MEmptyFlag = ($('#chkreject_material-input').prop("checked"))?"X":"";
-    qot.q.PEmptyFlag = ($('#chkreject_process-input').prop("checked"))?"X":"";
-    qot.q.SEmptyFlag = ($('#chkreject_surface-input').prop("checked"))?"X":"";
-    qot.q.OEmptyFlag = ($('#chkreject_other-input').prop("checked"))?"X":"";
+    qot.q.MEmptyFlag = ($('#chkreject_material-input').prop("checked")) ? "X" : "";
+    qot.q.PEmptyFlag = ($('#chkreject_process-input').prop("checked")) ? "X" : "";
+    qot.q.SEmptyFlag = ($('#chkreject_surface-input').prop("checked")) ? "X" : "";
+    qot.q.OEmptyFlag = ($('#chkreject_other-input').prop("checked")) ? "X" : "";
     /*
     var rfq = {
       h: null, m: null, v: null
@@ -653,12 +654,12 @@ export class QotComponent implements OnInit {
     }
     rfq.h.LASTUPDATEBY = this._storageService.userName;
     */
-    
-    qot.material =[]
-    qot.process =[];
-    qot.surface=[];
-    qot.other=[];
-   
+
+    qot.material = []
+    qot.process = [];
+    qot.surface = [];
+    qot.other = [];
+
     this.gridApi.forEachNode(node => qot.material.push(node.data));
     this.gridApi_Process.forEachNode(node => qot.process.push(node.data));
     this.gridApi_Surface.forEachNode(node => qot.surface.push(node.data));
@@ -697,7 +698,7 @@ export class QotComponent implements OnInit {
     });
   }*/
   Reject(title: TemplateRef<{}>, content: TemplateRef<{}>) {
-    this.editForm_Reject= this._formBuilder.group({
+    this.editForm_Reject = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
       reject_reason: [this.editedReject.reason, [Validators.required]]
     });
@@ -707,12 +708,12 @@ export class QotComponent implements OnInit {
       nzFooter: null,
     });
   }
-  submitReject(){  
+  submitReject() {
     for (const i in this.editForm_Reject.controls) {
       this.editForm_Reject.controls[i].markAsDirty();
       this.editForm_Reject.controls[i].updateValueAndValidity();
     }
-   
+
     //alert(this.editForm_Reject.value["reject_reason"]);
     if (!this.editForm_Reject.value["reject_reason"]) {
       alert("拒絕原因必填");
@@ -735,9 +736,9 @@ export class QotComponent implements OnInit {
       alert('拒絕報價成功');
       this._layout.navigateTo('qotlist');
       this._router.navigate(['srm/qotlist']);
-     
+
     });
-    this.tplModal.close(); 
+    this.tplModal.close();
   }
 
   /*saveqotmatnr() {
@@ -788,7 +789,7 @@ export class QotComponent implements OnInit {
     });
 
   }*/
-  
+
 
 
   //0812
@@ -802,12 +803,12 @@ export class QotComponent implements OnInit {
 
 
   init() {
-   
+
     //alert(this.radioValue)
     //alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa='+ 'init')
-    this._srmQotService.GetQotData(this.id,this.rfqid,this.vendorid).subscribe(result => {
+    this._srmQotService.GetQotData(this.id, this.rfqid, this.vendorid).subscribe(result => {
       //console.log(result);
-      this.qotv = result;     
+      this.qotv = result;
       //console.info("resultttttttt="+this.qotv);
       //console.log(this.qotv.m);
       //console.log(this.qotv);
@@ -823,101 +824,121 @@ export class QotComponent implements OnInit {
       this.nodes = [];
       //this.nodes = [{ title: this.qotv.q[0].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
       this.nodes = [{ title: this.qotv.q[this.matnrIndex].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
-      
+
       this.qotv.m.forEach((row, index) => this.nodes[0].children.push({ title: row.matnr, key: row.matnrId.toString(), icon: 'appstore', children: [], index: index }))
 
-       //alert('status')
-       //alert(this.qotv.q[this.matnrIndex].status)
-      
-       this.IfCheck_M = false;
-       this.IfCheck_P = false;
-       this.IfCheck_S = false;
-       this.IfCheck_O = false;
-       //material
-       console.log('----*****----')
-       console.log(this.qotv.q[this.matnrIndex])
-       if(this.qotv.q[this.matnrIndex].mEmptyFlag =="X")
-       {
-         this.IfCheck_M = true;
-         this.canModifymaterial= false;
-       }
-       else
-       {
-         this.IfCheck_M = false;
-         this.canModifymaterial= true;
-       }
-       if(this.qotv.q[this.matnrIndex].pEmptyFlag =="X")
-       {
-         this.IfCheck_P = true;
-         this.canModifyprocess= false;
-       }
-       else
-       {
-         this.IfCheck_P = false;
-         this.canModifyprocess= true;
-       }
-       if(this.qotv.q[this.matnrIndex].sEmptyFlag =="X")
-       {
-         this.IfCheck_S = true;
-         this.canModifysurface= false;
-       }
-       else
-       {
-         this.IfCheck_S = false;
-         this.canModifysurface= false;
-       }
-       if(this.qotv.q[this.matnrIndex].oEmptyFlag =="X")
-       {
-         this.IfCheck_O = true;
-         this.canModifyother= false;
-       }
-       else
-       {
-         this.IfCheck_O = false;
-         this.canModifyother= true;
-       }
-       if(this.qotv.q[this.matnrIndex].status !="初始")
-       {
-          this.canModify =false;
-          this.canModifymaterial= false;
-          this.canModifyprocess= false;
-          this.canModifysurface= false;
-          this.canModifyother= false;
-       }
-       else
-       {
-          this.canModify =true;
-          this.canModifymaterial= true;
-          this.canModifyprocess= true;
-          this.canModifysurface= true;
-          this.canModifyother= true;
-       }
-       /*alert( this.IfCheck_M)
-       alert( this.IfCheck_P)
-       alert( this.IfCheck_S)
-       alert( this.IfCheck_O)*/
+      //alert('status')
+      //alert(this.qotv.q[this.matnrIndex].status)
+
+      this.IfCheck_M = false;
+      this.IfCheck_P = false;
+      this.IfCheck_S = false;
+      this.IfCheck_O = false;
+      //material
+      console.log('----*****----')
+      console.log(this.qotv.q[this.matnrIndex])
+
+      if (this.qotv.q[this.matnrIndex].status != "初始") {
+        this.canModify = false;
+        this.canModifymaterial = false;
+        this.canModifyprocess = false;
+        this.canModifysurface = false;
+        this.canModifyother = false;
+
+        if (this.qotv.q[this.matnrIndex].mEmptyFlag == "X") {
+          this.IfCheck_M = true;
+        }
+        else {
+          this.IfCheck_M = false;
+         
+        }
+        if (this.qotv.q[this.matnrIndex].pEmptyFlag == "X") {
+          this.IfCheck_P = true;
+        }
+        else {
+          this.IfCheck_P = false;
+        }
+        if (this.qotv.q[this.matnrIndex].sEmptyFlag == "X") {
+          this.IfCheck_S = true;
+        }
+        else {
+          this.IfCheck_S = false;
+        }
+        if (this.qotv.q[this.matnrIndex].oEmptyFlag == "X") {
+          this.IfCheck_O = true;
+        }
+        else {
+          this.IfCheck_O = false;
+        }
+
+      }
+      else {
+        this.canModify = true;
+        this.canModifymaterial = true;
+        this.canModifyprocess = true;
+        this.canModifysurface = true;
+        this.canModifyother = true;
+
+        if (this.qotv.q[this.matnrIndex].mEmptyFlag == "X") {
+          this.IfCheck_M = true;
+          this.canModifymaterial = false;
+
+        }
+        else {
+          this.IfCheck_M = false;
+          this.canModifymaterial = true;
+        }
+        if (this.qotv.q[this.matnrIndex].pEmptyFlag == "X") {
+          this.IfCheck_P = true;
+          this.canModifyprocess = false;
+        }
+        else {
+          this.IfCheck_P = false;
+          this.canModifyprocess = true;
+        }
+        if (this.qotv.q[this.matnrIndex].sEmptyFlag == "X") {
+          this.IfCheck_S = true;
+          this.canModifysurface = false;
+        }
+        else {
+          this.IfCheck_S = false;
+          this.canModifysurface = true;
+        }
+        if (this.qotv.q[this.matnrIndex].oEmptyFlag == "X") {
+          this.IfCheck_O = true;
+          this.canModifyother = false;
+        }
+        else {
+          this.IfCheck_O = false;
+          this.canModifyother = true;
+        }
+      }
+      /*alert( this.IfCheck_M)
+      alert( this.IfCheck_P)
+      alert( this.IfCheck_S)
+      alert( this.IfCheck_O)*/
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
     });
     //console.log('----------------------------init-----------------------------')
     console.info(this.qot);
 
-    var query={
+    var query = {
       qotid: this.id,
       matnrId: this.radioValue,
-      vendorid :this.vendorid,
-      rfqid :this.rfqid
+      vendorid: this.vendorid,
+      rfqid: this.rfqid
     };
     this._srmQotService.GetQotDetail(query).subscribe(result => {
       this.rowData_Material = result["material"];
-      this.rowData_Process  = result["process"];
-      this.rowData_Other  = result["other"];
-      this.rowData_Surface  = result["surface"];
+      this.rowData_Process = result["process"];
+      this.rowData_Other = result["other"];
+      this.rowData_Surface = result["surface"];
     });
     //console.log("init!!!!!!!!!!!!!!!")
     //console.log(this.rowData_Material)
   }
-  initGrid(){
+  initGrid() {
     this.columnDefs = [
       {
         headerName: "素材材質",
@@ -995,7 +1016,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
       }
-      
+
     ]
     this.defaultColDef = {
       filter: "agTextColumnFilter",
@@ -1055,8 +1076,8 @@ export class QotComponent implements OnInit {
         editable: this.canModify,
       }
     ]
-     /*surface*/
-     this.columnDefs_SURFACE = [
+    /*surface*/
+    this.columnDefs_SURFACE = [
       {
         headerName: "工序",
         field: "sProcess",
@@ -1093,8 +1114,8 @@ export class QotComponent implements OnInit {
         editable: this.canModify,
       }
     ]
-     /*other*/
-     this.columnDefs_OTHER = [
+    /*other*/
+    this.columnDefs_OTHER = [
       {
         headerName: "項目",
         field: "oItem",
@@ -1139,7 +1160,7 @@ export class QotComponent implements OnInit {
     //console.log(value);
     this.matnrList.setValue({ selectedMatnr: value.keys[0] });
     //if (value.node.origin.index != null) {
-      this.matnrIndex = value.node.origin.index;
+    this.matnrIndex = value.node.origin.index;
     //}
     console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     //console.log(this.matnrIndex);
@@ -1148,7 +1169,7 @@ export class QotComponent implements OnInit {
     //alert( this.qotv.q[this.matnrIndex].qotNum)
     this.search();
   }
-  
+
   search() {
     //alert('-------search-------')
     this.radioValue = this.matnrList.get('selectedMatnr').value;
@@ -1166,11 +1187,11 @@ export class QotComponent implements OnInit {
       return;
     }
     //alert('-------query-------')
-    var query={
+    var query = {
       qotid: this.id,
       matnrId: this.radioValue,
-      vendorid :this.vendorid,
-      rfqid :this.rfqid
+      vendorid: this.vendorid,
+      rfqid: this.rfqid
     };
     //alert('---------matnrId----------------');
     //alert(this.radioValue);
@@ -1190,109 +1211,121 @@ export class QotComponent implements OnInit {
       console.log(result);
       console.log([result["qot"]]);
       console.log([result["qot"]][0].status);
-      
+
       //alert([result["qot"]][0].mEmptyFlag);
       //alert([result["qot"]][0].SEmptyFlag);
-      if([result["qot"]][0].mEmptyFlag =="X")
-      {
-        this.IfCheck_M = true;
-        this.canModifymaterial= false;
+
+      if ([result["qot"]][0].status == "1") {
+        this.canModify = true;
+        this.canModifymaterial = true;
+        this.canModifyprocess = true;
+        this.canModifysurface = true;
+        this.canModifyother = true;
+
+        
+        if ([result["qot"]][0].mEmptyFlag == "X") {
+          this.IfCheck_M = true;
+          this.canModifymaterial = false;
+        }
+        else {
+          this.IfCheck_M = false;
+          this.canModifymaterial = true;
+        }
+
+        if ([result["qot"]][0].pEmptyFlag == "X") {
+          this.IfCheck_P = true;
+          this.canModifyprocess = false;
+        }
+        else {
+          this.IfCheck_P = false;
+          this.canModifyprocess = true;
+        }
+
+        if ([result["qot"]][0].sEmptyFlag == "X") {
+          this.IfCheck_S = true;
+          this.canModifysurface = false;
+        }
+        else {
+          this.IfCheck_S = false;
+          this.canModifysurface = true;
+        }
+        if ([result["qot"]][0].oEmptyFlag == "X") {
+          this.IfCheck_O = true;
+          this.canModifyother = false;
+        }
+        else {
+          this.IfCheck_O = false;
+          this.canModifyother = true;
+        }
       }
-      else
-      {
-        this.IfCheck_M = false;
-        this.canModifymaterial= true;
-      }
-      
-      if([result["qot"]][0].pEmptyFlag =="X")
-      {
-        this.IfCheck_P = true;
-        this.canModifyprocess= false;
-      }
-      else
-      {
-        //alert('---------');
-        //alert(this.IfCheck_P);
-        this.IfCheck_P = false;
-        this.canModifyprocess= true;
-        $('#chkreject_process-input').prop("checked") == false;
-      }
-      
-      if([result["qot"]][0].sEmptyFlag =="X")
-      {
-        this.IfCheck_S = true;
-        this.canModifysurface= false;
-      }
-      else
-      {
-        this.IfCheck_S = false;
-        this.canModifysurface= true;
-      }
-      if([result["qot"]][0].oEmptyFlag =="X")
-      {
-        this.IfCheck_O = true;
-        this.canModifyother= false;
-      }
-      else
-      {
-        this.IfCheck_O = false;
-        this.canModifyother= true;
+      else {
+        this.canModify = false;
+        this.canModifymaterial = false;
+        this.canModifyprocess = false;
+        this.canModifysurface = false;
+        this.canModifyother = false;
+
+        if ([result["qot"]][0].mEmptyFlag == "X") {
+          this.IfCheck_M = true;
+        }
+        else {
+          this.IfCheck_M = false;
+        }
+
+        if ([result["qot"]][0].pEmptyFlag == "X") {
+          this.IfCheck_P = true;
+        }
+        else {
+          this.IfCheck_P = false;
+        }
+
+        if ([result["qot"]][0].sEmptyFlag == "X") {
+          this.IfCheck_S = true;
+        }
+        else {
+          this.IfCheck_S = false;
+        }
+        if ([result["qot"]][0].oEmptyFlag == "X") {
+          this.IfCheck_O = true;
+        }
+        else {
+          this.IfCheck_O = false;
+        }
+
       }
 
-      if([result["qot"]][0].status == "1")
-      {
-        this.canModify = true;
-        this.canModifymaterial= true;
-        this.canModifyprocess= true;
-        this.canModifysurface= true;
-        this.canModifyother= true;
-      }
-      else
-      {
-        this.canModify = false;
-        this.canModifymaterial= false;
-        this.canModifyprocess= false;
-        this.canModifysurface= false;
-        this.canModifyother= false;
-      }
-      
     });
     //this.init();
     //console.log(result);
-       /*alert( 'search')
-       alert( this.IfCheck_M)
-       alert( this.IfCheck_P)
-       alert( this.IfCheck_S)
-       alert( this.IfCheck_O)*/
+    /*alert( 'search')
+    alert( this.IfCheck_M)
+    alert( this.IfCheck_P)
+    alert( this.IfCheck_S)
+    alert( this.IfCheck_O)*/
   }
- 
-  BackQot(){
+
+  BackQot() {
     window.open('../srm/qotlist');
   }
-  SendQot()
-  {
-    
+  SendQot() {
+
     //1.需先檢核內容
     //2.檢查通過後執行SAVE及變更狀態
     var qot = this.getqot();
-    
-    if(((qot.material.length) ==0 )&&(!$('#chkreject_material-input').prop("checked")))
-    {
-       alert('材料至少需一筆或請勾選材料不回填!'); return;
+
+    if (((qot.material.length) == 0) && (!$('#chkreject_material-input').prop("checked"))) {
+      alert('材料至少需一筆或請勾選材料不回填!'); return;
     }
-    if(((qot.process.length) ==0) &&(!$('#chkreject_process-input').prop("checked")))
-    {
-       alert('加工至少需一筆或請勾選加工不回填!'); return;
+    if (((qot.process.length) == 0) && (!$('#chkreject_process-input').prop("checked"))) {
+      alert('加工至少需一筆或請勾選加工不回填!'); return;
     }
-    if(((qot.surface.length) ==0 ) &&(!$('#chkreject_surface-input').prop("checked")))
-    {
-       alert('表面處理至少需一筆或請勾選表面處理不回填!'); return;
+    if (((qot.surface.length) == 0) && (!$('#chkreject_surface-input').prop("checked"))) {
+      alert('表面處理至少需一筆或請勾選表面處理不回填!'); return;
     }
-    if(((qot.other.length) ==0 )&&(!$('#chkreject_other-input').prop("checked")))
-    {
-       alert('其他費用至少需一筆或請勾選其他費用不回填!'); return;
+    if (((qot.other.length) == 0) && (!$('#chkreject_other-input').prop("checked"))) {
+      alert('其他費用至少需一筆或請勾選其他費用不回填!'); return;
     }
-   
+
     //material
     for (var i = 0; i < qot.material.length; i++) {
       if (!qot.material[i].mMaterial) {
@@ -1324,7 +1357,7 @@ export class QotComponent implements OnInit {
         alert("工序代碼" + qot.process[i].pProcessNum + "工時(時)格式錯誤");
         return;
       }
-      if (!qot.process[i].pPrice) {        
+      if (!qot.process[i].pPrice) {
         alert("工序代碼" + qot.process[i].pProcessNum + "單價(時)未填");
         return;
       }
@@ -1357,9 +1390,9 @@ export class QotComponent implements OnInit {
         return;
       }
     }
-   
-     //other
-     for (var i = 0; i < qot.other.length; i++) {
+
+    //other
+    for (var i = 0; i < qot.other.length; i++) {
       if (!qot.other[i].oItem) {
         alert("項目未填");
         return;
@@ -1381,45 +1414,41 @@ export class QotComponent implements OnInit {
       this._router.navigate(['srm/qotlist']);
     });
   }
-  checkCheckBoxvalue_M(event){
-    
+  checkCheckBoxvalue_M(event) {
+
     console.log('---checkCheckBoxvalue---')
     console.log(event)
     console.log(event.checked)
     //alert($('#chkreject_material-input').prop("checked"))
-    if(event.checked){
+    if (event.checked) {
       this.canModifymaterial = false;
     }
-    else
-    {
+    else {
       this.canModifymaterial = true;
     }
   }
-  
-  checkCheckBoxvalue_P(event){
-    if(event.checked){
+
+  checkCheckBoxvalue_P(event) {
+    if (event.checked) {
       this.canModifyprocess = false;
     }
-    else
-    {
+    else {
       this.canModifyprocess = true;
     }
   }
-  checkCheckBoxvalue_S(event){
-    if(event.checked){
+  checkCheckBoxvalue_S(event) {
+    if (event.checked) {
       this.canModifysurface = false;
     }
-    else
-    {
+    else {
       this.canModifysurface = true;
     }
   }
-  checkCheckBoxvalue_O(event){
-    if(event.checked){
+  checkCheckBoxvalue_O(event) {
+    if (event.checked) {
       this.canModifyother = false;
     }
-    else
-    {
+    else {
       this.canModifyother = true;
     }
   }
