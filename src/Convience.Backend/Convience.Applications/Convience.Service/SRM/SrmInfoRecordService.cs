@@ -35,35 +35,6 @@ namespace Convience.Service.SRM
         {
             int skip = (query.page - 1) * query.size;
 
-            //var infoRecordQuery = _context.SrmInforecords.AsQueryable()
-            //    .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))
-            //    .AndIfHaveValue(query.VendorId, r => r.VendorId.Equals(query.VendorId))
-            //    .AndIfHaveValue(query.Status, r => r.Status.Equals(query.Status))
-            //    .AndIfHaveValue(query.QotId, r => r.QotId.Equals(query.QotId))
-            //    .AndIfHaveValue(query.qotIds, r => query.qotIds.Contains(r.QotId.Value));
-            //var r = infoRecordQuery.Skip(skip).Take(query.size);
-
-            //var test2 = (from info in _context.SrmInforecords
-            //             select info).Where(r=>r.MatnrId==1).ToArray();
-
-            //var test = (from info in _context.SrmInforecords
-            //            join v in _context.SrmVendors on info.VendorId equals v.VendorId
-            //            join m in _context.SrmMatnrs on info.MatnrId equals m.MatnrId
-            //            select new viewSrmInfoRecord(info)
-            //            {
-            //                VendorName = v.VendorName,
-            //                MatnrName = m.SrmMatnr1,
-            //            }
-            //   )
-            //   .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))
-            //    .AndIfHaveValue(query.VendorId, r => r.VendorId.Equals(query.VendorId))
-            //    .Where(r=>r.Ekgry == "777")
-            //    .Where(r => r.MatnrName == "777")
-            //   //.AndIfHaveValue(query.Status, r => r.InfoId ==1)
-            //   //.Where(r => r.MatnrName == "1")
-            //   .ToArray();
-
-
             viewSrmInfoRecord[] view = (from info in _context.SrmInforecords
                                         join v in _context.SrmVendors on info.VendorId equals v.VendorId into vgrouping
                                         from v in vgrouping.DefaultIfEmpty()
@@ -93,10 +64,10 @@ namespace Convience.Service.SRM
                                             viewstatus = ((Status)info.Status).ToString()
                                         }
                                      )
-                .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))
-                .AndIfHaveValue(query.VendorId, r => r.VendorId.Equals(query.VendorId))
-                .AndIfHaveValue(query.Status, r => r.Status.Equals(query.Status))
-                .ToArray();
+                                     .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))
+                                     .AndIfHaveValue(query.VendorId, r => r.VendorId.Equals(query.VendorId))
+                                     .AndIfHaveValue(query.Status, r => r.Status.Equals(query.Status))
+                                     .ToArray();
 
             var result = view.Skip(skip).Take(query.size);
             return new PagingResultModel<viewSrmInfoRecord>
@@ -104,26 +75,6 @@ namespace Convience.Service.SRM
                 Data = result.ToArray(),
                 Count = view.Count()
             };
-
-                //(from rfqH in _context.SrmRfqHs
-                // join sourcer in _context.AspNetUsers on rfqH.Sourcer equals sourcer.UserName
-                // join create in _context.AspNetUsers on rfqH.CreateBy equals create.UserName
-                // where rfqH.RfqId.Equals(RfqId)
-                // select new ViewSrmRfqH
-                // {
-
-                //new PagingResultModel<SrmInforecord>{ 
-                //data
-                //}
-                //JObject obj = new JObject() {
-                //    { "data",JArray.FromObject(r)},
-                //    { "total",result.Count()}
-                //};
-                //return obj;
-
-
-                //return infoRecordQurty.ToArray();
-            }
-
+        }
     }
 }

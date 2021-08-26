@@ -10,6 +10,7 @@ import datepickerFactory from 'jquery-datepicker';
 import { NzTreeNodeOptions, NzTreeNode, NzFormatEmitEvent } from 'ng-zorro-antd/tree';
 import { ButtonRendererComponent } from './button-cell-renderer.component';
 import { SrmModule } from '../srm.module';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 declare const $: any;
 datepickerFactory($);
@@ -114,7 +115,8 @@ export class PriceComponent implements OnInit {
     , private _srmRfqService: SrmRfqService
     , private _srmPriceService: SrmPriceService
     , private _storageService: StorageService
-    , public _modalService: NzModalService,) {
+    , public _modalService: NzModalService
+    ,private _messageService: NzMessageService,  ) {
     this.frameworkComponents = {
       buttonRenderer: ButtonRendererComponent,
     }
@@ -460,7 +462,15 @@ export class PriceComponent implements OnInit {
         width: "150px",
       },
       {
-        headerName: "總計(NT)",
+        headerName: "廠商報價",
+        field: "beforePrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "summary",
+        width: "150px",
+      },
+      {
+        headerName: "議價",
         field: "price",
         enableRowGroup: true,
         cellClass: "show-cell",
@@ -649,7 +659,15 @@ export class PriceComponent implements OnInit {
       r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
       r.expirationDate = dateFormatter(this.editForm.get('expirationDate').value);
       r.note = this.editForm.get('note').value;
+
+      var selectedRows = this.gridApi_summary.getSelectedRows();
       this.gridApi_summary.setRowData(this.rowData_summary);
+
+      this.gridApi_summary.forEachLeafNode((node) => {
+        if (selectedRows.find(s => s.qotId == node.data.qotId)){
+          node.setSelected(true);
+        }
+      });
       this.tplModal.close();
     }
   }
@@ -989,7 +1007,7 @@ export class PriceComponent implements OnInit {
         width: "150px",
       },
       {
-        headerName: "加總",
+        headerName: "廠商報價",
         field: "total",
         enableRowGroup: true,
         cellClass: "show-cell",
@@ -1053,6 +1071,7 @@ export class PriceComponent implements OnInit {
     };
     this._srmPriceService.Start(obj).subscribe(result => {
       console.log("s");
+      this._messageService.success("啟動簽核成功！");
     });
     console.log(selectedRows);
   }

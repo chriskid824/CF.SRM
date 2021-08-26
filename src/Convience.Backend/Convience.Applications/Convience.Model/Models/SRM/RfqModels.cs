@@ -25,6 +25,7 @@ namespace Convience.Model.Models.SRM
         public string volume { get; set; }
         public int status { get; set; }
         public string srmMatnr { get; set; }
+        public string description { get; set; }
     }
 
     public class ViewSrmMatnr : SrmMatnr

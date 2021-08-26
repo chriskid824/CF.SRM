@@ -41,6 +41,7 @@ namespace Convience.Model.Models.SRM
             get {
                 return Atotal + Btotal + Ctotal + Dtotal;
             } } 
+        public string rfqId { get; set; }
         public string rfqNum { get; set; }
         public string qotNum { get; set; }
         public string viewstatus { get; set; }
@@ -93,11 +94,11 @@ namespace Convience.Model.Models.SRM
         public string bTotal { get; set; }
         public string cTotal { get; set; }
         public string dTotal { get; set; }
+        public string beforePrice { get; set; }
         public string price { get; set; }
         public string unit { get; set; }
         public string currency { get; set; }
         public string currencyName { get; set; }
-        public string ekgry { get; set; }
         public string leadTime { get; set; }
         public string standQty { get; set; }
         public string minQty { get; set; }
