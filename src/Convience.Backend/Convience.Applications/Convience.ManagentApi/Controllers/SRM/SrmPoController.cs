@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
@@ -31,6 +32,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetPo")]
         public string GetPo(JObject query)
         {
+            UserClaims username = User.GetUserClaims();
             if (query == null)
             {
                 return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
@@ -66,8 +68,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             QueryPoList q = new QueryPoList();
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
-            q.replyDeliveryDate_s = query["replyDeliveryDate_s"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_s"]):null;
-            q.replyDeliveryDate_e = query["replyDeliveryDate_e"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_e"]):null;
+            q.replyDeliveryDate_s = query["replyDeliveryDate_s"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_s"]) : null;
+            q.replyDeliveryDate_e = query["replyDeliveryDate_e"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_e"]) : null;
             var aaa = _srmPoService.GetPoL(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
@@ -91,7 +93,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult UpdateStatus(int id)
         {
             //int data= id.ToObject<int>();
-                _srmPoService.UpdateStatus(id, 11);
+            _srmPoService.UpdateStatus(id, 11);
             return Ok();
         }
     }

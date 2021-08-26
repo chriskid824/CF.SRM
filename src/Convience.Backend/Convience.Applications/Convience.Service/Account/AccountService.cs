@@ -71,13 +71,15 @@ namespace Convience.Service.Account
                 var isValid = await _userManager.CheckPasswordAsync(user, password);
                 if (isValid)
                 {
+                    int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
                     var pairs = new List<(string, string)>
                     {
                         (CustomClaimTypes.UserName,user.UserName),
                         (CustomClaimTypes.UserRoleIds,roleIds),
-                        (CustomClaimTypes.Name,user.Name)
+                        (CustomClaimTypes.Name,user.Name),
+                        (CustomClaimTypes.Werks,string.Join(',',werks))
                     };
-                    int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
+
                     return new ValidateCredentialsResultModel(_jwtFactory.GenerateJwtToken(pairs),
  user.Name, user.Avatar, roleIds, user.CostNo, werks);
 

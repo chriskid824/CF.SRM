@@ -5,6 +5,7 @@
         public const string Name = "name";
         public const string UserName = "username";
         public const string UserRoleIds = "userroleids";
+        public const string Werks = "werks";
 
         public const string RoleMenus = "rolemenus";
         public const string RoleMenusFront = "rolemenusfront";
