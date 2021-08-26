@@ -37,9 +37,14 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { QRCodeModule } from 'angularx-qrcode';
 import { DeliveryReceiveComponent } from './delivery-receive/delivery-receive.component';
 import { ButtonRendererComponent } from './price/button-cell-renderer.component';
+import { EditButtonComponent } from './delyvery-l/button-cell-renderer.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { DeliveryAddComponent } from './delivery-add/delivery-add.component';
+import {MatButtonModule} from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -56,6 +61,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     DeliveryModalComponent,
     DeliveryReceiveComponent,
     ButtonRendererComponent,
+    EditButtonComponent,
+    DeliveryAddComponent,
   ],
   imports: [
     CommonModule,
@@ -64,7 +71,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
       //{ path: '', pathMatch: 'full', redirectTo: 'rfq' },
       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
-      { path: "po", component: PoComponent },
+      { path: "po", component: PoComponent , canActivate: [LoginGuard]},
       { path: "deliveryh", component: PoDetailComponent },
       { path: "deliveryl", component: DelyveryLComponent },
       { path: "deliverymodal", component: DeliveryModalComponent },
@@ -97,7 +104,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     QRCodeModule,
     ZXingScannerModule,
     NzModalModule,
-    NzInputModule
+    NzInputModule,
+    NzToolTipModule,
+    MatButtonModule,
+    MatInputModule,
   ]
 })
 export class SrmModule {

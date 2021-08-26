@@ -18,7 +18,7 @@
                         <tr>
                             <th nzAlign="center" nzWidth="60px">#</th>
                             <th nzAlign="center" nzWidth="120px">名称</th>
-                            <th nzAlign="center" nzWidth="120px">上级组织</th>
+                            <th nzAlign="center" nzWidth="120px">上级組織</th>
                             <th nzAlign="center" nzWidth="200px">联系邮箱</th>
                             <th nzAlign="center" nzWidth="200px">联系电话</th>
                             <th nzAlign="center">负责人</th>
@@ -59,7 +59,7 @@
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24">上级部门</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24">                
+            <nz-form-control [nzSm]="14" [nzXs]="24">
                 <nz-tree-select [nzNodes]="tree.nodes" formControlName="upDepartment" nzVirtualHeight="400px"></nz-tree-select>
             </nz-form-control>
         </nz-form-item>

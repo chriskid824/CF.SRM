@@ -32,7 +32,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetPo")]
         public string GetPo(JObject query)
         {
-            UserClaims username = User.GetUserClaims();
+            UserClaims user = User.GetUserClaims();
             if (query == null)
             {
                 return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,

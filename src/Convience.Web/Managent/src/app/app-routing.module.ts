@@ -17,6 +17,8 @@ const routes: Routes = [
     ]
   },
   { path: "**", loadChildren: () => import("./pages/nofound/nofound.module").then(m => m.NofoundModule) },
+  { path: '404', loadChildren: () => import("./pages/nofound/nofound.module").then(m => m.NofoundModule) },
+  { path: '403', loadChildren: () => import("./pages/nofound/nofound.module").then(m => m.NofoundModule) },
 ];
 
 @NgModule({

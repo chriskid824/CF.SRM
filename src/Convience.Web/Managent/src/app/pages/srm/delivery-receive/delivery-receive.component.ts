@@ -109,8 +109,6 @@ export class DeliveryReceiveComponent implements OnInit {
           alert("此出貨項次不是該出貨單請重新選擇其他出貨項次");
         }
       }
-
-
       else
       {
 

@@ -72,12 +72,14 @@ namespace Convience.Service.Account
                 if (isValid)
                 {
                     int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
+
                     var pairs = new List<(string, string)>
                     {
                         (CustomClaimTypes.UserName,user.UserName),
                         (CustomClaimTypes.UserRoleIds,roleIds),
                         (CustomClaimTypes.Name,user.Name),
-                        (CustomClaimTypes.Werks,string.Join(',',werks))
+                        (CustomClaimTypes.Werks,string.Join(',',werks)),
+                        (CustomClaimTypes.IsVendor,CheckIsVendor(user.UserName))
                     };
 
                     return new ValidateCredentialsResultModel(_jwtFactory.GenerateJwtToken(pairs),
@@ -113,6 +115,14 @@ namespace Convience.Service.Account
                 return captchaValue == value.ToString() ? string.Empty : "验证码错误！";
             }
             return "验证码已过期！";
+        }
+        public string CheckIsVendor(string id)
+        {
+            if (Int32.TryParse(id, out int numValue))
+            {
+                return _srmContext.SrmVendors.Any(p => p.VendorId == numValue) ? "1" : "0";
+            }
+            return "0";
         }
     }
 }

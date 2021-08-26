@@ -45,6 +45,181 @@
   (firstDataRendered)="onFirstDataRendered($event)"
   (gridReady)="onGridReady($event)"
   [pagination]="true"
-  [paginationPageSize]="15"
+  [paginationPageSize]="10"
+  [frameworkComponents]="frameworkComponents"
 ></ag-grid-angular>
+
+ <!-- <nz-table #nestedTable [nzData]="rowData" [nzPageSize]="10" [nzOuterBordered]="true">
+  <thead>
+    <tr>
+      <th nzWidth="10px"></th>
+      <th>交貨單號</th>
+      <th>狀態</th>
+      <th>交貨日期</th>
+      <th>建立日期</th>
+      <th>建立人員</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="nestedTable.data">
+      <tr>
+        <td [nzExpand]="expandSet.has(data.DeliveryNum)" (nzExpandChange)="onExpandChange(data.DeliveryNum, $event)"></td>
+        <td>{{ data.DeliveryNum }}</td>
+        <td>{{ data.Status }}</td>
+        <td>{{ data.CreateDate }}</td>
+        <td>{{ data.CreateDate }}</td>
+        <td>{{ data.CreateBy }}</td>
+        <td>
+          <button nz-button nz-tooltip nzShape="circle" nzTooltipTitle="列印出貨單" nzTooltipPlacement="top" (click)="showprint(data)"><i nz-icon nzType="printer"></i></button>
+          <button nz-button nz-tooltip nzShape="circle" style="margin-left: 10px;" nzTooltipTitle="編輯" *ngIf="!editCache[data.DeliveryNum].edit"><i nz-icon nzType="edit" (click)="startEdit(data.DeliveryNum)"></i></button>
+          <button nz-button nz-tooltip nzShape="circle" style="margin-left: 10px;" nzTooltipTitle="保存" *ngIf="editCache[data.DeliveryNum].edit"><i nz-icon nzType="check" (click)="saveEdit(data.DeliveryNum)"></i></button>
+          <button nz-button nz-tooltip nzShape="circle" style="margin-left: 10px;" nzTooltipTitle="取消" *ngIf="editCache[data.DeliveryNum].edit"><i nz-icon nzType="close" (click)="cancelEdit(data.DeliveryNum)"></i></button>
+        </td>
+      </tr>
+      <tr [nzExpand]="expandSet.has(data.DeliveryNum)">
+        <ng-container *ngIf="!editCache[data.DeliveryNum]||!editCache[data.DeliveryNum].edit; else editTemplate">
+          <nz-table #innerTable [nzData]="data.SrmDeliveryLs" nzSize="middle" [nzShowPagination]="false" [nzOuterBordered]="true">
+            <thead>
+              <tr>
+                <th>項次</th>
+                <th>物料</th>
+                <th>物料說明</th>
+                <th>採購單碼</th>
+                <th>採購項次</th>
+                <th>交貨數量</th>
+                <th>已品檢數量</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of innerTable.data">
+                <td>{{ data.DeliveryLId }}</td>
+                <td>{{ data.Matnr }}</td>
+                <td>{{ data.Description }}</td>
+                <td>{{ data.PoNum }}</td>
+                <td>{{ data.PoLId }}</td>
+                <td>{{ data.DeliveryQty }}</td>
+                <td>{{ data.QmQty }}</td>
+                <td>
+                  <button nz-button nz-tooltip nzShape="circle" style="margin-left: 10px;" nzTooltipTitle="編輯"><i nz-icon nzType="edit"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </ng-container>
+        <ng-template #editTemplate>
+          <nz-table #innerTable2 [nzData]="editCache[data.DeliveryNum].data.SrmDeliveryLs" nzSize="middle" [nzShowPagination]="false" [nzOuterBordered]="true">
+            <thead>
+              <tr>
+                <th>項次</th>
+                <th>物料</th>
+                <th>物料說明</th>
+                <th>採購單碼</th>
+                <th>採購項次</th>
+                <th>交貨數量</th>
+                <th>已品檢數量</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of innerTable2.data">
+                <td>{{ data.DeliveryLId }}</td>
+                <td>{{ data.Matnr }}</td>
+                <td>{{ data.Description }}</td>
+                <td><input type="text" nz-input [(ngModel)]="data.PoNum" /></td>
+                <td><input type="text" nz-input [(ngModel)]="data.PoLId" /></td>
+                <td><input type="text" nz-input [(ngModel)]="data.DeliveryQty" /></td>
+                <td>{{ data.QmQty }}</td>
+                <td>
+                  <button nz-button nz-tooltip nzShape="circle" style="margin-left: 10px;" nzTooltipTitle="編輯"><i nz-icon nzType="edit"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </ng-template>
+      </tr>
+</ng-template>
+  </tbody>
+</nz-table> -->
+
 </nz-card>
+<ng-template #ctest1>
+  <span *ngIf="isedit">修改項次</span>
+  <span *ngIf="!isedit">新增項次</span>
+</ng-template>
+<ng-template #ctest2>
+  <form nz-form [formGroup]="editForm" (ngSubmit)="edit()">
+    <nz-form-item *ngIf="false">
+      <nz-form-label>DeliveryId</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="DeliveryId" formControlName="DeliveryId"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">項次</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="DeliveryLIdErrorTpl">
+        <input nz-input placeholder="項次" formControlName="DeliveryLId"
+               autocomplete="off">
+        <ng-template #DeliveryLIdErrorTpl let-control>
+          <!-- <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container> -->
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">物料</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="MatnrErrorTpl">
+        <input nz-input placeholder="物料" formControlName="Matnr"
+               autocomplete="off" />
+      </nz-form-control>
+      <ng-template #MatnrErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+      </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">採購單碼</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
+        <!--<input nz-input placeholder="幣別" formControlName="unit"
+      autocomplete="off" />-->
+        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="選擇採購單" formControlName="PoNum" [(nzOptions)]="PoNumOption" (ngModelChange)="onChange($event)" [(ngModel)]="PoNum">
+          <!-- <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option> -->
+        </nz-select>
+        <input *ngIf="isedit" nz-input placeholder="選擇採購單" formControlName="PoNum"
+        autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzErrorTip="欄位必填">採購項次</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
+       autocomplete="off" />-->
+        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="採購項次" formControlName="PoLId" [(nzOptions)]="PoLIdOption">
+          <!-- <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option> -->
+        </nz-select>
+        <input *ngIf="isedit" nz-input placeholder="採購項次" formControlName="PoLId"
+        autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">交貨數量</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="DeliveryQtyErrorTpl">
+        <input nz-input placeholder="交貨數量" formControlName="DeliveryQty"
+               autocomplete="off" />
+        <ng-template #DeliveryQtyErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary">提交</button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />

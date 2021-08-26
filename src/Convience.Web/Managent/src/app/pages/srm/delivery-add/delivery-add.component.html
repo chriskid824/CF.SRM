@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>新增採購項次</h1>
+<div mat-dialog-content>
+  <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購單號" [(ngModel)]="data.PoNum" style="width: 150px;" [(nzOptions)]="PoNumOption" (ngModelChange)="onChange($event)"></nz-select>
+  <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購項次" [(ngModel)]="data.PoLId" style="width: 150px;margin-left: 10px;" [(nzOptions)]="PoLIdOption"></nz-select>
+  <!-- <p>What's your favorite animal?</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Favorite Animal</mat-label>
+    <input matInput [(ngModel)]="data.animal">
+  </mat-form-field> -->
+</div>
+<div mat-dialog-actions style="float:right">
+  <button mat-button (click)="onNoClick()">取消</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>新增</button>
+</div>

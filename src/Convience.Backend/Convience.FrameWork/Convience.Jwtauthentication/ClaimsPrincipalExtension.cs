@@ -10,6 +10,7 @@ namespace Convience.JwtAuthentication
         public string UserRoleIds;
         public string Name;
         public string UserName;
+        public bool IsVendor;
     }
     public static class ClaimsPrincipalExtension
     {
@@ -35,6 +36,11 @@ namespace Convience.JwtAuthentication
             return claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Werks)
                 ?.Value ?? string.Empty;
         }
+        public static bool GetIsVendor(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IsVendor)
+                ?.Value == "1";
+        }
 
         public static string GetUserSchema(this ClaimsPrincipal claimsPrincipal)
         {
@@ -53,6 +59,8 @@ namespace Convience.JwtAuthentication
                 ?.Value ?? string.Empty,
                 Werks = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Werks)
 ?.Value.Split(',').Select(n => System.Convert.ToInt32(n)).ToArray() ?? null,
+                IsVendor = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IsVendor)
+                ?.Value == "1"
             };
         }
     }
