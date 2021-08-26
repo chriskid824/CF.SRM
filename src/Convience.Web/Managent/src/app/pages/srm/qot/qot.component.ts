@@ -824,7 +824,7 @@ export class QotComponent implements OnInit {
       //this.nodes = [{ title: this.qotv.q[0].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
       this.nodes = [{ title: this.qotv.q[this.matnrIndex].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
       
-      this.qotv.m.forEach((row, index) => this.nodes[0].children.push({ title: row.matnr, key: row.matnrId.toString(), iicon: 'appstore', children: [], index: index }))
+      this.qotv.m.forEach((row, index) => this.nodes[0].children.push({ title: row.matnr, key: row.matnrId.toString(), icon: 'appstore', children: [], index: index }))
 
        //alert('status')
        //alert(this.qotv.q[this.matnrIndex].status)
