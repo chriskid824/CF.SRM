@@ -129,8 +129,10 @@ namespace Convience.Service.SRM
                               TotalAmount = poh.TotalAmount,
                               StatusDesc = status.StatusDesc,
                               VendorName = vendor.VendorName,
+                              SapVendor=vendor.SapVendor,
                               //SrmPoLs = poh.SrmPoLs,
                           })
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor==query.user.GetUserName())
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();

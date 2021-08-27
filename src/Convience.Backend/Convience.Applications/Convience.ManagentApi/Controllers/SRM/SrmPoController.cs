@@ -46,6 +46,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
             q.buyer = query["buyer"].ToString();
+            q.user = User;
             var aaa = _srmPoService.GetAll(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,

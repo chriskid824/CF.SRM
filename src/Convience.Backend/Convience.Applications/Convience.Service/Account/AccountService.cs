@@ -118,11 +118,11 @@ namespace Convience.Service.Account
         }
         public string CheckIsVendor(string id)
         {
-            if (Int32.TryParse(id, out int numValue))
-            {
-                return _srmContext.SrmVendors.Any(p => p.VendorId == numValue) ? "1" : "0";
-            }
-            return "0";
+            //if (Int32.TryParse(id, out int numValue))
+            // {
+            return _srmContext.SrmVendors.Any(p => p.SapVendor == id) ? "1" : "0";
+            //}
+            //return "0";
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Convience.Model.Models.SRM
         public DateTime? replyDeliveryDate_s { get; set; }
         public int status { get; set; }
         public string host { get; set; }
+        public System.Security.Claims.ClaimsPrincipal user { get; set; }
     }
 
     public class ViewSrmDeliveryH : SrmDeliveryH
@@ -62,6 +63,7 @@ namespace Convience.Model.Models.SRM
         public string StatusDesc { get; set; }
         public string VendorName { get; set; }
         public string OrgName { get; set; }
+        public string SapVendor { get; set; }
         new public virtual ICollection<ViewSrmPoL> SrmPoLs { get; set; }
     }
 }
