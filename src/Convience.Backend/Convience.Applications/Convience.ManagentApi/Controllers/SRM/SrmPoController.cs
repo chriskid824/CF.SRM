@@ -72,6 +72,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.status = query["status"] == null ? 0 : (int)query["status"];
             q.replyDeliveryDate_s = (query["replyDeliveryDate_s"] == null || !query["replyDeliveryDate_s"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_s"]);
             q.replyDeliveryDate_e = (query["replyDeliveryDate_e"] == null || !query["replyDeliveryDate_e"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_e"]);
+            q.user = User;
             var aaa = _srmPoService.GetPoL(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,

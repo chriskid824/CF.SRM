@@ -52,6 +52,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.deliveryNum = query["deliveryNum"].ToString();
             q.status = (int)query["status"];
             q.host = Request.Headers["Referer"].ToString() + "srm/deliveryreceive";
+            q.user = User;
             var aaa = _srmPoService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
@@ -70,6 +71,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             //var aaa = query.Property("poNum");
             q.deliveryNum = query["deliveryNum"].ToString();
             q.deliveryLId = string.IsNullOrWhiteSpace(query["deliveryLId"].ToString()) ? 0 : (int)query["deliveryLId"];
+            q.user = User;
             if (string.IsNullOrWhiteSpace(q.deliveryNum) && q.deliveryLId == 0) return null;
             var aaa = _srmPoService.GetDelivery(q);
 
