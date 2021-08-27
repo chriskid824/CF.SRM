@@ -18,7 +18,7 @@
     <nz-form-item>
       <nz-form-label [nzFor]="'qotstatus'">報價狀態</nz-form-label>
       <nz-form-control>
-        <nz-select [formControlName]="'qotstatus'"  style="width: 100px;">
+        <nz-select [formControlName]="'qotstatus'"  style="width: 100px;" ngModel="1">
           <nz-option nzValue="0" nzLabel="全部"></nz-option>
           <nz-option nzValue="1" nzLabel="初始"></nz-option><!--初始、儲存-->
           <!--<nz-option nzValue="20" nzLabel="已回覆"></nz-option>-->       

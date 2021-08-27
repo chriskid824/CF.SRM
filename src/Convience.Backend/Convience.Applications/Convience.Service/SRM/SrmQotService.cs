@@ -492,7 +492,7 @@ namespace Convience.Service.SRM
                               .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status) //0827
                               .ToList();            
             });
-            return result;
+            return result.Where(p => p.SrmQotHs.Count > 0).ToList(); 
         }
 
         /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
