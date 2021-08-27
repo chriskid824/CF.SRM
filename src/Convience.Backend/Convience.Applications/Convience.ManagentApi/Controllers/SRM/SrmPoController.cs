@@ -66,10 +66,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                     });
             }
             QueryPoList q = new QueryPoList();
-            q.poNum = query["poNum"].ToString();
-            q.status = (int)query["status"];
-            q.replyDeliveryDate_s = query["replyDeliveryDate_s"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_s"]) : null;
-            q.replyDeliveryDate_e = query["replyDeliveryDate_e"].HasValues ? Convert.ToDateTime(query["replyDeliveryDate_e"]) : null;
+            q.poNum = query["poNum"] == null ? null : query["poNum"].ToString();
+            q.poLId = query["poLId"] == null ? 0 : (int)query["poLId"];
+            q.status = query["status"] == null ? 0 : (int)query["status"];
+            q.replyDeliveryDate_s = (query["replyDeliveryDate_s"] == null || !query["replyDeliveryDate_s"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_s"]);
+            q.replyDeliveryDate_e = (query["replyDeliveryDate_e"] == null || !query["replyDeliveryDate_e"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_e"]);
             var aaa = _srmPoService.GetPoL(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,

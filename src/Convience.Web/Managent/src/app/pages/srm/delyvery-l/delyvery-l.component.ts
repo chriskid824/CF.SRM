@@ -47,6 +47,7 @@ export class DelyveryLComponent implements OnInit {
   PoNumOption = [];
   PoLIdOption=[];
   PoList;
+  currenPoLID;
   @ViewChild('ctest1')
   ctest1: TemplateRef<any>;
 
@@ -302,7 +303,6 @@ export class DelyveryLComponent implements OnInit {
       },
 
       getDetailRowData: function (params) {
-        console.info(params);
         params.successCallback(params.data.SrmDeliveryLs);
 
       },
@@ -350,7 +350,32 @@ export class DelyveryLComponent implements OnInit {
       newoptions2.push({label:poLIdList[poL].PoLId.toString(),value:poLIdList[poL].PoLId.toString()});
     }
     this.PoLIdOption=newoptions2;
-    console.info(this.PoLIdOption);
+  }
+  onPoLIdChange(value) {
+    var PoNum=this.editForm.get('PoNum').value;
+    var PoLId=this.editForm.get('PoLId').value;
+    if(PoNum==null||PoLId==null||this.currenPoLID==PoLId)
+    { return; }
+    this.currenPoLID=PoLId;
+    var PoLItem= this.PoList.find(p=>p.PoNum==PoNum &&p.PoLId==PoLId);
+    console.info(PoLItem.PoLId);
+    this.editForm.setValue({
+      DeliveryId: this.editForm.get('DeliveryId').value,
+      DeliveryLId: null
+      , Matnr: PoLItem.Matnr
+      , PoNum: PoLItem.PoNum
+      , PoLId: PoLItem.PoLId
+      , DeliveryQty: PoLItem.DeliveryQty
+    });
+    console.info(this.editForm.get('PoLId').value);
+    // var query = {
+    //   poNum: PoNum,
+    //   poLId: PoLId,
+    // }
+    // this._srmPoService.GetPoL(query)
+    //   .subscribe((result) => {
+    //     console.info(result);
+    //   });
   }
   expandSet = new Set<string>();
   onExpandChange(id: string, checked: boolean): void {
@@ -487,7 +512,6 @@ export class DelyveryLComponent implements OnInit {
   cancel(e) {
   }
   start(e){
-    console.info(e);
     this.isedit=true;
     this.editForm = this._formBuilder.group({
       DeliveryId: [{value:null,disabled: true}, [Validators.required]],
@@ -506,7 +530,6 @@ export class DelyveryLComponent implements OnInit {
       , PoLId: e.rowData.PoLId
       , DeliveryQty: e.rowData.DeliveryQty
     });
-console.info(this.editForm);
     this.tplModal = this._modalService.create({
       nzTitle: this.ctest1,
       nzContent: this.ctest2,
@@ -527,7 +550,7 @@ console.info(this.editForm);
        this.editForm.controls[i].updateValueAndValidity();
      }
      if (this.editForm.valid) {
-       var r = this.rowData.find(r => r.DeliveryId == this.editForm.get('DeliveryId').value).SrmDeliveryLs.find(p=>p.DeliveryLId==this.editForm.get('DeliveryLId').value);
+       var r = this.rowData.find(r => r.DeliveryId == this.editForm.get('DeliveryId').value).SrmDeliveryLs.find(p=>p.PoLId==this.editForm.get('PoLId').value);
        r.DeliveryQty = this.editForm.get('DeliveryQty').value;
     //   r.standQty = this.editForm.get('standQty').value;
     //   r.minQty = this.editForm.get('minQty').value;
@@ -540,7 +563,6 @@ console.info(this.editForm);
     //   r.note = this.editForm.get('note').value;
 
        var selectedRows = this.gridApi.getRenderedNodes();
-       console.info(selectedRows);
        this.gridApi.setRowData(this.rowData);
 
        this.gridApi.forEachLeafNode((node) => {

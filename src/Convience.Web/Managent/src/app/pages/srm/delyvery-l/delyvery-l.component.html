@@ -196,7 +196,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
        autocomplete="off" />-->
-        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="採購項次" formControlName="PoLId" [(nzOptions)]="PoLIdOption">
+        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="採購項次" formControlName="PoLId" [(nzOptions)]="PoLIdOption" (ngModelChange)="onPoLIdChange($event)">
           <!-- <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option> -->
         </nz-select>
         <input *ngIf="isedit" nz-input placeholder="採購項次" formControlName="PoLId"

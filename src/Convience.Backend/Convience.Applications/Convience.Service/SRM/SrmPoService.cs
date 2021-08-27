@@ -249,6 +249,7 @@ namespace Convience.Service.SRM
                               Matnr = matnr.SapMatnr
                           })
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                              .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                 .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();

@@ -49,7 +49,7 @@ namespace Convience.JwtAuthentication
         }
         public static UserClaims GetUserClaims(this ClaimsPrincipal claimsPrincipal)
         {
-            return new UserClaims()
+            var userclaim = new UserClaims()
             {
                 Name = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Name)
                 ?.Value ?? string.Empty,
@@ -57,11 +57,17 @@ namespace Convience.JwtAuthentication
                 ?.Value ?? string.Empty,
                 UserRoleIds = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserRoleIds)
                 ?.Value ?? string.Empty,
-                Werks = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Werks)
-?.Value.Split(',').Select(n => System.Convert.ToInt32(n)).ToArray() ?? null,
+                Werks = null,
                 IsVendor = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IsVendor)
                 ?.Value == "1"
             };
+            string Werks = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Werks)
+ ?.Value ?? null;
+            if (!string.IsNullOrWhiteSpace(Werks))
+            {
+                userclaim.Werks = Werks.Split(',').Select(n => System.Convert.ToInt32(n)).ToArray();
+            }
+            return userclaim;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Convience.Model.Models.SRM
         public int deliveryLId { get; set; }
         public string deliveryNum { get; set; }
         public string poNum { get; set; }
+        public int poLId { get; set; }
         public DateTime? replyDeliveryDate_e { get; set; }
         public DateTime? replyDeliveryDate_s { get; set; }
         public int status { get; set; }
