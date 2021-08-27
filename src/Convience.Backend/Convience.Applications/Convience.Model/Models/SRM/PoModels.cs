@@ -42,6 +42,9 @@ namespace Convience.Model.Models.SRM
         public float? Qty { get; set; }
         public string WoItem { get; set; }
         public string WoNum { get; set; }
+        public int VendorId { get; set; }
+        public string VendorName { get; set; }
+        public string SapVendor { get; set; }
         public string Url { get { return this.DeliveryId + "/" + this.DeliveryLId; } }
     }
 
@@ -57,6 +60,7 @@ namespace Convience.Model.Models.SRM
         public int? VendorId { get; set; }
         public string VendorName { get; set; }
         public string StatusDesc { get; set; }
+        public string SapVendor { get; set; }
     }
     public class ViewSrmPoH : SrmPoH
     {

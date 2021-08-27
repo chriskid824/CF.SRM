@@ -129,10 +129,10 @@ namespace Convience.Service.SRM
                               TotalAmount = poh.TotalAmount,
                               StatusDesc = status.StatusDesc,
                               VendorName = vendor.VendorName,
-                              SapVendor=vendor.SapVendor,
+                              SapVendor = vendor.SapVendor,
                               //SrmPoLs = poh.SrmPoLs,
                           })
-                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor==query.user.GetUserName())
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
@@ -192,6 +192,7 @@ namespace Convience.Service.SRM
                                    join pol in _context.SrmPoLs on new { PoId = l.PoId.Value, PoLId = l.PoLId.Value } equals new { PoId = pol.PoId, PoLId = pol.PoLId }
                                    join poh in _context.SrmPoHs on l.PoId equals poh.PoId
                                    join matnr in _context.SrmMatnrs on pol.MatnrId equals matnr.MatnrId
+                                   join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
                                    select new ViewSrmDeliveryL
                                    {
                                        DeliveryLId = l.DeliveryLId,
@@ -204,16 +205,24 @@ namespace Convience.Service.SRM
                                        Matnr = matnr.SapMatnr,
                                        PoNum = poh.PoNum,
                                        Qty = pol.Qty,
+                                       SapVendor = vendor.SapVendor,
+                                       VendorName = vendor.VendorName,
+                                       VendorId = vendor.VendorId,
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
                                    })
                                    .Where(l => l.DeliveryId == p.DeliveryId)
+                                   .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                                    .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), l => l.PoNum.IndexOf(query.poNum) > -1).ToList()
                                    .AndIfCondition(query.deliveryLId != 0, l => l.DeliveryLId == query.deliveryLId)
                                    .ToList();
+                if (p.SrmDeliveryLs.Count > 0)
+                {
+                    p.VendorName = p.SrmDeliveryLs.First().VendorName;
+                }
             });
-            return result;
+            return result.Where(p => p.SrmDeliveryLs.Count > 0).ToList();
         }
 
         public IEnumerable<SrmPoH> GetMatnrById(int id)
@@ -245,11 +254,13 @@ namespace Convience.Service.SRM
                               Status = h.Status,
                               VendorId = h.VendorId,
                               VendorName = vendor.VendorName,
+                              SapVendor = vendor.SapVendor,
                               TotalAmount = h.TotalAmount,
                               Buyer = h.Buyer,
                               StatusDesc = status.StatusDesc,
                               Matnr = matnr.SapMatnr
                           })
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
