@@ -451,7 +451,7 @@ namespace Convience.Service.SRM
 
                           })
                         .Where(p => p.VVendor == query.vendor)
-                        .Where(p => p.VStatus == 7)
+                            //.Where(p => p.VStatus == 7) //0827
                             //.Where()
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
                             //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
@@ -489,7 +489,7 @@ namespace Convience.Service.SRM
                               .Where(l => l.QRfqId.Value == p.VRfqId)
                           
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
-                              //.AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status) //0827
                               .ToList();            
             });
             return result;
