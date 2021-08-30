@@ -39,6 +39,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmCurrency> SrmCurrencies { get; set; }
         public virtual DbSet<SrmTaxcode> SrmTaxcodes { get; set; }
         public virtual DbSet<SrmStatus> SrmStatuses { get; set; }
+        public virtual DbSet<SrmProcess> SrmProcesss { get; set; }
+        public virtual DbSet<SrmMaterial> SrmMaterials { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -945,6 +947,35 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("STATUS_DESC")
                     .HasComment("說明");
+            });
+            
+            modelBuilder.Entity<SrmProcess>(entity =>
+            {
+                entity.HasKey(e => e.ProcessNum);
+
+                entity.ToTable("SRM_PROCESS");
+
+                entity.Property(e => e.ProcessNum).HasColumnName("PROCESS_NUM");
+
+                entity.Property(e => e.Process)
+                    .HasMaxLength(50)
+                    .HasColumnName("PROCESS");
+
+                entity.Property(e => e.Staus).HasColumnName("STAUS");
+            });
+            modelBuilder.Entity<SrmMaterial>(entity =>
+            {
+                entity.HasKey(e => e.MaterialNum);
+
+                entity.ToTable("SRM_MATERIAL");
+
+                entity.Property(e => e.MaterialNum).HasColumnName("MATERIAL_NUM");
+
+                entity.Property(e => e.Material)
+                    .HasMaxLength(50)
+                    .HasColumnName("MATERIAL");
+
+                entity.Property(e => e.Staus).HasColumnName("STAUS");
             });
             OnModelCreatingPartial(modelBuilder);
         }

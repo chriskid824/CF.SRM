@@ -394,8 +394,10 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
-            <input [attr.id]="'add_material_name'" formControlName="material_name" nz-input placeholder="素材材質"
-              autocomplete="off" />
+            <nz-select [formControlName]="'material_name'"  style="width: 100px;">
+              <nz-option nzValue="1" nzLabel="鐵"></nz-option>
+              <nz-option nzValue="2" nzLabel="不鏽鋼"></nz-option>
+            </nz-select>
           </nz-form-control>
         </td>
       </tr>
@@ -527,9 +529,18 @@
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序代碼</nz-form-label>
         </td>
         <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
+          <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
             <input [attr.id]="'edit_process_no'" formControlName="process_no" nz-input placeholder="工序代碼"
               autocomplete="off" />
+          </nz-form-control>-->
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
+            <nz-select [formControlName]="'process_no'"  style="width: 100px;">
+              <nz-option nzValue="1" nzLabel="粗銑"></nz-option>
+              <nz-option nzValue="2" nzLabel="精修"></nz-option>
+              <nz-option nzValue="3" nzLabel="去毛邊"></nz-option>
+              <nz-option nzValue="4" nzLabel="陽極/EP"></nz-option>
+              <nz-option nzValue="5" nzLabel="全檢"></nz-option>
+            </nz-select>
           </nz-form-control>
         </td>
       </tr>
