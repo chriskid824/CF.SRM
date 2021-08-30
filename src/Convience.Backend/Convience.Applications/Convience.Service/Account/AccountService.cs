@@ -71,7 +71,11 @@ namespace Convience.Service.Account
                 var isValid = await _userManager.CheckPasswordAsync(user, password);
                 if (isValid)
                 {
-                    int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
+                    //int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
+                    List<string> roleidarr = roleIds.Split(',').ToList();
+                    //var rolenames = _srmContext.AspNetRoles.Where(p => (',' + roleIds + ',').IndexOf(',' + p.Id.ToString() + ',') > -1).Select(p => p.Name).ToList();
+                    string rolenames = string.Join(',', _srmContext.AspNetRoles.Where(p => roleidarr.Contains(p.Id.ToString())).Select(p => p.Name));
+                    int[] werks = GetWerks(rolenames);
 
                     var pairs = new List<(string, string)>
                     {
@@ -123,6 +127,25 @@ namespace Convience.Service.Account
             return _srmContext.SrmVendors.Any(p => p.SapVendor == id) ? "1" : "0";
             //}
             //return "0";
+        }
+        public int[] GetWerks(string roleIds)
+        {
+            if (string.IsNullOrEmpty(roleIds)) return null;
+            string[] roleidlist = roleIds.Split(',');
+            List<int> werklist = new List<int>();
+            foreach (string id in roleidlist)
+            {
+                if (!string.IsNullOrWhiteSpace(id) && id.Length >= 4)
+                {
+                    string werk = id.Substring(0, 4);
+                    if (werk.All(char.IsDigit))
+                    {
+                        werklist.Add(Convert.ToInt32(werk));
+                    }
+                }
+            }
+            if (werklist.Count == 0) return new int[] { 1100, 1200, 3100 };
+            return werklist.ToArray();
         }
     }
 }
