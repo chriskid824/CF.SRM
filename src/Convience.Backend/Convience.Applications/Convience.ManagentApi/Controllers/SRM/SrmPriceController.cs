@@ -242,7 +242,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 
 
 
-        public void RunBorg(viewSrmInfoRecord[] infos)
+        private void RunBorg(viewSrmInfoRecord[] infos)
         {
             BasicHttpBinding binding = new BasicHttpBinding();
 
