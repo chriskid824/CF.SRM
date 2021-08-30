@@ -32,4 +32,10 @@ export class SrmQotService {
   GetRowNum(qot) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetRowNum`,qot );
   }
+  GetProcess() {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetProcess`, null);
+  }
+  GetMaterial() {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetMaterial`, null);
+  }
 }

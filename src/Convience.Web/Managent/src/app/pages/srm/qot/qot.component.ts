@@ -112,6 +112,8 @@ export class QotComponent implements OnInit {
   IfCheck_O; //為顯示不回填
   nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
+  ProcessList;
+  MaterialList;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -141,6 +143,8 @@ export class QotComponent implements OnInit {
 
   //this.rowData_MATNR = [];
   ngOnInit(): void {
+    this.initProcess();
+    this.initMaterial();
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     //alert(this.qotId)
     this.matnrIndex = 0;
@@ -401,8 +405,11 @@ export class QotComponent implements OnInit {
       this.editForm_Process.controls[i].markAsDirty();
       this.editForm_Process.controls[i].updateValueAndValidity();
     }
+
+ 
     //alert(this.editForm_Process.valid)
     if (this.editForm_Process.valid) {
+     
       this.editedProcess.processno = this.editForm_Process.value['process_no'];
       this.editedProcess.price = this.editForm_Process.value['process_cost'];
       this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
@@ -637,6 +644,7 @@ export class QotComponent implements OnInit {
     qot.q.PEmptyFlag = ($('#chkreject_process-input').prop("checked")) ? "X" : "";
     qot.q.SEmptyFlag = ($('#chkreject_surface-input').prop("checked")) ? "X" : "";
     qot.q.OEmptyFlag = ($('#chkreject_other-input').prop("checked")) ? "X" : "";
+    //alert(qot.q.OEmptyFlag)
     /*
     var rfq = {
       h: null, m: null, v: null
@@ -834,6 +842,7 @@ export class QotComponent implements OnInit {
       this.IfCheck_P = false;
       this.IfCheck_S = false;
       this.IfCheck_O = false;
+      //alert('1' +this.IfCheck_O )
       //material
       console.log('----*****----')
       console.log(this.qotv.q[this.matnrIndex])
@@ -905,6 +914,7 @@ export class QotComponent implements OnInit {
           this.canModifysurface = true;
         }
         if (this.qotv.q[this.matnrIndex].oEmptyFlag == "X") {
+          
           this.IfCheck_O = true;
           this.canModifyother = false;
         }
@@ -1032,7 +1042,7 @@ export class QotComponent implements OnInit {
     /*process*/
     this.columnDefs_PROCESS = [
       {
-        headerName: "工序代碼",
+        headerName: "工序",
         field: "pProcessNum",
         enableRowGroup: true,
         cellClass: "show-cell",
@@ -1291,17 +1301,10 @@ export class QotComponent implements OnInit {
         else {
           this.IfCheck_O = false;
         }
-
+        //alert(this.IfCheck_O)
       }
 
     });
-    //this.init();
-    //console.log(result);
-    /*alert( 'search')
-    alert( this.IfCheck_M)
-    alert( this.IfCheck_P)
-    alert( this.IfCheck_S)
-    alert( this.IfCheck_O)*/
   }
 
   BackQot() {
@@ -1346,23 +1349,23 @@ export class QotComponent implements OnInit {
     //process
     for (var i = 0; i < qot.process.length; i++) {
       if (!qot.process[i].pProcessNum) {
-        alert("工序代碼未填");
+        alert("工序未填");
         return;
       }
       if (!qot.process[i].pHours) {
-        alert("工序代碼" + qot.process[i].pProcessNum + "工時(時)未填");
+        alert("工序" + qot.process[i].pProcessNum + "工時(時)未填");
         return;
       }
       if (isNaN(qot.process[i].pHours)) {
-        alert("工序代碼" + qot.process[i].pProcessNum + "工時(時)格式錯誤");
+        alert("工序" + qot.process[i].pProcessNum + "工時(時)格式錯誤");
         return;
       }
       if (!qot.process[i].pPrice) {
-        alert("工序代碼" + qot.process[i].pProcessNum + "單價(時)未填");
+        alert("工序" + qot.process[i].pProcessNum + "單價(時)未填");
         return;
       }
       if (isNaN(qot.process[i].pPrice)) {
-        alert("工序代碼" + qot.process[i].pProcessNum + "單價(時)格式錯誤");
+        alert("工序" + qot.process[i].pProcessNum + "單價(時)格式錯誤");
         return;
       }
     }
@@ -1451,5 +1454,18 @@ export class QotComponent implements OnInit {
     else {
       this.canModifyother = true;
     }
+  }
+  initProcess() {
+    this._srmQotService.GetProcess().subscribe(result => {
+      console.log('----process----');
+      console.log(result);
+      this.ProcessList = result;
+    });
+  }
+  initMaterial() {
+    this._srmQotService.GetMaterial().subscribe(result => {
+      console.log(result);
+      this.MaterialList = result;
+    });
   }
 }

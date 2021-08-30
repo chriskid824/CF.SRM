@@ -394,11 +394,17 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="素材材質" formControlName="material_name" style="width: 94px">
+              <nz-option *ngFor="let option of MaterialList" [nzLabel]="option.material" [nzValue]="option.material"></nz-option>
+            </nz-select>
+            </nz-form-control>
+
+          <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
             <nz-select [formControlName]="'material_name'"  style="width: 100px;">
               <nz-option nzValue="1" nzLabel="鐵"></nz-option>
               <nz-option nzValue="2" nzLabel="不鏽鋼"></nz-option>
             </nz-select>
-          </nz-form-control>
+          </nz-form-control>-->
         </td>
       </tr>
       <tr>
@@ -526,7 +532,7 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序代碼</nz-form-label>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序</nz-form-label>
         </td>
         <td>
           <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
@@ -534,6 +540,12 @@
               autocomplete="off" />
           </nz-form-control>-->
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="process_no"style="width: 94px">
+            <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum"></nz-option>
+          </nz-select>
+          </nz-form-control>
+          
+          <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
             <nz-select [formControlName]="'process_no'"  style="width: 100px;">
               <nz-option nzValue="1" nzLabel="粗銑"></nz-option>
               <nz-option nzValue="2" nzLabel="精修"></nz-option>
@@ -541,7 +553,7 @@
               <nz-option nzValue="4" nzLabel="陽極/EP"></nz-option>
               <nz-option nzValue="5" nzLabel="全檢"></nz-option>
             </nz-select>
-          </nz-form-control>
+          </nz-form-control>-->
         </td>
       </tr>
       <tr>
@@ -617,8 +629,12 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_nameErrorTpl">
-            <input [attr.id]="'edit_surface_name'" formControlName="surface_name" nz-input placeholder="工序"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="surface_name"style="width: 94px">
+              <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum" (ngModelChange)="checktype($event)"></nz-option>
+            </nz-select>
+
+            <!--<input [attr.id]="'edit_surface_name'" formControlName="surface_name" nz-input placeholder="工序"
+              autocomplete="off" (ngModelChange)="checktype($event)" />-->
           </nz-form-control>
         </td>
       </tr>

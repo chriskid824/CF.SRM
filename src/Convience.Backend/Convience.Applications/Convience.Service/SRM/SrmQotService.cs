@@ -46,6 +46,8 @@ namespace Convience.Service.SRM
         public bool CheckAllQot(SrmQotH qotH);
         public void UpdateRfqStatus(int status, SrmQotUpdateMaterial qoth);
         public int GetRowNum(SrmQotH qotH);
+        public SrmProcess[] GetProcess();
+        public SrmMaterial[] GetMaterial();
     }
     public class SrmQotService : ISrmQotService
     {
@@ -1222,5 +1224,13 @@ namespace Convience.Service.SRM
             return index;
         }
         #endregion
+        public SrmProcess[] GetProcess()
+        {
+            return _context.SrmProcesss.ToArray();
+        }
+        public SrmMaterial[] GetMaterial()
+        {
+            return _context.SrmMaterials.ToArray();
+        }
     }
 }

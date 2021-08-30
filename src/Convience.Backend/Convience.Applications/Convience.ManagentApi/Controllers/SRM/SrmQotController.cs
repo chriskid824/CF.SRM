@@ -202,5 +202,16 @@ namespace Convience.ManagentApi.Controllers.SRM
             index = _srmQotService.GetRowNum(q);
             return index;
         }
-     }
+
+        [HttpPost("GetProcess")]
+        public IActionResult GetProcess()
+        {
+            return Ok(_srmQotService.GetProcess());
+        }
+        [HttpPost("GetMaterial")]
+        public IActionResult GetMaterial()
+        {
+            return Ok(_srmQotService.GetMaterial());
+        }
+    }
 }
