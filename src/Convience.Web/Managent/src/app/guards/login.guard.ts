@@ -19,7 +19,7 @@ export class LoginGuard implements CanActivate {
     if (!this.storageService.hasUserToken() || this.storageService.IsTokenExpire) {
       this.storageService.removeUserToken();
       //this.router.navigate(['/account/login']);
-      this.router.navigate(['/srm/rfq']);
+      this.router.navigate(['/account/login']);
       return false;
     }
     return true;
