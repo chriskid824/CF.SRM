@@ -151,8 +151,12 @@ export class PriceComponent implements OnInit {
 
     this.isRowSelectable = function (rowNode) {
       console.log(rowNode.data.rfqNum);
-      return rowNode.data.rfqNum ? rowNode.data.isStarted ? false : true : false;
+      return rowNode.data.rfqNum ? rowNode.data.isStarted ?  false : true : false;
     }
+
+    let roles = this._storageService.UserRoles.split(',');
+    let identifications = this._storageService.Identifycation.split(',');
+    let hasRight = roles.find(r => r == '1') ? true : identifications.find(i => i == 'RFQ_ACTION') ? true : false;
 
     this.columnDefs_summary = [
       {
@@ -162,8 +166,8 @@ export class PriceComponent implements OnInit {
           onClick: this.add.bind(this),
           label: '',
         },
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
+        headerCheckboxSelection: hasRight,
+        checkboxSelection: hasRight,
         width: "120px",
         pinned: 'left'
       },
@@ -463,7 +467,7 @@ export class PriceComponent implements OnInit {
       },
       {
         headerName: "廠商報價",
-        field: "beforePrice",
+        field: "total",
         enableRowGroup: true,
         cellClass: "show-cell",
         headerClass: "summary",

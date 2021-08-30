@@ -32,7 +32,7 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-control>
-            <button nz-button nzType="primary">搜索</button>
+            <button *canOperate="'rfq-manage'" nz-button nzType="primary">搜索</button>
             <!--<button nz-button nzType="outline" type="button" class="ml-10"
               (click)="resetSearchForm()">
         重置
@@ -45,11 +45,7 @@
     <!--詢價單數據-->
     <nz-card [nzSize]="'small'" id="rfqCard">
       <div>
-        <!--<button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
-          *canOperate="'adduserbtn'">
-    <i nz-icon nzType="plus"></i>新增詢價單
-  </button>-->
-        <button nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="plus"></i>建立詢價單</button>
+        <button *canOperate="'RFQ_CREATE'" nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="plus"></i>建立詢價單</button>
         <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
       </div>
       <div class="mt-10">
@@ -75,7 +71,7 @@
               <td nzAlign="center">{{ data.c_date }}</td>
               <td nzAlign="center">{{ data.viewstatus }}</td>
               <td *ngIf="status==5" nzAlign="center" nzRight>
-                <button nz-button nzType="default" nzShape="circle"
+                <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
                         (click)="openPrice(data.rfqId)" class="mr-10"
                         data-toggle="tooltip" title="價格資訊">
                   <i nz-icon
