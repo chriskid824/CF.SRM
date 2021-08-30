@@ -367,6 +367,8 @@ namespace Convience.Service.SRM
                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on r.Status equals status.Status
                           //join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
+                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
+                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
                           select new ViewQotListH
                           {
                               VRfqId = r.RfqId,
@@ -374,9 +376,9 @@ namespace Convience.Service.SRM
                               VStatus = r.Status,
                               VStatusDesc = status.StatusDesc,
                               VCreateDate = r.CreateDate,
-                              VCreateBy = r.CreateBy,
+                              VCreateBy = u1.Name,
                               VLastUpdateDate = r.LastUpdateDate,
-                              VLastUpdateBy = r.LastUpdateBy,
+                              VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
                               //VVendor = vendor.SapVendor,
 
@@ -398,6 +400,8 @@ namespace Convience.Service.SRM
                               join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
                               join status in _context.SrmStatuses on q.Status equals status.Status
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                              join u3 in _context.AspNetUsers on r.CreateBy equals u3.UserName
+                              join u4 in _context.AspNetUsers on r.LastUpdateBy equals u4.UserName
                               //join v in _context.SrmVendors on q.VendorId equals v.VendorId
                               select new ViewQotListL
                               {
@@ -406,9 +410,9 @@ namespace Convience.Service.SRM
                                   QQotId = q.QotId,
                                   QQotNum = q.QotNum,
                                   QMatnr = m.SapMatnr,
-                                  QCreateBy = q.CreateBy,
+                                  QCreateBy = u3.Name,
                                   QCreateDate = q.CreateDate,
-                                  QLastUpdateBy = q.LastUpdateBy,
+                                  QLastUpdateBy = u4.Name,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
                                   //QVendor = v.SapVendor,
@@ -435,6 +439,8 @@ namespace Convience.Service.SRM
                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on r.Status equals status.Status
                           join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
+                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
+                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
                           select new ViewQotListH
                           {
                               VRfqId = r.RfqId,
@@ -442,9 +448,9 @@ namespace Convience.Service.SRM
                               VStatus = r.Status,
                               VStatusDesc = status.StatusDesc,
                               VCreateDate = r.CreateDate,
-                              VCreateBy = r.CreateBy,
+                              VCreateBy = u1.Name,
                               VLastUpdateDate = r.LastUpdateDate,
-                              VLastUpdateBy = r.LastUpdateBy,
+                              VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
                               VVendor = vendor.SapVendor,
 
@@ -467,6 +473,8 @@ namespace Convience.Service.SRM
                               join status in _context.SrmStatuses on q.Status equals status.Status
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                              join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
+                              join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
                               select new ViewQotListL
                               {
                                   QRfqId = q.RfqId,
@@ -474,9 +482,9 @@ namespace Convience.Service.SRM
                                   QQotId = q.QotId,
                                   QQotNum = q.QotNum,
                                   QMatnr = m.SapMatnr,
-                                  QCreateBy = q.CreateBy,
+                                  QCreateBy = u1.Name,
                                   QCreateDate = q.CreateDate,
-                                  QLastUpdateBy = q.LastUpdateBy,
+                                  QLastUpdateBy = u2.Name,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
                                   QVendor = v.SapVendor,
