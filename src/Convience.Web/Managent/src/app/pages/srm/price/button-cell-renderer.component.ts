@@ -6,8 +6,10 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 @Component({
   selector: 'app-button-renderer',
   template: `
-    <button *ngIf="display" nz-button type="button" nzShape="circle" style="display:{{display}}" (click)="onClick($event)"><i nz-icon nzType="edit"></i></button>
-    `
+<ng-container *ngIf="display">
+    <button *canOperate="'RFQ_ACTION'" nz-button type="button" nzShape="circle" style="display:{{display}}" (click)="onClick($event)"><i nz-icon nzType="edit"></i></button>
+</ng-container>
+`
 })
 export class ButtonRendererComponent implements ICellRendererAngularComp {
 

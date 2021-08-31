@@ -168,7 +168,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[item.i].bTotal = item.value.Btotal.NormalizeTwoDigits();
                     temp[item.i].cTotal = item.value.Ctotal.NormalizeTwoDigits();
                     temp[item.i].dTotal = item.value.Dtotal.NormalizeTwoDigits();
-                    temp[item.i].beforePrice = (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
+                    temp[item.i].total = (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
                     if (temp[item.i].qotStatus == Status.確認)
                     {
                         temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
@@ -271,8 +271,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("BTotal");
             InfoRecord.Columns.Add("CTotal");
             InfoRecord.Columns.Add("DTotal");
+            InfoRecord.Columns.Add("Total");
             InfoRecord.Columns.Add("Price");
-            InfoRecord.Columns.Add("NegotiatedPrice");
             InfoRecord.Columns.Add("HistoricalPrice");
             InfoRecord.Columns.Add("HistoricalDate");
             InfoRecord.Columns.Add("LastPrice");
@@ -300,6 +300,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["BTotal"] = info.Btotal;
                 dr["CTotal"] = info.Ctotal;
                 dr["DTotal"] = info.Dtotal;
+                dr["Total"] = info.total;
                 dr["Price"] = info.Price;
                 dr["InfoId"] = info.InfoId;
                 dr["Img1"] = "/BPM/images/logo.jpg";

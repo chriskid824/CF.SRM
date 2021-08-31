@@ -216,6 +216,7 @@ namespace Convience.Service.SRM
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
                 .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                .AndIfHaveValue(query.vendorId, r=>r.VendorId == query.vendorId)
                 .OrderBy(r => r.MatnrId);
             return qotQurty.ToArray();
             //}

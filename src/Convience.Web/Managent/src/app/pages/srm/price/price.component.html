@@ -61,93 +61,10 @@
           </div>
         </nz-form-item>
         <nz-form-item>
-          <mat-tab-group>
+          <mat-tab-group class="inforecord">
             <mat-tab label="彙總表">
-              <!--<ag-grid-angular #agGrid
-       style="width: 93%; height: 300px; border: solid"
-       id="myGrid"
-       [columnDefs]="columnDefs_matnr"
-       [suppressDragLeaveHidesColumns]="true"
-       [suppressMakeColumnVisibleAfterUnGroup]="true"
-       [rowData]="rowData_matnr"
-       [enableCharts]="true"
-       [enableRangeSelection]="true"
-       [masterDetail]="true"
-       [undoRedoCellEditing]="true"
-       [undoRedoCellEditingLimit]="5"
-       [detailRowAutoHeight]="true"
-       class="ag-theme-alpine"
-       [defaultColDef]="defaultColDef"
-       [rowSelection]="rowSelection"
-       [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>-->
-
-              <!--<div class="mt-10">
-                <nz-table #dataTable nzSize="middle" [nzData]="rowData_summary" nzShowPagination="false" nzFrontPagination="false"
-                          nzBordered="true" [nzScroll]="{ x: '180px' }">
-                  <thead>
-                    <tr>
-                      <th nzWidth="10px"
-                          [nzLeft]="fixedColumn"></th>
-                      <th nzAlign="left" nzWidth="20px">修改</th>
-                      <th nzAlign="left" nzWidth="20px">詢價單號</th>
-                      <th nzAlign="left" nzWidth="20px">詢價人員</th>
-                      <th nzAlign="left" nzWidth="20px">詢價截止日期</th>
-                      <th nzAlign="left" nzWidth="20px">供應商</th>
-                      <th nzAlign="left" nzWidth="20px">供應商名稱</th>
-                      <th nzAlign="left" nzWidth="20px">料號</th>
-                      <th nzAlign="left" nzWidth="20px">材料規格</th>
-                      <th nzAlign="left" nzWidth="20px">成品尺寸</th>
-                      <th nzAlign="left" nzWidth="20px">工件重量(KG)</th>
-                      <th nzAlign="left" nzWidth="20px">機種名稱</th>
-                      <th nzAlign="left" nzWidth="20px">報價單號</th>
-                      <th nzAlign="left" nzWidth="20px">材料名稱</th>
-                      <th nzAlign="left" nzWidth="20px">材料單價(NT/KG)</th>
-                      <th nzAlign="left" nzWidth="20px">長(mm)</th>
-                      <th nzAlign="left" nzWidth="20px">寬(mm)</th>
-                      <th nzAlign="left" nzWidth="20px">厚(mm)</th>
-                      <th nzAlign="left" nzWidth="20px">密度(g/cm3)</th>
-                      <th nzAlign="left" nzWidth="20px">重量(KG)</th>
-                      <th nzAlign="left" nzWidth="20px">材料成本(NT)</th>
-                      <th nzAlign="left" nzWidth="20px">備註</th>
-                      <th nzAlign="left" nzWidth="20px">機台</th>
-                      <th nzAlign="left" nzWidth="20px">工序</th>
-                      <th nzAlign="left" nzWidth="20px">工時(時)</th>
-                      <th nzAlign="left" nzWidth="20px">單價(時)</th>
-                      <th nzAlign="left" nzWidth="20px">小計</th>
-                      <th nzAlign="left" nzWidth="20px">備註</th>
-                      <th nzAlign="left" nzWidth="20px">工序</th>
-                      <th nzAlign="left" nzWidth="20px">數量</th>
-                      <th nzAlign="left" nzWidth="20px">單價</th>
-                      <th nzAlign="left" nzWidth="20px">小計</th>
-                      <th nzAlign="left" nzWidth="20px">計價方式</th>
-                      <th nzAlign="left" nzWidth="20px">備註</th>
-                      <th nzAlign="left" nzWidth="20px">項目</th>
-                      <th nzAlign="left" nzWidth="20px">說明</th>
-                      <th nzAlign="left" nzWidth="20px">單價</th>
-                      <th nzAlign="left" nzWidth="20px">備註</th>
-                      <th nzAlign="left" nzWidth="20px">A</th>
-                      <th nzAlign="left" nzWidth="20px">B</th>
-                      <th nzAlign="left" nzWidth="20px">C</th>
-                      <th nzAlign="left" nzWidth="20px">D</th>
-                      <th nzAlign="left" nzWidth="20px">總計(NT)</th>
-                      <th nzAlign="left" nzWidth="20px">幣別</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let data of dataTable.data;let i = index" (click)="open(data.id)">
-                      <td [nzLeft]="fixedColumn"
-                          [nzShowCheckbox]="true"
-                          [(nzChecked)]="data.checked"></td>
-                      <td nzAlign="left">{{ data.srmMatnr1 }}</td>
-                      <td nzAlign="left">{{ data.description }}</td>
-                      <td nzAlign="left">{{ data.matnrGroup }}</td>
-                    </tr>
-                  </tbody>
-                </nz-table>
-              </div>-->
-
               <h1>
-                <button nz-button style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
+                <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
               </h1>
                 <div>
                   <ag-grid-angular #agGrid

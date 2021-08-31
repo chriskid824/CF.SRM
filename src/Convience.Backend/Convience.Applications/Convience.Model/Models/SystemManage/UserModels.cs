@@ -24,6 +24,7 @@ namespace Convience.Model.Models.SystemManage
         public string UserName { get; set; }
 
         public string PhoneNumber { get; set; }
+        public string Email { get; set; }
 
         public int Sex { get; set; }
 

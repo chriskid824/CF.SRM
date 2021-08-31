@@ -39,7 +39,7 @@
                        autocomplete="off" />
                 <input nz-input placeholder="詢價人員" formControlName="sourcer" readonly="readonly" style="display:none"
                        autocomplete="off" />
-                <button nz-button nzType="primary" style="margin-left: 20px;display:none" disabled="{{canModify==false}}" (click)="add(addSourcerTitleTpl,SourcerContentTpl)">選擇人員</button>
+                <button *canOperate="'RFQ_CREATE'" nz-button nzType="primary" style="margin-left: 20px;display:none" disabled="{{canModify==false}}" (click)="add(addSourcerTitleTpl,SourcerContentTpl)">選擇人員</button>
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
@@ -60,16 +60,20 @@
       </div>
       <!--<div style="height: 200px; overflow-y: scroll">-->
       <div>
-        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="save()"><i nz-icon nzType="save"></i>保存</button>
-        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
-        <button *ngIf="canCxl" nz-button disabled="{{canCxl==false}}" (click)="cancel()"><i nz-icon nzType="delete"></i>作廢</button>
-        <button *ngIf="canDel" nz-button disabled="{{canDel==false}}" (click)="delete()"><i nz-icon nzType="delete"></i>刪除</button>
+        <button *canOperate="'RFQ_CREATE'" nz-button class="mr-10" disabled="{{canModify==false}}" (click)="save()"><i nz-icon nzType="save"></i>保存</button>
+        <button *canOperate="'RFQ_CREATE'" nz-button class="mr-10" disabled="{{canModify==false}}" (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
+        <ng-container *ngIf="canCxl">
+          <button *canOperate="'RFQ_CREATE'" nz-button disabled="{{canCxl==false}}" (click)="cancel()"><i nz-icon nzType="delete"></i>作廢</button>
+        </ng-container>
+        <ng-container *ngIf="canDel">
+          <button *canOperate="'RFQ_CREATE'" nz-button disabled="{{canDel==false}}" (click)="delete()"><i nz-icon nzType="delete"></i>刪除</button>
+          </ng-container>
       </div>
       <mat-tab-group>
         <mat-tab label="料號明細">
           <h1>
-            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addMatnrTitleTpl,MatnrContentTpl)"><i nz-icon nzType="plus"></i>建立料號</button>
-            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteMatnr()"><i nz-icon nzType="delete"></i>刪除料號</button>
+            <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addMatnrTitleTpl,MatnrContentTpl)"><i nz-icon nzType="plus"></i>建立料號</button>
+            <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteMatnr()"><i nz-icon nzType="delete"></i>刪除料號</button>
           </h1>
           <ag-grid-angular #agGrid
                            style="width: 93%; height: 250px;border:solid"
@@ -91,8 +95,8 @@
         </mat-tab>
         <mat-tab label="供應商明細">
           <h1>
-            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addVendorTitleTpl,VendorContentTpl)"><i nz-icon nzType="plus"></i>建立供應商</button>
-            <button nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteVendor()"><i nz-icon nzType="delete"></i>刪除供應商</button>
+            <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="add(addVendorTitleTpl,VendorContentTpl)"><i nz-icon nzType="plus"></i>建立供應商</button>
+            <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteVendor()"><i nz-icon nzType="delete"></i>刪除供應商</button>
           </h1>
           <ag-grid-angular #agGrid
                            style="width: 93%; height: 250px; border: solid"
