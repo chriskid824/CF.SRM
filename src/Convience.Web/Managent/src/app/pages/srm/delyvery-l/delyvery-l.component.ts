@@ -64,7 +64,6 @@ export class DelyveryLComponent implements OnInit {
         headerName:'交貨單號',
         field: 'DeliveryNum',
         cellRenderer: 'agGroupCellRenderer',
-        editable:true,
       },
       {
         headerName:'交貨單識別碼',
@@ -78,7 +77,7 @@ export class DelyveryLComponent implements OnInit {
           'rag-green': 'x == 16',
           'rag-red': 'x == 15',
         },
-        valueFormatter:'switch(value){case 15 : return "待出貨"; case 14 : return "已出貨"; default : return value;}'
+        valueFormatter:'switch(value){case 15 : return "待交貨"; case 14 : return "待收貨"; default : return value;}'
       },
       {
         headerName:'交貨日期',
@@ -336,14 +335,14 @@ export class DelyveryLComponent implements OnInit {
         this.PoList=result;
         var newoptions=[];
         for (var po in result) {
-          newoptions.push({label:result[po].PoNum,value:result[po].PoNum});
+          newoptions.push({label:result[po].PoNum,value:result[po].PoId});
           }
           this.PoNumOption=newoptions;
         //this.rowData = result;
       });
   }
   onChange(value) {
-    var poLIdList=this.PoList.filter(p=>p.PoNum==value);
+    var poLIdList=this.PoList.filter(p=>p.PoId==value);
     var newoptions2=[];
     for(var poL in poLIdList)
     {
@@ -352,18 +351,18 @@ export class DelyveryLComponent implements OnInit {
     this.PoLIdOption=newoptions2;
   }
   onPoLIdChange(value) {
-    var PoNum=this.editForm.get('PoNum').value;
+    var PoId=this.editForm.get('PoNum').value;
     var PoLId=this.editForm.get('PoLId').value;
-    if(PoNum==null||PoLId==null||this.currenPoLID==PoLId)
+    if(PoId==null||PoLId==null||this.currenPoLID==PoLId)
     { return; }
     this.currenPoLID=PoLId;
-    var PoLItem= this.PoList.find(p=>p.PoNum==PoNum &&p.PoLId==PoLId);
+    var PoLItem= this.PoList.find(p=>p.PoId==PoId &&p.PoLId==PoLId);
     console.info(PoLItem.PoLId);
     this.editForm.setValue({
       DeliveryId: this.editForm.get('DeliveryId').value,
       DeliveryLId: null
       , Matnr: PoLItem.Matnr
-      , PoNum: PoLItem.PoNum
+      , PoNum: PoLItem.PoId
       , PoLId: PoLItem.PoLId
       , DeliveryQty: PoLItem.DeliveryQty
     });
@@ -539,7 +538,6 @@ export class DelyveryLComponent implements OnInit {
   });
   }
   save(e){
-
   }
   edit() {
     //console.log(this.CurrencyList.find(r => r.currency == this.currency.value)?.currencyName);
@@ -550,27 +548,53 @@ export class DelyveryLComponent implements OnInit {
        this.editForm.controls[i].updateValueAndValidity();
      }
      if (this.editForm.valid) {
-       var r = this.rowData.find(r => r.DeliveryId == this.editForm.get('DeliveryId').value).SrmDeliveryLs.find(p=>p.PoLId==this.editForm.get('PoLId').value);
-       r.DeliveryQty = this.editForm.get('DeliveryQty').value;
-    //   r.standQty = this.editForm.get('standQty').value;
-    //   r.minQty = this.editForm.get('minQty').value;
-    //   r.taxcode = this.editForm.get('taxcode').value;//.editForm.get('ekgry').value;
-    //   r.taxcodeName = this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
-    //   r.currency = this.editForm.get('currency').value;
-    //   r.currencyName = this.CurrencyList.find(r => r.currency == this.editForm.get('currency').value)?.currencyName;
-    //   r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
-    //   r.expirationDate = dateFormatter(this.editForm.get('expirationDate').value);
-    //   r.note = this.editForm.get('note').value;
+       if(this.isedit)
+       {
+        var r = this.rowData.find(r => r.DeliveryId == this.editForm.get('DeliveryId').value).SrmDeliveryLs.find(p=>p.PoLId==this.editForm.get('PoLId').value);
+        r.DeliveryQty = this.editForm.get('DeliveryQty').value;
+     //   r.standQty = this.editForm.get('standQty').value;
+     //   r.minQty = this.editForm.get('minQty').value;
+     //   r.taxcode = this.editForm.get('taxcode').value;//.editForm.get('ekgry').value;
+     //   r.taxcodeName = this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
+     //   r.currency = this.editForm.get('currency').value;
+     //   r.currencyName = this.CurrencyList.find(r => r.currency == this.editForm.get('currency').value)?.currencyName;
+     //   r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
+     //   r.expirationDate = dateFormatter(this.editForm.get('expirationDate').value);
+     //   r.note = this.editForm.get('note').value;
+     this._srmDeliveryService.UpdateDeliveryL(r)
+     .subscribe((result) => {
+       if(result==null)
+       {
+        var selectedRows = this.gridApi.getRenderedNodes();
+        this.gridApi.setRowData(this.rowData);
 
-       var selectedRows = this.gridApi.getRenderedNodes();
-       this.gridApi.setRowData(this.rowData);
+        this.gridApi.forEachLeafNode((node) => {
+          if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
+            node.setRowNodeExpanded(true);
+          }
+        });
+        alert("修改成功");
+        this.refresh();
+        this.tplModal.close();
+       }
+     });
 
-       this.gridApi.forEachLeafNode((node) => {
-         if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
-           node.setRowNodeExpanded(true);
-         }
-       });
-       this.tplModal.close();
+       }
+else
+{
+   var DeliveryL={
+     DeliveryId:this.editForm.get('DeliveryId').value,
+     PoId:this.editForm.get('PoNum').value,
+     PoLId:this.editForm.get('PoLId').value,
+     DeliveryQty:this.editForm.get('DeliveryQty').value,
+     QmQty:0,
+   };
+   this._srmDeliveryService.UpdateDeliveryL(DeliveryL)
+   .subscribe((result) => {
+     if(result==null) alert('操作成功');
+     this.refresh();
+   });
+}
      }
   }
 

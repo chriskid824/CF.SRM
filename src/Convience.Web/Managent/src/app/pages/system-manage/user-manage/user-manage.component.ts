@@ -86,7 +86,7 @@ export class UserManageComponent implements OnInit {
       avatar: [''],
       userName: ['', [Validators.required, Validators.maxLength(15)]],
       name: ['', [Validators.required, Validators.maxLength(10)]],
-      phoneNumber: ['', [Validators.pattern(/^[0-9]\d{9}$/)]],
+      phoneNumber: ['', [Validators.pattern(/^0\d{9}$/)]],
       email: ['', [Validators.email]],
       roleIds: [[]],
       department: [],
@@ -107,12 +107,11 @@ export class UserManageComponent implements OnInit {
     this._userService.getUser(user.id).subscribe(user => {
       this.isNewUser = false;
       this.editedUser = user;
-      console.info(user);
       this.editForm = this._formBuilder.group({
         avatar: [user['avatar']],
         userName: [user['userName'], [Validators.required, Validators.maxLength(15)]],
         name: [user['name'], [Validators.required, Validators.maxLength(10)]],
-        phoneNumber: [user['phoneNumber'], [Validators.pattern(/^[0-9]\d{9}$/)]],
+        phoneNumber: [user['phoneNumber'], [Validators.pattern(/^0\d{9}$/)]],
         email: [user['email'], [Validators.email]],
         roleIds: [user['roleIds'].split(',')],
         department: [Number(user['departmentId'])],

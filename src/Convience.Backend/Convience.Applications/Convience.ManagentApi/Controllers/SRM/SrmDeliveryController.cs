@@ -22,18 +22,24 @@ namespace Convience.ManagentApi.Controllers.SRM
     //[Authorize]
     public class SrmDeliveryController : ControllerBase
     {
-        private readonly ISrmPoService _srmPoService;
+        private readonly ISrmDeliveryService _srmDeliveryService;
 
-        public SrmDeliveryController(ISrmPoService srmPoService)
+        public SrmDeliveryController(ISrmDeliveryService srmDeliveryService)
         {
-            _srmPoService = srmPoService;
+            _srmDeliveryService = srmDeliveryService;
         }
 
         [HttpPost("AddDelivery")]
         public IActionResult AddDelivery(List<ViewSrmPoL> pols)
         {
-            if (_srmPoService.AddDelivery(pols)) return Ok();
+            if (_srmDeliveryService.AddDelivery(pols)) return Ok();
             return BadRequest("出貨單生成失敗");
+        }
+        [HttpPost("UpdateDeliveryL")]
+        public IActionResult UpdateDeliveryL(ViewSrmDeliveryL dls)
+        {
+            if (_srmDeliveryService.UpdateDeliveryL(dls)) return Ok();
+            return BadRequest("項次 新增/修改 失敗");
         }
 
         [HttpPost("GetDelivery")]
@@ -41,11 +47,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             if (query == null)
             {
-                return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
-                    new JsonSerializerSettings()
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
+                return null;
             }
             QueryPoList q = new QueryPoList();
             //var aaa = query.Property("poNum");
@@ -53,7 +55,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.status = (int)query["status"];
             q.host = Request.Headers["Referer"].ToString() + "srm/deliveryreceive";
             q.user = User;
-            var aaa = _srmPoService.GetDelivery(q);
+            var aaa = _srmDeliveryService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
                         new JsonSerializerSettings()
@@ -73,7 +75,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.deliveryLId = string.IsNullOrWhiteSpace(query["deliveryLId"].ToString()) ? 0 : (int)query["deliveryLId"];
             q.user = User;
             if (string.IsNullOrWhiteSpace(q.deliveryNum) && q.deliveryLId == 0) return null;
-            var aaa = _srmPoService.GetDelivery(q);
+            var aaa = _srmDeliveryService.GetDelivery(q);
 
             return JsonConvert.SerializeObject(aaa, Formatting.None,
                         new JsonSerializerSettings()

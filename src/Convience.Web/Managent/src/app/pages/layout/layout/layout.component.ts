@@ -65,18 +65,18 @@ export class LayoutComponent implements OnInit {
       ]
     },
     {
-      canOperate: 'rfqmanage', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '詢價單',
+      canOperate: 'rfqmanage', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '詢價',
       children: [
-        { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單', name: '詢價單', },
-        { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
-        { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '價格資訊', name: '價格資訊', },
-        { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價單', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
+        { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單', name: '詢價單', },
+        { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
+        { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '價格資訊', name: '價格資訊', },
+        { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
       ]
     },
     {
-      canOperate: 'po', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '採購單',
+      canOperate: 'po', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '採購',
       children: [
-        { canOperate: 'pomain', routerLink: '/srm/po', iconType: 'fund-view', firstBreadcrumb: '採購單', lastBreadcrumb: '採購單資訊', name: '採購單資訊', },
+        { canOperate: 'pomain', routerLink: '/srm/po', iconType: 'fund-view', firstBreadcrumb: '採購', lastBreadcrumb: '採購單資訊', name: '採購單資訊', },
       ]
     },
     {
@@ -90,8 +90,8 @@ export class LayoutComponent implements OnInit {
     {
       canOperate: 'qot', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '報價',
       children: [
-        { canOperate: 'qotlist', routerLink: '/srm/qotlist', iconType: 'fund-view', firstBreadcrumb: '報價單查詢', lastBreadcrumb: '報價單查詢', name: '報價單查詢', },
-        { canOperate: 'qotop', routerLink: '/srm/qot', iconType: 'fund-view', firstBreadcrumb: '報價作業', lastBreadcrumb: '報價作業', name: '報價作業', },
+        { canOperate: 'qotlist', routerLink: '/srm/qotlist', iconType: 'fund-view', firstBreadcrumb: '報價', lastBreadcrumb: '報價單查詢', name: '報價單查詢', },
+        { canOperate: 'qotop', routerLink: '/srm/qot', iconType: 'fund-view', firstBreadcrumb: '報價', lastBreadcrumb: '報價作業', name: '報價作業', },
       ]
     }
   ];
