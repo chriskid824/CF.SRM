@@ -261,7 +261,7 @@ export class RfqComponent implements OnInit {
         var c = new Date(this.H.createDate);
         this.H.C_Date = c.getFullYear() + '-' + (c.getMonth() + 1) + '-' + c.getDate();
         this.name = this.H.c_by;
-        this.werks = this._storageService.werks.split(',')[0];
+        this.werks = this.H.werks;
         this.rowData_MATNR = result["m"];
         this.rowData_VENDOR = result["v"];
         this.canModify = this.H.status == 1;
@@ -269,6 +269,7 @@ export class RfqComponent implements OnInit {
         this.canDel = this.H.status == 1;
         this.initMatnrList();
         this.formDetail.setValue({ sourcerName: this.H.sourcerName, sourcer: this.H.sourcer, deadline: this.H.deadline });
+        console.log("werks:"+this.werks);
       });
     } else {
       this.name = this._storageService.Name;
@@ -283,6 +284,7 @@ export class RfqComponent implements OnInit {
     this.initMatnrList();
     this.H.LASTUPDATEBY = this._storageService.userName;
     console.log(this.name);
+    console.log("werks:" + this.werks);
     $($('.listbox')[1]).hide();
     //this.onRefreshMatnr();
     this.searchForm = this._formBuilder.group({
@@ -295,7 +297,7 @@ export class RfqComponent implements OnInit {
       sourcerName: [null],
       deadline: [null]
     });
-    this.formDetail.setValue({ sourcerName: this.H.sourcerName, sourcer: this.H.sourcer, deadline: null });
+    this.formDetail.setValue({ sourcer: this.H.sourcer??"",sourcerName: this.H.sourcerName??"", deadline: null });
   }
 
 
@@ -498,6 +500,7 @@ export class RfqComponent implements OnInit {
       rfq.h.deadLine = null;
     }
     rfq.h.LASTUPDATEBY = this._storageService.userName;
+    rfq.h.werks = this.werks;
     console.log(this.gridApi);
     this.gridApi.forEachNode(node => console.log(node));
     rfq.m = [];
