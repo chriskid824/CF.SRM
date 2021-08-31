@@ -20,6 +20,7 @@ import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { runInThisContext } from 'node:vm';
 import { StorageService } from '../../../services/storage.service';
 import { LayoutComponent } from '../../layout/layout/layout.component';
+import { SrmModule } from '../srm.module';
 
 
 interface Food {
@@ -497,14 +498,16 @@ export class QotComponent implements OnInit {
     this.editForm_Material = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
       //0824 送出才檢核
-      material_name: [this.editedMatetial.name,],
-      material_price: [this.editedMatetial.price,],
-      material_cost: [this.editedMatetial.cost,],
-      material_length: [this.editedMatetial.length,],
-      material_width: [this.editedMatetial.width,],
-      material_height: [this.editedMatetial.height,],
-      material_density: [this.editedMatetial.density,],
-      material_weight: [this.editedMatetial.weight,],
+      material_name: [this.editedMatetial.name, [Validators.required]],
+      material_cost: [this.editedMatetial.cost, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      //material_name: [this.editedMatetial.name,],
+      material_price: [this.editedMatetial.price, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      //material_cost: [this.editedMatetial.cost,],
+      material_length: [this.editedMatetial.length, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_width: [this.editedMatetial.width, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_height: [this.editedMatetial.height, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_density: [this.editedMatetial.density, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_weight: [this.editedMatetial.weight, [Validators.pattern(SrmModule.decimalTwoDigits)]],
 
       //material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
       material_note: [this.editedMatetial.note,]
@@ -557,12 +560,7 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
-
-
-      //console.info(this.editForm_Surface.value);
-      //alert('name = '+this.editedSurface.process)
-      /*寫入grid */
-
+      
       this.rowData_Surface.push({
         "sProcess": this.editedSurface.process,
         "sTimes": this.editedSurface.times,
@@ -575,18 +573,20 @@ export class QotComponent implements OnInit {
     }
   }
   checktype(number: number) {
-    if (isNaN(number)) {
+    /*if (isNaN(number)) {
       alert("欄位格式錯誤");
       return;
-    }
+    }*/
   }
   addSurface(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editedSurface = new Surface();
     this.editForm_Surface = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
-      surface_name: [this.editedSurface.process,],
-      surface_times: [this.editedSurface.times,],
-      surface_cost: [this.editedSurface.price,],
+      surface_name: [this.editedSurface.process, [Validators.required]],
+      //surface_name: [this.editedSurface.process,],
+      surface_times: [this.editedSurface.times, [Validators.pattern(SrmModule.number)]],
+      surface_cost: [this.editedSurface.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      //surface_cost: [this.editedSurface.price,],
       surface_note: [this.editedSurface.note]
     });
     this.tplModal = this._modalService.create({
@@ -600,9 +600,11 @@ export class QotComponent implements OnInit {
     this.editedOther = new Other();
     this.editForm_Other = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
-      other_item: [this.editedOther.item,],
+      other_item: [this.editedOther.item, [Validators.required]],
+      //other_item: [this.editedOther.item,],
       other_desc: [this.editedOther.description],
-      other_price: [this.editedOther.price,],
+      other_price: [this.editedOther.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      //other_price: [this.editedOther.price,],
       other_note: [this.editedOther.note,]
     });
     this.tplModal = this._modalService.create({
@@ -615,9 +617,12 @@ export class QotComponent implements OnInit {
   addProcess(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editForm_Process = this._formBuilder.group({
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
-      process_no: [this.editedProcess.processno,],
-      process_cost: [this.editedProcess.price,],
-      process_hour: [this.editedProcess.p_hour,],
+      //process_no: [this.editedProcess.processno,],
+      process_no: [this.editedProcess.processno, [Validators.required]],
+      //process_cost: [this.editedProcess.price,],
+      process_cost: [this.editedProcess.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      process_hour: [this.editedProcess.p_hour, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      //process_hour: [this.editedProcess.p_hour,],
       process_machine: [this.editedProcess.machine,],
       process_remark: [this.editedProcess.note],
     });
@@ -964,16 +969,16 @@ export class QotComponent implements OnInit {
         editable: this.canModify,
       },
       {
-        headerName: "材料單價",
-        field: "mPrice",
+        headerName: "材料成本價",
+        field: "mCostPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
       },
       {
-        headerName: "材料成本價",
-        field: "mCostPrice",
+        headerName: "材料單價",
+        field: "mPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
@@ -1105,16 +1110,16 @@ export class QotComponent implements OnInit {
         valueFormatter: 'switch(value){case 1 : return "粗銑"; case 2 : return "精修"; case 3 : return "去毛邊"; case 4 : return "陽極/EP"; case 5 : return "全檢"; default : return value;}'
       },
       {
-        headerName: "次數",
-        field: "sTimes",
+        headerName: "單價(時)",
+        field: "sPrice",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
       },
       {
-        headerName: "單價(時)",
-        field: "sPrice",
+        headerName: "次數",
+        field: "sTimes",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",

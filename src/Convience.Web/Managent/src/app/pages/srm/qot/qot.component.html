@@ -20,264 +20,150 @@
     </mat-form-field>-->
     <div class="two-column">
 
-    <div class="left">
+      <div class="left">
         <nz-card [nzSize]="'small'">
-            <!--<button nz-button class="mb-10" (click)="refreshtree()"><i nz-icon nzType="sync"></i>刷新数据</button>-->
-            <nz-card [nzSize]="'small'">
-              <form nz-form [formGroup]="matnrList">
-                <nz-form-item>
-                  <!--<nz-select style="width: 20%"
+          <!--<button nz-button class="mb-10" (click)="refreshtree()"><i nz-icon nzType="sync"></i>刷新数据</button>-->
+          <nz-card [nzSize]="'small'">
+            <form nz-form [formGroup]="matnrList">
+              <nz-form-item>
+                <!--<nz-select style="width: 20%"
                      nzShowSearch
                      formControlName="selectedMatnr"
                      (ngModelChange)="search()">
             <nz-option *ngFor="let item of matnrs" [nzLabel]="item.label" [nzValue]="item.value"></nz-option>
           </nz-select>-->
-                  <nz-tree [nzData]="nodes" nzShowIcon="true" (nzClick)="changedMatnr($event)" [nzExpandedIcon]="mutiExpandedIconTpl">
-                    <ng-template #mutiExpandedIconTpl let-node>
-                      <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isExpanded ? 'caret-down' : 'caret-right'"
-                         style="color: lightgray;"></i>
-                      <i *ngIf="node.origin.isLeaf" nz-icon nzType="team" class="ant-tree-switcher-line-icon"></i>
-                    </ng-template>
-                  </nz-tree>
-                </nz-form-item>
-              </form>
-            </nz-card>
-            <!--<app-department-tree #tree (selectedNodeChanged)="selectedChanged($event)"></app-department-tree>-->
+                <nz-tree [nzData]="nodes" nzShowIcon="true" (nzClick)="changedMatnr($event)"
+                  [nzExpandedIcon]="mutiExpandedIconTpl">
+                  <ng-template #mutiExpandedIconTpl let-node>
+                    <i *ngIf="!node.origin.isLeaf" nz-icon [nzType]="node.isExpanded ? 'caret-down' : 'caret-right'"
+                      style="color: lightgray;"></i>
+                    <i *ngIf="node.origin.isLeaf" nz-icon nzType="team" class="ant-tree-switcher-line-icon"></i>
+                  </ng-template>
+                </nz-tree>
+              </nz-form-item>
+            </form>
+          </nz-card>
+          <!--<app-department-tree #tree (selectedNodeChanged)="selectedChanged($event)"></app-department-tree>-->
         </nz-card>
-    </div>
-    <div class="right">
-    <form nz-form [formGroup]="info1">
-    <nz-card [nzSize]="'middle'" id="info1">
-      <nz-form-item>
-    <div class="child">
-      <div class="cc" style="margin: 0px auto;">
-        <table style="  text-align: left;">
-          <tr>
-            <td class="content2" id="tdcreateddate">建立日期</td>
-            <td class="content2" id="tdcreatedby">建立人員</td>
-            <td class="content2" id="tdstatus">狀態</td>
-            <td class="content2" id="tdrfqnum">詢價單號</td>
-            <td class="content2" id="tdqotnum">報價單號</td>
+      </div>
+      <div class="right">
+        <form nz-form [formGroup]="info1">
+          <nz-card [nzSize]="'middle'" id="info1">
+            <nz-form-item>
+              <div class="child">
+                <div class="cc" style="margin: 0px auto;">
+                  <table style="  text-align: left;">
+                    <tr>
+                      <td class="content2" id="tdcreateddate">建立日期</td>
+                      <td class="content2" id="tdcreatedby">建立人員</td>
+                      <td class="content2" id="tdstatus">狀態</td>
+                      <td class="content2" id="tdrfqnum">詢價單號</td>
+                      <td class="content2" id="tdqotnum">報價單號</td>
 
-          </tr>
-          <tr id="rowtype2">
-            <td class="content2">
-                                                                                                     
-            <label class="content2" type="text" id="createddate" name="createddate" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createDate}}</label>
-              
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="createdby" name="createdby" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createBy}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="status" name="status" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].status}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="rfqnum" name="rfqnum" disabled
-                value="">{{matnrIndex==null?"":qotv.q[0].rfqNum}}</label>
-            </td>
-            <td class="content2">
-              <!--{{matnrIndex==null?"": rfq.m[matnrIndex].density}}
-              <label class="content2" type="text" id="qotnum" name="qotnum" disabled value="">{{qotv==null?"":qotv.q[0].qotNum}}</label>-->
-              <label class="content2" type="text" id="qotnum" name="qotnum" disabled value="">{{matnrIndex==null?"": qotv.q[matnrIndex].qotNum}}</label>
-              
-            </td>
-            
-          
-          </tr>
-        </table>
-      </div>
-    </div>
-    </nz-form-item>
-</nz-card>
-</form>
-<form nz-form [formGroup]="info2">
-<nz-card [nzSize]="'middle'" id="info2">
-  <nz-form-item>
-    <div class="child">
-      <div class="cc" style="margin: 0px auto;">
-        <table style=" text-align: left;">
-          <tr>
-            <td class="content2" id="tdmatnr">料號</td>
-            <td class="content2" id="tdmaterial">材料規格</td>
-            <td class="content2" id="tdsize">成本尺寸</td>
-  
-            <td class="content2" id="tdweight">工件重量(KG)</td>
-            <td class="content2" id="tdmachinename">機種名稱</td>
-          </tr>
-          <tr id="rowtype2">
-            <td class="content2">
-              <label class="content2" type="text" id="matnr" name="matnr" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].matnr}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="material" name="material" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].material}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="size" name="size" disabled value="">{{matnrIndex==null?"":qotv.q[matnrIndex].size}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="weight" name="weight" disabled
-                value="">{{matnrIndex==null?"":qotv.q[matnrIndex].weight}}</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="machinename" name="machinename" disabled
-                value="">{{matnrIndex==null?"":qotv.q[matnrIndex].machineName}}</label>
-            </td>
-          
-          </tr>
-        </table>
-      </div>
-    </div>
-    </nz-form-item>
-  </nz-card>
-  </form>
-    <!--<div class="child">
-      <div class="cc" style="margin: 0px auto;">
-        <table style=" font-family: 微軟正黑體;">
-          <tr>
-            <td class="content2" id="rfqno">報價單號:</td>
-            <td class="content2" id="currency">幣別:</td>
-            <td class="content2" id="leadtime">交貨時間：</td>
-            <td class="content2" id="min_qty">最小採購數量：</td>
-          </tr>
-          <tr id="rowtype2">
-            <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">RFQ00000001</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">台幣</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2021/07/05</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value=""></label>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>-->
-    <nz-card [nzSize]="'small'" id="btnBar">
-      <!--<div>
-        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="save()"><i nz-icon nzType="save"></i>保存</button>
-        <button nz-button class="mr-10" disabled="{{canModify==false}}" (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
-        <button *ngIf="canCxl" nz-button disabled="{{canCxl==false}}" (click)="cancel()"><i nz-icon nzType="delete"></i>作廢</button>
-        <button *ngIf="canDel" nz-button disabled="{{canDel==false}}" (click)="delete()"><i nz-icon nzType="delete"></i>刪除</button>
-      </div>-->
-      <div>
-      <button id="btnRejectQot"  nz-button class="mr-10" (click)="Reject(addRejectTitleTp,RejectContentTp)" disabled="{{canModify==false}}"><i nz-icon nzType="default"></i>拒絕報價</button>
-      <button id=" btnSaveQot" nz-button class="mr-10" (click)="Save()" disabled="{{canModify==false}}"><i nz-icon nzType="save" ></i>儲存</button>
-      <button id="btnBackQot" nz-button class="mr-10"  (click)="BackQot()"><i nz-icon nzType="arrow-left"></i>返回</button>
-      <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()" disabled="{{canModify==false}}"><i nz-icon nzType="arrow-right" ></i>送出</button>
-      <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
+                    </tr>
+                    <tr id="rowtype2">
+                      <td class="content2">
+
+                        <label class="content2" type="text" id="createddate" name="createddate" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createDate}}</label>
+
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="createdby" name="createdby" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].createBy}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="status" name="status" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].status}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="rfqnum" name="rfqnum" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[0].rfqNum}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="qotnum" name="qotnum" disabled
+                          value="">{{matnrIndex==null?"": qotv.q[matnrIndex].qotNum}}</label>
+                      </td>
+
+
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </nz-form-item>
+          </nz-card>
+        </form>
+        <form nz-form [formGroup]="info2">
+          <nz-card [nzSize]="'middle'" id="info2">
+            <nz-form-item>
+              <div class="child">
+                <div class="cc" style="margin: 0px auto;">
+                  <table style=" text-align: left;">
+                    <tr>
+                      <td class="content2" id="tdmatnr">料號</td>
+                      <td class="content2" id="tdmaterial">材料規格</td>
+                      <td class="content2" id="tdsize">成本尺寸</td>
+                      <td class="content2" id="tdweight">工件重量(KG)</td>
+                      <td class="content2" id="tdmachinename">機種名稱</td>
+                    </tr>
+                    <tr id="rowtype2">
+                      <td class="content2">
+                        <label class="content2" type="text" id="matnr" name="matnr" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].matnr}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="material" name="material" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].material}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="size" name="size" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].size}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="weight" name="weight" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].weight}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="machinename" name="machinename" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].machineName}}</label>
+                      </td>
+
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </nz-form-item>
+          </nz-card>
+        </form>
+        <nz-card [nzSize]="'small'" id="btnBar">       
+          <div>
+            <button id="btnRejectQot" nz-button class="mr-10" (click)="Reject(addRejectTitleTp,RejectContentTp)"
+              disabled="{{canModify==false}}"><i nz-icon nzType="default"></i>拒絕報價</button>
+            <button id=" btnSaveQot" nz-button class="mr-10" (click)="Save()" disabled="{{canModify==false}}"><i nz-icon
+                nzType="save"></i>儲存</button>
+            <button id="btnBackQot" nz-button class="mr-10" (click)="BackQot()"><i nz-icon
+                nzType="arrow-left"></i>返回</button>
+            <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()" disabled="{{canModify==false}}"><i
+                nz-icon nzType="arrow-right"></i>送出</button>
+            <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
-      </div>
-    </nz-card>
-    <!--
-    <div class="child">
-      <div class="cc" style="margin: 0px auto;">
-        <table style=" font-family: 微軟正黑體;">
-          <tr>
-            <td class="content2" id="rfqno">報價單號:</td>
-            <td class="content2" id="currency">幣別:</td>
-            <td class="content2" id="leadtime">交貨時間：</td>
-            <td class="content2" id="min_qty">最小採購數量：</td>
-          </tr>
-          <tr id="rowtype2">
-            <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">RFQ00000001</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">台幣</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2021/07/05</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value=""></label>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div>
-        <p class="title"><span id="item">詢價項目</span> </p>
-        <table class="table1">
-          <tr id="rowtype1">
-            <td class="content2" id="cfno">料號:</td>
-            <td class="content2" id="version">版次</td>
-            <td class="content2" id="specification">材質規格：</td>
-            <td class="content2" id="density">密度</td>
-          </tr>
-          <tr id="rowtype2">
-            <td class="content2">
-              <label class="content2" type="text" id="txtcfno" name="txtcfno" disabled value="">ZAT00</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtversion" name="txtversion" disabled value="">2</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtspecification" name="txtspecification" disabled
-                value="">3x5x6</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtdensity" name="txtdensity" disabled value="">1.2</label>
-            </td>
-          </tr>
-          <tr id="rowtype3">
-            <td class="content2" id="materiallength">長:</td>
-            <td class="content2" id="materialwidth">寬:</td>
-            <td class="content2" id="materialheight">高：</td>
-            <td class="content2" id="materialweight">重量:</td>
-          </tr>
-          <tr id="rowtype4">
-            <td class="content2">
-              <label class="content2" type="text" id="txtmateriallength" name="txtmateriallength" disabled
-                value="">3</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtmaterialwidth" name="txtmaterialwidth" disabled
-                value="">2</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtmaterialheight" name="txtmaterialheight" disabled
-                value="">4</label>
-            </td>
-            <td class="content2">
-              <label class="content2" type="text" id="txtmaterialweight" name="txtmaterialweight" disabled
-                value="">5</label>
-            </td>
-          </tr>
-          <tr id="rowtype5">
-            <td colspan="4" id="materiallength"><span style=" font-family: 微軟正黑體;">備註:</span></td>
-          </tr>
-          <tr id="rowtype6">
-            <td colspan="4">
-              <input type="text" id="txtnote" name="txtnote" disabled value="aa" style="width: 100%; height: 50px; border-radius: 5px;">
-              <label style="height:50px; font-family: 微軟正黑體;" name="txtmainnote" cols="137" rows="5" disabled>XXX</label>
-            </td>
-
-          </tr>
-        </table>
-      -->
+          </div>
+        </nz-card>     
         <!--<p class="line2"><span></span> </p>-->
         <!--<mat-tab-group style="font-family:微軟正黑體;">-->
 
-          <nz-card>
+        <nz-card>
           <!--<mat-tab label="材料明細">-->
-            <div>
-              <h4>A.材料</h4>
-             
-              <button id="btnaddm" nz-button class="mr-10"  (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"disabled="{{canModifymaterial==false}}" ><i nz-icon nzType="plus"></i>新增材料費用</button>
-              <button id="btndeletem"nz-button class="mr-10"  (click)="deleteMaterial()" disabled="{{canModifymaterial==false}}"><i nz-icon nzType="delete" ></i>刪除材料費用</button>
-               <!--<section class="example-section">-->
-                <mat-checkbox class="example-margin" id="chkreject_material" (change)="checkCheckBoxvalue_M($event)" disabled="{{canModify==false}}" [checked] ="IfCheck_M">不回填</mat-checkbox>
-              <!-- </section>-->
-            <!--<button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)">新增材料費用</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteMaterial()">刪除材料費用</button>-->
+          <div>
+            <h4>A.材料</h4>
 
+            <button id="btnaddm" nz-button class="mr-10" (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"
+              disabled="{{canModifymaterial==false}}"><i nz-icon nzType="plus"></i>新增材料費用</button>
+            <button id="btndeletem" nz-button class="mr-10" (click)="deleteMaterial()"
+              disabled="{{canModifymaterial==false}}"><i nz-icon nzType="delete"></i>刪除材料費用</button>
+            <!--<section class="example-section">-->
+            <mat-checkbox class="example-margin" id="chkreject_material" (change)="checkCheckBoxvalue_M($event)"
+              disabled="{{canModify==false}}" [checked]="IfCheck_M">不回填</mat-checkbox>
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Material"
@@ -285,24 +171,21 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-            </div>
-          </nz-card>
-          <!--</mat-tab>-->
-          <nz-card>
+          </div>
+        </nz-card>
+        <!--</mat-tab>-->
+        <nz-card>
           <!--<mat-tab label="加工">-->
-            <div>
-              <h4>B.加工</h4>
-              
-              <button id="btnaddp" nz-button class="mr-10"  (click)="addProcess(addProcessTitleTp,ProcessContentTp)" disabled="{{canModifyprocess==false}}"><i nz-icon nzType="plus"></i>新增加工費用</button>
-              <button id="btndeletep" nz-button class="mr-10"  (click)="deleteProcess()"  disabled="{{canModifyprocess==false}}"><i nz-icon nzType="delete"></i>刪除加工費用</button>
-              <!--<section class="example-section">-->
-                <mat-checkbox class="example-margin" id="chkreject_process" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_P($event)" [checked] ="IfCheck_P">不回填</mat-checkbox>
-              <!-- </section>-->
-              <!--
-            <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addProcess(addProcessTitleTp,ProcessContentTp)">新增加工費用</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteProcess()">刪除加工費用</button>-->
+          <div>
+            <h4>B.加工</h4>
 
+            <button id="btnaddp" nz-button class="mr-10" (click)="addProcess(addProcessTitleTp,ProcessContentTp)"
+              disabled="{{canModifyprocess==false}}"><i nz-icon nzType="plus"></i>新增加工費用</button>
+            <button id="btndeletep" nz-button class="mr-10" (click)="deleteProcess()"
+              disabled="{{canModifyprocess==false}}"><i nz-icon nzType="delete"></i>刪除加工費用</button>
+            <!--<section class="example-section">-->
+            <mat-checkbox class="example-margin" id="chkreject_process" disabled="{{canModify==false}}"
+              (change)="checkCheckBoxvalue_P($event)" [checked]="IfCheck_P">不回填</mat-checkbox>
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_PROCESS" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Process"
@@ -310,24 +193,21 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-            </div>
+          </div>
           <!--</mat-tab>-->
         </nz-card>
         <nz-card>
           <!-- <mat-tab label="表面處理">-->
-            <div>
-              <h4>C.表面處理</h4>
-             
-              <button id="btnadds" nz-button class="mr-10"  (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)" disabled="{{canModifysurface==false}}"><i nz-icon nzType="plus"></i>新增表面處理</button>
-              <button id="btndeletes" nz-button class="mr-10"  (click)="deleteSurface()" disabled="{{canModifysurface==false}}"><i nz-icon nzType="delete" ></i>刪除表面處理</button>
-               <!--<section class="example-section">-->
-                <mat-checkbox class="example-margin" id="chkreject_surface" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_S($event)" [checked] ="IfCheck_S" >不回填</mat-checkbox>
-              <!-- </section>-->
-              <!--
-            <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)">新增表面處理</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteSurface()">刪除表面處理</button>-->
+          <div>
+            <h4>C.表面處理</h4>
 
+            <button id="btnadds" nz-button class="mr-10" (click)="addSurface(addSurfaceTitleTp,SurfaceContentTp)"
+              disabled="{{canModifysurface==false}}"><i nz-icon nzType="plus"></i>新增表面處理</button>
+            <button id="btndeletes" nz-button class="mr-10" (click)="deleteSurface()"
+              disabled="{{canModifysurface==false}}"><i nz-icon nzType="delete"></i>刪除表面處理</button>
+            <!--<section class="example-section">-->
+            <mat-checkbox class="example-margin" id="chkreject_surface" disabled="{{canModify==false}}"
+              (change)="checkCheckBoxvalue_S($event)" [checked]="IfCheck_S">不回填</mat-checkbox>
             <ag-grid-angular #agGrid style="width:1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_SURFACE" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Surface"
@@ -335,24 +215,21 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-            </div>
-         <!--  </mat-tab>-->
+          </div>
+          <!--  </mat-tab>-->
         </nz-card>
         <nz-card>
-         <!--  <mat-tab label="其他費用">-->
+          <!--  <mat-tab label="其他費用">-->
           <div>
             <h4>D.其他費用</h4>
-           
-            <button  id="btnaddo"  nz-button class="mr-10"  (click)="addOther(addOtherTitleTp,OtherContentTp)" disabled="{{canModifyother==false}}"><i nz-icon nzType="plus"></i>新增其他費用</button>
-            <button id="btndeleteo"  nz-button class="mr-10"  (click)="deleteOther()" disabled="{{canModifyother==false}}"><i nz-icon nzType="delete" ></i>刪除其他費用</button>
-             <!--<section class="example-section">-->
-              <mat-checkbox class="example-margin" id="chkreject_other" disabled="{{canModify==false}}"  (change)="checkCheckBoxvalue_O($event)"  [checked] ="IfCheck_O">不回填</mat-checkbox>
-            <!-- </section>-->
-            <!--
-            <button nz-button nzType="primary" style="margin-left: 20px"
-              (click)="addOther(addOtherTitleTp,OtherContentTp)">新增其他費用</button>
-            <button nz-button nzType="danger" style="margin-left: 20px" (click)="deleteOther()">刪除其他費用</button>-->
 
+            <button id="btnaddo" nz-button class="mr-10" (click)="addOther(addOtherTitleTp,OtherContentTp)"
+              disabled="{{canModifyother==false}}"><i nz-icon nzType="plus"></i>新增其他費用</button>
+            <button id="btndeleteo" nz-button class="mr-10" (click)="deleteOther()"
+              disabled="{{canModifyother==false}}"><i nz-icon nzType="delete"></i>刪除其他費用</button>
+            <!--<section class="example-section">-->
+            <mat-checkbox class="example-margin" id="chkreject_other" disabled="{{canModify==false}}"
+              (change)="checkCheckBoxvalue_O($event)" [checked]="IfCheck_O">不回填</mat-checkbox>
             <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_OTHER" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Other"
@@ -360,24 +237,24 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-            </div>
-          </nz-card>
+          </div>
+        </nz-card>
         <!--  </mat-tab>-->
         <!--</mat-tab-group>-->
-     <!-- </div>-->
-    
-       
-      <table>
-        <tr>
-          <td rowspan="8"></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
-    </div>
+        <!-- </div>-->
+
+
+        <table>
+          <tr>
+            <td rowspan="8"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </body>
@@ -390,14 +267,22 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="素材材質" formControlName="material_name" style="width: 94px">
-              <nz-option *ngFor="let option of MaterialList" [nzLabel]="option.material" [nzValue]="option.material"></nz-option>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="素材材質" formControlName="material_name"
+              style="width: 94px">
+              <nz-option *ngFor="let option of MaterialList" [nzLabel]="option.material" [nzValue]="option.material">
+              </nz-option>
             </nz-select>
-            </nz-form-control>
+
+            <ng-template #material_nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <!--<ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>-->
+            </ng-template>
+
+          </nz-form-control>
 
           <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
             <nz-select [formControlName]="'material_name'"  style="width: 100px;">
@@ -409,26 +294,35 @@
       </tr>
       <tr>
         <td>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
+            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價"
+              autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_costErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_price'">材料單價</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_priceErrorTpl">
             <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_priceErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
-      <tr>
-        <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
-        </td>
-        <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
-            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
-          </nz-form-control>
-        </td>
-      </tr>
+
       <tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_length'">長</nz-form-label>
@@ -437,6 +331,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_lengthErrorTpl">
             <input [attr.id]="'add_material_length'" formControlName="material_length" nz-input placeholder="長"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_lengthErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -448,6 +345,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_widthErrorTpl">
             <input [attr.id]="'add_material_width'" formControlName="material_width" nz-input placeholder="寬"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_widthErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -459,6 +359,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_heightErrorTpl">
             <input [attr.id]="'add_material_height'" formControlName="material_height" nz-input placeholder="高"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_heightErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -470,6 +373,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_densityErrorTpl">
             <input [attr.id]="'add_material_density'" formControlName="material_density" nz-input placeholder="密度"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_densityErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -481,6 +387,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_weightErrorTpl">
             <input [attr.id]="'add_material_weight'" formControlName="material_weight" nz-input placeholder="重量"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #material_weightErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -532,7 +441,7 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_no'">工序</nz-form-label>
         </td>
         <td>
           <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
@@ -540,11 +449,16 @@
               autocomplete="off" />
           </nz-form-control>-->
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
-          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="process_no"style="width: 94px">
-            <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum"></nz-option>
-          </nz-select>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="process_no" style="width: 94px">
+              <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum">
+              </nz-option>
+            </nz-select>
+            <ng-template #process_noErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+
+            </ng-template>
           </nz-form-control>
-          
+
           <!--<nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_noErrorTpl">
             <nz-select [formControlName]="'process_no'"  style="width: 100px;">
               <nz-option nzValue="1" nzLabel="粗銑"></nz-option>
@@ -558,23 +472,33 @@
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_hour'">工時(時)</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_hour'">工時(時)</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_hourErrorTpl">
             <input [attr.id]="'edit_process_hour'" formControlName="process_hour" nz-input placeholder="工時(時)"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #process_hourErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_cost'">單價(時)</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_cost'">單價(時)</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costErrorTpl">
             <input [attr.id]="'edit_process_cost'" formControlName="process_cost" nz-input placeholder="單價(時)"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #process_costErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -625,16 +549,37 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_name'">工序</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'surface_name'">工序</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_nameErrorTpl">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="surface_name"style="width: 94px">
-              <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum" (ngModelChange)="checktype($event)"></nz-option>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="surface_name" style="width: 94px">
+              <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum"
+                (ngModelChange)="checktype($event)"></nz-option>
             </nz-select>
-
+            <ng-template #surface_nameErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+            </ng-template>
             <!--<input [attr.id]="'edit_surface_name'" formControlName="surface_name" nz-input placeholder="工序"
               autocomplete="off" (ngModelChange)="checktype($event)" />-->
+          </nz-form-control>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'surface_cost'">單價(時)</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costErrorTpl">
+            <input [attr.id]="'edit_surface_cost'" formControlName="surface_cost" nz-input placeholder="單價(時)"
+              autocomplete="off" (ngModelChange)="checktype($event)" />
+
+            <ng-template #surface_costErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+
           </nz-form-control>
         </td>
       </tr>
@@ -646,17 +591,9 @@
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_timesErrorTpl">
             <input [attr.id]="'edit_surface_times'" formControlName="surface_times" nz-input placeholder="次數"
               autocomplete="off" (ngModelChange)="checktype($event)" />
-          </nz-form-control>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_cost'">單價(時)</nz-form-label>
-        </td>
-        <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costErrorTpl">
-            <input [attr.id]="'edit_surface_cost'" formControlName="surface_cost" nz-input placeholder="單價(時)"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #surface_timesErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -696,23 +633,31 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'other_item'">項目</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'other_item'">項目</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_itemErrorTpl">
             <input [attr.id]="'edit_other_item'" formControlName="other_item" nz-input placeholder="項目"
               autocomplete="off" />
+            <ng-template #other_itemErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_other_price'">單價</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'edit_other_price'">單價</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_priceErrorTpl">
             <input [attr.id]="'edit_other_price'" formControlName="other_price" nz-input placeholder="單價"
               autocomplete="off" (ngModelChange)="checktype($event)" />
+            <ng-template #other_priceErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
           </nz-form-control>
         </td>
       </tr>
@@ -765,12 +710,16 @@
   <form nz-form [formGroup]="editForm_Reject" (ngSubmit)="submitReject()">
     <table border="1">
       <tr>
-        <td> <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'reject_reason'">拒絕原因
-        </nz-form-label></td>
-        <td> <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="reject_reasonErrorTpl">
-          <input [attr.id]="'edit_reject_reason'" formControlName="reject_reason" nz-input placeholder="拒絕原因"
-            autocomplete="off" />
-        </nz-form-control></td>
+        <td>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'reject_reason'">拒絕原因
+          </nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="reject_reasonErrorTpl">
+            <input [attr.id]="'edit_reject_reason'" formControlName="reject_reason" nz-input placeholder="拒絕原因"
+              autocomplete="off" />
+          </nz-form-control>
+        </td>
       </tr>
       <tr>
         <td>
@@ -785,9 +734,5 @@
         </td>
       </tr>
     </table>
-   
-   
-
-   
   </form>
 </ng-template>
