@@ -406,10 +406,10 @@ export class QotComponent implements OnInit {
       this.editForm_Process.controls[i].updateValueAndValidity();
     }
 
- 
+
     //alert(this.editForm_Process.valid)
     if (this.editForm_Process.valid) {
-     
+
       this.editedProcess.processno = this.editForm_Process.value['process_no'];
       this.editedProcess.price = this.editForm_Process.value['process_cost'];
       this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
@@ -434,6 +434,8 @@ export class QotComponent implements OnInit {
       this.tplModal.close();
 
     }
+    console.log('--------------------------2-------------------------')
+    console.log(this._storageService)
   }
   /**/
   submitMaterialList() {
@@ -859,7 +861,7 @@ export class QotComponent implements OnInit {
         }
         else {
           this.IfCheck_M = false;
-         
+
         }
         if (this.qotv.q[this.matnrIndex].pEmptyFlag == "X") {
           this.IfCheck_P = true;
@@ -914,7 +916,7 @@ export class QotComponent implements OnInit {
           this.canModifysurface = true;
         }
         if (this.qotv.q[this.matnrIndex].oEmptyFlag == "X") {
-          
+
           this.IfCheck_O = true;
           this.canModifyother = false;
         }
@@ -1051,6 +1053,8 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
+        valueFormatter: 'switch(value){case 1 : return "粗銑"; case 2 : return "精修"; case 3 : return "去毛邊"; case 4 : return "陽極/EP"; case 5 : return "全檢"; default : return value;}'
+        //valueFormatter:test
       },
       {
         headerName: "工時(時)",
@@ -1098,6 +1102,7 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
+        valueFormatter: 'switch(value){case 1 : return "粗銑"; case 2 : return "精修"; case 3 : return "去毛邊"; case 4 : return "陽極/EP"; case 5 : return "全檢"; default : return value;}'
       },
       {
         headerName: "次數",
@@ -1232,7 +1237,7 @@ export class QotComponent implements OnInit {
         this.canModifysurface = true;
         this.canModifyother = true;
 
-        
+
         if ([result["qot"]][0].mEmptyFlag == "X") {
           this.IfCheck_M = true;
           this.canModifymaterial = false;
@@ -1468,4 +1473,26 @@ export class QotComponent implements OnInit {
       this.MaterialList = result;
     });
   }
+  /*GetProcess(data) {
+    this._srmQotService.GetProcessByNum(data).subscribe(result => {
+      console.log('----process----');
+      console.log(result);
+      this.ProcessList = result;
+    });
+  }*/
+
+
+}
+function dateFormatter(data) {
+  if (data.value == null) return "";
+  var date = new Date(data.value);
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+function test(data) {
+  if (data.value == null) return "";
+  //alert(data.value)
+  if (data.value == "1") { return "aa" }
+
+  //this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
+
 }
