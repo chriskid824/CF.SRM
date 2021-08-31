@@ -1,5 +1,5 @@
 export class Process {
-  id?: string;
+  id?: number;
   processno?: string;
   p_hour?: GLfloat;
   price ?: GLfloat;
