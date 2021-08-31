@@ -48,6 +48,8 @@ namespace Convience.Service.SRM
         public int GetRowNum(SrmQotH qotH);
         public SrmProcess[] GetProcess();
         public SrmMaterial[] GetMaterial();
+        public int GetQotStatus(SrmQotH qotH);
+        public string GetProcessByNum(int num);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -214,6 +216,7 @@ namespace Convience.Service.SRM
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
                 .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                .AndIfHaveValue(query.vendorId, r=>r.VendorId == query.vendorId)
                 .OrderBy(r => r.MatnrId);
             return qotQurty.ToArray();
             //}
@@ -224,9 +227,9 @@ namespace Convience.Service.SRM
             //{
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
-                .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                //.AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
                 .AndIfHaveValue(query.vendorId, r => r.VendorId == query.vendorId)
-                .OrderBy(r => r.MatnrId);
+                .OrderBy(r => r.QotId);
             return qotQurty.ToArray();
             //}
         }
@@ -574,13 +577,15 @@ namespace Convience.Service.SRM
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                            join s in _context.SrmStatuses on q.Status equals s.Status
+                           join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName
+
 
                            //where e.OwnerID == user.UID
                            select new 
                            {
                               
-                               CreateBy = q.CreateBy,
-                               CreateDate = q.CreateDate,                             
+                               CreateBy = u1.Name,//q.CreateBy,
+                               CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),                             
                                Status = s.StatusDesc,
                                RfqNum = r.RfqNum,
                                QotId = q.QotId,
@@ -606,7 +611,8 @@ namespace Convience.Service.SRM
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
             qotlist = qotlist
             .Where(p => p.RfqId == rfqid)
-            .Where(p => p.VendorId == vendorid);
+            .Where(p => p.VendorId == vendorid)
+            .OrderBy(p => p.QotId);
             //.AndIfHaveValue(matnrid , p => p.QotId == qotid);
             //.Where(p => p.QotId == qotid);
             return qotlist;
@@ -818,7 +824,7 @@ namespace Convience.Service.SRM
                                    PProcessNum = process.PProcessNum,
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
-                                   SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
+                                   //SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
                                    QotId = process.QotId
                                    
                                })
@@ -841,7 +847,7 @@ namespace Convience.Service.SRM
                                    STimes = surface.STimes,
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
-                                   SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
+                                   //SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
                                    QotId = surface.QotId
                                })
                                .Where(p => p.QotId == qotid)
@@ -1203,13 +1209,27 @@ namespace Convience.Service.SRM
                 //return result;
             }
         }
+        public int GetQotStatus(SrmQotH qotH) 
+        {
+            var qotstatus = 0;
+            var qot = _context.SrmQotHs.Where(p => p.QotId == qotH.QotId).ToList();
+            //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+            //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+            //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotstatus = qot.Select(r => r.Status).First().Value;
+            
+            return qotstatus;
+        }
         #region
         public int GetRowNum(SrmQotH qotH) 
         {
+            int qotstatus = GetQotStatus(qotH);
             int index = -1;
             SrmQotH[] qs = _context.SrmQotHs.AsQueryable()
                 .Where(p => p.RfqId == qotH.RfqId)
-                .Where(p =>p.VendorId == qotH.VendorId).OrderBy(p =>p.QotId).ToArray();
+                .Where(p =>p.VendorId == qotH.VendorId)
+                //.Where(p =>p.Status == qotstatus)
+                .OrderBy(p =>p.QotId).ToArray();
             foreach (var q in qs)
             {
                 index++;
@@ -1231,6 +1251,14 @@ namespace Convience.Service.SRM
         public SrmMaterial[] GetMaterial()
         {
             return _context.SrmMaterials.ToArray();
+        }
+        public string GetProcessByNum(int num)
+        {
+            string processname = string.Empty;
+            var p =  _context.SrmProcesss.Where(p =>p.ProcessNum == num).ToList();
+            processname = p.Select(r => r.Process).First();
+
+            return processname;
         }
     }
 }

@@ -25,5 +25,6 @@ namespace Convience.Entity.Entity.SRM
         public string LastUpdateBy { get; set; }
         public DateTime? EndDate { get; set; }
         public string EndBy { get; set; }
+        public int? Werks { get; set; }
     }
 }

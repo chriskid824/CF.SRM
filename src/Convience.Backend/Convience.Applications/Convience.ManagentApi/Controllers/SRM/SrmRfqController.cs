@@ -150,6 +150,37 @@ namespace Convience.ManagentApi.Controllers.SRM
                         }
                     }
                     _srmQotHService.Add(qots.ToArray());
+
+                    ViewSrmRfqV[] Vvendors = JsonConvert.DeserializeObject<ViewSrmRfqV[]>(JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(h.RfqId)));
+                    //StringBuilder sb = new StringBuilder();
+                    //MailMessage mail = new MailMessage();
+                    //mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    //mail.To.Add("leon.jcg@chenfull.com.tw");
+                    //mail.To.Add("leo.lai@chenfull.com.tw");
+                    //                    sb.AppendLine("收件者:<br />");
+                    //                    foreach (var vendor in Vvendors)
+                    //                    {
+                    //                        sb.AppendLine(vendor.Mail+ "<br />");
+                    //                    }
+
+                    //                    string body = $@"親愛的供應商夥伴您好,<br />
+                    //此信為系統發送,<br />
+                    //詢價單{h.RfqNum}已發送，請協助於詢價截止日期前{h.Deadline.Value.ToString("yyyy/MM/dd")}回覆報價資訊，謝謝！<br />
+                    // 如有任何問題，<br />
+                    // 請回覆此E-MAIL致採購窗口或致電協調。<br />
+                    //<a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+                    //{ sb.ToString()}";
+
+                    //                    mail.Body = body;
+                    //                    mail.Subject = "詢價單啟動通知";
+                    //                    mail.IsBodyHtml = true;
+                    //                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+                    //                    {
+                    //                        MySMTP.Send(mail);
+                    //                        MySMTP.Dispose();
+                    //                    }
+
+                    sendRespective(Vvendors, h, "啟動");
                     //db.SaveChanges();
                     //db.Database.CommitTransaction();
                     transaction.Complete();
@@ -176,45 +207,49 @@ namespace Convience.ManagentApi.Controllers.SRM
                     rfqH.LastUpdateDate = DateTime.Now;
                     var rfq = _srmRfqHService.UpdateStatus(((int)Status.作廢), rfqH);
                     _srmQotHService.UpdateStatus((int)Status.作廢, rfqH);
-                    MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
-                    mail.To.Add("leon.jcg@chenfull.com.tw");
                     var temp = _srmRfqVService.GetDataByRfqId(rfqH.RfqId);
                     //string a = JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId));
                     ViewSrmRfqV[] vendors = JsonConvert.DeserializeObject<ViewSrmRfqV[]>(JsonConvert.SerializeObject(_srmRfqVService.GetDataByRfqId(rfqH.RfqId)));
-                    StringBuilder sb = new StringBuilder();
-                    StringBuilder qotNums = new StringBuilder();
-                    sb.AppendLine("收件者:");
-                    foreach (var vendor in vendors) {
-                        sb.AppendLine(vendor.Mail);
-                    }
-                    SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfqH.RfqId });
-                    foreach (var qot in qots) {
-                        qotNums.AppendLine(qot.QotNum);
-                    }
+                    #region 單封
+                    //MailMessage mail = new MailMessage();
+                    //mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    //mail.To.Add("leon.jcg@chenfull.com.tw");
+                    //StringBuilder sb = new StringBuilder();
+                    //StringBuilder qotNums = new StringBuilder();
+                    //                    sb.AppendLine("收件者:<br />");
+                    //                    foreach (var vendor in vendors) {
+                    //                        sb.AppendLine(vendor.Mail);
+                    //                    }
+                    //                    SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfqH.RfqId });
+                    //                    foreach (var qot in qots) {
+                    //                        qotNums.AppendLine(qot.QotNum);
+                    //                    }
 
+                    //                    string body = $@"親愛的供應商夥伴您好,<br />
+                    //因本公司內部原因，<br />
+                    //詢價單：{rfq.RfqNum}<br />
+                    //以下報價單：<br />
+                    //{qotNums.ToString()}<br />
+                    //進行取消詢價作業，<br />
+                    //造成貴公司困擾深感抱歉，<br />
+                    //謝謝!<br />
+                    //<br />
+                    //此信為系統發送,<br />
+                    // 如有任何問題，<br />
+                    // 請回覆此E-MAIL致採購窗口或致電協調。<br />
+                    //<a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+                    //{sb.ToString()}";
 
-                    string body = $@"親愛的供應商夥伴您好,
-因本公司內部原因，
-詢價單：{rfq.RfqNum}
-以下報價單：
-{qotNums.ToString()}
-進行取消詢價作業，
-造成貴公司困擾深感抱歉，
-謝謝!
-
-此信為系統發送,
- 如有任何問題，
- 請回覆此E-MAIL致採購窗口或致電協調。";
-
-                        //_srmVendorService.GetUsers(new UserQueryModel() { UserName = rfq.Sourcer,Page=1,Size=1 });
-                    mail.Body = body;
-                    mail.Subject = "詢價單作廢通知";
-                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
-                    {
-                        MySMTP.Send(mail);
-                        MySMTP.Dispose();
-                    }
+                    //mail.Body = body;
+                    //mail.Subject = "詢價單作廢通知";
+                    //mail.IsBodyHtml = true;
+                    //using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+                    //{
+                    //    MySMTP.Send(mail);
+                    //    MySMTP.Dispose();
+                    //}
+                    #endregion 單封
+                    sendRespective(vendors, rfq, "作廢");
                     transaction.Complete();
                     return Ok();
                 }
@@ -225,6 +260,88 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
             }
         }
+
+        private void sendRespective(ViewSrmRfqV[]  vendors, SrmRfqH rfq, string type) {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder qotNums = new StringBuilder();
+            foreach (var vendor in vendors)
+            {
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress("mis@chenfull.com.tw");
+                    mail.To.Add("leon.jcg@chenfull.com.tw");
+                    mail.CC.Add("leo.lai@chenfull.com.tw");
+                    var sourcer = _userService.GetUsers(new UserQueryModel { UserName = rfq.CreateBy, Page = 1, Size = 1 });
+                    if (!string.IsNullOrWhiteSpace(sourcer.Data[0].Email)) { mail.CC.Add(sourcer.Data[0].Email); }
+                    //mail.To.Add("leo.lai@chenfull.com.tw");
+                    SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfq.RfqId, vendorId = vendor.VendorId });
+                    sb.Clear();
+                    sb.AppendLine("收件者:<br />");
+                    sb.AppendLine(vendor.Mail+ "<br />");
+                    //sb.AppendLine(sourcer.Data[0].Email + "<br />");
+                    qotNums.Clear();
+                    foreach (var qot in qots)
+                    {
+                        qotNums.AppendLine(qot.QotNum + "<br />");
+                    }
+                    string body = "";
+                    string subject = "";
+                    if (type == "作廢")
+                    {
+                        body = $@"親愛的供應商夥伴您好,<br />
+                    因本公司內部原因，<br />
+                    詢價單：{rfq.RfqNum}<br />
+                    以下報價單：<br />
+                    {qotNums.ToString()}<br />
+                    進行取消詢價作業，<br />
+                    造成貴公司困擾深感抱歉，<br />
+                    謝謝!<br />
+                    <br />
+                    此信為系統發送,<br />
+                     如有任何問題，<br />
+                     請回覆此E-MAIL致採購窗口或致電協調。<br />
+                    <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+                    {sb.ToString()}";
+                        subject = "詢價單作廢通知";
+                    }
+                    else if (type == "啟動")
+                    {
+                        body = $@"親愛的供應商夥伴您好,<br />
+此信為系統發送,<br />
+詢價單{rfq.RfqNum}已發送，請協助於詢價截止日期前{rfq.Deadline.Value.ToString("yyyy/MM/dd")}回覆報價資訊，謝謝！<br />
+ 如有任何問題，<br />
+ 請回覆此E-MAIL致採購窗口或致電協調。<br />
+<a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+{ sb.ToString()}";
+                        subject = "詢價單作廢通知";
+                    }
+
+                    mail.Body = body;
+                    mail.Subject = subject;
+                    mail.IsBodyHtml = true;
+                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+                    {
+                        MySMTP.Send(mail);
+                        MySMTP.Dispose();
+                    }
+                }
+                catch (Exception ex) {
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    mail.To.Add("leon.jcg@chenfull.com.tw");
+                    mail.Body = $"寄信異常，供應商:{vendor.VendorName}，EX:{ex.Message}";
+                    mail.Subject = "寄信異常";
+                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+                    {
+                        MySMTP.Send(mail);
+                        MySMTP.Dispose();
+                    }
+                }
+            }
+        }
+
+
         [HttpPost("Delete")]
         [Permission("rfq")]
         public IActionResult Delete(SrmRfqH rfqH)

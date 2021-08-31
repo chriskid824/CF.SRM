@@ -38,4 +38,7 @@ export class SrmQotService {
   GetMaterial() {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetMaterial`, null);
   }
+  GetProcessByNum(processnum) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetProcessByNum`, processnum);
+  }
 }

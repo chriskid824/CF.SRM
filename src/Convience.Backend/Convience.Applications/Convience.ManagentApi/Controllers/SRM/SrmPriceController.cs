@@ -76,10 +76,6 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetSummary")]
         [Permission("price")]
         public IActionResult GetSummary(QueryQot query) {
-            //(from s in _context.AspNetUsers
-            // join sa in _context.SrmEkgries on s.UserName equals sa.Empid
-            // where werks.Contains(sa.Werks)
-
             var qots = _srmQotService.Get(query);
             var infos = _srmInfoRecordService.Get(new QueryInfoRecordModels() { qotIds = qots.Select(r => r.QotId).ToArray() });
             ViewSrmPriceDetail detail = _srmPriceService.GetDetail(qots);

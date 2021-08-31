@@ -62,9 +62,9 @@ export class QotlistComponent implements OnInit {
       //{  headerName:'狀態',field: 'VStatus', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
       {  headerName:'狀態',field: 'VStatusDesc'},
       {  headerName:'詢價單號',field: 'VRfqNum', resizable: true},
-      {  headerName:'建立日期',field: 'VCreateDate', resizable: true },
+      {  headerName:'建立日期',field: 'VCreateDate', resizable: true,valueFormatter:dateFormatter },
       {  headerName:'建立人員',field: 'VCreateBy', resizable: true},
-      {  headerName:'最後異動日期',field: 'VLastUpdateDate', resizable: true},
+      {  headerName:'最後異動日期',field: 'VLastUpdateDate', resizable: true,valueFormatter:dateFormatter },
       {  headerName:'最後異動人員',field: 'VLastUpdateBy', resizable: true },
 
     ];
@@ -102,9 +102,9 @@ export class QotlistComponent implements OnInit {
           {  headerName:'報價單號',field: 'QQotNum' },
           {  headerName:'狀態',field: 'QStatusDesc', minWidth: 150 },
           {  headerName:'料號',field: 'QMatnr'},
-          {  headerName:'建立日期',field: 'QCreateDate', minWidth: 150 },
+          {  headerName:'建立日期',field: 'QCreateDate', minWidth: 150 ,valueFormatter:dateFormatter },
           {  headerName:'建立人員',field: 'QCreateBy', minWidth: 150 },
-          {  headerName:'最後異動日期',field: 'QLastUpdateDate', minWidth: 150 },
+          {  headerName:'最後異動日期',field: 'QLastUpdateDate', minWidth: 150,valueFormatter:dateFormatter  },
           {  headerName:'最後異動人員',field: 'QLastUpdateBy', minWidth: 150 },
         ],
         defaultColDef: {
@@ -281,4 +281,10 @@ export class QotlistComponent implements OnInit {
   //window.open('../srm/rfq?id=' + id);
 }*/
 
+}
+function dateFormatter(data) {
+  if(data.value==null) return "";
+  var date=new Date(data.value);
+  console.log(date.getHours())
+  return `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getUTCMinutes()}:${date.getSeconds()}`;
 }

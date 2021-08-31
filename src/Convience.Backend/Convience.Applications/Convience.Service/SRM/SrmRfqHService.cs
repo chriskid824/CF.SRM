@@ -177,12 +177,12 @@ namespace Convience.Service.SRM
             rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
 
             var rfqs = from rfq in rfqQuery
-                       join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
+                       //join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
                        join u in _context.AspNetUsers on rfq.CreateBy equals u.UserName
                        join s in _context.AspNetUsers on rfq.Sourcer equals s.UserName
                        into gj
                        from x in gj.DefaultIfEmpty()
-                       where q.werks.Contains(e.Werks)
+                       where q.werks.Contains(rfq.Werks.Value)
                        select new ViewSrmRfqH
                        {
                            RfqId = rfq.RfqId,
@@ -268,7 +268,8 @@ namespace Convience.Service.SRM
                            Sourcer = rfqH.Sourcer,
                            sourcerName = sourcer.Name,
                            Status = rfqH.Status,
-                           ekgry = ekgry.Ekgry
+                           ekgry = ekgry.Ekgry,
+                           Werks = rfqH.Werks
                        }).First();
 
 
@@ -356,7 +357,7 @@ namespace Convience.Service.SRM
             return _context.SrmRfqHs.AsQueryable().AndIfHaveValue(query.rfqNum, r => r.RfqNum == query.rfqNum)
                  .AndIfHaveValue(query.status, r => r.Status == query.status)
                  .AndIfHaveValue(query.statuses, r => query.statuses.Contains(r.Status.Value))
-                 .AndIfHaveValue(query.werks, r => _context.SrmEkgries.Where(e => query.werks.Contains(e.Werks)).Select(e => e.Empid).Contains(r.CreateBy))
+                 .AndIfHaveValue(query.werks, r => query.werks.Contains(r.Werks.Value))
                  .FirstOrDefault();
             //}
         }
