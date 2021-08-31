@@ -71,16 +71,17 @@
                     <thead>
                         <tr>
                             <th nzAlign="center" nzWidth="50px" nzLeft>#</th>
-                            <th nzAlign="center" nzWidth="80px">头像</th>
-                            <th nzAlign="center" nzWidth="120px">账号</th>
+                            <th nzAlign="center" nzWidth="80px">頭像</th>
+                            <th nzAlign="center" nzWidth="120px">帳號</th>
                             <th nzAlign="center" nzWidth="120px">姓名</th>
-                            <th nzAlign="center" nzWidth="120px">电话号码</th>
+                            <th nzAlign="center" nzWidth="120px">電話</th>
+                            <th nzAlign="center" nzWidth="120px">Email</th>
                             <th nzAlign="center" nzWidth="60px">性别</th>
                             <th nzAlign="center">系统角色</th>
-                            <th nzAlign="center" nzWidth="180px">担任职务</th>
-                            <th nzAlign="center" nzWidth="180px">所在部门</th>
-                            <th nzAlign="center" nzWidth="60px">状态</th>
-                            <th nzAlign="center" nzWidth="180px">创建时间</th>
+                            <th nzAlign="center" nzWidth="180px">擔任職務</th>
+                            <th nzAlign="center" nzWidth="180px">所在部門</th>
+                            <th nzAlign="center" nzWidth="60px">狀態</th>
+                            <th nzAlign="center" nzWidth="180px">創建時間</th>
                             <th nzAlign="center" nzWidth="180px" nzRight>操作</th>
                         </tr>
                     </thead>
@@ -95,6 +96,7 @@
                             <td nzAlign="center">{{ data.userName }}</td>
                             <td nzAlign="center">{{ data.name }}</td>
                             <td nzAlign="center">{{ data.phoneNumber }}</td>
+                            <td nzAlign="center">{{ data.email }}</td>
                             <td nzAlign="center">{{ data.sex | gender }}</td>
                             <td nzAlign="center">{{ data.roleName }}</td>
                             <td nzAlign="center">{{ data.positionName }}</td>
@@ -172,12 +174,19 @@
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_phoneNumber'">手机号码</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="号码格式不对！">
-                <input type="number" [attr.id]="'edit_phoneNumber'" formControlName="phoneNumber" nz-input
-                    placeholder="手机号码" autocomplete="off" />
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_phoneNumber'">手機號碼</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="號碼格式不對！">
+                <input [attr.id]="'edit_phoneNumber'" formControlName="phoneNumber" nz-input
+                    placeholder="手機號碼" autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_email'">Email</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="郵箱格式不對！">
+              <input [attr.id]="'edit_email'" formControlName="email" nz-input
+                  placeholder="Email" autocomplete="off" />
+          </nz-form-control>
+      </nz-form-item>
         <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sex'">性别</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">

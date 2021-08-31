@@ -86,7 +86,8 @@ export class UserManageComponent implements OnInit {
       avatar: [''],
       userName: ['', [Validators.required, Validators.maxLength(15)]],
       name: ['', [Validators.required, Validators.maxLength(10)]],
-      phoneNumber: ['', [Validators.pattern('^1(3|4|5|7|8)[0-9]{9}$')]],
+      phoneNumber: ['', [Validators.pattern(/^[0-9]\d{9}$/)]],
+      email: ['', [Validators.email]],
       roleIds: [[]],
       department: [],
       positions: [[]],
@@ -106,11 +107,13 @@ export class UserManageComponent implements OnInit {
     this._userService.getUser(user.id).subscribe(user => {
       this.isNewUser = false;
       this.editedUser = user;
+      console.info(user);
       this.editForm = this._formBuilder.group({
         avatar: [user['avatar']],
         userName: [user['userName'], [Validators.required, Validators.maxLength(15)]],
         name: [user['name'], [Validators.required, Validators.maxLength(10)]],
-        phoneNumber: [user['phoneNumber'], [Validators.pattern('^1(3|4|5|7|8)[0-9]{9}$')]],
+        phoneNumber: [user['phoneNumber'], [Validators.pattern(/^[0-9]\d{9}$/)]],
+        email: [user['email'], [Validators.email]],
         roleIds: [user['roleIds'].split(',')],
         department: [Number(user['departmentId'])],
         positions: [user['positionIds']?.split(',')],
@@ -154,11 +157,12 @@ export class UserManageComponent implements OnInit {
     });
   }
 
-  // reset the search form content 
+  // reset the search form content
   resetSearchForm() {
     this.searchForm = this._formBuilder.group({
       userName: [null],
       phoneNumber: [null],
+      email:[null],
       name: [null],
       roleid: [null],
       position: [null]
@@ -186,7 +190,8 @@ export class UserManageComponent implements OnInit {
       user.userName = this.editForm.value['userName'];
       user.password = this.editForm.value['password'];
       user.name = this.editForm.value['name'];
-      user.phoneNumber = this.editForm.value['phoneNumber'].toString();
+      user.phoneNumber = this.editForm.value['phoneNumber']==null?null:this.editForm.value['phoneNumber'].toString();
+      user.email=this.editForm.value['email']==null?null:this.editForm.value['email'].toString();
       user.roleIds = (this.editForm.value['roleIds']).filter(item => item !== '').join(',');
       user.departmentId = this.editForm.value['department'];
       user.positionIds = (this.editForm.value['positions']).filter(item => item !== '').join(',');
@@ -220,7 +225,7 @@ export class UserManageComponent implements OnInit {
         password: this.passwordSetForm.value['password'],
       }).subscribe(result => {
         this.tplModal.close();
-        this._messageService.success("成功");        
+        this._messageService.success("成功");
       });
     }
   }

@@ -27,7 +27,7 @@ export class EditButtonComponent implements ICellRendererAngularComp {
   }
 
   onEditClick($event) {
-    this.display=false;
+    //this.display=false;
     if (this.params.onClick instanceof Function) {
       // put anything into params u want pass into parents component
       const params = {
@@ -40,7 +40,7 @@ export class EditButtonComponent implements ICellRendererAngularComp {
     }
   }
   onAddClick($event) {
-    this.display=false;
+    //this.display=false;
     if (this.params.onClick instanceof Function) {
       // put anything into params u want pass into parents component
       const params = {

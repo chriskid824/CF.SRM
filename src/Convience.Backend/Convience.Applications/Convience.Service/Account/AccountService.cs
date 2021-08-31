@@ -64,6 +64,7 @@ namespace Convience.Service.Account
         public async Task<ValidateCredentialsResultModel> ValidateCredentialsAsync(string userName, string password)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.UserName == userName && u.IsActive);
+            var roles = _userRoleRepository.Get(ur => ur.UserId == user.Id);
             var roleIds = string.Join(',',
                 _userRoleRepository.Get(ur => ur.UserId == user.Id).Select(ur => ur.RoleId));
             if (user != null)
@@ -128,16 +129,16 @@ namespace Convience.Service.Account
             //}
             //return "0";
         }
-        public int[] GetWerks(string roleIds)
+        public int[] GetWerks(string rolenames)
         {
-            if (string.IsNullOrEmpty(roleIds)) return null;
-            string[] roleidlist = roleIds.Split(',');
+            if (string.IsNullOrEmpty(rolenames)) return null;
+            string[] rrolenamelist = rolenames.Split(',');
             List<int> werklist = new List<int>();
-            foreach (string id in roleidlist)
+            foreach (string name in rrolenamelist)
             {
-                if (!string.IsNullOrWhiteSpace(id) && id.Length >= 4)
+                if (!string.IsNullOrWhiteSpace(name) && name.Length >= 4)
                 {
-                    string werk = id.Substring(0, 4);
+                    string werk = name.Substring(0, 4);
                     if (werk.All(char.IsDigit))
                     {
                         werklist.Add(Convert.ToInt32(werk));
