@@ -36,6 +36,7 @@ namespace Convience.Model.Models.SRM
 
     public class ViewSrmDeliveryL : SrmDeliveryL
     {
+        public new int? DeliveryLId { get; set; }
         public string Description { get; set; }
         public string Matnr { get; set; }
         public string PoNum { get; set; }

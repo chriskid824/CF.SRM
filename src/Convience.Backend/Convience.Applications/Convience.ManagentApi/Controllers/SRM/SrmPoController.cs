@@ -23,10 +23,12 @@ namespace Convience.ManagentApi.Controllers.SRM
     public class SrmPoController : ControllerBase
     {
         private readonly ISrmPoService _srmPoService;
+        private readonly ISrmDeliveryService _srmDeliveryService;
 
-        public SrmPoController(ISrmPoService srmPoService)
+        public SrmPoController(ISrmPoService srmPoService, ISrmDeliveryService srmDeliveryService)
         {
             _srmPoService = srmPoService;
+            _srmDeliveryService = srmDeliveryService;
         }
 
         [HttpPost("GetPo")]
@@ -85,7 +87,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult UpdateReplyDeliveryDate(JObject rfq)
         {
             SrmPoL data = rfq.ToObject<SrmPoL>();
-            _srmPoService.UpdateReplyDeliveryDate(data);
+            _srmDeliveryService.UpdateReplyDeliveryDate(data);
             if (_srmPoService.CheckAllReply(data.PoId))
             {
                 _srmPoService.UpdateStatus(data.PoId, 15);

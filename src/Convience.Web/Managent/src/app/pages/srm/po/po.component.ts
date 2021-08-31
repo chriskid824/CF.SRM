@@ -33,11 +33,12 @@ export class PoComponent implements OnInit {
       {
         headerName:'採購單識別碼',
         field: 'PoId',
-        cellRenderer: 'agGroupCellRenderer',
+        hide:'true',
       },
       {
         headerName:'採購單號',
         field: 'PoNum',
+        cellRenderer: 'agGroupCellRenderer',
       },
       {
         headerName:'供應商識別碼',
@@ -127,14 +128,16 @@ export class PoComponent implements OnInit {
           {
             headerName:'採購單明細識別碼',
             field: 'PoLId',
+            hide:'true',
           },
           {
-            headerName:'採購單識別碼',
-            field: 'PoId',
+            headerName:'採購單號',
+            field: 'PoNum',
+            hide:'true',
           },
           {
             headerName:'料號識別碼',
-            field: 'MatnrId',
+            field: 'Matnr',
           },
           {
             headerName:'物料內文',

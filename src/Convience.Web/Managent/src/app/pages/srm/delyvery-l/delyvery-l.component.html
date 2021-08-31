@@ -13,8 +13,8 @@
           <nz-form-control>
             <nz-select [formControlName]="'STATUS'" ngModel="0" style="width: 100px;">
               <nz-option nzValue="0" nzLabel="全部"></nz-option>
-              <nz-option nzValue="15" nzLabel="待出貨"></nz-option>
-              <nz-option nzValue="14" nzLabel="已出貨"></nz-option>
+              <nz-option nzValue="15" nzLabel="待交貨"></nz-option>
+              <nz-option nzValue="14" nzLabel="待收貨"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -47,6 +47,7 @@
   [pagination]="true"
   [paginationPageSize]="10"
   [frameworkComponents]="frameworkComponents"
+  [enableCellTextSelection]="true"
 ></ag-grid-angular>
 
  <!-- <nz-table #nestedTable [nzData]="rowData" [nzPageSize]="10" [nzOuterBordered]="true">

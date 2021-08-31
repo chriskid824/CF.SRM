@@ -19,4 +19,7 @@ export class SrmDeliveryService {
   AddDelivery(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/AddDelivery`,po);
   }
+  UpdateDeliveryL(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmDelivery}/UpdateDeliveryL`,po);
+  }
 }
