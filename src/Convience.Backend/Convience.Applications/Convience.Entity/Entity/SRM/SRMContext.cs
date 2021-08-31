@@ -203,6 +203,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Status)
                     .HasColumnName("STATUS")
                     .HasComment("狀態");
+
+                entity.Property(e => e.Werks)
+                    .HasColumnName("WERKS")
+                    .HasComment("工廠");
             });
 
             modelBuilder.Entity<SrmRfqM>(entity =>

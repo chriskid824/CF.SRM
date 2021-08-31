@@ -22,6 +22,7 @@ export class RfqComponent implements OnInit {
   canCxl;
   canDel;
   name;
+  werks;
   page = 1;
   size = 50;
 
@@ -92,7 +93,7 @@ export class RfqComponent implements OnInit {
         field: "srmVendor1",
         enableRowGroup: true,
         cellClass: "show-cell",
-        width: "250px",
+        width: "260px",
         cellRenderer: 'agGroupCellRenderer',
         headerCheckboxSelection: true,
         checkboxSelection: true,
@@ -252,7 +253,6 @@ export class RfqComponent implements OnInit {
   ngOnInit(): void {
     console.log('test');
     if (this.H.rfqId != undefined) {
-      this.name = this.H.CREATEBY;
       console.log('GetRfqData');
       this._srmRfqService.GetRfqData(this.H.rfqId).subscribe(result => {
         console.log(result);
@@ -261,6 +261,7 @@ export class RfqComponent implements OnInit {
         var c = new Date(this.H.createDate);
         this.H.C_Date = c.getFullYear() + '-' + (c.getMonth() + 1) + '-' + c.getDate();
         this.name = this.H.c_by;
+        this.werks = this._storageService.werks.split(',')[0];
         this.rowData_MATNR = result["m"];
         this.rowData_VENDOR = result["v"];
         this.canModify = this.H.status == 1;
@@ -271,6 +272,7 @@ export class RfqComponent implements OnInit {
       });
     } else {
       this.name = this._storageService.Name;
+      this.werks = this._storageService.werks.split(',')[0];
       this.H.CREATEBY = this._storageService.userName;
       this.H.STATUS = 1;
       this.canModify = true;
@@ -304,7 +306,7 @@ export class RfqComponent implements OnInit {
         field: "srmMatnr1",
         enableRowGroup: true,
         cellClass: "show-cell",
-        width: "240px",
+        width: "260px",
         cellRenderer: 'agGroupCellRenderer',
         headerCheckboxSelection: true,
         checkboxSelection: true,
@@ -394,7 +396,7 @@ export class RfqComponent implements OnInit {
     let temp = this.rowData_MATNR;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_MATNR.length; j++) {
-        if (this.rowData_MATNR[j].matnr == selectedRows[i].matnr) {
+        if (this.rowData_MATNR[j].matnrId == selectedRows[i].matnrId) {
           temp.splice(j, 1);
           break;
         }
@@ -413,7 +415,7 @@ export class RfqComponent implements OnInit {
     let temp = this.rowData_VENDOR;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_VENDOR.length; j++) {
-        if (this.rowData_VENDOR[j].vendor == selectedRows[i].vendor) {
+        if (this.rowData_VENDOR[j].vendorId == selectedRows[i].vendorId) {
           temp.splice(j, 1);
           break;
         }
