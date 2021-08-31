@@ -577,13 +577,15 @@ namespace Convience.Service.SRM
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                            join s in _context.SrmStatuses on q.Status equals s.Status
+                           join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName
+
 
                            //where e.OwnerID == user.UID
                            select new 
                            {
                               
-                               CreateBy = q.CreateBy,
-                               CreateDate = q.CreateDate,                             
+                               CreateBy = u1.Name,//q.CreateBy,
+                               CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),                             
                                Status = s.StatusDesc,
                                RfqNum = r.RfqNum,
                                QotId = q.QotId,
@@ -822,7 +824,7 @@ namespace Convience.Service.SRM
                                    PProcessNum = process.PProcessNum,
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
-                                   SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
+                                   //SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
                                    QotId = process.QotId
                                    
                                })
@@ -845,7 +847,7 @@ namespace Convience.Service.SRM
                                    STimes = surface.STimes,
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
-                                   SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
+                                   //SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
                                    QotId = surface.QotId
                                })
                                .Where(p => p.QotId == qotid)
