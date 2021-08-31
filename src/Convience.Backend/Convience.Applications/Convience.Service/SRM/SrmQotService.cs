@@ -48,6 +48,8 @@ namespace Convience.Service.SRM
         public int GetRowNum(SrmQotH qotH);
         public SrmProcess[] GetProcess();
         public SrmMaterial[] GetMaterial();
+        public int GetQotStatus(SrmQotH qotH);
+        public string GetProcessByNum(int num);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -224,9 +226,9 @@ namespace Convience.Service.SRM
             //{
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
-                .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
+                //.AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
                 .AndIfHaveValue(query.vendorId, r => r.VendorId == query.vendorId)
-                .OrderBy(r => r.MatnrId);
+                .OrderBy(r => r.QotId);
             return qotQurty.ToArray();
             //}
         }
@@ -606,7 +608,8 @@ namespace Convience.Service.SRM
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
             qotlist = qotlist
             .Where(p => p.RfqId == rfqid)
-            .Where(p => p.VendorId == vendorid);
+            .Where(p => p.VendorId == vendorid)
+            .OrderBy(p => p.QotId);
             //.AndIfHaveValue(matnrid , p => p.QotId == qotid);
             //.Where(p => p.QotId == qotid);
             return qotlist;
@@ -1203,13 +1206,27 @@ namespace Convience.Service.SRM
                 //return result;
             }
         }
+        public int GetQotStatus(SrmQotH qotH) 
+        {
+            var qotstatus = 0;
+            var qot = _context.SrmQotHs.Where(p => p.QotId == qotH.QotId).ToList();
+            //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+            //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
+            //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotstatus = qot.Select(r => r.Status).First().Value;
+            
+            return qotstatus;
+        }
         #region
         public int GetRowNum(SrmQotH qotH) 
         {
+            int qotstatus = GetQotStatus(qotH);
             int index = -1;
             SrmQotH[] qs = _context.SrmQotHs.AsQueryable()
                 .Where(p => p.RfqId == qotH.RfqId)
-                .Where(p =>p.VendorId == qotH.VendorId).OrderBy(p =>p.QotId).ToArray();
+                .Where(p =>p.VendorId == qotH.VendorId)
+                //.Where(p =>p.Status == qotstatus)
+                .OrderBy(p =>p.QotId).ToArray();
             foreach (var q in qs)
             {
                 index++;
@@ -1231,6 +1248,14 @@ namespace Convience.Service.SRM
         public SrmMaterial[] GetMaterial()
         {
             return _context.SrmMaterials.ToArray();
+        }
+        public string GetProcessByNum(int num)
+        {
+            string processname = string.Empty;
+            var p =  _context.SrmProcesss.Where(p =>p.ProcessNum == num).ToList();
+            processname = p.Select(r => r.Process).First();
+
+            return processname;
         }
     }
 }
