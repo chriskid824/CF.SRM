@@ -319,7 +319,7 @@ export class QotComponent implements OnInit {
     let temp = this.rowData_Material;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_Material.length; j++) {
-        if (this.rowData_Material[j].material_name == selectedRows[i].material_name) {
+        if (this.rowData_Material[j].mMaterial == selectedRows[i].mMaterial) {
           temp.splice(j, 1);
           break;
         }
@@ -337,7 +337,7 @@ export class QotComponent implements OnInit {
     let temp = this.rowData_Process;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_Process.length; j++) {
-        if (this.rowData_Process[j].vendor == selectedRows[i].vendor) {
+        if (this.rowData_Process[j].pProcessNum == selectedRows[i].pProcessNum) {
           temp.splice(j, 1);
           break;
         }
@@ -356,7 +356,7 @@ export class QotComponent implements OnInit {
     let temp = this.rowData_Surface;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_Surface.length; j++) {
-        if (this.rowData_Surface[j].vendor == selectedRows[i].vendor) {
+        if (this.rowData_Surface[j].sProcess == selectedRows[i].sProcess) {
           temp.splice(j, 1);
           break;
         }
@@ -375,7 +375,7 @@ export class QotComponent implements OnInit {
     let temp = this.rowData_Other;
     for (var i = selectedRows.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.rowData_Other.length; j++) {
-        if (this.rowData_Other[j].vendor == selectedRows[i].vendor) {
+        if (this.rowData_Other[j].oItem == selectedRows[i].oItem) {
           temp.splice(j, 1);
           break;
         }
