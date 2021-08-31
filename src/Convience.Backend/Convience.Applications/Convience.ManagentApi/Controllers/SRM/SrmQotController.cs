@@ -213,5 +213,12 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             return Ok(_srmQotService.GetMaterial());
         }
+        [HttpPost("GetProcessByNum")]
+        public IActionResult GetProcessByNum(int num)
+        {
+            return Ok(_srmQotService.GetProcessByNum(num));
+        }
+
+        
     }
 }
