@@ -225,7 +225,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     rfqId = _srmPriceService.Start(infos).Value;
                     _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid });
-                    RunBorg(infos);
+                    RunBorg(rfqH,infos);
                     transaction.Complete();
                     return Ok();
                 }
@@ -238,7 +238,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 
 
 
-        private void RunBorg(viewSrmInfoRecord[] infos)
+        private void RunBorg(ViewSrmRfqH rfqH, viewSrmInfoRecord[] infos)
         {
             BasicHttpBinding binding = new BasicHttpBinding();
 
@@ -253,6 +253,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             Dictionary<string, object> Variables = new Dictionary<string, object>();
             Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
             Dictionary<string, object> FormControls = new Dictionary<string, object>();
+            FormControls.Add("werks", rfqH.Werks.Value);
             DataSet ds = new DataSet();
             DataTable InfoRecord = new DataTable("CF_InfoRecord");
             InfoRecord.Columns.Add("SapMatnr");
@@ -280,7 +281,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("Img1");
             InfoRecord.Columns.Add("Img2");
             InfoRecord.Columns.Add("Note");
-            var rfqH = _srmRfqHService.GetDataByRfqId(int.Parse(infos[0].rfqId));
             foreach (var info in infos) {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
