@@ -1,0 +1,85 @@
+<div class="two-column" style="width: 93%;">
+    <div class="right">
+      <!--搜索欄-->
+      <nz-card [nzSize]="'small'" id="searchBar">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+          <nz-form-item>
+            <nz-form-label [nzFor]="'SRM_VENDOR'">SRM供應商代碼</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="SRM供應商代碼" [formControlName]="'SRM_VENDOR'" [attr.id]="'SRM_VENDOR'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzFor]="'VENDOR_NAME'">供應商名稱</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="供應商名稱" [formControlName]="'VENDOR_NAME'" [attr.id]="'VENDOR_NAME'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary">搜索</button>
+              <!--<button nz-button nzType="outline" type="button" class="ml-10"
+                (click)="resetSearchForm()">
+          重置
+        </button>-->
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+  
+      <!--詢價單數據-->
+      <nz-card [nzSize]="'small'" id="rfqCard">
+        <div>
+          <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+        </div>
+        <div class="mt-10">
+          <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+          nzBordered="true">
+            <thead>
+              <tr>
+                <th nzAlign="center" nzWidth="80px">供應商代碼</th>
+                <th nzAlign="center" nzWidth="80px">供應商名稱</th>
+                <th nzAlign="center" nzWidth="80px">公司代碼</th>
+                <th nzAlign="center" nzWidth="80px">採購組織</th>
+                <th nzAlign="center" nzWidth="80px">聯絡人</th>
+                <th nzAlign="center" nzWidth="120px">地址</th>
+                <th nzAlign="center" nzWidth="80px">電話號碼</th>
+                <th nzAlign="center" nzWidth="80px">分機</th>
+                <th nzAlign="center" nzWidth="80px">傳真號碼</th>
+                <th nzAlign="center" nzWidth="80px">手機號碼</th>
+                <th nzAlign="center" nzWidth="80px">信箱</th>
+                <th nzAlign="center" nzWidth="80px">狀態</th>
+
+                
+                <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of dataTable.data;let i = index">
+                <td nzAlign="center">{{ data.srmVendor1 }}</td>
+                <td nzAlign="center">{{ data.vendorName }}</td>
+                <td nzAlign="center">{{ data.org }}</td>
+                <td nzAlign="center">{{ data.ekorg }}</td>
+                <td nzAlign="center">{{ data.person }}</td>
+                <td nzAlign="center">{{ data.address }}</td>
+                <td nzAlign="center">{{ data.telPhone }}</td>
+                <td nzAlign="center">{{ data.ext }}</td>
+                <td nzAlign="center">{{ data.faxNumber }}</td>
+                <td nzAlign="center">{{ data.cellPhone }}</td>
+                <td nzAlign="center">{{ data.mail }}</td>
+                <td nzAlign="center">{{ data.status }}</td>
+              </tr>
+            </tbody>            
+          </nz-table>
+        </div>
+        <div class="mt-10">
+          <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                         nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+          </nz-pagination>
+        </div>
+      </nz-card>
+  
+    </div>
+  </div>

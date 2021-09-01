@@ -35,6 +35,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmRfqVService _srmRfqVService;
         private readonly ISrmQotService _srmQotHService;
         private readonly IUserService _userService;
+        private readonly ISrmSupplierService _srmSupplierService;
 
         public SrmRfqController(ISrmMatnrService srmMatnrService,
             ISrmVendorService srmVendorService,
@@ -42,7 +43,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             ISrmRfqMService srmRfqMService,
             ISrmRfqVService srmRfqVService,
             ISrmQotService srmQotHService,
-            IUserService userService)
+            IUserService userService,
+            ISrmSupplierService srmSupplierService)
         {
             _srmMatnrService = srmMatnrService;
             _srmVendorService = srmVendorService;
@@ -51,6 +53,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqVService = srmRfqVService;
             _srmQotHService = srmQotHService;
             _userService = userService;
+            _srmSupplierService = srmSupplierService;
+        }
+        [HttpPost("GetSupplierList")]
+        [Permission("supplier")]
+        public IActionResult GetSupplierList(QueryVendorModel query)
+        {
+            return Ok(_srmSupplierService.GetVendor(query));
         }
 
         [HttpPost("GetMatnr")]

@@ -93,6 +93,12 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'qotlist', routerLink: '/srm/qotlist', iconType: 'fund-view', firstBreadcrumb: '報價', lastBreadcrumb: '報價單查詢', name: '報價單查詢', },
         { canOperate: 'qotop', routerLink: '/srm/qot', iconType: 'fund-view', firstBreadcrumb: '報價', lastBreadcrumb: '報價作業', name: '報價作業', },
       ]
+    },
+    {
+      canOperate: 'supplier', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '供應商',
+      children: [
+        { canOperate: 'supplierlist', routerLink: '/srm/supplier', iconType: 'fund-view', firstBreadcrumb: '供應商', lastBreadcrumb: '供應商查詢', name: '供應商查詢', },
+      ]
     }
   ];
 

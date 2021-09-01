@@ -45,6 +45,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { DeliveryAddComponent } from './delivery-add/delivery-add.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { SupplierComponent } from './supplier/supplier.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -63,6 +64,7 @@ import { MatInputModule } from '@angular/material/input';
     ButtonRendererComponent,
     EditButtonComponent,
     DeliveryAddComponent,
+    SupplierComponent,
   ],
   imports: [
     CommonModule,
@@ -81,7 +83,8 @@ import { MatInputModule } from '@angular/material/input';
        //{ path: "qotlist", component: QotlistComponent},
        { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
        { path: "price", component: PriceComponent, canActivate: [LoginGuard] },
-       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] }
+       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
+       { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] }
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

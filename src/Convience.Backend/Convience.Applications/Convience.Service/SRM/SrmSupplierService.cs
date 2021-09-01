@@ -8,20 +8,22 @@ using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
-using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Convience.Model.Models.SRM;
+using Newtonsoft.Json;
+using Convience.Service.SystemManage;
 
 namespace Convience.Service.SRM
 {
-    public interface ISrmVendorService
+    public interface ISrmSupplierService
     {
         /// <summary>
         /// 取得全部角色
@@ -29,12 +31,12 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery);
         public SrmVendor GetVendorById(int id);
     }
-    class SrmVendorService:ISrmVendorService
+    class SrmSupplierService : ISrmSupplierService
     {
         private readonly IRepository<SrmVendor> _srmVendorRepository;
         //private readonly SystemIdentityDbUnitOfWork _systemIdentityDbUnitOfWork;
 
-        public SrmVendorService(
+        public SrmSupplierService(
             //IMapper mapper,
             IRepository<SrmVendor> srmVendorRepository)
         //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
@@ -52,14 +54,14 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery)
         {
             //int[] werks = Array.ConvertAll(vendorQuery.Werks.ToString().Split(","), s => int.Parse(s));
-            int skip = vendorQuery.Page * vendorQuery.Size;
+            int skip = (vendorQuery.Page-1) * vendorQuery.Size;
             var resultQuery = _srmVendorRepository.Get()
                 .AndIfHaveValue(vendorQuery.Vendor, r => r.SapVendor.Contains(vendorQuery.Vendor))
                 .Where(r => vendorQuery.Werks.Contains(r.Ekorg.Value));
-            var vendors =resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray();
-            return new PagingResultModel<ViewSrmVendor> 
+            var vendors = resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray();
+            return new PagingResultModel<ViewSrmVendor>
             {
-                Data = JsonConvert.DeserializeObject<ViewSrmVendor[]>(JsonConvert.SerializeObject(vendors)) ,
+                Data = JsonConvert.DeserializeObject<ViewSrmVendor[]>(JsonConvert.SerializeObject(vendors)),
                 Count = resultQuery.Count()
             };
         }
@@ -70,4 +72,5 @@ namespace Convience.Service.SRM
         }
 
     }
+
 }
