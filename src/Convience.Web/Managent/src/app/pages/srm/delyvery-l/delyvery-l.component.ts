@@ -509,6 +509,36 @@ export class DelyveryLComponent implements OnInit {
   });
   }
   cancel(e) {
+    this._modalService.confirm({
+      nzTitle: '你確定要刪除項次'+e.rowData.DeliveryLId+'?',
+      //nzContent: '<b style="color: red;">Some descriptions</b>',
+      nzOkText: '確認',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => this.submitDelete(e.rowData),
+      nzCancelText: '取消',
+      //nzOnCancel: () => alert("取消")
+    });
+
+  }
+  submitDelete(data){
+    this._srmDeliveryService.DeleteDeliveryL(data)
+    .subscribe((result) => {
+      if(result==null)
+      {
+       var selectedRows = this.gridApi.getRenderedNodes();
+       this.gridApi.setRowData(this.rowData);
+
+       this.gridApi.forEachLeafNode((node) => {
+         if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
+           node.setRowNodeExpanded(true);
+         }
+       });
+       alert("修改成功");
+       this.refresh();
+       this.tplModal.close();
+      }
+    });
   }
   start(e){
     this.isedit=true;
@@ -565,17 +595,17 @@ export class DelyveryLComponent implements OnInit {
      .subscribe((result) => {
        if(result==null)
        {
-        var selectedRows = this.gridApi.getRenderedNodes();
-        this.gridApi.setRowData(this.rowData);
+        // var selectedRows = this.gridApi.getRenderedNodes();
 
-        this.gridApi.forEachLeafNode((node) => {
-          if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
-            node.setRowNodeExpanded(true);
-          }
-        });
+        // this.rowData.splice(selectedRows.rowIndex, 1);
+        // this.gridApi.setRowData(this.rowData);
+        // this.gridApi.forEachLeafNode((node) => {
+        //   if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
+        //     node.setRowNodeExpanded(true);
+        //   }
+        // });
         alert("修改成功");
         this.refresh();
-        this.tplModal.close();
        }
      });
 

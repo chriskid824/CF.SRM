@@ -29,6 +29,7 @@ namespace Convience.Service.SRM
 
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
+        public bool DeleteDeliveryL(ViewSrmDeliveryL data);
     }
 
     public class SrmDeliveryService : ISrmDeliveryService
@@ -207,6 +208,23 @@ namespace Convience.Service.SRM
             }
             _context.SaveChanges();
             return true;
+        }
+        public bool DeleteDeliveryL(ViewSrmDeliveryL data)
+        {
+            SrmDeliveryL dl = _context.SrmDeliveryLs.Find(data.DeliveryLId);
+            if (dl != null)
+            {
+                _context.SrmDeliveryLs.Remove(dl);
+                SrmPoL pol = _context.SrmPoLs.Find(data.PoId, data.PoLId);
+                pol.Status = 14;
+                _context.SrmPoLs.Update(pol);
+                SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
+                poh.Status = 14;
+                _context.SrmPoHs.Update(poh);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
         public bool CheckAllDelivery(int poid, int polid)
         {

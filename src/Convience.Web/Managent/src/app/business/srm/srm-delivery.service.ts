@@ -22,4 +22,7 @@ export class SrmDeliveryService {
   UpdateDeliveryL(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/UpdateDeliveryL`,po);
   }
+  DeleteDeliveryL(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmDelivery}/DeleteDeliveryL`,po);
+  }
 }
