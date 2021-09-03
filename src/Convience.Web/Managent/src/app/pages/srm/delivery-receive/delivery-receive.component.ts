@@ -57,6 +57,9 @@ export class DeliveryReceiveComponent implements OnInit {
     //     this.rowData = data;
     //   });
   }
+  receive(){
+    alert("操作成功");
+  }
   submitSearch() {
     this.refresh();
   }

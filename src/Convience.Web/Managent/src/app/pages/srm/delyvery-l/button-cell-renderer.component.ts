@@ -6,9 +6,10 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 @Component({
   selector: 'edit-button',
   template: `
-    <button *ngIf="display" nz-button nz-tooltip nzTooltipTitle="編輯" type="button" nzShape="circle" style="display:{{display}}" (click)="onEditClick($event)"><i nz-icon nzType="edit"></i></button>
-    <button *ngIf="display" nz-button nz-tooltip nzTooltipTitle="新增" type="button" nzShape="circle" style="display:{{display}}, margin-left:10px" (click)="onAddClick($event)"><i nz-icon nzType="plus"></i></button>
-    `
+  <ng-container *ngIf="display">
+    <button *canOperate="'DO_UPDATE'" nz-button nz-tooltip nzTooltipTitle="編輯" type="button" nzShape="circle" style="display:{{display}}" (click)="onEditClick($event)"><i nz-icon nzType="edit"></i></button>
+    <button *canOperate="'DO_ADD'" nz-button nz-tooltip nzTooltipTitle="新增" type="button" nzShape="circle" style="display:{{display}}, margin-left:10px" (click)="onAddClick($event)"><i nz-icon nzType="plus"></i></button>
+  </ng-container>`
 })
 export class EditButtonComponent implements ICellRendererAngularComp {
 
