@@ -130,11 +130,13 @@ namespace Convience.Service.SRM
                                        SapVendor = vendor.SapVendor,
                                        VendorName = vendor.VendorName,
                                        VendorId = vendor.VendorId,
+                                       Org = poh.Org
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
                                    })
                                    .Where(l => l.DeliveryId == p.DeliveryId)
+                                   .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                                    .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                                    .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), l => l.PoNum.IndexOf(query.poNum) > -1).ToList()
                                    .AndIfCondition(query.deliveryLId != 0, l => l.DeliveryLId == query.deliveryLId)

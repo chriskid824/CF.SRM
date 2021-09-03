@@ -173,8 +173,10 @@ namespace Convience.Service.SRM
                               TotalAmount = h.TotalAmount,
                               Buyer = h.Buyer,
                               StatusDesc = status.StatusDesc,
-                              Matnr = matnr.SapMatnr
+                              Matnr = matnr.SapMatnr,
+                              Org=h.Org
                           })
+                          .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
