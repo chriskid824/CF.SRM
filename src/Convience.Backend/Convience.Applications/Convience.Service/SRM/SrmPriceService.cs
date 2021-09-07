@@ -17,6 +17,7 @@ namespace Convience.Service.SRM
         public SrmCurrency[] GetCurrency();
         public SrmTaxcode[] GetTaxcodes();
         public SrmEkgry[] GetEkgry(int[] werks);
+        public void UpdateCaseid(viewSrmInfoRecord[] infos);
     }
     public class SrmPriceService:ISrmPriceService
     {
@@ -102,24 +103,6 @@ namespace Convience.Service.SRM
                                VendorName = vendor.VendorName
                            }).ToArray();
 
-
-            //(from material in db.SrmQotMaterial
-            // join qot in db.SrmQotHs
-            // on material.QotId equals qot.QotId
-            // join vendor in db.SrmVendors
-            // on qot.VendorId equals vendor.VendorId
-            // where qotIds.Contains(material.QotId.Value)
-            // select new viewSrmQotMaterial(material)
-            // {
-            //     VendorId = vendor.VendorId,
-            //     VendorName = vendor.VendorName
-            // })
-            // .GroupBy(r => r.VendorName).Select(g => new
-            // {
-            //     VendorId = g.Key,
-            //     count = g.Sum(s => s.MCostPrice)
-            // });
-
             viewSrmInfoRecord[] infos = new viewSrmInfoRecord[query.Count()];
             for (int i = 0; i < infos.Length; i++)
             {
@@ -138,42 +121,6 @@ namespace Convience.Service.SRM
                 infos[i] = Vinfo;
             }
             price.infoRecord = infos;
-            //price.infoRecord = price.material.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.MCostPrice)
-            //}).GroupJoin(
-            //price.process.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.SubTotal)
-            //}), a => a.VendorId, b => b.VendorId, (material, process) => new
-            //{
-            //    material = material,
-            //    process = process.DefaultIfEmpty()
-            //}).GroupJoin(
-            //price.surface.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.SubTotal)
-            //}), r => r.material.VendorId, c => c.VendorId, (infoRecord, surface) => new
-            //{
-            //    infoRecord,
-            //    surface = surface.DefaultIfEmpty()
-            //}).GroupJoin(
-            //price.other.GroupBy(r => r.VendorName).Select(g => new
-            //{
-            //    VendorId = g.Key,
-            //    count = g.Sum(s => s.OPrice)
-            //}), r => r.infoRecord.material.VendorId, d => d.VendorId, (infoRecord, other) => new viewSrmQotInfoRecord
-            //{
-            //    Atotal = infoRecord.infoRecord.material.count.Value,
-            //    Btotal = infoRecord.infoRecord.process.,
-            //    Ctotal = infoRecord.surface.count,
-            //    Dtotal = other.count.Value
-            //}).DefaultIfEmpty().ToArray();
-
-            //}
             return price;
         }
         public int? Start(viewSrmInfoRecord[] infos) {
@@ -214,10 +161,10 @@ namespace Convience.Service.SRM
 
                 SrmInforecord t = new SrmInforecord();
 
-                foreach (PropertyInfo prop in t.GetType().GetProperties())
-                    t.GetType().GetProperty(prop.Name).SetValue(t, prop.GetValue(info, null), null);
+                //foreach (PropertyInfo prop in t.GetType().GetProperties())
+                //    t.GetType().GetProperty(prop.Name).SetValue(t, prop.GetValue(info, null), null);
 
-                _context.SrmInforecords.Add(t);
+                _context.SrmInforecords.Add(info);
             }
 
             var qot = _context.SrmQotHs.Where(r => r.QotId == infos[0].QotId).FirstOrDefault();
@@ -228,6 +175,14 @@ namespace Convience.Service.SRM
 
             _context.SaveChanges();
             return rfqId;
+        }
+
+        public void UpdateCaseid(viewSrmInfoRecord[] infos)
+        {
+            foreach (var info in infos) {
+                _context.Entry(info).Property(x => x.Caseid).IsModified = true;
+            }
+            _context.SaveChanges();
         }
 
         public SrmCurrency[] GetCurrency()

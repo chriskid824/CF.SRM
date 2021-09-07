@@ -246,7 +246,19 @@ namespace Convience.ManagentApi.Controllers.SRM
 
             BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
 
-            CallMethodParams callMethodParm = new CallMethodParams();
+            CallMethodParams callMethodParm = new CallMethodParams();//GetBorgEmpDataByLogonID
+            callMethodParm.Method = "GetBorgEmpDataByLogonID";
+            callMethodParm.Options = rfqH.Sourcer;
+
+            Task<CallMethodResponse> response = client.CallMethodAsync(callMethodParm);
+            CallMethodResult result = response.Result.Body.CallMethodResult;
+            if (!result.Success)
+            {
+                throw new Exception(result.Message);
+            }
+
+
+
             JObject param = new JObject();
             param.Add("logonid", "137680");
             param.Add("signType", "採購資訊紀錄簽核單");
@@ -254,6 +266,18 @@ namespace Convience.ManagentApi.Controllers.SRM
             Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
             Dictionary<string, object> FormControls = new Dictionary<string, object>();
             FormControls.Add("werks", rfqH.Werks.Value);
+            FormControls.Add("rfqId", rfqH.RfqId);
+            DataTable resultdt = JsonConvert.DeserializeObject<DataTable>(result.Options.ToString());
+            FormControls.Add("ddlUserName_USERNAME", resultdt.Rows[0]["USERNAME"].ToString());
+            FormControls.Add("ddlDeptName", resultdt.Rows[0]["DEPTNAME"].ToString());
+            FormControls.Add("txtEXT", resultdt.Rows[0]["EXT"].ToString());
+            FormControls.Add("txtEmail", resultdt.Rows[0]["EMAIL"].ToString());
+            FormControls.Add("ddlDept", resultdt.Rows[0]["DEPTID"].ToString());
+            FormControls.Add("txtUserLOGONID", resultdt.Rows[0]["LOGONID"].ToString());
+            FormControls.Add("txtUserTitle", resultdt.Rows[0]["TITLE"].ToString());
+            FormControls.Add("txtUserWorkplace", resultdt.Rows[0]["workplaceName"].ToString());
+            FormControls.Add("txtUserArriveDate", resultdt.Rows[0]["ArriveTime"].ToString());
+
             DataSet ds = new DataSet();
             DataTable InfoRecord = new DataTable("CF_InfoRecord");
             InfoRecord.Columns.Add("SapMatnr");
@@ -312,11 +336,17 @@ namespace Convience.ManagentApi.Controllers.SRM
             callMethodParm.Method = "Sign";
             callMethodParm.Options = JsonConvert.SerializeObject(param);
 
-            Task<CallMethodResponse> testResponseTask = client.CallMethodAsync(callMethodParm);
-            CallMethodResult result = testResponseTask.Result.Body.CallMethodResult;
+            response = client.CallMethodAsync(callMethodParm);
+            result = response.Result.Body.CallMethodResult;
             if (!result.Success) {
                 throw new Exception(result.Message);
             }
+
+            foreach (var info in infos) {
+                info.Caseid = int.Parse(result.Options.ToString());
+            }
+            _srmPriceService.UpdateCaseid(infos);
+
             //var bpm = new BPMAPISoapClient(new BPMAPISoapClient.EndpointConfiguration());
             //JObject param = new JObject();
             //param.Add("logonid", Request.QueryString["logon"]);

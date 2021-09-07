@@ -806,6 +806,9 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.InfoId)
                     .HasColumnName("INFO_ID");
 
+                entity.Property(e => e.Caseid)
+                    .HasColumnName("CASEID");
+
                 entity.Property(e => e.CreateBy)
                     .HasMaxLength(8)
                     .HasColumnName("CREATE_BY");
