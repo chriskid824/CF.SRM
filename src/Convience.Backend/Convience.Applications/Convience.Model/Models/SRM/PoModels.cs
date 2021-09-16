@@ -36,6 +36,7 @@ namespace Convience.Model.Models.SRM
 
     public class ViewSrmDeliveryL : SrmDeliveryL
     {
+        public string DeliveryNum { get; set; }
         public new int? DeliveryLId { get; set; }
         public string Description { get; set; }
         public string Matnr { get; set; }
@@ -48,6 +49,8 @@ namespace Convience.Model.Models.SRM
         public string SapVendor { get; set; }
         public string Url { get { return this.DeliveryId + "/" + this.DeliveryLId; } }
         public int? Org { get; set; }
+        public string DeliveryPlace { get; set; }
+        public string LastUpdateBy { get; set; }
     }
 
     public class ViewSrmPoL : SrmPoL

@@ -77,7 +77,7 @@ export class DelyveryLComponent implements OnInit {
           'rag-green': 'x == 16',
           'rag-red': 'x == 15',
         },
-        valueFormatter:'switch(value){case 15 : return "待交貨"; case 14 : return "待收貨"; default : return value;}'
+        valueFormatter:'switch(value){case 12 : return "已收貨";case 15 : return "待交貨"; case 14 : return "待收貨"; default : return value;}'
       },
       {
         headerName:'交貨日期',

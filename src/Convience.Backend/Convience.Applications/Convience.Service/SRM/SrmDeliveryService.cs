@@ -15,7 +15,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -30,6 +32,7 @@ namespace Convience.Service.SRM
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryL(ViewSrmDeliveryL data);
+        public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist);
     }
 
     public class SrmDeliveryService : ISrmDeliveryService
@@ -111,12 +114,14 @@ namespace Convience.Service.SRM
             result.ForEach(p =>
             {
                 p.SrmDeliveryLs = (from l in _context.SrmDeliveryLs
+                                   join h in _context.SrmDeliveryHs on l.DeliveryId equals h.DeliveryId
                                    join pol in _context.SrmPoLs on new { PoId = l.PoId.Value, PoLId = l.PoLId.Value } equals new { PoId = pol.PoId, PoLId = pol.PoLId }
                                    join poh in _context.SrmPoHs on l.PoId equals poh.PoId
                                    join matnr in _context.SrmMatnrs on pol.MatnrId equals matnr.MatnrId
                                    join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
                                    select new ViewSrmDeliveryL
                                    {
+                                       DeliveryNum = h.DeliveryNum,
                                        DeliveryLId = l.DeliveryLId,
                                        DeliveryId = l.DeliveryId,
                                        PoId = l.PoId,
@@ -130,7 +135,8 @@ namespace Convience.Service.SRM
                                        SapVendor = vendor.SapVendor,
                                        VendorName = vendor.VendorName,
                                        VendorId = vendor.VendorId,
-                                       Org = poh.Org
+                                       Org = poh.Org,
+                                       DeliveryPlace = pol.DeliveryPlace,
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
@@ -227,6 +233,45 @@ namespace Convience.Service.SRM
                 return true;
             }
             return false;
+        }
+        public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist)
+        {
+            #region 1.修改status
+            ViewSrmDeliveryL dl = datalist.FirstOrDefault();
+            #region 1.1 dh
+            SrmDeliveryH dh = _context.SrmDeliveryHs.Find(dl.DeliveryId);
+            dh.Status = 12;
+            _context.SrmDeliveryHs.Update(dh);
+            #endregion
+            #region 1.2 pol
+            datalist.ForEach(m =>
+                {
+                    SrmPoL pl = _context.SrmPoLs.Find(m.PoId, m.PoLId);
+                    pl.Status = 12;
+                    _context.SrmPoLs.Update(pl);
+                });
+            #endregion
+            _context.SaveChanges();
+            #region poh
+            List<int?> poidList = datalist.Select(p => p.PoId).ToList();
+            poidList.ForEach(m =>
+            {
+                if (_context.SrmPoLs.Any(p => p.PoId == m && p.Status != 12))
+                { }
+                else
+                {
+                    SrmPoH ph = _context.SrmPoHs.Find(m);
+                    ph.Status = 12;
+                    _context.SrmPoHs.Update(ph);
+                }
+            });
+            _context.SaveChanges();
+            #endregion
+            #endregion
+            //2.rfc
+
+
+            return null;
         }
         public bool CheckAllDelivery(int poid, int polid)
         {
