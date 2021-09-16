@@ -105,6 +105,7 @@ export class UserManageComponent implements OnInit {
 
   edit(title: TemplateRef<{}>, content: TemplateRef<{}>, user: User) {
     this._userService.getUser(user.id).subscribe(user => {
+      console.log(user['userName']);
       this.isNewUser = false;
       this.editedUser = user;
       this.editForm = this._formBuilder.group({

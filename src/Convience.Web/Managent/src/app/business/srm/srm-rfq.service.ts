@@ -40,7 +40,4 @@ export class SrmRfqService {
   GetRfq(rfqH) {
     return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetRfq`, rfqH);
   }
-  GetSupplierList(query) {
-    return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetSupplierList`, query);
-  }
 }

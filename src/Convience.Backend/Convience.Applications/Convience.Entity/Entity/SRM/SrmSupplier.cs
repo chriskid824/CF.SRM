@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Convience.Entity.Entity.SRM
 {
     [Entity(DbContextType = typeof(SRMContext))]
-    public partial class SrmVendor
+    public partial class SrmSupplier
     {
         public int VendorId { get; set; }
         public string SrmVendor1 { get; set; }
@@ -23,7 +23,8 @@ namespace Convience.Entity.Entity.SRM
         public string FaxNumber { get; set; }
         public string CellPhone { get; set; }
         public string Mail { get; set; }
-        public int? Status { get; set; }        
+        public int? Status { get; set; }
+        public string StatusDesc { get; set; }
         public DateTime? CreateDate { get; set; }
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }

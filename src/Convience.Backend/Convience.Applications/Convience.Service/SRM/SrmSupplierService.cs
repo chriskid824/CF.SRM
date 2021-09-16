@@ -28,49 +28,140 @@ namespace Convience.Service.SRM
         /// <summary>
         /// 取得全部角色
         /// </summary>
-        public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery);
-        public SrmVendor GetVendorById(int id);
-    }
-    class SrmSupplierService : ISrmSupplierService
-    {
-        private readonly IRepository<SrmVendor> _srmVendorRepository;
-        //private readonly SystemIdentityDbUnitOfWork _systemIdentityDbUnitOfWork;
+        //public PagingResultModel<ViewSrmSupplier> GetVendor();
+        public PagingResultModel<ViewSrmSupplier> GetVendor(QueryVendorModel vendorQuery);
 
-        public SrmSupplierService(
-            //IMapper mapper,
-            IRepository<SrmVendor> srmVendorRepository)
-        //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
+        public ViewSrmSupplier GetSupplierDetail(QueryVendorModel query);
+
+        public bool UpdateSupplier(ViewSrmSupplier data);
+
+    }
+    public class SrmSupplierService : ISrmSupplierService
+    {
+        private readonly SRMContext _context;
+
+        private readonly IRepository<SrmSupplier> _srmVendorRepository;
+
+
+
+
+        public SrmSupplierService(IRepository<SrmSupplier> srmVendorRepository, SRMContext context)
         {
             //_mapper = mapper;
             _srmVendorRepository = srmVendorRepository;
-            //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
+            _context = context;
         }
 
-        public IEnumerable<SrmVendor> GetVendor(string vendor, int page, int size)
+
+        public PagingResultModel<ViewSrmSupplier> GetVendor(QueryVendorModel vendorQuery)
         {
-            int skip = (page - 1) * size;
-            return _srmVendorRepository.Get(r => string.IsNullOrWhiteSpace(vendor) ? true : r.VendorName.IndexOf(vendor) >= 0).ToList().Skip(skip).Take(size).AsQueryable(); ;
-        }
-        public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery)
-        {
-            //int[] werks = Array.ConvertAll(vendorQuery.Werks.ToString().Split(","), s => int.Parse(s));
             int skip = (vendorQuery.Page-1) * vendorQuery.Size;
-            var resultQuery = _srmVendorRepository.Get()
-                .AndIfHaveValue(vendorQuery.Vendor, r => r.SapVendor.Contains(vendorQuery.Vendor))
+
+            var resultQuery = (from vendor in _context.SrmVendors
+                          join status in _context.SrmStatuses on vendor.Status equals status.Status
+                          select new ViewSrmSupplier
+                          {
+                              SrmVendor1 = vendor.SrmVendor1,
+                              VendorName = vendor.VendorName,
+                              Org = vendor.Org,
+                              Ekorg = vendor.Ekorg,
+                              Person = vendor.Person,
+                              Address = vendor.Address,
+                              TelPhone = vendor.TelPhone,
+                              Ext = vendor.Ext,
+                              FaxNumber = vendor.FaxNumber,
+                              CellPhone = vendor.CellPhone,
+                              Mail = vendor.Mail,
+                              StatusDesc = status.StatusDesc, 
+                          })
+                          .AndIfHaveValue(vendorQuery.Code, r => r.SrmVendor1.Contains(vendorQuery.Code))
+                          .AndIfHaveValue(vendorQuery.Vendor, r => r.VendorName.Contains(vendorQuery.Vendor))
                 .Where(r => vendorQuery.Werks.Contains(r.Ekorg.Value));
+            
             var vendors = resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray();
-            return new PagingResultModel<ViewSrmVendor>
+
+            return new PagingResultModel<ViewSrmSupplier>
             {
-                Data = JsonConvert.DeserializeObject<ViewSrmVendor[]>(JsonConvert.SerializeObject(vendors)),
+                Data = JsonConvert.DeserializeObject<ViewSrmSupplier[]>(JsonConvert.SerializeObject(vendors)),
                 Count = resultQuery.Count()
             };
         }
-
-        public SrmVendor GetVendorById(int id)
+        public ViewSrmSupplier GetSupplierDetail(QueryVendorModel query)
         {
-            return _srmVendorRepository.Get(r => r.VendorId == id).FirstOrDefault();
+            var supplier = (from vendor in _context.SrmVendors
+                            join status in _context.SrmStatuses on vendor.Status equals status.Status
+                            select new ViewSrmSupplier
+                            {
+                                SrmVendor1 = vendor.SrmVendor1,
+                                VendorName = vendor.VendorName,
+                                Org = vendor.Org,
+                                Ekorg = vendor.Ekorg,
+                                Person = vendor.Person,
+                                Address = vendor.Address,
+                                TelPhone = vendor.TelPhone,
+                                Ext = vendor.Ext,
+                                FaxNumber = vendor.FaxNumber,
+                                CellPhone = vendor.CellPhone,
+                                Mail = vendor.Mail,
+                                StatusDesc = status.StatusDesc,
+                            })
+                          .Where(r => r.SrmVendor1 == query.Code).FirstOrDefault()
+                          //.Where(r => r.Org == query.Org)
+                          //.Where(r => r.Ekorg == query.Ekorg)
+                          ;
+
+            //var suppliers = supplier.ToArray();
+            //
+            return new ViewSrmSupplier
+            {
+                SrmVendor1 = supplier.SrmVendor1,
+                VendorName = supplier.VendorName,
+                Org = supplier.Org,
+                Ekorg = supplier.Ekorg,
+                Person = supplier.Person,
+                Address = supplier.Address,
+                TelPhone = supplier.TelPhone,
+                Ext = supplier.Ext,
+                FaxNumber = supplier.FaxNumber,
+                CellPhone = supplier.CellPhone,
+                Mail = supplier.Mail,
+                StatusDesc = supplier.StatusDesc,
+            };
+        }
+        public bool UpdateSupplier(ViewSrmSupplier data)
+        {
+
+            SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
+            SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+
+            if (status == null || vendor==null)
+            {
+                return false;
+            }
+
+
+            vendor.SrmVendor1 = data.SrmVendor1;
+            vendor.VendorName = data.VendorName;
+            vendor.Org = data.Org;
+            vendor.Ekorg = data.Ekorg;
+            vendor.Person = data.Person;
+            vendor.Address = data.Address;
+            vendor.TelPhone = data.TelPhone;
+            vendor.Ext = data.Ext;
+            vendor.FaxNumber = data.FaxNumber;
+            vendor.CellPhone = data.CellPhone;
+            vendor.Mail = data.Mail;
+            vendor.Status = status.Status;
+            vendor.LastUpdateDate = DateTime.Now;
+            vendor.LastUpdateBy = data.User;
+
+
+            _context.SrmVendors.Update(vendor);
+
+            _context.SaveChanges();
+
+            return true;
         }
 
     }
-
 }

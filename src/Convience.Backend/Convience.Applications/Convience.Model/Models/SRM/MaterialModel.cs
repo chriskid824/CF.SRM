@@ -9,9 +9,15 @@ using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
-    public class ViewSrmSupplier : SrmSupplier
+    public class ViewSrmMaterial : SrmMatnr
     {
         public string StatusDesc { get; set; }
         public string User { get; set; }
+    }
+    public record QueryMaterial : PageQueryModel
+    {
+        public string material { get; set; }
+        public string name { get; set; }
+        public int[] Werks { get; set; }
     }
 }

@@ -95,9 +95,17 @@ export class LayoutComponent implements OnInit {
       ]
     },
     {
-      canOperate: 'supplier', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '供應商',
+      canOperate: 'supplier', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '供應商管理',
       children: [
-        { canOperate: 'supplierlist', routerLink: '/srm/supplier', iconType: 'fund-view', firstBreadcrumb: '供應商', lastBreadcrumb: '供應商查詢', name: '供應商查詢', },
+        { canOperate: 'supplierlist', routerLink: '/srm/supplier', iconType: 'fund-view', firstBreadcrumb: '供應商管理', lastBreadcrumb: '供應商查詢', name: '供應商查詢', },
+        { canOperate: 'supplier-c', routerLink: '/srm/supplier-c', iconType: 'fund-view', firstBreadcrumb: '供供應商管理應商', lastBreadcrumb: '供應商建立', name: '供應商建立', },
+      ]
+    },
+    {
+      canOperate: 'material', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '料號管理',
+      children: [
+        { canOperate: 'materiallist', routerLink: '/srm/material', iconType: 'fund-view', firstBreadcrumb: '料號管理', lastBreadcrumb: '料號查詢', name: '料號查詢', },
+        { canOperate: 'material-c', routerLink: '/srm/material-c', iconType: 'fund-view', firstBreadcrumb: '料號管理', lastBreadcrumb: '料號建立', name: '料號建立', },
       ]
     }
   ];

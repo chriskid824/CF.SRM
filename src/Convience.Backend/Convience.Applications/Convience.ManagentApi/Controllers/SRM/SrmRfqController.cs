@@ -55,12 +55,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             _userService = userService;
             _srmSupplierService = srmSupplierService;
         }
-        [HttpPost("GetSupplierList")]
-        [Permission("supplier")]
-        public IActionResult GetSupplierList(QueryVendorModel query)
-        {
-            return Ok(_srmSupplierService.GetVendor(query));
-        }
 
         [HttpPost("GetMatnr")]
         [Permission("rfq")]

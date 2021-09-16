@@ -17,6 +17,9 @@ namespace Convience.Model.Models.SRM
     public record QueryVendorModel : PageQueryModel
     {
         public string Vendor { get; set; }
+        public string Code { get; set; }
+        public int? Org { get; set; }
+        public int? Ekorg { get; set; }
         public int[] Werks { get; set; }
     }
     public class ViewSrmRfqM : SrmRfqM

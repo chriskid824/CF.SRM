@@ -1,0 +1,49 @@
+<div class="two-column" style="width: 93%;" colon={false}>
+    <div class="left">
+      <!--搜索欄-->
+      <nz-card [nzSize]="'small'" id="searchBar">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="formDetail" >
+          <nz-form-item>
+            <nz-form-label [nzFor]="'SRM_VENDOR'">供應商代碼</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="供應商代碼" [formControlName]="'SRM_VENDOR'" [attr.id]="'SRM_VENDOR'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary">新增</button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+        <br/>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="formDetail" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'SRM_EKORG'">採購組織</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;
+              <nz-form-control>
+                <input nz-input placeholder="採購組織" [formControlName]="'SRM_EKORG'" [attr.id]="'SRM_EKORG'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+        </form>
+        <br/>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="formDetail" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'SRM_DATE'">建立日期  </nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;
+              <nz-form-control>
+                <input nz-input placeholder="建立日期起" [formControlName]="'DATE_START'" [attr.id]="'DATE_START'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <input nz-input placeholder="建立日期迄" [formControlName]="'DATE_END'" [attr.id]="'DATE_END'" 
+                    autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+
+      </nz-card>
+    </div>
+    
+</div>

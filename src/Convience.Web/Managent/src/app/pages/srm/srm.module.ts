@@ -46,6 +46,9 @@ import { DeliveryAddComponent } from './delivery-add/delivery-add.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { SupplierComponent } from './supplier/supplier.component';
+import { SupplierCComponent } from './supplier-c/supplier-c.component';
+import { MaterialComponent } from './material/material.component';
+import { MaterialCComponent } from './material-c/material-c.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -65,6 +68,9 @@ import { SupplierComponent } from './supplier/supplier.component';
     EditButtonComponent,
     DeliveryAddComponent,
     SupplierComponent,
+    SupplierCComponent,
+    MaterialComponent,
+    MaterialCComponent,
   ],
   imports: [
     CommonModule,
@@ -84,7 +90,10 @@ import { SupplierComponent } from './supplier/supplier.component';
        { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
        { path: "price", component: PriceComponent, canActivate: [LoginGuard] },
        { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
-       { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] }
+       { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] },
+       { path: "supplier-c", component: SupplierCComponent, canActivate: [LoginGuard] },
+       { path: "material", component: MaterialComponent, canActivate: [LoginGuard] },
+       { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] }
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
