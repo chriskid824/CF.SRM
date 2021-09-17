@@ -27,9 +27,14 @@ namespace Convience.Model.Models.SRM
                     GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
             }
         }
+        //public new int? InfoId { get; set; }
+        //    get { return InfoId == 0 ? null : InfoId; }
+        //}
         public string currencyName { get; set; }
         public string taxcodeName { get; set; }
+        public SrmMatnr matnrObject { get; set; }
         public string srmMatnr1 { get; set; }
+        public SrmVendor vendorObject { get; set; }
         public string srmVendor1 { get; set; }
         public string VendorName { get; set; }
         public string MatnrName { get; set; }
@@ -47,16 +52,31 @@ namespace Convience.Model.Models.SRM
         public string viewstatus { get; set; }
         public string EffectiveDate_str { get { return EffectiveDate?.ToString("yyyy/MM/dd"); } }
         public string ExpirationDate_str { get { return ExpirationDate?.ToString("yyyy/MM/dd"); } }
+        public string infoKindName {
+            get {
+                return InfoKind.HasValue ? ((INFO_KIND)InfoKind.Value).ToString() : "";
+            }
+        }
+        public string typeName {
+            get {
+                return string.IsNullOrWhiteSpace(Type) ? "" : ((TYPE)Convert.ToChar(Type)).ToString();
+            }
+        }
     }
 
 
     public class ViewSummary : ViewSrmRfqH
     {
+        public int InfoId { get; set; }
+        public int? caseId { get; set; }
+        public bool canEdit { get; set; }
         public bool isStarted { get; set; }
         public Status qotStatus { get; set; }
         public string vendor { get; set; }
         public int vendorId { get; set; }
         public string vendorName { get; set; }
+        public SrmMatnr matnrObject { get; set; }
+        public SrmVendor vendorObject { get; set; }
         public string matnr { get; set; }
         public int matnrId { get; set; }
         public string material { get; set; }
@@ -107,5 +127,19 @@ namespace Convience.Model.Models.SRM
         public string effectiveDate { get; set; }
         public string expirationDate { get; set; }
         public string note { get; set; }
+        public int? org { get; set; }
+        public string infoKind { get; set; }
+        public string infoKindName { get; set; }
+        public string type { get; set; }
+        public string typeName { get; set; }
+    }
+
+    public enum INFO_KIND {
+        標準 = 0,
+        分包 = 3
+    }
+    public enum TYPE {
+        物料 = 'M',
+        工單件 = 'W'
     }
 }

@@ -34,7 +34,7 @@ export class PriceWorkComponent implements OnInit {
       alert("詢價單號必填");
       return;
     }
-    this._srmRfqService.GetRfq({ rfqNum: this.form_searchRFQ.value["rfqNum"], statuses: [5, 7, 8, 9], werks: this._storageService.werks.split(',') }).subscribe(result => {
+    this._srmRfqService.GetRfq({ rfqNum: this.form_searchRFQ.value["rfqNum"], statuses: [5, 7, 8, 16], werks: this._storageService.werks.split(',') }).subscribe(result => {
       /*      console.log(result);*/
       if (result) {
         this._layout.navigateTo('price');

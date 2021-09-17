@@ -24,6 +24,7 @@
           <nz-form-control>
             <nz-select [formControlName]="'status'" ngModel="1">
               <nz-option nzValue="1" nzLabel="初始"></nz-option>
+              <nz-option nzValue="8" nzLabel="簽核中"></nz-option>
               <nz-option nzValue="9" nzLabel="已核發"></nz-option>
               <nz-option nzValue="17" nzLabel="刪除"></nz-option>
             </nz-select>
@@ -64,6 +65,7 @@
               <th nzAlign="center" nzWidth="20px">詢價單識別碼</th>
               <th nzAlign="center" nzWidth="20px">報價單識別碼</th>
               <th nzAlign="center" nzWidth="20px">狀態</th>
+              <th nzAlign="center" nzWidth="20px" nzRight>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -84,6 +86,14 @@
               <td nzAlign="center">{{ data.rfqNum }}</td>
               <td nzAlign="center">{{ data.qotNum }}</td>
               <td nzAlign="center">{{ data.viewstatus }}</td>
+              <td nzAlign="center" nzRight>
+                <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
+                        (click)="openInfoRecord(data.rfqId,data.caseid)" class="mr-10"
+                        data-toggle="tooltip" title="價格資訊">
+                  <i nz-icon
+                     nzType="send"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </nz-table>

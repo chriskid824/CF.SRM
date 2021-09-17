@@ -157,4 +157,8 @@ export class PriceManageComponent implements OnInit {
     this.selectedMatnrId = "";
     this.selectedVendorId = "";
   }
+  openInfoRecord(rfqId,caseId) {
+    this._layout.navigateTo('price');
+    this._router.navigate(['srm/price', { id: rfqId, caseId: caseId }]);
+  }
 }

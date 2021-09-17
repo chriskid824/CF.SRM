@@ -21,6 +21,7 @@ export class RfqH {
   c_date?: string;
   c_by?: string;
   deadline_str?: string;
+  werks?: number
 }
 export class RfqM {
   rfqMId?: number;

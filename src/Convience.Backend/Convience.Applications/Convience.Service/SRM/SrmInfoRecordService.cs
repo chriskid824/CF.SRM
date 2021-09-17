@@ -14,6 +14,7 @@ namespace Convience.Service.SRM
     {
         public SrmInforecord[] Get(QueryInfoRecordModels query);
         public PagingResultModel<viewSrmInfoRecord> Query(QueryInfoRecordModels query);
+        public void UpdateStatus(Status status, SrmInforecord info);
     }
     class SrmInfoRecordService : ISrmInfoRecordService
     {
@@ -50,6 +51,8 @@ namespace Convience.Service.SRM
                                         from r in rgrouping.DefaultIfEmpty()
                                         select new viewSrmInfoRecord(info)
                                         {
+                                            matnrObject = m,
+                                            vendorObject = v,
                                             srmMatnr1 = m.SrmMatnr1,
                                             MatnrName = m.SrmMatnr1,
                                             srmVendor1 = v.SrmVendor1,
@@ -61,6 +64,7 @@ namespace Convience.Service.SRM
                                             taxcodeName = t.TaxcodeName,
                                             qotNum = q.QotNum,
                                             rfqNum = r.RfqNum,
+                                            rfqId = r.RfqId.ToString(),
                                             viewstatus = ((Status)info.Status).ToString()
                                         }
                                      )
@@ -75,6 +79,12 @@ namespace Convience.Service.SRM
                 Data = result.ToArray(),
                 Count = view.Count()
             };
+        }
+
+        public void UpdateStatus(Status status, SrmInforecord info) {
+            var infos = _context.SrmInforecords.AndIfHaveValue(info.Caseid, r => r.Caseid.Value.Equals(info.Caseid)).ToList();
+            infos.ForEach(r => r.Status = (int)status);
+            _context.SaveChanges();
         }
     }
 }

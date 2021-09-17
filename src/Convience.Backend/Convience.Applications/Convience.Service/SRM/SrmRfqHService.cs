@@ -306,11 +306,11 @@ namespace Convience.Service.SRM
                     rfq.EndBy = rfqH.EndBy;
                     break;
                 case Status.簽核中:
-                    if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.已核發)
+                    if ((Status)rfq.Status != Status.確認 && (Status)rfq.Status != Status.簽核中 && (Status)rfq.Status != Status.完成)
                     {
                         throw new Exception($"狀態異常無法{((Status)status).ToString()}");
                     }
-                    if ((Status)rfq.Status == Status.已核發)
+                    if ((Status)rfq.Status == Status.完成)
                     {
                         return rfq;
                     }
