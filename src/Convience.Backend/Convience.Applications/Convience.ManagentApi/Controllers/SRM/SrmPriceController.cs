@@ -403,7 +403,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 
             CallMethodParams callMethodParm = new CallMethodParams();//GetBorgEmpDataByLogonID
             JObject param = new JObject();
-            param.Add("logonid", "137680");
+            param.Add("logonid", rfqH.Sourcer);
             param.Add("caseId", caseId);
             param.Add("ds", JObject.FromObject(GetCfInfoRecord(rfqH, infos)));
             callMethodParm.Method = "UpdateCF";
@@ -438,7 +438,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 
 
             JObject param = new JObject();
-            param.Add("logonid", "137680");
+            param.Add("logonid", rfqH.Sourcer);
             param.Add("signType", "採購資訊紀錄簽核單");
             Dictionary<string, object> Variables = new Dictionary<string, object>();
             Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
