@@ -140,6 +140,14 @@ export class MaterialTrendComponent implements OnInit {
   pageChange() {
     this.refresh();
   }
+  sizeChange() {
+    this.page = 1;
+    this.refresh();
+  }
+  submitSearch() {
+    this.page = 1;
+    this.refresh();
+  }
 }
 function dateFormatter(data) {
   if (!data) return "";

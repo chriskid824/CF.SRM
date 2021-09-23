@@ -46,7 +46,7 @@
     <nz-card [nzSize]="'small'" id="rfqCard">
       <div>
         <button *canOperate="'RFQ_CREATE'" nz-button class="mr-10" (click)="addRfq()"><i nz-icon nzType="plus"></i>建立詢價單</button>
-        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+        <button *ngIf="false" nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
       </div>
       <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -84,7 +84,7 @@
       </div>
       <div class="mt-10">
         <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
-                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
         </nz-pagination>
       </div>
     </nz-card>

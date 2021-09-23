@@ -61,6 +61,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("UploadFile")]
+        [Permission("RFQ_ACTION")]
         public IActionResult UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
         {
             try
@@ -78,6 +79,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("GetMaterialTrendList")]
+        [Permission("price-manage")]
         public IActionResult GetMaterialTrendList(QuerySrmMaterialTrend query)
         {
             return Ok(_srmMaterialService.GetMaterialTrendList(query));

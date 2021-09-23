@@ -106,7 +106,7 @@
       </div>
       <div class="mt-10">
         <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
-                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()"  (nzPageSizeChange)="sizeChange()">
         </nz-pagination>
       </div>
     </nz-card>
