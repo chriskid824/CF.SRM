@@ -221,10 +221,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成) {
                 return this.BadRequestResult("詢價單狀態異常");
             }
-            viewSrmInfoRecord[] infos = jobj["infos"].ToObject<viewSrmInfoRecord[]>();
+            ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
             string logonid = jobj["logonid"].ToString();
             DateTime now = DateTime.Now;
-            foreach (viewSrmInfoRecord info in infos)
+            foreach (ViewSrmInfoRecord info in infos)
             {
                     info.Status = (int)Status.簽核中;
                     info.CreateDate = now;
@@ -263,10 +263,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 return this.BadRequestResult("詢價單狀態異常");
             }
-            viewSrmInfoRecord[] infos = jobj["infos"].ToObject<viewSrmInfoRecord[]>();
+            ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
             string logonid = jobj["logonid"].ToString();
             DateTime now = DateTime.Now;
-            foreach (viewSrmInfoRecord info in infos)
+            foreach (ViewSrmInfoRecord info in infos)
             {
                 if (info.InfoId == 0)
                 {
@@ -303,7 +303,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
-        private DataSet GetCfInfoRecord(ViewSrmRfqH rfqH, viewSrmInfoRecord[] infos) {
+        private DataSet GetCfInfoRecord(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos) {
             DataSet ds = new DataSet();
             DataTable InfoRecord = new DataTable("CF_InfoRecord");
             //InfoRecord.Columns.Add("SapMatnr");
@@ -329,8 +329,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("LastBargainingRate");
             InfoRecord.Columns.Add("ExpirationDate");
             InfoRecord.Columns.Add("InfoId");
-            InfoRecord.Columns.Add("Img1");
-            InfoRecord.Columns.Add("Img2");
+            //InfoRecord.Columns.Add("Img1");
+            //InfoRecord.Columns.Add("Img2");
             InfoRecord.Columns.Add("Note");
             InfoRecord.Columns.Add("Org");
             InfoRecord.Columns.Add("InfoKind");
@@ -369,8 +369,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["Price"] = info.Price;
                 dr["Currency"] = info.Currency;
                 dr["InfoId"] = info.InfoId;
-                dr["Img1"] = "/BPM/images/logo.jpg";
-                dr["Img2"] = "/BPM/images/logo2.png";
+                //dr["Img1"] = "/BPM/images/logo.jpg";
+                //dr["Img2"] = "/BPM/images/logo2.png";
                 dr["Note"] = info.Note;
                 dr["Org"] = info.Org;
                 dr["InfoKind"] = info.InfoKind;
@@ -394,7 +394,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             return ds;
         }
 
-        private void UpdateCF(ViewSrmRfqH rfqH, viewSrmInfoRecord[] infos,int caseId) {
+        private void UpdateCF(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos,int caseId) {
             BasicHttpBinding binding = new BasicHttpBinding();
 
             EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
@@ -416,7 +416,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
-        private void RunBorg(ViewSrmRfqH rfqH, viewSrmInfoRecord[] infos)
+        private void RunBorg(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos)
         {
             BasicHttpBinding binding = new BasicHttpBinding();
 

@@ -71,6 +71,7 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
         { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '價格資訊', name: '價格資訊', },
         { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
+        { canOperate: 'material-trend', routerLink: '/srm/material-trend', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料', name: '原物料', },
       ]
     },
     {

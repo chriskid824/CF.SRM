@@ -16,10 +16,10 @@ namespace Convience.Model.Models.SRM
         public int size { get; set; }=10;
     }
 
-    public class viewSrmInfoRecord : SrmInforecord
+    public class ViewSrmInfoRecord : SrmInforecord
     {
-        public viewSrmInfoRecord() { }
-        public viewSrmInfoRecord(SrmInforecord parent)
+        public ViewSrmInfoRecord() { }
+        public ViewSrmInfoRecord(SrmInforecord parent)
         {
             if (parent != null)
             {

@@ -41,6 +41,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmStatus> SrmStatuses { get; set; }
         public virtual DbSet<SrmProcess> SrmProcesss { get; set; }
         public virtual DbSet<SrmMaterial> SrmMaterials { get; set; }
+        public virtual DbSet<SrmMaterialTrend> SrmMaterialTrends { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -990,6 +991,39 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Staus).HasColumnName("STAUS");
             });
+
+            modelBuilder.Entity<SrmMaterialTrend>(entity =>
+            {
+                entity.HasKey(e => e.TrendId);
+
+                entity.ToTable("SRM_MATERIAL_TREND");
+
+                entity.Property(e => e.TrendId)
+                    .HasColumnName("TREND_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Deadline)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DEADLINE");
+
+                entity.Property(e => e.EffectiveDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EFFECTIVE_DATE");
+
+                entity.Property(e => e.ImageUrl).HasColumnName("IMAGE_URL");
+
+                entity.Property(e => e.Material)
+                    .HasMaxLength(10)
+                    .HasColumnName("MATERIAL");
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

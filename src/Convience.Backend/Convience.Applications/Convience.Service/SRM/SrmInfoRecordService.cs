@@ -13,7 +13,7 @@ namespace Convience.Service.SRM
     public interface ISrmInfoRecordService
     {
         public SrmInforecord[] Get(QueryInfoRecordModels query);
-        public PagingResultModel<viewSrmInfoRecord> Query(QueryInfoRecordModels query);
+        public PagingResultModel<ViewSrmInfoRecord> Query(QueryInfoRecordModels query);
         public void UpdateStatus(Status status, SrmInforecord info);
     }
     class SrmInfoRecordService : ISrmInfoRecordService
@@ -32,11 +32,11 @@ namespace Convience.Service.SRM
             return infoRecordQurty.ToArray();
         }
 
-        public PagingResultModel<viewSrmInfoRecord> Query(QueryInfoRecordModels query)
+        public PagingResultModel<ViewSrmInfoRecord> Query(QueryInfoRecordModels query)
         {
             int skip = (query.page - 1) * query.size;
 
-            viewSrmInfoRecord[] view = (from info in _context.SrmInforecords
+            ViewSrmInfoRecord[] view = (from info in _context.SrmInforecords
                                         join v in _context.SrmVendors on info.VendorId equals v.VendorId into vgrouping
                                         from v in vgrouping.DefaultIfEmpty()
                                         join m in _context.SrmMatnrs on info.MatnrId equals m.MatnrId into mgrouping
@@ -49,7 +49,7 @@ namespace Convience.Service.SRM
                                         from q in qgrouping.DefaultIfEmpty()
                                         join r in _context.SrmRfqHs on q.RfqId equals r.RfqId into rgrouping
                                         from r in rgrouping.DefaultIfEmpty()
-                                        select new viewSrmInfoRecord(info)
+                                        select new ViewSrmInfoRecord(info)
                                         {
                                             matnrObject = m,
                                             vendorObject = v,
@@ -74,7 +74,7 @@ namespace Convience.Service.SRM
                                      .ToArray();
 
             var result = view.Skip(skip).Take(query.size);
-            return new PagingResultModel<viewSrmInfoRecord>
+            return new PagingResultModel<ViewSrmInfoRecord>
             {
                 Data = result.ToArray(),
                 Count = view.Count()

@@ -50,6 +50,9 @@
           <thead>
             <tr>
               <th nzAlign="center" nzWidth="20px">資訊記錄號碼</th>
+              <th nzAlign="center" nzWidth="20px">採購組織</th>
+              <th nzAlign="center" nzWidth="20px">資訊記錄種類</th>
+              <th nzAlign="center" nzWidth="20px">資訊記錄類型</th>
               <th nzAlign="center" nzWidth="20px">料號</th>
               <th nzAlign="center" nzWidth="20px">供應商</th>
               <th nzAlign="center" nzWidth="20px">議價</th>
@@ -71,6 +74,9 @@
           <tbody>
             <tr *ngFor="let data of dataTable.data;let i = index">
               <td nzAlign="center">{{ data.infoNum }}</td>
+              <td nzAlign="center">{{ data.org }}</td>
+              <td nzAlign="center">{{ data.infoKind +' '+ data.infoKindName }}</td>
+              <td nzAlign="center">{{ data.type +' '+ data.typeName }}</td>
               <td nzAlign="center">{{ data.srmMatnr1 }}</td>
               <td nzAlign="center">{{ data.srmVendor1 }}</td>
               <td nzAlign="center">{{ data.price }}</td>

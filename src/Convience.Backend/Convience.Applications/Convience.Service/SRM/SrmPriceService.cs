@@ -13,12 +13,12 @@ namespace Convience.Service.SRM
     public interface ISrmPriceService
     {
         public ViewSrmPriceDetail GetDetail(SrmQotH[] query);
-        public int? Start(viewSrmInfoRecord[] infos);
-        public void Save(viewSrmInfoRecord[] infos);
+        public int? Start(ViewSrmInfoRecord[] infos);
+        public void Save(ViewSrmInfoRecord[] infos);
         public SrmCurrency[] GetCurrency();
         public SrmTaxcode[] GetTaxcodes();
         public SrmEkgry[] GetEkgry(int[] werks);
-        public void UpdateCaseid(viewSrmInfoRecord[] infos);
+        public void UpdateCaseid(ViewSrmInfoRecord[] infos);
     }
     public class SrmPriceService:ISrmPriceService
     {
@@ -84,11 +84,11 @@ namespace Convience.Service.SRM
                                VendorName = vendor.VendorName
                            }).ToArray();
 
-            viewSrmInfoRecord[] infos = new viewSrmInfoRecord[query.Count()];
+            ViewSrmInfoRecord[] infos = new ViewSrmInfoRecord[query.Count()];
             for (int i = 0; i < infos.Length; i++)
             {
                 SrmInforecord info = _context.SrmInforecords.Where(r => r.QotId == query[i].QotId).FirstOrDefault();
-                viewSrmInfoRecord Vinfo = new viewSrmInfoRecord(info);
+                ViewSrmInfoRecord Vinfo = new ViewSrmInfoRecord(info);
                 if (!string.IsNullOrWhiteSpace(Vinfo.Currency)) { Vinfo.currencyName = _context.SrmCurrencies.Where(r => r.Currency.Equals(Vinfo.Currency)).Select(r=>r.CurrencyName).FirstOrDefault(); }
                 if (!string.IsNullOrWhiteSpace(Vinfo.Taxcode)) { Vinfo.taxcodeName = _context.SrmTaxcodes.Where(r => r.Taxcode.Equals(Vinfo.Taxcode)).Select(r => r.TaxcodeName).FirstOrDefault(); }
                 Vinfo.VendorId = query[i].VendorId;
@@ -104,7 +104,7 @@ namespace Convience.Service.SRM
             price.infoRecord = infos;
             return price;
         }
-        public int? Start(viewSrmInfoRecord[] infos) {
+        public int? Start(ViewSrmInfoRecord[] infos) {
             DateTime now = DateTime.Now;
             int? rfqId = null;
             //string[] must = new string[] { "price", "unit", "ekgry", "leadTime", "standQty", "minQty", "taxcode", "effectiveDate", "expirationDate" };
@@ -122,7 +122,7 @@ namespace Convience.Service.SRM
             must.Add("org", "採購組織");
             must.Add("infoKind", "資訊紀錄種類");
             must.Add("type", "資訊紀錄類型");
-            foreach (viewSrmInfoRecord info in infos)
+            foreach (ViewSrmInfoRecord info in infos)
             {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
                 {
@@ -161,7 +161,7 @@ namespace Convience.Service.SRM
             return rfqId;
         }
 
-        public void Save(viewSrmInfoRecord[] infos)
+        public void Save(ViewSrmInfoRecord[] infos)
         {
             Dictionary<string, string> must = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             must.Add("price", "總計(NT)");
@@ -178,7 +178,7 @@ namespace Convience.Service.SRM
             must.Add("infoKind", "資訊紀錄種類");
             must.Add("type", "資訊紀錄類型");
             List<int> infoIds = new List<int>();
-            foreach (viewSrmInfoRecord info in infos)
+            foreach (ViewSrmInfoRecord info in infos)
             {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
                 {
@@ -210,7 +210,7 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
         }
 
-        public void UpdateCaseid(viewSrmInfoRecord[] infos)
+        public void UpdateCaseid(ViewSrmInfoRecord[] infos)
         {
             foreach (var info in infos) {
                 _context.Entry(info).Property(x => x.Caseid).IsModified = true;

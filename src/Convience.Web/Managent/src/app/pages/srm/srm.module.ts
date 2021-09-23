@@ -49,6 +49,9 @@ import { SupplierComponent } from './supplier/supplier.component';
 import { SupplierCComponent } from './supplier-c/supplier-c.component';
 import { MaterialComponent } from './material/material.component';
 import { MaterialCComponent } from './material-c/material-c.component';
+import { MaterialTrendComponent } from './material-trend/material-trend.component';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+
 @NgModule({
   declarations: [
     RfqComponent,
@@ -71,6 +74,7 @@ import { MaterialCComponent } from './material-c/material-c.component';
     SupplierCComponent,
     MaterialComponent,
     MaterialCComponent,
+    MaterialTrendComponent,
   ],
   imports: [
     CommonModule,
@@ -93,7 +97,8 @@ import { MaterialCComponent } from './material-c/material-c.component';
        { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] },
        { path: "supplier-c", component: SupplierCComponent, canActivate: [LoginGuard] },
        { path: "material", component: MaterialComponent, canActivate: [LoginGuard] },
-       { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] }
+      { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] },
+      { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] }
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
@@ -120,6 +125,7 @@ import { MaterialCComponent } from './material-c/material-c.component';
     NzToolTipModule,
     MatButtonModule,
     MatInputModule,
+    NzUploadModule,
   ]
 })
 export class SrmModule {
