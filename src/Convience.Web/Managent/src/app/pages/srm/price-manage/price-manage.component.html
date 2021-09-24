@@ -24,6 +24,7 @@
           <nz-form-control>
             <nz-select [formControlName]="'status'" ngModel="1">
               <nz-option nzValue="1" nzLabel="初始"></nz-option>
+              <nz-option nzValue="8" nzLabel="簽核中"></nz-option>
               <nz-option nzValue="9" nzLabel="已核發"></nz-option>
               <nz-option nzValue="17" nzLabel="刪除"></nz-option>
             </nz-select>
@@ -49,6 +50,9 @@
           <thead>
             <tr>
               <th nzAlign="center" nzWidth="20px">資訊記錄號碼</th>
+              <th nzAlign="center" nzWidth="20px">採購組織</th>
+              <th nzAlign="center" nzWidth="20px">資訊記錄種類</th>
+              <th nzAlign="center" nzWidth="20px">資訊記錄類型</th>
               <th nzAlign="center" nzWidth="20px">料號</th>
               <th nzAlign="center" nzWidth="20px">供應商</th>
               <th nzAlign="center" nzWidth="20px">議價</th>
@@ -64,11 +68,15 @@
               <th nzAlign="center" nzWidth="20px">詢價單識別碼</th>
               <th nzAlign="center" nzWidth="20px">報價單識別碼</th>
               <th nzAlign="center" nzWidth="20px">狀態</th>
+              <th nzAlign="center" nzWidth="20px" nzRight>操作</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let data of dataTable.data;let i = index">
               <td nzAlign="center">{{ data.infoNum }}</td>
+              <td nzAlign="center">{{ data.org }}</td>
+              <td nzAlign="center">{{ data.infoKind +' '+ data.infoKindName }}</td>
+              <td nzAlign="center">{{ data.type +' '+ data.typeName }}</td>
               <td nzAlign="center">{{ data.srmMatnr1 }}</td>
               <td nzAlign="center">{{ data.srmVendor1 }}</td>
               <td nzAlign="center">{{ data.price }}</td>
@@ -84,13 +92,21 @@
               <td nzAlign="center">{{ data.rfqNum }}</td>
               <td nzAlign="center">{{ data.qotNum }}</td>
               <td nzAlign="center">{{ data.viewstatus }}</td>
+              <td nzAlign="center" nzRight>
+                <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
+                        (click)="openInfoRecord(data.rfqId,data.caseid)" class="mr-10"
+                        data-toggle="tooltip" title="價格資訊">
+                  <i nz-icon
+                     nzType="send"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </nz-table>
       </div>
       <div class="mt-10">
         <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
-                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()"  (nzPageSizeChange)="sizeChange()">
         </nz-pagination>
       </div>
     </nz-card>

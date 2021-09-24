@@ -50,7 +50,12 @@ export class PriceManageComponent implements OnInit {
   pageChange() {
     this.refresh();
   }
+  sizeChange() {
+    this.page = 1;
+    this.refresh();
+  }
   submitSearch() {
+    this.page = 1;
     this.refresh();
   }
   refresh() {
@@ -95,8 +100,8 @@ export class PriceManageComponent implements OnInit {
     var matnrQuery = {
       matnr: this.searchForm.get("queryMatnr")?.value,
       werks: this._storageService.werks.split(','),
-      page: this.page,
-      size: this.size
+      page: 1,
+      size: 50
     }
     this._srmRfqService.GetMatnr(matnrQuery).subscribe(result => {
       this.MatnrList = [];
@@ -116,8 +121,8 @@ export class PriceManageComponent implements OnInit {
     var vendorQuery = {
       vendor: this.searchForm.value["queryVendor"],
       werks: this._storageService.werks.split(','),
-      page: this.page,
-      size: this.size
+      page: 1,
+      size: 50
     }
     this._srmRfqService.GetVendor(vendorQuery).subscribe(result => {
       this.VendorList = [];
@@ -156,5 +161,9 @@ export class PriceManageComponent implements OnInit {
     });
     this.selectedMatnrId = "";
     this.selectedVendorId = "";
+  }
+  openInfoRecord(rfqId,caseId) {
+    this._layout.navigateTo('price');
+    this._router.navigate(['srm/price', { id: rfqId, caseId: caseId }]);
   }
 }

@@ -30,6 +30,8 @@ export class PriceComponent implements OnInit {
   rfq: Rfq;
   rfqm : RfqM;
   rfqId;
+  caseId;
+  canEdit = false;
   MaterialList;
   ProcessList;
   SurfaceList;
@@ -42,6 +44,15 @@ export class PriceComponent implements OnInit {
   EkgryList;
   //ekgry: FormControl;
 
+  InfoKindList = [
+    { name: "標準", value: "0" },
+    { name: "分包", value: "3" }
+  ]
+
+  TypeList = [
+    { name: "物料", value: "M" },
+    { name: "工單件", value: "W" }
+  ]
 
   canModify = true;
 
@@ -132,6 +143,9 @@ export class PriceComponent implements OnInit {
     //this.ekgry = _formBuilder.control([]);
 
     this.activatedRoute.params.subscribe((params) => this.rfqId = params['id']);
+    this.activatedRoute.params.subscribe((params) => this.caseId = params['caseId']);
+    console.log(this.rfqId);
+    console.log(this.caseId);
 
     //grid 
     this.defaultColDef = {
@@ -151,7 +165,7 @@ export class PriceComponent implements OnInit {
 
     this.isRowSelectable = function (rowNode) {
       console.log(rowNode.data.rfqNum);
-      return rowNode.data.rfqNum ? rowNode.data.isStarted ?  false : true : false;
+      return rowNode.data.rfqNum ? rowNode.data.isStarted ? rowNode.data.canEdit ? true :  false : true : false;
     }
 
     let roles = this._storageService.UserRoles.split(',');
@@ -505,6 +519,30 @@ export class PriceComponent implements OnInit {
       //  width: "150px",
       //},
       {
+        headerName: "採購組織",
+        field: "org",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "summary",
+        width: "150px",
+      },
+      {
+        headerName: "資訊紀錄種類",
+        field: "infoKindName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "summary",
+        width: "150px",
+      },
+      {
+        headerName: "資訊紀錄類型",
+        field: "typeName",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "summary",
+        width: "150px",
+      },
+      {
         headerName: "採購群組",
         field: "ekgry",
         enableRowGroup: true,
@@ -601,17 +639,20 @@ export class PriceComponent implements OnInit {
     this.editForm = this._formBuilder.group({
       qotId: [null, [Validators.required]],
       //price: ['', [Validators.pattern(/^(0|([1-9](\d)*))(\.(\d)*)?$/)]],
-      price: [null, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      price: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
       unit: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
       currency: [null, [Validators.required]],
       ekgry: [null, [Validators.required]],
-      leadTime: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
-      standQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
+      leadTime: [null, [Validators.required, Validators.pattern(SrmModule.decimal), Validators.min(1)]],
+      standQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal), Validators.min(1)]],
       minQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
       taxcode: [null, [Validators.required]],
       effectiveDate: [null, [Validators.required]],
       expirationDate: [null, [Validators.required]],
-      note: [null, [Validators.required]]
+      note: [null, [Validators.required]],
+      org: [null, [Validators.required]],
+      infoKind: [null, [Validators.required]],
+      type: [null, [Validators.required]]
     });
 
 
@@ -628,6 +669,9 @@ export class PriceComponent implements OnInit {
       , effectiveDate: e.rowData.effectiveDate ? e.rowData.effectiveDate : ""
       , expirationDate: e.rowData.expirationDate ? e.rowData.expirationDate : ""
       , note: e.rowData.note ? e.rowData.note : ""
+      , org: e.rowData.org ? e.rowData.org : ""
+      , infoKind: e.rowData.infoKind ? e.rowData.infoKind: ""
+      , type: e.rowData.type ? e.rowData.type : ""
     });
     console.log(e.rowData);
 
@@ -652,12 +696,17 @@ export class PriceComponent implements OnInit {
       var r = this.rowData_summary.find(r => r.qotId == this.editForm.get('qotId').value);
       r.price = this.editForm.get('price').value;
       r.unit = this.editForm.get('unit').value;
+      r.org = this.editForm.get('org').value;
+      r.infoKind = this.editForm.get('infoKind').value;
+      r.infoKindName = this.editForm.get('infoKind').value + ' ' + this.InfoKindList.find(r => r.value == this.editForm.get('infoKind').value)?.name;
+      r.type = this.editForm.get('type').value;
+      r.typeName = this.editForm.get('type').value + ' ' +this.TypeList.find(r => r.value == this.editForm.get('type').value)?.name;
       r.ekgry = this.editForm.get('ekgry').value;
       r.leadTime = this.editForm.get('leadTime').value;
       r.standQty = this.editForm.get('standQty').value;
       r.minQty = this.editForm.get('minQty').value;
       r.taxcode = this.editForm.get('taxcode').value;//.editForm.get('ekgry').value;
-      r.taxcodeName = this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
+      r.taxcodeName = this.editForm.get('taxcode').value + ' '+ this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
       r.currency = this.editForm.get('currency').value;
       r.currencyName = this.CurrencyList.find(r => r.currency == this.editForm.get('currency').value)?.currencyName;
       r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
@@ -695,6 +744,7 @@ export class PriceComponent implements OnInit {
     });
     var query = {
       rfqId: this.rfqId,
+      caseId: this.caseId
     };
     this._srmPriceService.GetSummary(query).subscribe(result => {
       console.log(result);
@@ -1062,6 +1112,14 @@ export class PriceComponent implements OnInit {
   onGridReady_summary(params) {
     this.gridApi_summary = params.api;
     this.columnApi_summary = params.columnApi;
+    this.gridApi_summary.forEachLeafNode((node) => {
+      if (node.data.canEdit) {
+        this.canEdit = true;
+      }
+      if (node.data.caseId == this.caseId && this.caseId) {
+        node.setSelected(true);
+      }
+    });
   }
   start() {
     //this.gridApi_inforecord.stopEditing();
@@ -1076,6 +1134,22 @@ export class PriceComponent implements OnInit {
     this._srmPriceService.Start(obj).subscribe(result => {
       console.log("s");
       this._messageService.success("啟動簽核成功！");
+    });
+    console.log(selectedRows);
+  }
+
+  save() {
+    var selectedRows = this.gridApi_summary.getSelectedRows();
+    if (selectedRows.length == 0) { return; }
+    var obj = {
+      infos: selectedRows,
+      logonid: this._storageService.userName,
+      rfqId: this.rfqId,
+      caseId: this.caseId
+    };
+    this._srmPriceService.Save(obj).subscribe(result => {
+      console.log("save");
+      this._messageService.success("保存成功！");
     });
     console.log(selectedRows);
   }

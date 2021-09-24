@@ -41,6 +41,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmStatus> SrmStatuses { get; set; }
         public virtual DbSet<SrmProcess> SrmProcesss { get; set; }
         public virtual DbSet<SrmMaterial> SrmMaterials { get; set; }
+        public virtual DbSet<SrmMaterialTrend> SrmMaterialTrends { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -803,11 +804,9 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.ToTable("SRM_INFORECORD");
 
-                entity.Property(e => e.InfoId)
-                    .HasColumnName("INFO_ID");
+                entity.Property(e => e.InfoId).HasColumnName("INFO_ID");
 
-                entity.Property(e => e.Caseid)
-                    .HasColumnName("CASEID");
+                entity.Property(e => e.Caseid).HasColumnName("CASEID");
 
                 entity.Property(e => e.CreateBy)
                     .HasMaxLength(8)
@@ -833,11 +832,13 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("EXPIRATION_DATE");
 
+                entity.Property(e => e.InfoKind).HasColumnName("INFO_KIND");
+
                 entity.Property(e => e.InfoNum)
-                .HasMaxLength(10)
-                .HasColumnName("INFO_NUM")
-                .IsUnicode(false)
-                .HasComputedColumnSql("('INF'+right('0000000'+CONVERT([varchar],[INFO_ID]),(7)))", false);
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("INFO_NUM")
+                    .HasComputedColumnSql("('INF'+right('0000000'+CONVERT([varchar],[INFO_ID]),(7)))", false);
 
                 entity.Property(e => e.LastUpdateBy)
                     .HasMaxLength(8)
@@ -853,6 +854,12 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.MinQty).HasColumnName("MIN_QTY");
 
+                entity.Property(e => e.Note)
+                    .HasColumnName("NOTE")
+                    .HasComment("備註");
+
+                entity.Property(e => e.Org).HasColumnName("ORG");
+
                 entity.Property(e => e.Price)
                     .HasColumnType("money")
                     .HasColumnName("PRICE");
@@ -867,13 +874,13 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(2)
                     .HasColumnName("TAXCODE");
 
+                entity.Property(e => e.Type)
+                    .HasMaxLength(1)
+                    .HasColumnName("TYPE");
+
                 entity.Property(e => e.Unit).HasColumnName("UNIT");
 
                 entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
-
-                entity.Property(e => e.Note)
-                    .HasColumnName("NOTE")
-                    .HasComment("備註");
             });
 
             modelBuilder.Entity<AspNetRole>(entity =>
@@ -984,6 +991,39 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Staus).HasColumnName("STAUS");
             });
+
+            modelBuilder.Entity<SrmMaterialTrend>(entity =>
+            {
+                entity.HasKey(e => e.TrendId);
+
+                entity.ToTable("SRM_MATERIAL_TREND");
+
+                entity.Property(e => e.TrendId)
+                    .HasColumnName("TREND_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Deadline)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DEADLINE");
+
+                entity.Property(e => e.EffectiveDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EFFECTIVE_DATE");
+
+                entity.Property(e => e.ImageUrl).HasColumnName("IMAGE_URL");
+
+                entity.Property(e => e.Material)
+                    .HasMaxLength(10)
+                    .HasColumnName("MATERIAL");
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

@@ -15,6 +15,9 @@ export class SrmPriceService {
   Start(obj) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/Start`, obj);
   }
+  Save(obj) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/Save`, obj);
+  }
   GetSummary(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetSummary`, query);
   }

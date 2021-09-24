@@ -67,7 +67,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     HttpContent httpContent = new StringContent(json,
                                     Encoding.UTF8,
                                     "application/json");
-                    HttpResponseMessage response = await client.PostAsync("http://10.88.1.28:64779/api/srm/T_RECEIPT", httpContent);// + Query.RequestUri.Query);
+                    HttpResponseMessage response = await client.PostAsync("http://localhost:64779/api/srm/T_RECEIPT", httpContent);// + Query.RequestUri.Query);
 
                     if (response.IsSuccessStatusCode)
                     {

@@ -1,0 +1,123 @@
+<div class="two-column" style="width: 93%;">
+  <div class="right">
+    <nz-card [nzSize]="'small'">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label nzRequired>原物料</nz-form-label>
+          <nz-form-control nzErrorTip="欄位必填">
+            <input nz-input placeholder="原物料" formControlName="material"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired>查詢日期</nz-form-label>
+          <nz-form-control nzErrorTip="欄位必填">
+            <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="searchDate" formControlName="searchDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button *canOperate="'price-manage'" nz-button nzType="primary">搜索</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+    <nz-card [nzSize]="'small'" style="height: auto;">
+      <button *canOperate="'RFQ_ACTION'" nz-button class="mr-10" (click)="open(AddHeader,AddContent)">
+        <i nz-icon nzType="plus"></i>新增趨勢圖
+      </button>
+      <button *ngIf="false" nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+                  nzBordered="true" pagination="true">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="40px">原物料</th>
+              <th nzAlign="center" nzWidth="40px">生效日期</th>
+              <th nzAlign="center" nzWidth="40px">截止日期</th>
+              <th nzAlign="center" nzWidth="10px">趨勢圖</th>
+              <th nzAlign="center" nzWidth="40px">建立人員</th>
+              <th nzAlign="center" nzWidth="40px">建立日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <td nzAlign="center">{{ data.material }}</td>
+              <td nzAlign="center">{{ data.effectiveDate_str }}</td>
+              <td nzAlign="center">{{ data.deadline_str }}</td>
+              <!--<td nzAlign="center">{{ data.imageUrl }}</td>-->
+              <td nzAlign="center">
+                <button *canOperate="'price-manage'" nz-button (click)="openImg(ImageHeader,ImageContent,data.imageUrl)">
+                  <i nz-icon nzType="file-image" nzTheme="outline"></i>
+                </button>
+              </td>
+              <td nzAlign="center">{{ data.createName }}</td>
+              <td nzAlign="center">{{ data.createDate_str }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
+        </nz-pagination>
+      </div>
+
+    </nz-card>
+  </div>
+</div>
+
+
+
+<ng-template #AddHeader>
+  <span>新增趨勢圖</span>
+</ng-template>
+<ng-template #AddContent>
+  <form nz-form [formGroup]="addForm">
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">原物料</nz-form-label>
+      <nz-form-control nzErrorTip="欄位必填">
+        <input nz-input placeholder="原物料" formControlName="material"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">生效日期</nz-form-label>
+      <nz-form-control nzErrorTip="欄位必填">
+        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="effectiveDate" formControlName="effectiveDate"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">截止日期</nz-form-label>
+      <nz-form-control nzErrorTip="欄位必填">
+        <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadline" formControlName="deadline"></nz-date-picker>
+        <ng-template #priceErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">趨勢圖(限制2MB)</nz-form-label>
+      <nz-upload [nzSm]="6" [nzXs]="24" [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="2048" nzLimit="1">
+        <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="upload"></i>上傳圖片</button>
+      </nz-upload>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button *canOperate="'RFQ_ACTION'" nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+                [disabled]="fileList.length == 0" style="margin-top: 16px" class="mr-10">
+          {{ uploading ? '上傳中...' : '開始上傳' }}
+        </button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+
+
+<ng-template #ImageHeader>
+  <span>趨勢圖</span>
+</ng-template>
+<ng-template #ImageContent>
+  <img [src]="imageUrl" />
+</ng-template>

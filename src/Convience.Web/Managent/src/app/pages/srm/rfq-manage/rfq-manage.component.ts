@@ -38,7 +38,7 @@ export class RfqManageComponent implements OnInit {
   }
 
   submitSearch() {
-
+    this.page = 1;
     this.refresh();
   }
 
@@ -96,6 +96,11 @@ export class RfqManageComponent implements OnInit {
 
 
   pageChange() {
+    this.refresh();
+  }
+
+  sizeChange() {
+    this.page = 1;
     this.refresh();
   }
 

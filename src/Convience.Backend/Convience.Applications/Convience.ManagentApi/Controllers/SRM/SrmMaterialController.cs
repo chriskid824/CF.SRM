@@ -59,5 +59,30 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (_srmMaterialService.CheckMatnr(data)) return Ok();
             return BadRequest("此料號以重複使用");
         }
+
+        [HttpPost("UploadFile")]
+        [Permission("RFQ_ACTION")]
+        public IActionResult UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
+        {
+            try
+            {
+                var result = _srmMaterialService.UploadAsync(fileUploadModel);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return this.BadRequestResult(result);
+                }
+            }
+            catch (Exception ex) {
+                return this.BadRequestResult(ex.Message);
+            }
+            return Ok();
+        }
+
+        [HttpPost("GetMaterialTrendList")]
+        [Permission("price-manage")]
+        public IActionResult GetMaterialTrendList(QuerySrmMaterialTrend query)
+        {
+            return Ok(_srmMaterialService.GetMaterialTrendList(query));
+        }
     }
 }

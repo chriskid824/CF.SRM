@@ -31,5 +31,8 @@ namespace Convience.Entity.Entity.SRM
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
         public int? Caseid { get; set; }
+        public int? Org { get; set; }
+        public int? InfoKind { get; set; }
+        public string Type { get; set; }
     }
 }

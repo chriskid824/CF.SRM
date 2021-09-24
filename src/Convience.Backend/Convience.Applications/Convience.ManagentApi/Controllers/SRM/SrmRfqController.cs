@@ -323,11 +323,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     mail.Body = body;
                     mail.Subject = subject;
                     mail.IsBodyHtml = true;
-                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
-                    {
-                        MySMTP.Send(mail);
-                        MySMTP.Dispose();
-                    }
+                    sendMail(mail);
                 }
                 catch (Exception ex) {
                     MailMessage mail = new MailMessage();
@@ -335,12 +331,23 @@ namespace Convience.ManagentApi.Controllers.SRM
                     mail.To.Add("leon.jcg@chenfull.com.tw");
                     mail.Body = $"寄信異常，供應商:{vendor.VendorName}，EX:{ex.Message}";
                     mail.Subject = "寄信異常";
-                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
-                    {
-                        MySMTP.Send(mail);
-                        MySMTP.Dispose();
-                    }
+                    sendMail(mail);
                 }
+            }
+        }
+
+        private void sendMail(MailMessage mail) {
+            #region test
+            mail.To.Clear();
+            mail.CC.Clear();
+            mail.Bcc.Clear();
+            mail.To.Add("leon.jcg@chenfull.com.tw");
+            #endregion test
+
+            using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+            {
+                MySMTP.Send(mail);
+                MySMTP.Dispose();
             }
         }
 
