@@ -76,4 +76,42 @@ namespace Convience.Model.Models.SRM
         public string SapVendor { get; set; }
         new public virtual ICollection<ViewSrmPoL> SrmPoLs { get; set; }
     }
+
+    public class ViewSrmPoPoL : ViewSrmPoL
+    {
+        public string OrgName { get; set; }
+        public DateTime? DocDate { get; set; }
+        public DateTime? ReplyDate { get; set; }
+    }
+
+
+    public class SapPoData
+    {
+        public List<T_EKKO> T_EKKO = new List<T_EKKO>();
+        public List<T_EKPO> T_EKPO = new List<T_EKPO>();
+    }
+    public class T_EKKO
+    {
+        public string EBELN { get; set; }
+        public string LIFNR { get; set; }
+        public string RLWRT { get; set; }
+        public string WAERS { get; set; }
+        public string EKGRP { get; set; }
+        public string EKORG { get; set; }
+        public string BEDAT { get; set; }
+    }
+    public class T_EKPO
+    {
+        public string EBELP { get; set; }
+        public string EBELN { get; set; }
+        public string MATNR { get; set; }
+        public string MAKTX { get; set; }
+        public string MENGE { get; set; }
+        public string NETPR { get; set; }
+        public string EINDT { get; set; }
+        public string LGOBE { get; set; }
+        public string KZKRI { get; set; }
+        public string AUFNR { get; set; }
+
+    }
 }

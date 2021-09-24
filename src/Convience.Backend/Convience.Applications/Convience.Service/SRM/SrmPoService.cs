@@ -33,6 +33,7 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewSrmPoH> GetAll(QueryPoList query);
 
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
+        public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
     }
@@ -174,7 +175,7 @@ namespace Convience.Service.SRM
                               Buyer = h.Buyer,
                               StatusDesc = status.StatusDesc,
                               Matnr = matnr.SapMatnr,
-                              Org=h.Org
+                              Org = h.Org
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
@@ -245,6 +246,57 @@ namespace Convience.Service.SRM
             }
             _context.SaveChanges();
             return true;
+        }
+        public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size)
+        {
+            int skip = (page - 1) * size;
+
+            var result = (from l in _context.SrmPoLs
+                          join h in _context.SrmPoHs on l.PoId equals h.PoId
+                          join status in _context.SrmStatuses on l.Status equals status.Status
+                          join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
+                          select new ViewSrmPoPoL
+                          {
+                              PoNum = h.PoNum,
+                              PoLId = l.PoLId,
+                              PoId = l.PoId,
+                              MatnrId = l.MatnrId,
+                              Description = l.Description,
+                              Qty = l.Qty,
+                              Price = l.Price,
+                              DeliveryDate = l.DeliveryDate,
+                              ReplyDeliveryDate = l.ReplyDeliveryDate,
+                              DeliveryPlace = l.DeliveryPlace,
+                              CriticalPart = l.CriticalPart,
+                              InspectionTime = l.InspectionTime,
+                              Status = h.Status,
+                              VendorId = h.VendorId,
+                              VendorName = vendor.VendorName,
+                              SapVendor = vendor.SapVendor,
+                              TotalAmount = h.TotalAmount,
+                              Buyer = h.Buyer,
+                              StatusDesc = status.StatusDesc,
+                              Matnr = matnr.SapMatnr,
+                              Org = h.Org,
+                              DocDate = h.DocDate,
+                              ReplyDate = h.ReplyDate
+                          })
+              .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
+              .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+                  .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+    //.AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
+    //.AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
+    //.AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+    .AndIfCondition(query.status != 0, p => p.Status == query.status)
+                .AndIfHaveValue(query.buyer, p => p.Buyer == query.buyer).ToList();
+
+            var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);
+            return new PagingResultModel<ViewSrmPoPoL>
+            {
+                Data = r,
+                Count = result.Count()
+            };
         }
     }
 }

@@ -1,0 +1,116 @@
+<div class="two-column" style="width: 99%;">
+  <div class="right">
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'STATUS'" ngModel="0" style="width: 100px;">
+              <nz-option nzValue="0" nzLabel="全部"></nz-option>
+              <nz-option nzValue="11" nzLabel="待回覆"></nz-option>
+              <nz-option nzValue="12" nzLabel="已收貨"></nz-option>
+              <nz-option nzValue="14" nzLabel="待收貨"></nz-option>
+              <nz-option nzValue="15" nzLabel="待交貨"></nz-option>
+              <nz-option nzValue="21" nzLabel="待接收"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'BUYER'">採購人員</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="採購人員" [formControlName]="'BUYER'" [attr.id]="'BUYER'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button *canOperate="'rfq-manage'" nz-button nzType="primary">搜索</button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+              (click)="resetSearchForm()">
+        重置
+      </button>-->
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+
+    <!--詢價單數據-->
+    <nz-card [nzSize]="'small'" id="rfqCard">
+      <div>
+        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+      </div>
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+                  nzBordered="true" [nzScroll]="{ x: '180px' }">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="20px">採購單號</th>
+              <th nzAlign="center" nzWidth="20px">供應商</th>
+              <th nzAlign="center" nzWidth="20px">狀態</th>
+              <th nzAlign="center" nzWidth="20px">採購人員</th>
+              <th nzAlign="center" nzWidth="20px">採購組織</th>
+              <th nzAlign="center" nzWidth="20px">文件日期</th>
+              <th nzAlign="center" nzWidth="20px">廠商接收日期</th>
+              <th nzAlign="center" nzWidth="20px">拋轉日期</th>
+              <th nzAlign="center" nzWidth="20px">料號識別碼</th>
+              <th nzAlign="center" nzWidth="20px">物料內文</th>
+              <th nzAlign="center" nzWidth="20px">數量</th>
+              <th nzAlign="center" nzWidth="20px">交貨日期</th>
+              <th nzAlign="center" nzWidth="20px">廠商交貨日期</th>
+              <th nzAlign="center" nzWidth="20px">交貨地點</th>
+              <th nzAlign="center" nzWidth="20px">關鍵零組件/首件</th>
+              <th nzAlign="center" nzWidth="20px">檢驗時間</th>
+              <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
+              <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <!--<td nzAlign="center"  (click)="open(data.rfqId)">{{ data.rfqNum }}</td>-->
+              <!-- <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.rfqId)"> {{ data.poNum }}</a></td> -->
+              <td nzAlign="center">{{ data.poNum }}</td>
+              <td nzAlign="center">{{ data.vendorName }}</td>
+              <td nzAlign="center">{{ data.statusDesc }}</td>
+              <td nzAlign="center">{{ data.buyer }}</td>
+              <td nzAlign="center">{{ data.org }}</td>
+              <td nzAlign="center">{{ data.docDate }}</td>
+              <td nzAlign="center">{{ data.replyDate }}</td>
+              <td nzAlign="center"></td>
+              <td nzAlign="center">{{ data.matnr }}</td>
+              <td nzAlign="center">{{ data.description }}</td>
+              <td nzAlign="center">{{ data.qty }}</td>
+              <td nzAlign="center">{{ data.deliveryDate }}</td>
+              <td nzAlign="center">{{ data.replyDeliveryDate }}</td>
+              <td nzAlign="center">{{ data.deliveryPlace }}</td>
+              <td nzAlign="center">{{ data.criticalPart }}</td>
+              <td nzAlign="center">{{ data.inspectionTime }}</td>
+
+              <td *ngIf="status==5" nzAlign="center" nzRight>
+                <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
+                        (click)="openPrice(data.rfqId)" class="mr-10"
+                        data-toggle="tooltip" title="價格資訊">
+                  <i nz-icon
+                     nzType="send"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+        </nz-pagination>
+      </div>
+    </nz-card>
+
+  </div>
+</div>

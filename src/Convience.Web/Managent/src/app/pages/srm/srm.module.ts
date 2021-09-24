@@ -49,6 +49,8 @@ import { SupplierComponent } from './supplier/supplier.component';
 import { SupplierCComponent } from './supplier-c/supplier-c.component';
 import { MaterialComponent } from './material/material.component';
 import { MaterialCComponent } from './material-c/material-c.component';
+import { PoSapComponent } from './po-sap/po-sap.component';
+import { PoExamineComponent } from './po-examine/po-examine.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -71,6 +73,8 @@ import { MaterialCComponent } from './material-c/material-c.component';
     SupplierCComponent,
     MaterialComponent,
     MaterialCComponent,
+    PoSapComponent,
+    PoExamineComponent,
   ],
   imports: [
     CommonModule,
@@ -80,10 +84,12 @@ import { MaterialCComponent } from './material-c/material-c.component';
        { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
        { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
        { path: "po", component: PoComponent , canActivate: [LoginGuard]},
-       { path: "deliveryh", component: PoDetailComponent },
-       { path: "deliveryl", component: DelyveryLComponent },
-       { path: "deliverymodal", component: DeliveryModalComponent },
-       { path: "deliveryreceive", component: DeliveryReceiveComponent },
+       { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
+       { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
+       { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
+       { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
+       { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},
+       { path: "deliveryreceive", component: DeliveryReceiveComponent , canActivate: [LoginGuard]},
        { path: "qot", component: QotComponent },
        { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
        //{ path: "qotlist", component: QotlistComponent},

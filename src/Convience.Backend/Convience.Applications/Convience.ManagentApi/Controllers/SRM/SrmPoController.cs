@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Convience.ManagentApi.Controllers.SRM
@@ -99,7 +101,66 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             //int data= id.ToObject<int>();
             _srmPoService.UpdateStatus(id, 11);
-            return Ok();            
+            return Ok();
+        }
+        [HttpPost("Sap_GetPoData")]
+        public async Task<IActionResult> Sap_GetPoData(JObject data)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string json = JsonConvert.SerializeObject(data);
+                    HttpContent httpContent = new StringContent(json,
+                                    Encoding.UTF8,
+                                    "application/json");
+                    HttpResponseMessage response = await client.PostAsync("http://localhost:64779/api/srm/GetPoData", httpContent);// + Query.RequestUri.Query);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        if (!string.IsNullOrWhiteSpace(result) && result != "null")
+                        {
+                            SapPoData businessunits = JsonConvert.DeserializeObject<SapPoData>(result);
+
+                            return BadRequest(response.Content.ReadAsStringAsync().Result);
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //throw e;
+                return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+            }
+            //if (dls != null && dls.Count > 0)
+            //{
+            //    string result = _srmDeliveryService.ReceiveDeliveryL(dls);
+            //    if (string.IsNullOrEmpty(result)) return Ok();
+            //    return BadRequest(result);
+            //}
+            //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
+            return BadRequest("項次 新增/修改 失敗");
+        }
+
+        [HttpPost("GetPoPoL")]
+        [Permission("po-examine")]
+        public IActionResult GetPoPoL(JObject query)
+        {
+            QueryPoList q = new QueryPoList();
+            q.poNum = query["poNum"] == null ? null : query["poNum"].ToString();
+            q.status = query["status"] == null ? 0 : (int)query["status"];
+            q.buyer = query["buyer"].ToString();
+            q.user = User;
+            int page = (int)query["page"];
+            int size = (int)query["size"];
+            var h = _srmPoService.GetPoPoL(q, page, size);
+            return Ok(h);
         }
     }
+
 }
