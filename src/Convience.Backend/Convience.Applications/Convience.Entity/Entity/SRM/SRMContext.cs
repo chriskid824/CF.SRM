@@ -603,6 +603,11 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("CREATE_DATE");
 
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(3)
+                    .HasColumnName("CURRENCY")
+                    .HasComment("幣別");
+
                 entity.Property(e => e.DocDate)
                     .HasColumnType("datetime")
                     .HasColumnName("DOC_DATE");
@@ -679,6 +684,12 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Status)
                     .HasColumnName("STATUS")
                     .HasDefaultValueSql("((21))");
+
+                entity.Property(e => e.WoItem).HasColumnName("WO_ITEM");
+
+                entity.Property(e => e.WoNum)
+                    .HasMaxLength(10)
+                    .HasColumnName("WO_NUM");
 
                 entity.HasOne(d => d.Po)
                     .WithMany(p => p.SrmPoLs)
@@ -962,7 +973,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("STATUS_DESC")
                     .HasComment("說明");
             });
-            
+
             modelBuilder.Entity<SrmProcess>(entity =>
             {
                 entity.HasKey(e => e.ProcessNum);

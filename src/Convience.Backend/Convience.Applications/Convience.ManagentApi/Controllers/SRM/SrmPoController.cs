@@ -123,10 +123,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         if (!string.IsNullOrWhiteSpace(result) && result != "null")
                         {
                             SapPoData dataSet = JsonConvert.DeserializeObject<SapPoData>(result);
-                            dataSet.T_EKKO.ForEach(p =>
-                            {
-
-                            });
+                            _srmPoService.UpdateSapData(dataSet);
                             return Ok(result);
                         }
                     }

@@ -311,8 +311,8 @@ namespace Convience.Service.SRM
                     {
                         PoNum = po.EBELN,
                         Status = 9,
-                        VendorId = po.LIFNR,
-                        TotalAmount = po.RLWRT,
+                        //VendorId = po.LIFNR,
+                        TotalAmount = Convert.ToInt32(po.RLWRT),
                         Buyer = po.EKGRP,
                         Org = po.EKORG,
                         DocDate = po.BEDAT,
@@ -333,9 +333,9 @@ namespace Convience.Service.SRM
                         {
                             PoLId = pol.EBELP,
                             PoId = poH.PoId,
-                            MatnrId = pol.MATNR,
+                            //MatnrId = pol.MATNR,
                             Description = pol.MAKTX,
-                            Qty = pol.MENGE,
+                            Qty = Convert.ToInt32(pol.MENGE),
                             Price = pol.NETPR,
                             DeliveryDate = pol.EINDT,
                             DeliveryPlace = pol.LGOBE,

@@ -21,6 +21,8 @@ namespace Convience.Entity.Entity.SRM
         public string CriticalPart { get; set; }
         public float? InspectionTime { get; set; }
         public int? Status { get; set; }
+        public string WoNum { get; set; }
+        public int? WoItem { get; set; }
 
         public virtual SrmPoH Po { get; set; }
     }

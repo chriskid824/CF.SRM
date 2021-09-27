@@ -27,6 +27,7 @@ namespace Convience.Entity.Entity.SRM
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
         public decimal? TotalAmount { get; set; }
+        public string Currency { get; set; }
 
         public virtual ICollection<SrmPoL> SrmPoLs { get; set; }
     }
