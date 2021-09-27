@@ -29,7 +29,6 @@ export class PoSapComponent implements OnInit {
       I_EKORG: this.searchForm.value["I_EKORG"],
       Date: this.searchForm.value["Date"] == null ? "" : this.searchForm.value["Date"],
     }
-    console.info(query);
     if(query.I_EKORG==null)
     {
       this.message.create("error", `採購組織不可為空`);
@@ -42,8 +41,8 @@ export class PoSapComponent implements OnInit {
     }
     this._srmPoService.Sap_GetPoData(query)
     .subscribe((result) => {
-      if(result==null) alert('出貨單生成成功');
-      alert(result);
+      //if(result==null) alert('出貨單生成成功');
+      alert('成功導入 '+result["T_EKKO"].length +' 筆採購單資料,包含 '+result["T_EKPO"].length+' 筆採購明細');
     });
     //this.getPoList(query);
   }

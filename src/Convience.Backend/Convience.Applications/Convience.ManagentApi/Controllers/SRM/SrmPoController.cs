@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -115,26 +116,29 @@ namespace Convience.ManagentApi.Controllers.SRM
                                     Encoding.UTF8,
                                     "application/json");
                     HttpResponseMessage response = await client.PostAsync("http://localhost:64779/api/srm/GetPoData", httpContent);// + Query.RequestUri.Query);
-
+                    string result = response.Content.ReadAsStringAsync().Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        string result = response.Content.ReadAsStringAsync().Result;
+
                         if (!string.IsNullOrWhiteSpace(result) && result != "null")
                         {
-                            SapPoData businessunits = JsonConvert.DeserializeObject<SapPoData>(result);
+                            SapPoData dataSet = JsonConvert.DeserializeObject<SapPoData>(result);
+                            dataSet.T_EKKO.ForEach(p =>
+                            {
 
-                            return BadRequest(response.Content.ReadAsStringAsync().Result);
+                            });
+                            return Ok(result);
                         }
                     }
                     else
                     {
-                        return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+                        return BadRequest(result);
                     }
                 }
             }
             catch (Exception e)
             {
-                //throw e;
+                //throw e;'
                 return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
             }
             //if (dls != null && dls.Count > 0)

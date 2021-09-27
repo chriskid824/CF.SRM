@@ -36,6 +36,7 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
+        public SapPoData UpdateSapData(SapPoData data);
     }
 
     public class SrmPoService : ISrmPoService
@@ -297,6 +298,57 @@ namespace Convience.Service.SRM
                 Data = r,
                 Count = result.Count()
             };
+        }
+        public SapPoData UpdateSapData(SapPoData data)
+        {
+            SapPoData result = new SapPoData();
+            data.T_EKKO.ForEach(po =>
+            {
+                if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
+                {
+                    result.T_EKKO.Add(po);
+                    SrmPoH poH = new SrmPoH()
+                    {
+                        PoNum = po.EBELN,
+                        Status = 9,
+                        VendorId = po.LIFNR,
+                        TotalAmount = po.RLWRT,
+                        Buyer = po.EKGRP,
+                        Org = po.EKORG,
+                        DocDate = po.BEDAT,
+                    };
+                    _context.SrmPoHs.Add(poH);
+                }
+            });
+            //_context.SaveChanges();
+            data.T_EKPO.ForEach(pol =>
+            {
+                if (_context.SrmPoHs.Any(p => p.PoNum == pol.EBELN))
+                {
+                    SrmPoH poH = _context.SrmPoHs.Find(pol.EBELN);
+                    if (!_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
+                    {
+                        result.T_EKPO.Add(pol);
+                        SrmPoL poL = new SrmPoL()
+                        {
+                            PoLId = pol.EBELP,
+                            PoId = poH.PoId,
+                            MatnrId = pol.MATNR,
+                            Description = pol.MAKTX,
+                            Qty = pol.MENGE,
+                            Price = pol.NETPR,
+                            DeliveryDate = pol.EINDT,
+                            DeliveryPlace = pol.LGOBE,
+                            CriticalPart = pol.KZKRI,
+                            InspectionTime = 1,
+                            Status = 9,
+                        };
+                        _context.SrmPoLs.Add(poL);
+                    }
+                }
+            });
+            //_context.SaveChanges();
+            return result;
         }
     }
 }

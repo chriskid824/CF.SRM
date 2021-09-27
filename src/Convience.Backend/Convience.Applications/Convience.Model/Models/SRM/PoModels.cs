@@ -87,28 +87,30 @@ namespace Convience.Model.Models.SRM
 
     public class SapPoData
     {
+        //[JsonProperty("T_EKKO")]
         public List<T_EKKO> T_EKKO = new List<T_EKKO>();
+        //[JsonProperty("T_EKKO")]
         public List<T_EKPO> T_EKPO = new List<T_EKPO>();
     }
     public class T_EKKO
     {
         public string EBELN { get; set; }
-        public string LIFNR { get; set; }
-        public string RLWRT { get; set; }
+        public int LIFNR { get; set; }
+        public int RLWRT { get; set; }
         public string WAERS { get; set; }
         public string EKGRP { get; set; }
-        public string EKORG { get; set; }
-        public string BEDAT { get; set; }
+        public int? EKORG { get; set; }
+        public DateTime BEDAT { get; set; }
     }
     public class T_EKPO
     {
-        public string EBELP { get; set; }
+        public int EBELP { get; set; }
         public string EBELN { get; set; }
-        public string MATNR { get; set; }
+        public int MATNR { get; set; }
         public string MAKTX { get; set; }
-        public string MENGE { get; set; }
-        public string NETPR { get; set; }
-        public string EINDT { get; set; }
+        public int MENGE { get; set; }
+        public decimal? NETPR { get; set; }
+        public DateTime? EINDT { get; set; }
         public string LGOBE { get; set; }
         public string KZKRI { get; set; }
         public string AUFNR { get; set; }
