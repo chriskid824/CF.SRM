@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
@@ -66,6 +67,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             try
             {
+                UserClaims user = User.GetUserClaims();
+                fileUploadModel.CreateBy = user.UserName;
                 var result = _srmMaterialService.UploadAsync(fileUploadModel);
                 if (!string.IsNullOrEmpty(result))
                 {

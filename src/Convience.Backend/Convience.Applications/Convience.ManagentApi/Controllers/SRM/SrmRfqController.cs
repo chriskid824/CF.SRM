@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
@@ -60,12 +61,16 @@ namespace Convience.ManagentApi.Controllers.SRM
         [Permission("rfq")]
         public IActionResult GetMatnr(QueryMatnrModel matnrQuery)
         {
+            UserClaims user = User.GetUserClaims();
+            matnrQuery.Werks = user.Werks;
             return Ok(_srmMatnrService.GetMatnr(matnrQuery));
         }
 
         [HttpPost("GetVendor")]
         [Permission("rfq")]
         public IActionResult GetVendor(QueryVendorModel vendorQuery) {
+            UserClaims user = User.GetUserClaims();
+            vendorQuery.Werks = user.Werks;
             return Ok(_srmVendorService.GetVendor(vendorQuery));
         }
         [HttpPost("Save")]
@@ -75,6 +80,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
             SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
             DateTime now = DateTime.Now;
+            UserClaims user = User.GetUserClaims();
+            h.LastUpdateBy = user.UserName;
             h.LastUpdateDate = now;
             _srmRfqHService.Save(h, ms, vs);
             return Ok();
@@ -111,7 +118,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.rfqNum = query["rfqNum"].ToString();
             q.status = (int)query["status"];
             q.name = query["name"].ToString();
-            q.werks = Array.ConvertAll(query["werks"].ToString().Split(","), s => int.Parse(s));
+            UserClaims user = User.GetUserClaims();
+            q.werks = user.Werks;
             int page = (int)query["page"];
             int size = (int)query["size"];
             var h = _srmRfqHService.GetRfqList(q,page,size);
@@ -133,6 +141,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 try
                 {
                     _srmRfqHService.Save(h, matnrs, vendors);
+                    UserClaims user = User.GetUserClaims();
+                    h.LastUpdateBy = user.UserName;
                     h.LastUpdateDate = DateTime.Now;
                     _srmRfqHService.UpdateStatus((int)Status.啟動, h);
                     List<SrmQotH> qots = new List<SrmQotH>();
@@ -207,6 +217,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 try
                 {
+                    UserClaims user = User.GetUserClaims();
+                    rfqH.EndBy = user.UserName;
+                    rfqH.LastUpdateBy = user.UserName;
                     rfqH.LastUpdateDate = DateTime.Now;
                     var rfq = _srmRfqHService.UpdateStatus(((int)Status.作廢), rfqH);
                     _srmQotHService.UpdateStatus((int)Status.作廢, rfqH);
@@ -316,7 +329,7 @@ namespace Convience.ManagentApi.Controllers.SRM
  請回覆此E-MAIL致採購窗口或致電協調。<br />
 <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
 { sb.ToString()}";
-                        subject = "詢價單作廢通知";
+                        subject = "詢價單啟動通知";
                     }
 
                     mail.Body = body;
@@ -357,6 +370,9 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             try
             {
+                UserClaims user = User.GetUserClaims();
+                rfqH.EndBy = user.UserName;
+                rfqH.LastUpdateBy = user.UserName;
                 rfqH.LastUpdateDate = DateTime.Now;
                 _srmRfqHService.UpdateStatus(((int)Status.刪除), rfqH);
                 return Ok();
@@ -368,7 +384,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetSourcerList")]
         public IActionResult GetSourcerList(JObject jobj) {
             string name = jobj["name"].ToString();
-            int[] werks = Array.ConvertAll(jobj["werks"].ToString().Split(","), s => int.Parse(s));
+            UserClaims user = User.GetUserClaims();
+            int[] werks = user.Werks;
             int page = (int)jobj["page"];
             int size = (int)jobj["size"];
             var users = _srmRfqHService.GetSourcer(name, werks, size,page);
@@ -379,6 +396,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         [Permission("price")]
         [Permission("rfq")]
         public IActionResult GetRfq(QueryRfq query) {
+            UserClaims user = User.GetUserClaims();
+            query.werks = user.Werks;
             return Ok(_srmRfqHService.GetRfq(query));
         }
         [HttpPost("AsyncSourcer")]

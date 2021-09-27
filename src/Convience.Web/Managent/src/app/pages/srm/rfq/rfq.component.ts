@@ -170,7 +170,6 @@ export class RfqComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("matnr")?.value,
-      werks: this._storageService.werks.split(','),
       page: this.page,
       size: this.size
     }
@@ -191,7 +190,6 @@ export class RfqComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["vendor"],
-      werks: this._storageService.werks.split(','),
       page: this.page,
       size: this.size
     }
@@ -210,7 +208,6 @@ export class RfqComponent implements OnInit {
   onRefreshSourcer() {
     var query = {
       name: (this.searchForm.value["name"]) ?? "",
-      werks: this._storageService.werks,
       page: this.page,
       size: this.size
     }
@@ -554,7 +551,6 @@ export class RfqComponent implements OnInit {
   cancel() {
     var rfq = this.getrfq();
     console.log(rfq);
-    rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Cancel(rfq.h).subscribe(result => {
       alert('作廢成功');
       //window.close();
@@ -565,7 +561,6 @@ export class RfqComponent implements OnInit {
 
   delete() {
     var rfq = this.getrfq();
-    rfq.h.endBy = this._storageService.userName;
     this._srmRfqService.Delete(rfq.h).subscribe(result => {
       alert('刪除成功');
       //window.close();

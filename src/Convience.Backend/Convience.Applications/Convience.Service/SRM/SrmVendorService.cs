@@ -51,7 +51,6 @@ namespace Convience.Service.SRM
         }
         public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery)
         {
-            //int[] werks = Array.ConvertAll(vendorQuery.Werks.ToString().Split(","), s => int.Parse(s));
             int skip = (vendorQuery.Page-1) * vendorQuery.Size;
             var resultQuery = _srmVendorRepository.Get()
                 .AndIfHaveValue(vendorQuery.Vendor, r => r.SapVendor.Contains(vendorQuery.Vendor))

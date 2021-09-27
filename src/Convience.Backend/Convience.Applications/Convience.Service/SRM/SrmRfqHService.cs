@@ -155,14 +155,23 @@ namespace Convience.Service.SRM
 
         public void End(QueryRfqList q) {
             var rfqHs = GetRfqList(q);
+            DateTime now = DateTime.Now;
             foreach (ViewSrmRfqH rfq in rfqHs) {
                 rfq.Status = (int)Status.確認;
+                rfq.LastUpdateBy = "MIS";
+                rfq.LastUpdateDate = now;
                 _context.Entry(rfq).Property(x => x.Status).IsModified = true;
+                _context.Entry(rfq).Property(x => x.LastUpdateBy).IsModified = true;
+                _context.Entry(rfq).Property(x => x.LastUpdateDate).IsModified = true;
 
                 var Qots = _context.SrmQotHs.Where(r => r.Status == (int)Status.初始 && r.RfqId == rfq.RfqId);
                 foreach (var qot in Qots) {
                     qot.Status = (int)Status.失效;
+                    qot.LastUpdateBy = "MIS";
+                    qot.LastUpdateDate = now;
                     _context.Entry(qot).Property(x => x.Status).IsModified = true;
+                    _context.Entry(qot).Property(x => x.LastUpdateBy).IsModified = true;
+                    _context.Entry(qot).Property(x => x.LastUpdateDate).IsModified = true;
                 }
                 _context.SaveChanges();
             }

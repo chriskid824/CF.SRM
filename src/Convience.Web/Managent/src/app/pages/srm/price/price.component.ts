@@ -767,8 +767,7 @@ export class PriceComponent implements OnInit {
   }
 
   initEkgry() {
-    console.log(this._storageService.werks);
-    this._srmPriceService.GetEkgry(this._storageService.werks.split(',')).subscribe(result => {
+    this._srmPriceService.GetEkgry().subscribe(result => {
       console.log(result);
       this.EkgryList = result;
     });
@@ -1128,7 +1127,6 @@ export class PriceComponent implements OnInit {
     if (selectedRows.length == 0) { return;}
     var obj = {
       infos: selectedRows,
-      logonid: this._storageService.userName,
       rfqId: this.rfqId
     };
     this._srmPriceService.Start(obj).subscribe(result => {
@@ -1143,7 +1141,6 @@ export class PriceComponent implements OnInit {
     if (selectedRows.length == 0) { return; }
     var obj = {
       infos: selectedRows,
-      logonid: this._storageService.userName,
       rfqId: this.rfqId,
       caseId: this.caseId
     };

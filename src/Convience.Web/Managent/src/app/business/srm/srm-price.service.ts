@@ -27,8 +27,8 @@ export class SrmPriceService {
   GetCurrency() {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetCurrency`, null);
   }
-  GetEkgry(werks) {
-    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, werks);
+  GetEkgry() {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, null);
   }
   QueryInfoRecord(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/QueryInfoRecord`, query);

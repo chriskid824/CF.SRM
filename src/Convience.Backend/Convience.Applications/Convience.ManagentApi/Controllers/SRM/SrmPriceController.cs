@@ -25,6 +25,7 @@ using Convience.ManagentApi.Controllers.Extension;
 using BPMAPI;
 using System.ServiceModel;
 using System.Data;
+using Convience.JwtAuthentication;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -222,7 +223,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return this.BadRequestResult("詢價單狀態異常");
             }
             ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
-            string logonid = jobj["logonid"].ToString();
+            UserClaims user = User.GetUserClaims();
+            string logonid = user.UserName;
             DateTime now = DateTime.Now;
             foreach (ViewSrmInfoRecord info in infos)
             {
@@ -264,7 +266,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return this.BadRequestResult("詢價單狀態異常");
             }
             ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
-            string logonid = jobj["logonid"].ToString();
+            UserClaims user = User.GetUserClaims();
+            string logonid = user.UserName;
             DateTime now = DateTime.Now;
             foreach (ViewSrmInfoRecord info in infos)
             {
@@ -488,15 +491,18 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
         [HttpPost("GetEkgry")]
         [Permission("price")]
-        public IActionResult GetEkgry(int[] werks)
+        public IActionResult GetEkgry()
         {
-            return Ok(_srmPriceService.GetEkgry(werks));
+            UserClaims user = User.GetUserClaims();
+            return Ok(_srmPriceService.GetEkgry(user.Werks));
         }
 
         [HttpPost("QueryInfoRecord")]
         [Permission("price")]
         public IActionResult QueryInfoRecord(QueryInfoRecordModels query)
         {
+            UserClaims user = User.GetUserClaims();
+            query.werks = user.Werks;
             return Ok(_srmInfoRecordService.Query(query));
         }
     }

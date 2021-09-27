@@ -85,7 +85,6 @@ export class MaterialTrendComponent implements OnInit {
     formData.append('material', this.addForm.get("material")?.value);
     formData.append('effectiveDate', dateFormatter(this.addForm.get("effectiveDate")?.value));
     formData.append('deadline', dateFormatter(this.addForm.get("deadline")?.value));
-    formData.append('createBy', this._storageService.userName);
     fileList.forEach((file: any) => {
       formData.append('files', file);
     });

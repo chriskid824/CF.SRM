@@ -64,7 +64,6 @@ export class PriceManageComponent implements OnInit {
       matnrId: this.selectedMatnrId,
       vendorId: this.selectedVendorId,
       status: this.searchForm.value["status"] == null ? "" : this.searchForm.value["status"],
-      werks: this._storageService.werks.split(','),
       page: this.page,
       size: this.size
     }
@@ -99,7 +98,6 @@ export class PriceManageComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("queryMatnr")?.value,
-      werks: this._storageService.werks.split(','),
       page: 1,
       size: 50
     }
@@ -120,7 +118,6 @@ export class PriceManageComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["queryVendor"],
-      werks: this._storageService.werks.split(','),
       page: 1,
       size: 50
     }

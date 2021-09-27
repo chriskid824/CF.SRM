@@ -106,8 +106,5 @@ namespace Convience.Model.Models.SRM
         public string costNo { get; set; }
         public int[] statuses { get; set; }
         public int[] werks { get; set; }
-            //get {
-            //   return Array.ConvertAll(werks_str.Split(","), s => int.Parse(s));
-            //} } 
     }
 }
