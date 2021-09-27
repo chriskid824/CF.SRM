@@ -273,16 +273,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     MailMessage mail = new MailMessage();
                     mail.From = new MailAddress("mis@chenfull.com.tw");
-                    mail.To.Add("leon.jcg@chenfull.com.tw");
+                    mail.To.Add(vendor.Mail);
                     mail.CC.Add("leo.lai@chenfull.com.tw");
                     var sourcer = _userService.GetUsers(new UserQueryModel { UserName = rfq.CreateBy, Page = 1, Size = 1 });
                     if (!string.IsNullOrWhiteSpace(sourcer.Data[0].Email)) { mail.CC.Add(sourcer.Data[0].Email); }
                     //mail.To.Add("leo.lai@chenfull.com.tw");
                     SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfq.RfqId, vendorId = vendor.VendorId });
                     sb.Clear();
-                    sb.AppendLine("收件者:<br />");
-                    sb.AppendLine(vendor.Mail+ "<br />");
-                    //sb.AppendLine(sourcer.Data[0].Email + "<br />");
+                    //sb.AppendLine("收件者:<br />");
+                    //sb.AppendLine(vendor.Mail+ "<br />");
                     qotNums.Clear();
                     foreach (var qot in qots)
                     {
@@ -327,7 +326,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 catch (Exception ex) {
                     MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    mail.From = new MailAddress("mis@chenfull.com.tw");
                     mail.To.Add("leon.jcg@chenfull.com.tw");
                     mail.Body = $"寄信異常，供應商:{vendor.VendorName}，EX:{ex.Message}";
                     mail.Subject = "寄信異常";
