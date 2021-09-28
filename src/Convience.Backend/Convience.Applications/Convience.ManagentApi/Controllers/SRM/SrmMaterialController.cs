@@ -1,5 +1,4 @@
 ﻿using Convience.Entity.Entity.SRM;
-using Convience.JwtAuthentication;
 using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
@@ -58,34 +57,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult CheckMatnr(ViewSrmMaterial data)
         {
             if (_srmMaterialService.CheckMatnr(data)) return Ok();
-            return BadRequest("此料號以重複使用");
+            return BadRequest("此料號已重複使用");
         }
-
-        [HttpPost("UploadFile")]
-        [Permission("RFQ_ACTION")]
-        public IActionResult UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
+        [HttpPost("AddMatnr")]
+        public IActionResult AddMatnr(ViewSrmMaterial data)
         {
-            try
-            {
-                UserClaims user = User.GetUserClaims();
-                fileUploadModel.CreateBy = user.UserName;
-                var result = _srmMaterialService.UploadAsync(fileUploadModel);
-                if (!string.IsNullOrEmpty(result))
-                {
-                    return this.BadRequestResult(result);
-                }
-            }
-            catch (Exception ex) {
-                return this.BadRequestResult(ex.Message);
-            }
-            return Ok();
-        }
-
-        [HttpPost("GetMaterialTrendList")]
-        [Permission("price-manage")]
-        public IActionResult GetMaterialTrendList(QuerySrmMaterialTrend query)
-        {
-            return Ok(_srmMaterialService.GetMaterialTrendList(query));
+            if (_srmMaterialService.AddMatnr(data)) return Ok();
+            return BadRequest("料號建立失敗");
         }
     }
 }

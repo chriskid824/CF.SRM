@@ -34,6 +34,8 @@ namespace Convience.Service.SRM
         public ViewSrmSupplier GetSupplierDetail(QueryVendorModel query);
 
         public bool UpdateSupplier(ViewSrmSupplier data);
+        public bool CheckVendor(ViewSrmSupplier data);
+        public bool AddVendor(ViewSrmSupplier data);
 
     }
     public class SrmSupplierService : ISrmSupplierService
@@ -159,6 +161,54 @@ namespace Convience.Service.SRM
             _context.SrmVendors.Update(vendor);
 
             _context.SaveChanges();
+
+            return true;
+        }
+        public bool CheckVendor(ViewSrmSupplier data)
+        {
+            SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
+            if (vendor == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public bool AddVendor(ViewSrmSupplier data)
+        {
+            SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
+            //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+
+            if (vendor != null)
+            {
+                return false;
+            }
+
+
+            SrmVendor srmvendor = new SrmVendor()
+            {
+                SrmVendor1 = data.SrmVendor1,
+                VendorName = data.VendorName,
+                Org = data.Org,
+                Ekorg = data.Ekorg,
+                Person = data.Person,
+                Address = data.Address,
+                TelPhone = data.TelPhone,
+                Ext = data.Ext,
+                FaxNumber = data.FaxNumber,
+                CellPhone = data.CellPhone,
+                Mail = data.Mail,
+                Status = 1,
+
+                CreateDate = DateTime.Now,
+                CreateBy = data.User,
+                //LastUpdateDate= DateTime.Now,
+            };
+
+
+            _context.SrmVendors.Add(srmvendor);
+            _context.SaveChanges();
+
 
             return true;
         }
