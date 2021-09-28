@@ -518,6 +518,8 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
 
+                entity.Property(e => e.SapId).HasMaxLength(10);
+
                 entity.Property(e => e.UserName).HasMaxLength(256);
             });
 

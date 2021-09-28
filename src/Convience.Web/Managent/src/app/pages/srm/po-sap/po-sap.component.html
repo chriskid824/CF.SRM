@@ -39,4 +39,23 @@
     </nz-card>
 
   <nz-card>
+    <nz-table #sortTable [nzData]="listOfData" nzSize="middle" nzShowPagination="false"
+    nzBordered="true" [nzScroll]="{ x: '180px' }">
+      <thead>
+        <tr>
+          <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+            {{ column.title }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of sortTable.data">
+          <td>{{ data.id }}</td>
+          <td>{{ data.lId }}</td>
+          <td>{{ data.type }}</td>
+          <td>{{ data.outCome }}</td>
+          <td>{{ data.reason }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
   </nz-card>

@@ -2,6 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { stringify } from 'node:querystring';
+interface SapResult {
+  id: string;
+  lId: number;
+  type: string;
+  outCome: string;
+  reason: string;
+}
 @Component({
   selector: 'app-po-sap',
   templateUrl: './po-sap.component.html',
@@ -10,6 +18,34 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class PoSapComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   date = null;
+  listOfColumn = [
+    {
+      title: '採購單號',
+      compare: (a: SapResult, b: SapResult) => a.id.localeCompare(b.id),
+      priority: 1
+    },
+    {
+      title: '採購項次',
+      compare: (a: SapResult, b: SapResult) => a.lId - b.lId,
+      priority: 2
+    },
+    {
+      title: '類別',
+      compare: (a: SapResult, b: SapResult) => a.type.localeCompare(b.type),
+      priority: 3
+    },
+    {
+      title: '結果',
+      compare: (a: SapResult, b: SapResult) => a.outCome.localeCompare(b.outCome),
+      priority: 4
+    },
+    {
+      title: '原因',
+      compare: (a: SapResult, b: SapResult) => a.reason.localeCompare(b.reason),
+      priority: 5
+    }
+  ];
+  listOfData: any;
   constructor(private _formBuilder: FormBuilder,private _srmPoService: SrmPoService,private message: NzMessageService) { }
 
   ngOnInit(): void {
@@ -41,8 +77,18 @@ export class PoSapComponent implements OnInit {
     }
     this._srmPoService.Sap_GetPoData(query)
     .subscribe((result) => {
+      console.info(result);
+      if(result["err"]==null)
+      {
+        this.listOfData=result["list"];
+      }
+else
+{
+  this.listOfData=null;
+  alert(result["err"]);
+}
       //if(result==null) alert('出貨單生成成功');
-      alert('成功導入 '+result["T_EKKO"].length +' 筆採購單資料,包含 '+result["T_EKPO"].length+' 筆採購明細');
+      //alert('成功導入 '+result["T_EKKO"].length +' 筆採購單資料,包含 '+result["T_EKPO"].length+' 筆採購明細');
     });
     //this.getPoList(query);
   }

@@ -16,6 +16,7 @@ namespace Convience.Entity.Entity.Identity
 
         public DateTime CreatedTime { get; set; }
         public string CostNo { get; set; }
+        public string SapId { get; set; }
     }
 
     public enum Sex

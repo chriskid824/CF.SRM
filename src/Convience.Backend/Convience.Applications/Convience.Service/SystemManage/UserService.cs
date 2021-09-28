@@ -110,6 +110,7 @@ namespace Convience.Service.SystemManage
             return new UserResultModel
             {
                 Avatar = user.Avatar,
+                SapId=user.SapId,
                 Name = user.Name,
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
@@ -182,6 +183,7 @@ namespace Convience.Service.SystemManage
                               select new UserResultModel
                               {
                                   Avatar = u.Avatar,
+                                  SapId=u.SapId,
                                   Name = u.Name,
                                   UserName = u.UserName,
                                   PhoneNumber = u.PhoneNumber,

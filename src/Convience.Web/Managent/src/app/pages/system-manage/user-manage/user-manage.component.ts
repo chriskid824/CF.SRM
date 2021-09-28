@@ -84,6 +84,7 @@ export class UserManageComponent implements OnInit {
     this.editedUser = new User();
     this.editForm = this._formBuilder.group({
       avatar: [''],
+      sapId: [''],
       userName: ['', [Validators.required, Validators.maxLength(15)]],
       name: ['', [Validators.required, Validators.maxLength(10)]],
       phoneNumber: ['', [Validators.pattern(/^0\d{9}$/)]],
@@ -110,6 +111,7 @@ export class UserManageComponent implements OnInit {
       this.editedUser = user;
       this.editForm = this._formBuilder.group({
         avatar: [user['avatar']],
+        sapId: [user['sapId']],
         userName: [user['userName'], [Validators.required, Validators.maxLength(15)]],
         name: [user['name'], [Validators.required, Validators.maxLength(10)]],
         phoneNumber: [user['phoneNumber'], [Validators.pattern(/^0\d{9}$/)]],
@@ -187,6 +189,7 @@ export class UserManageComponent implements OnInit {
     if (this.editForm.valid) {
       let user: any = {};
       user.avatar = this.editForm.value['avatar'];
+      user.sapId=this.editForm.value['sapId'];
       user.userName = this.editForm.value['userName'];
       user.password = this.editForm.value['password'];
       user.name = this.editForm.value['name'];

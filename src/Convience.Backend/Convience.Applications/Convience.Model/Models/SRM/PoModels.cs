@@ -92,6 +92,20 @@ namespace Convience.Model.Models.SRM
         //[JsonProperty("T_EKKO")]
         public List<T_EKPO> T_EKPO = new List<T_EKPO>();
     }
+    public class SapResultList
+    {
+        public List<SapResultData> List = new List<SapResultData>();
+        public string err { get; set; }
+    }
+    public class SapResultData
+    {
+        public string Id { get; set; }
+        public int LId { get; set; }
+        public string Type { get; set; }
+        public string OutCome { get; set; }
+        public string Reason { get; set; }
+    }
+
     public class T_EKKO
     {
         public string EBELN { get; set; }

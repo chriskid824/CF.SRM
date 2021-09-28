@@ -36,7 +36,7 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
-        public SapPoData UpdateSapData(SapPoData data);
+        public List<SapResultData> UpdateSapData(SapPoData data);
     }
 
     public class SrmPoService : ISrmPoService
@@ -299,55 +299,96 @@ namespace Convience.Service.SRM
                 Count = result.Count()
             };
         }
-        public SapPoData UpdateSapData(SapPoData data)
+        public List<SapResultData> UpdateSapData(SapPoData data)
         {
-            SapPoData result = new SapPoData();
+            List<SapResultData> result = new List<SapResultData>();
             data.T_EKKO.ForEach(po =>
             {
+                SapResultData r = new SapResultData() { Id = po.EBELN, Type = "採購單" };
                 if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
                 {
-                    result.T_EKKO.Add(po);
-                    SrmPoH poH = new SrmPoH()
+                    if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
                     {
-                        PoNum = po.EBELN,
-                        Status = 9,
-                        //VendorId = po.LIFNR,
-                        TotalAmount = Convert.ToInt32(po.RLWRT),
-                        Buyer = po.EKGRP,
-                        Org = po.EKORG,
-                        DocDate = po.BEDAT,
-                    };
-                    _context.SrmPoHs.Add(poH);
-                }
-            });
-            //_context.SaveChanges();
-            data.T_EKPO.ForEach(pol =>
-            {
-                if (_context.SrmPoHs.Any(p => p.PoNum == pol.EBELN))
-                {
-                    SrmPoH poH = _context.SrmPoHs.Find(pol.EBELN);
-                    if (!_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
-                    {
-                        result.T_EKPO.Add(pol);
-                        SrmPoL poL = new SrmPoL()
+                        int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
+                        SrmPoH poH = new SrmPoH()
                         {
-                            PoLId = pol.EBELP,
-                            PoId = poH.PoId,
-                            //MatnrId = pol.MATNR,
-                            Description = pol.MAKTX,
-                            Qty = Convert.ToInt32(pol.MENGE),
-                            Price = pol.NETPR,
-                            DeliveryDate = pol.EINDT,
-                            DeliveryPlace = pol.LGOBE,
-                            CriticalPart = pol.KZKRI,
-                            InspectionTime = 1,
+                            PoNum = po.EBELN,
                             Status = 9,
+                            VendorId = vendorid,
+                            TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
+                            Buyer = po.EKGRP,
+                            Org = po.EKORG,
+                            DocDate = po.BEDAT,
                         };
-                        _context.SrmPoLs.Add(poL);
+                        _context.SrmPoHs.Add(poH);
+                        r.OutCome = "成功";
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "供應商 " + po.LIFNR + " 不存在";
                     }
                 }
+                else
+                {
+                    r.OutCome = "失敗";
+                    r.Reason = "該採購單號已存在";
+                }
+                result.Add(r);
             });
-            //_context.SaveChanges();
+            _context.SaveChanges();
+            data.T_EKPO.ForEach(pol =>
+            {
+                SapResultData r = new SapResultData() { Id = pol.EBELN, LId = pol.EBELP, Type = "採購項次" };
+                //採購單號
+                if (_context.SrmPoHs.Any(p => p.PoNum == pol.EBELN))
+                {
+                    SrmPoH poH = _context.SrmPoHs.FirstOrDefault(h => h.PoNum == pol.EBELN);
+                    //採購項次
+                    if (!_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
+                    {
+                        //料號
+                        if (_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
+                        {
+                            int matnrid = _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
+                            SrmPoL poL = new SrmPoL()
+                            {
+                                PoLId = pol.EBELP,
+                                PoId = poH.PoId,
+                                MatnrId = matnrid,
+                                Description = pol.MAKTX,
+                                Qty = Convert.ToInt32(Convert.ToDouble(pol.MENGE)),
+                                Price = pol.NETPR,
+                                DeliveryDate = pol.EINDT,
+                                DeliveryPlace = pol.LGOBE,
+                                CriticalPart = pol.KZKRI,
+                                InspectionTime = 1,
+                                Status = 9,
+                                WoNum = pol.AUFNR,
+                            };
+                            _context.SrmPoLs.Add(poL);
+                            r.OutCome = "成功";
+                        }
+                        else
+                        {
+                            r.OutCome = "失敗";
+                            r.Reason = "料號 " + pol.MATNR + " 不存在";
+                        }
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "該採購項次已存在";
+                    }
+                }
+                else
+                {
+                    r.OutCome = "失敗";
+                    r.Reason = "該採購單號不存在";
+                }
+                result.Add(r);
+            });
+            _context.SaveChanges();
             return result;
         }
     }

@@ -107,6 +107,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("Sap_GetPoData")]
         public async Task<IActionResult> Sap_GetPoData(JObject data)
         {
+            SapResultList returndata = new SapResultList();
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -117,26 +118,29 @@ namespace Convience.ManagentApi.Controllers.SRM
                                     "application/json");
                     HttpResponseMessage response = await client.PostAsync("http://localhost:64779/api/srm/GetPoData", httpContent);// + Query.RequestUri.Query);
                     string result = response.Content.ReadAsStringAsync().Result;
+
                     if (response.IsSuccessStatusCode)
                     {
 
                         if (!string.IsNullOrWhiteSpace(result) && result != "null")
                         {
                             SapPoData dataSet = JsonConvert.DeserializeObject<SapPoData>(result);
-                            _srmPoService.UpdateSapData(dataSet);
-                            return Ok(result);
+                            returndata.List = _srmPoService.UpdateSapData(dataSet);
+                            return Ok(returndata);
                         }
                     }
                     else
                     {
-                        return BadRequest(result);
+                        returndata.err = result;
+                        return BadRequest(returndata);
                     }
                 }
             }
             catch (Exception e)
             {
                 //throw e;'
-                return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+                returndata.err = "修改資料在sap階段失敗 請聯絡工程師調整";
+                return BadRequest(returndata);
             }
             //if (dls != null && dls.Count > 0)
             //{
@@ -145,7 +149,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             //    return BadRequest(result);
             //}
             //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
-            return BadRequest("項次 新增/修改 失敗");
+            returndata.err = "項次 新增/修改 失敗";
+            return BadRequest(returndata);
         }
 
         [HttpPost("GetPoPoL")]
