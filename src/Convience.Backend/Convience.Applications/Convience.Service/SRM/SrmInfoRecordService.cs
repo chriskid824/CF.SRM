@@ -65,12 +65,14 @@ namespace Convience.Service.SRM
                                             qotNum = q.QotNum,
                                             rfqNum = r.RfqNum,
                                             rfqId = r.RfqId.ToString(),
-                                            viewstatus = ((Status)info.Status).ToString()
+                                            viewstatus = ((Status)info.Status).ToString(),
+                                            Org = info.Org
                                         }
                                      )
                                      .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))
                                      .AndIfHaveValue(query.VendorId, r => r.VendorId.Equals(query.VendorId))
                                      .AndIfHaveValue(query.Status, r => r.Status.Equals(query.Status))
+                                     .Where(r=>query.werks.Contains(r.Org.Value))
                                      .ToArray();
 
             var result = view.Skip(skip).Take(query.size);

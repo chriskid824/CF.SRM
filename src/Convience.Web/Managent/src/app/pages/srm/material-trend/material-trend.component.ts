@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FileService } from 'src/app/business/file.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SrmMaterialService } from '../../../business/srm/srm-material.service';
@@ -12,7 +12,7 @@ import { NzAnchorModule } from 'ng-zorro-antd/anchor';
   templateUrl: './material-trend.component.html',
   styleUrls: ['./material-trend.component.less']
 })
-export class MaterialTrendComponent implements OnInit {
+export class MaterialTrendComponent implements OnInit, AfterViewInit {
   addForm: FormGroup = new FormGroup({});
   searchForm: FormGroup = new FormGroup({});
   fileList: any[] = [];
@@ -25,12 +25,17 @@ export class MaterialTrendComponent implements OnInit {
   total: number;
   imageUrl;
 
+  _searchDate;
+  _materialTrend;
+
   constructor(private _fileService: FileService,
     private _srmMaterialService: SrmMaterialService,
     private _storageService: StorageService,
     private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
-    private _messageService: NzMessageService  ) { }
+    private _messageService: NzMessageService,
+    private cd: ChangeDetectorRef  ) {
+  }
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
@@ -39,7 +44,27 @@ export class MaterialTrendComponent implements OnInit {
     });
     this.initaddForm();
   }
-
+  ngAfterViewInit(): void {
+    for (const i in this.searchForm.controls) {
+      this.searchForm.controls[i].markAsDirty();
+      this.searchForm.controls[i].updateValueAndValidity();
+    }
+    if (sessionStorage.getItem("material-trend")) {
+      var query = JSON.parse(sessionStorage.getItem("material-trend"));
+      this._searchDate = query.searchDate;
+      this._materialTrend = query.materialTrend;
+      this.page = query.page;
+      this.size = query.size;
+      console.log(query);
+      console.log(this.page);
+      this.searchForm.patchValue({
+        material: this._materialTrend.Material,
+        searchDate: this._searchDate,
+      });
+      this.refresh();
+      this.cd.detectChanges();
+    };
+  }
   initaddForm() {
     this.addForm = this._formBuilder.group({
       material: [null, [Validators.required]],
@@ -116,25 +141,25 @@ export class MaterialTrendComponent implements OnInit {
   }
 
   refresh() {
-    for (const i in this.searchForm.controls) {
-      this.searchForm.controls[i].markAsDirty();
-      this.searchForm.controls[i].updateValueAndValidity();
+    //for (const i in this.searchForm.controls) {
+    //  this.searchForm.controls[i].markAsDirty();
+    //  this.searchForm.controls[i].updateValueAndValidity();
+    //}
+    //if (this.searchForm.valid) {
+    var query = {
+      searchDate: this._searchDate,
+      materialTrend: this._materialTrend,
+      page: this.page,
+      size: this.size
     }
-    if (this.searchForm.valid) {
-      var query = {
-        searchDate: dateFormatter(this.searchForm.get('searchDate').value),
-        materialTrend: {
-          Material: this.searchForm.get('material').value,
-        },
-        page: this.page,
-        size: this.size
-      }
+    //query["materialTrend"] = JSON.stringify(this._materialTrend);
+    sessionStorage.setItem("material-trend", JSON.stringify(query));
       this._srmMaterialService.GetMaterialTrendList(query).subscribe(result => {
         console.log(result);
         this.data = result["data"];
         this.total = result["count"];
       });
-    }
+    //}
   }
   pageChange() {
     this.refresh();
@@ -144,8 +169,18 @@ export class MaterialTrendComponent implements OnInit {
     this.refresh();
   }
   submitSearch() {
-    this.page = 1;
-    this.refresh();
+    for (const i in this.searchForm.controls) {
+      this.searchForm.controls[i].markAsDirty();
+      this.searchForm.controls[i].updateValueAndValidity();
+    }
+    if (this.searchForm.valid) {
+      this._searchDate = dateFormatter(this.searchForm.get('searchDate').value);
+      this._materialTrend = {
+        Material: this.searchForm.get('material').value,
+      }
+      this.page = 1;
+      this.refresh();
+    }
   }
 }
 function dateFormatter(data) {

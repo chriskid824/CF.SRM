@@ -224,6 +224,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
             UserClaims user = User.GetUserClaims();
+            if (user.UserName != rfqH.Sourcer)
+            {
+                return this.BadRequestResult("非詢價本人");
+            }
             string logonid = user.UserName;
             DateTime now = DateTime.Now;
             foreach (ViewSrmInfoRecord info in infos)
@@ -267,6 +271,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
             UserClaims user = User.GetUserClaims();
+            if (user.UserName != rfqH.Sourcer)
+            {
+                return this.BadRequestResult("非詢價本人");
+            }
             string logonid = user.UserName;
             DateTime now = DateTime.Now;
             foreach (ViewSrmInfoRecord info in infos)

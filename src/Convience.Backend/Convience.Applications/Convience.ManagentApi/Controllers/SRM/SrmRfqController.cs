@@ -81,8 +81,12 @@ namespace Convience.ManagentApi.Controllers.SRM
             SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
             DateTime now = DateTime.Now;
             UserClaims user = User.GetUserClaims();
+            if (user.UserName != h.Sourcer) {
+                return this.BadRequestResult("非詢價本人");
+            }
             h.LastUpdateBy = user.UserName;
             h.LastUpdateDate = now;
+            h.Werks = user.Werks[0];
             _srmRfqHService.Save(h, ms, vs);
             return Ok();
         }
@@ -140,10 +144,15 @@ namespace Convience.ManagentApi.Controllers.SRM
             using (var transaction = new System.Transactions.TransactionScope()) {
                 try
                 {
-                    _srmRfqHService.Save(h, matnrs, vendors);
                     UserClaims user = User.GetUserClaims();
+                    if (user.UserName != h.Sourcer)
+                    {
+                        return this.BadRequestResult("非詢價本人");
+                    }
                     h.LastUpdateBy = user.UserName;
                     h.LastUpdateDate = DateTime.Now;
+                    h.Werks = user.Werks[0];
+                    _srmRfqHService.Save(h, matnrs, vendors);
                     _srmRfqHService.UpdateStatus((int)Status.啟動, h);
                     List<SrmQotH> qots = new List<SrmQotH>();
                     foreach (var matnr in matnrs)
@@ -218,6 +227,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                 try
                 {
                     UserClaims user = User.GetUserClaims();
+                    if (user.UserName != rfqH.Sourcer)
+                    {
+                        return this.BadRequestResult("非詢價本人");
+                    }
                     rfqH.EndBy = user.UserName;
                     rfqH.LastUpdateBy = user.UserName;
                     rfqH.LastUpdateDate = DateTime.Now;
@@ -371,6 +384,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             try
             {
                 UserClaims user = User.GetUserClaims();
+                if (user.UserName != rfqH.Sourcer)
+                {
+                    return this.BadRequestResult("非詢價本人");
+                }
                 rfqH.EndBy = user.UserName;
                 rfqH.LastUpdateBy = user.UserName;
                 rfqH.LastUpdateDate = DateTime.Now;

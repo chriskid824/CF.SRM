@@ -78,6 +78,7 @@ namespace Convience.Service.SRM
             if (rfqH.RfqId == 0)
             {
                 rfqH.CreateDate = now;
+                rfqH.CreateBy = rfqH.LastUpdateBy;
                 _context.SrmRfqHs.Add(rfqH);
                 _context.SaveChanges();
                 //rfqH.RfqNum = "V" + rfqH.RfqId.ToString().PadLeft(6,'0');
@@ -186,7 +187,7 @@ namespace Convience.Service.SRM
             rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
 
             var rfqs = from rfq in rfqQuery
-                       //join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
+                           //join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
                        join u in _context.AspNetUsers on rfq.CreateBy equals u.UserName
                        join s in _context.AspNetUsers on rfq.Sourcer equals s.UserName
                        into gj
@@ -202,7 +203,8 @@ namespace Convience.Service.SRM
                            CreateBy = rfq.CreateBy,
                            CreateDate = rfq.CreateDate,
                            C_by = u.Name,
-                           Deadline = rfq.Deadline
+                           Deadline = rfq.Deadline,
+                           Werks = rfq.Werks
                        };
             return rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name))
                 .AndIfCondition(q.end,r=>r.Status==7 && r.Deadline.Value.AddDays(1)<=DateTime.Now.Date)

@@ -162,6 +162,7 @@ export class LayoutComponent implements OnInit {
   logout() {
     this._storageService.removeUserToken();
     this._router.navigate(['/account/login']);
+    sessionStorage.clear();
   }
 
   setBreadcrumb(first: string, ...rest: string[]) {
