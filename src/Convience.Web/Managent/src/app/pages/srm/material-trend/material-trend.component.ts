@@ -45,10 +45,6 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
     this.initaddForm();
   }
   ngAfterViewInit(): void {
-    for (const i in this.searchForm.controls) {
-      this.searchForm.controls[i].markAsDirty();
-      this.searchForm.controls[i].updateValueAndValidity();
-    }
     if (sessionStorage.getItem("material-trend")) {
       var query = JSON.parse(sessionStorage.getItem("material-trend"));
       this._searchDate = query.searchDate;
@@ -61,8 +57,14 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
         material: this._materialTrend.Material,
         searchDate: this._searchDate,
       });
-      this.refresh();
-      this.cd.detectChanges();
+      for (const i in this.searchForm.controls) {
+        this.searchForm.controls[i].markAsDirty();
+        this.searchForm.controls[i].updateValueAndValidity();
+      }
+      if (this.searchForm.valid) {
+        this.refresh();
+        this.cd.detectChanges();
+      }
     };
   }
   initaddForm() {
