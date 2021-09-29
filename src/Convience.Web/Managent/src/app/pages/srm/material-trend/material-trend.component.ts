@@ -1,11 +1,11 @@
 import { Component, OnInit, TemplateRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FileService } from 'src/app/business/file.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { SrmMaterialService } from '../../../business/srm/srm-material.service';
 import { StorageService } from '../../../services/storage.service';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzAnchorModule } from 'ng-zorro-antd/anchor';
+import { SrmMaterialTrendService } from '../../../business/srm/srm-materialTrend.service';
 
 @Component({
   selector: 'app-material-trend',
@@ -29,7 +29,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
   _materialTrend;
 
   constructor(private _fileService: FileService,
-    private _srmMaterialService: SrmMaterialService,
+    private _srmMaterialTrendService: SrmMaterialTrendService,
     private _storageService: StorageService,
     private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -115,7 +115,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
     fileList.forEach((file: any) => {
       formData.append('files', file);
     });
-    this._srmMaterialService.UploadFile(formData).subscribe(result => {
+    this._srmMaterialTrendService.UploadFile(formData).subscribe(result => {
       console.log(result);
       this.fileList = [];
       this.uploading = false;
@@ -156,7 +156,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
     }
     //query["materialTrend"] = JSON.stringify(this._materialTrend);
     sessionStorage.setItem("material-trend", JSON.stringify(query));
-      this._srmMaterialService.GetMaterialTrendList(query).subscribe(result => {
+    this._srmMaterialTrendService.GetMaterialTrendList(query).subscribe(result => {
         console.log(result);
         this.data = result["data"];
         this.total = result["count"];

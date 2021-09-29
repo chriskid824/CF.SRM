@@ -24,10 +24,4 @@ export class SrmMaterialService {
   AddMatnr(material){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/AddMatnr`, material);
   }
-  UploadFile(formData) {
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/UploadFile`, formData);
-  }
-  GetMaterialTrendList(query) {
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetMaterialTrendList`, query);
-  }
 }
