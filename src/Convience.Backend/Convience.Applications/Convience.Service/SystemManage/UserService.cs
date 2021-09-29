@@ -27,6 +27,7 @@ namespace Convience.Service.SystemManage
         public PagingResultModel<UserResultModel> GetUsers(UserQueryModel query);
 
         public UserResultModel GetUser(string Id);
+        public string GetUserSapiId(string UserName);
 
         public Task<string> AddUserAsync(UserViewModel model);
 
@@ -110,11 +111,11 @@ namespace Convience.Service.SystemManage
             return new UserResultModel
             {
                 Avatar = user.Avatar,
-                SapId=user.SapId,
+                SapId = user.SapId,
                 Name = user.Name,
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
-                Email=user.Email,
+                Email = user.Email,
                 Id = user.Id,
                 IsActive = user.IsActive,
                 Sex = (int)user.Sex,
@@ -183,11 +184,11 @@ namespace Convience.Service.SystemManage
                               select new UserResultModel
                               {
                                   Avatar = u.Avatar,
-                                  SapId=u.SapId,
+                                  SapId = u.SapId,
                                   Name = u.Name,
                                   UserName = u.UserName,
                                   PhoneNumber = u.PhoneNumber,
-                                  Email=u.Email,
+                                  Email = u.Email,
                                   Id = u.Id,
                                   IsActive = u.IsActive,
                                   Sex = (int)u.Sex,
@@ -321,6 +322,14 @@ namespace Convience.Service.SystemManage
                          select new Claim(claimType, v ?? string.Empty);
             await _userManager.AddClaimsAsync(user, newucs.ToArray());
         }
-
+        public string GetUserSapiId(string UserName)
+        {
+            var user = _userRepository.Get(u => u.UserName == UserName).FirstOrDefault();
+            if (user != null)
+            {
+                return user.SapId;
+            }
+            return null;
+        }
     }
 }

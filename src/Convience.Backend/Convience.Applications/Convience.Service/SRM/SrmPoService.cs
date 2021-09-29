@@ -313,7 +313,7 @@ namespace Convience.Service.SRM
                         SrmPoH poH = new SrmPoH()
                         {
                             PoNum = po.EBELN,
-                            Status = 9,
+                            Status = 21,
                             VendorId = vendorid,
                             TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
                             Buyer = po.EKGRP,
@@ -363,7 +363,7 @@ namespace Convience.Service.SRM
                                 DeliveryPlace = pol.LGOBE,
                                 CriticalPart = pol.KZKRI,
                                 InspectionTime = 1,
-                                Status = 9,
+                                Status = 21,
                                 WoNum = pol.AUFNR,
                             };
                             _context.SrmPoLs.Add(poL);

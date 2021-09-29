@@ -5,6 +5,7 @@ using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
 using Convience.Model.Models.SRM;
 using Convience.Service.SRM;
+using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 
 using Microsoft.AspNetCore.Authorization;
@@ -27,10 +28,12 @@ namespace Convience.ManagentApi.Controllers.SRM
     public class SrmDeliveryController : ControllerBase
     {
         private readonly ISrmDeliveryService _srmDeliveryService;
+        private readonly IUserService _userService;
 
-        public SrmDeliveryController(ISrmDeliveryService srmDeliveryService)
+        public SrmDeliveryController(ISrmDeliveryService srmDeliveryService, IUserService userService)
         {
             _srmDeliveryService = srmDeliveryService;
+            _userService = userService;
         }
 
         [HttpPost("AddDelivery")]
@@ -54,10 +57,10 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("ReceiveDeliveryL")]
         public async Task<IActionResult> ReceiveDeliveryLAsync(List<ViewSrmDeliveryL> dls)
         {
-            string Name = User.GetName();
+            string UserName = User.GetUserName();
             foreach (var item in dls)
             {
-                item.LastUpdateBy = Name;
+                item.LastUpdateBy = _userService.GetUserSapiId(UserName);
             }
             try
             {
