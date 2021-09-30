@@ -15,4 +15,10 @@ export class SrmMaterialTrendService {
   GetMaterialTrendList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmMaterialTrend}/GetMaterialTrendList`, query);
   }
+  GetMaterialList(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmMaterialTrend}/GetMaterialList`, query);
+  }
+  AddMaterial(material) {
+    return this.httpClient.post(`${this.uriConstant.SrmMaterialTrend}/AddMaterial`, material);
+  }
 }

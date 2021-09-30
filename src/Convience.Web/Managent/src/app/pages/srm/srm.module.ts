@@ -53,6 +53,7 @@ import { PoSapComponent } from './po-sap/po-sap.component';
 import { PoExamineComponent } from './po-examine/po-examine.component';
 import { MaterialTrendComponent } from './material-trend/material-trend.component';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { MaterialManageComponent } from './material-manage/material-manage.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -78,6 +79,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     PoSapComponent,
     PoExamineComponent,
     MaterialTrendComponent,
+    MaterialManageComponent,
   ],
   imports: [
     CommonModule,
@@ -103,7 +105,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
        { path: "supplier-c", component: SupplierCComponent, canActivate: [LoginGuard] },
        { path: "material", component: MaterialComponent, canActivate: [LoginGuard] },
       { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] },
-      { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] }
+      { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
+      { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

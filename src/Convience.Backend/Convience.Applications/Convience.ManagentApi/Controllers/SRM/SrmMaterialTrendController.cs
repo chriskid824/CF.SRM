@@ -1,4 +1,5 @@
-﻿using Convience.JwtAuthentication;
+﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.Model.Models.SRM;
 using Convience.Service.SRM;
@@ -30,7 +31,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 UserClaims user = User.GetUserClaims();
                 fileUploadModel.CreateBy = user.UserName;
                 var result = _srmMaterialTrendService.UploadAsync(fileUploadModel);
-                if (!string.IsNullOrEmpty(result))
+                if (!string.IsNullOrWhiteSpace(result))
                 {
                     return this.BadRequestResult(result);
                 }
@@ -44,10 +45,26 @@ namespace Convience.ManagentApi.Controllers.SRM
 
         [HttpPost("GetMaterialTrendList")]
         [Permission("price")]
-        //[Permission("price-manage")]
         public IActionResult GetMaterialTrendList(QuerySrmMaterialTrend query)
         {
             return Ok(_srmMaterialTrendService.GetMaterialTrendList(query));
+        }
+        [HttpPost("GetMaterialList")]
+        [Permission("price")]
+        public IActionResult GetMaterialList(QuerySrmMaterial query)
+        {
+            return Ok(_srmMaterialTrendService.GetMaterialList(query));
+        }
+        [HttpPost("AddMaterial")]
+        [Permission("price")]
+        public IActionResult AddMaterial(SrmMaterial material)
+        {
+            var result = _srmMaterialTrendService.AddMaterial(material);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                return this.BadRequestResult(result);
+            }
+            return Ok();
         }
     }
 }
