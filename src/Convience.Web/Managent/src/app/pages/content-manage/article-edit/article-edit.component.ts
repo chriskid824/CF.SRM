@@ -100,7 +100,7 @@ export class ArticleEditComponent implements OnInit {
         });
       } else {
         this._articleService.add(article).subscribe(result => {
-          this._messageService.success('文章创建成功！');
+          this._messageService.success('文章創建成功！');
           this._router.navigate(['/content/article']);
         });
       }

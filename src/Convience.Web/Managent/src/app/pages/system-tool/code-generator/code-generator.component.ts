@@ -26,16 +26,16 @@ export class CodeGeneratorComponent implements OnInit {
   isGenerateFinish: boolean = false;
 
   // code: {
-  //   bentity?: string; 
-  //   bconfig?: string; 
-  //   bms?: string; 
-  //   bvmv?: string; 
+  //   bentity?: string;
+  //   bconfig?: string;
+  //   bms?: string;
+  //   bvmv?: string;
   //   bqv?: string;
-  //   bservice?: string; 
-  //   bcontroller?: string; 
-  //   fmodel?: string; 
-  //   fservice?: string; 
-  //   fhtml?: string; 
+  //   bservice?: string;
+  //   bcontroller?: string;
+  //   fmodel?: string;
+  //   fservice?: string;
+  //   fhtml?: string;
   //   fts?: string;
   // } = {};
   // codeKeys: string[] = ['bentity', 'bconfig', 'bms', 'bvmv', 'bqv', 'bservice', 'bcontroller',
@@ -87,7 +87,7 @@ export class CodeGeneratorComponent implements OnInit {
     }
     if (this.editForm.valid) {
       if (this.controls.length == 0) {
-        this._messageService.error("至少要有一个字段!");
+        this._messageService.error("至少要有一個字段!");
         return;
       }
       this.makeCodes();
@@ -123,7 +123,7 @@ export class CodeGeneratorComponent implements OnInit {
     this.currentIndex = 2;
   }
 
-  // 选中文件发生变化
+  // 選中文件發生變化
   radioChange(index) {
     switch (index) {
       case 0:

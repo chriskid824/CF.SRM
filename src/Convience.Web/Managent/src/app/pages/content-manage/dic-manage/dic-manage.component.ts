@@ -64,7 +64,7 @@ export class DicManageComponent implements OnInit {
       sort: [null, [Validators.required]]
     });
     this.modal = this._modalService.create({
-      nzTitle: '添加字典类型',
+      nzTitle: '添加字典類型',
       nzContent: this.dicTypeTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -80,7 +80,7 @@ export class DicManageComponent implements OnInit {
         sort: [result.sort, [Validators.required]]
       });
       this.modal = this._modalService.create({
-        nzTitle: '添加字典类型',
+        nzTitle: '添加字典類型',
         nzContent: this.dicTypeTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -91,11 +91,11 @@ export class DicManageComponent implements OnInit {
 
   removeDicType(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除?',
+      nzTitle: '是否刪除?',
       nzContent: null,
       nzOnOk: () => {
         this._dictypeService.delete(id).subscribe(result => {
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
           this.initDataTypes();
           if(id == this.selectedDicType?.id){
             this.dicDatas.splice(0,this.dicDatas.length);
@@ -156,7 +156,7 @@ export class DicManageComponent implements OnInit {
       sort: [null, [Validators.required]]
     });
     this.modal = this._modalService.create({
-      nzTitle: '添加字典数据',
+      nzTitle: '添加字典數據',
       nzContent: this.dicDataTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -171,7 +171,7 @@ export class DicManageComponent implements OnInit {
         sort: [result.sort, [Validators.required]]
       });
       this.modal = this._modalService.create({
-        nzTitle: '编辑字典数据',
+        nzTitle: '編輯字典數據',
         nzContent: this.dicDataTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -181,11 +181,11 @@ export class DicManageComponent implements OnInit {
 
   removeDicData(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除?',
+      nzTitle: '是否刪除?',
       nzContent: null,
       nzOnOk: () => {
         this._dicdataService.delete(id).subscribe(result => {
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
           this.refreshDicData();
         });
       },

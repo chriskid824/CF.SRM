@@ -32,7 +32,7 @@ export class WorkflowGroupTreeComponent implements OnInit {
   }
 
   initNodes() {
-    let nodes: NzTreeNodeOptions[] = [{ title: '工作流类别', key: null, icon: 'global', expanded: true, children: [] }];
+    let nodes: NzTreeNodeOptions[] = [{ title: '工作流類別', key: null, icon: 'global', expanded: true, children: [] }];
     this._workflowGroupService.getAll().subscribe((result: any) => {
       this.data = result;
       this.makeNodes(null, nodes[0], this.data);

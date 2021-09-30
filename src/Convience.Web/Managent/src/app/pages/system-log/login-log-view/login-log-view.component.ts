@@ -19,7 +19,7 @@ export class LoginLogViewComponent implements OnInit {
 
   public settingForm: FormGroup = new FormGroup({});
 
-  // 表格排序功能
+  // 錶格排序功能
 
   private _nzModal;
 
@@ -47,7 +47,7 @@ export class LoginLogViewComponent implements OnInit {
     });
   }
 
-  // 初始化搜索表单
+  // 初始化搜索錶單
   public initSearchForm() {
     this.searchForm = this._formBuilder.group({
       "account": [null]
@@ -76,7 +76,7 @@ export class LoginLogViewComponent implements OnInit {
       });
       this._nzModal = this._modalService.create({
         nzContent: this.settingTpl,
-        nzTitle: "设置登录日志",
+        nzTitle: "設定登入日誌",
         nzFooter: null,
       });
     });

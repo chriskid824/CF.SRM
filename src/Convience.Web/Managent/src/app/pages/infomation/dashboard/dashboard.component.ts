@@ -17,44 +17,44 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   chartArray = [];
 
-  // 首頁图对象
+  // 首頁圖對象
   cpuChart;
 
-  // 内存折线图
+  // 記憶體摺線圖
   memoryChart;
 
-  // 内存折线图数据
+  // 記憶體摺線圖數據
   memoryChartData = [
   ];
 
-  // 垃圾回收区域大小饼图
+  // 垃圾回收區域大小餅圖
   garbageChart;
 
-  // 垃圾回收区域大小饼图数据
+  // 垃圾回收區域大小餅圖數據
   garbageChartData = [
     { item: '第0代', count: 0, percent: 0 },
     { item: '第1代', count: 0, percent: 0 },
     { item: '第2代', count: 0, percent: 0 },
   ];
 
-  // 应用内存
+  // 應用記憶體
   workingSet = 0;
 
-  // 垃圾回收堆内存
+  // 垃圾回收堆記憶體
   gcHeapSize = 0;
 
-  // 垃圾回收代数
+  // 垃圾回收代數
   gen0Count = 0;
   gen1Count = 0;
   gen2Count = 0;
 
-  // 线程池相关
+  // 線程池相關
   handelThreadPoolThreadCount = 0;
   handelMonitorLockContentionCount = 0;
   threadPoolQueueLength = 0;
   threadPoolCompletedWorkItemCount = 0;
 
-  // 垃圾回收代数空间
+  // 垃圾回收代數空間
   gen0Size = 0;
   gen1Size = 0;
   gen2Size = 0;
@@ -109,7 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //         : myDate.getMinutes()
   //       let ss = myDate.getSeconds() < 10 ? '0' + myDate.getSeconds()
   //         : myDate.getSeconds()
-  //       this.memoryChartData.push({ 'time': `${hh}:${mf}:${ss}`, type: '内存', size: Number(data) });
+  //       this.memoryChartData.push({ 'time': `${hh}:${mf}:${ss}`, type: '記憶體', size: Number(data) });
   //       this.memoryChart.render();
   //     }
   //   });
@@ -201,7 +201,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //   this.initGraph3();
   //   this.initGraph5();
 
-  //   // 初始图像宽度会溢出，通过resize事件触发图标重绘
+  //   // 初始圖像寬度會溢出，通過resize事件觸發圖示重繪
   //   setTimeout(() => {
   //     var myEvent = new Event('resize');
   //     window.dispatchEvent(myEvent);
@@ -217,13 +217,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     return data;
   //   }
 
-  //   // 自定义Shape 部分
+  //   // 自定義Shape 部分
   //   registerShape('point', 'pointer', {
   //     draw(cfg, container) {
   //       const group = container.addGroup({});
-  //       // 获取极坐标系下画布中心点
+  //       // 獲取極坐標係下畫佈中心點
   //       const center = this.parsePoint({ x: 0, y: 0 });
-  //       // 绘制指针
+  //       // 繪製指針
   //       group.addShape('line', {
   //         attrs: {
   //           x1: center.x,
@@ -313,7 +313,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //   const val = data[0].value;
   //   const lineWidth = 25;
   //   chart.annotation().clear(true);
-  //   // 绘制首頁背景
+  //   // 繪製首頁背景
   //   chart.annotation().arc({
   //     top: false,
   //     start: [0, 1],
@@ -388,10 +388,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     });
   //   }
 
-  //   // 绘制指标数字
+  //   // 繪製指標數字
   //   chart.annotation().text({
   //     position: ['50%', '85%'],
-  //     content: '应用CPU使用率',
+  //     content: '應用CPU使用率',
   //     style: {
   //       fontSize: 20,
   //       fill: '#545454',
@@ -413,7 +413,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   // //#endregion
 
-  // //#region  内存图表
+  // //#region  記憶體圖錶
   // initMemoryChart() {
 
   //   const chart = new Chart({
@@ -446,10 +446,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     },
   //   });
 
-  //   // 线
+  //   // 線
   //   chart.line().position('time*size').color('type').shape('smooth');
 
-  //   // 点
+  //   // 點
   //   chart.point().position('time*size').color('type').shape('circle');
 
   //   chart.render();
@@ -458,7 +458,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   // }
   // //#endregion
 
-  // //#region 垃圾回收区域饼图
+  // //#region 垃圾回收區域餅圖
   // initGarbageChart() {
 
   //   const chart = new Chart({
@@ -483,12 +483,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
   //   });
 
-  //   // 辅助文本
+  //   // 輔助文本
   //   chart
   //     .annotation()
   //     .text({
   //       position: ['50%', '50%'],
-  //       content: '存储',
+  //       content: '存儲',
   //       style: {
   //         fontSize: 14,
   //         fill: '#8c8c8c',
@@ -525,15 +525,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   // initGraph1() {
 
   //   const data = [
-  //     { type: '收纳', value: 340, cat: '办公用品' },
-  //     { type: '笔', value: 20760, cat: '办公用品' },
-  //     { type: '纸张', value: 28750, cat: '办公用品' },
-  //     { type: '配件', value: 4090, cat: '技术' },
-  //     { type: '电话', value: 9880, cat: '技术' },
-  //     { type: '复印机', value: 40988, cat: '技术' },
+  //     { type: '收納', value: 340, cat: '辦公用品' },
+  //     { type: '筆', value: 20760, cat: '辦公用品' },
+  //     { type: '紙張', value: 28750, cat: '辦公用品' },
+  //     { type: '配件', value: 4090, cat: '技術' },
+  //     { type: '電話', value: 9880, cat: '技術' },
+  //     { type: '影印機', value: 40988, cat: '技術' },
   //     { type: '桌子', value: 14870, cat: '家具' },
   //     { type: '椅子', value: 37098, cat: '家具' },
-  //     { type: '书架', value: 49099, cat: '家具' },
+  //     { type: '書架', value: 49099, cat: '家具' },
   //   ];
   //   const chart = new Chart({
   //     container: 'c1',
@@ -546,7 +546,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     value: {
   //       max: 55000,
   //       min: 0,
-  //       alias: '金额（元）',
+  //       alias: '金額（元）',
   //     },
   //   });
   //   chart.axis('type', {
@@ -595,8 +595,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //   });
   //   chart.annotation().text({
   //     top: true,
-  //     position: ['电话', 'min'],
-  //     content: '技术',
+  //     position: ['電話', 'min'],
+  //     content: '技術',
   //     style: {
   //       fill: '#c0c0c0',
   //       fontSize: 12,
@@ -608,8 +608,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //   });
   //   chart.annotation().text({
   //     top: true,
-  //     position: ['笔', 'min'],
-  //     content: '办公用品',
+  //     position: ['筆', 'min'],
+  //     content: '辦公用品',
   //     style: {
   //       fill: '#c0c0c0',
   //       fontSize: 12,
@@ -665,12 +665,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     return path;
   //   }
 
-  //   // 顶边带圆角
+  //   // 頂邊帶圓角
   //   registerShape('interval', 'top', {
   //     draw(cfg, container) {
   //       const attrs = getFillAttrs(cfg);
   //       let path = getRectPath(cfg.points);
-  //       path = this.parsePath(path); // 将 0 - 1 的值转换为画布坐标
+  //       path = this.parsePath(path); // 將 0 - 1 的值轉換為畫佈坐標
   //       const radius = (path[2][1] - path[1][1]) / 2;
   //       const temp = [];
   //       temp.push(['M', path[0][1], path[0][2]]);
@@ -693,7 +693,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     },
   //   });
 
-  //   // 底边带圆角
+  //   // 底邊帶圓角
   //   registerShape('interval', 'bottom', {
   //     draw(cfg, container) {
   //       const attrs = getFillAttrs(cfg);
@@ -791,10 +791,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //     .size(35)
   //     .shape('type', (val) => {
   //       if (val === 'Profit') {
-  //         // 顶部圆角
+  //         // 頂部圓角
   //         return 'bottom';
   //       } else if (val === 'Sales') {
-  //         // 底部圆角
+  //         // 底部圓角
   //         return 'top';
   //       }
   //     })

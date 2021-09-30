@@ -91,7 +91,7 @@ export class FileManageComponent implements OnInit {
     this.uploading = true;
     this._fileService.upload(this.currentDirectory, this.fileList).subscribe(result => {
       this.modal.close();
-      this._messageService.success("上传完毕！");
+      this._messageService.success("上載完畢！");
       this.refresh();
       this.fileList = [];
       this.uploading = false;
@@ -102,17 +102,17 @@ export class FileManageComponent implements OnInit {
 
   delete(fileInfo: FileInfo) {
     this._modalService.confirm({
-      nzTitle: '是否删除?',
+      nzTitle: '是否刪除?',
       nzContent: null,
       nzOnOk: () => {
         if (fileInfo.isDirectory) {
           this._folderService.deleteFolder(fileInfo.directory, fileInfo.fileName).subscribe(result => {
-            this._messageService.success("删除成功！");
+            this._messageService.success("刪除成功！");
             this.refresh();
           });
         } else {
           this._fileService.delete(fileInfo.fileName, fileInfo.directory).subscribe(result => {
-            this._messageService.success("删除成功！");
+            this._messageService.success("刪除成功！");
             this.refresh();
           });
         }
@@ -132,7 +132,7 @@ export class FileManageComponent implements OnInit {
 
   createFolder() {
     this.modal = this._modalService.create({
-      nzTitle: '创建文件夹',
+      nzTitle: '創建檔案夾',
       nzContent: this.folderContentTpl,
       nzFooter: null
     });
@@ -149,7 +149,7 @@ export class FileManageComponent implements OnInit {
     }
     if (this.folderForm.valid) {
       this._folderService.addFolder(this.currentDirectory, this.folderForm.value['folderName']).subscribe(result => {
-        this._messageService.success("文件夹创建成功！");
+        this._messageService.success("檔案夾創建成功！");
         this.refresh();
         this.modal.close();
       });

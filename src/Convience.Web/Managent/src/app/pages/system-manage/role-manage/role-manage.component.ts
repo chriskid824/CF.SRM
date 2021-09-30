@@ -110,12 +110,12 @@ export class RoleManageComponent implements OnInit {
 
   removeRole(roleName: string) {
     this._modalService.confirm({
-      nzTitle: '是否删除该角色?',
+      nzTitle: '是否刪除該角色?',
       nzContent: null,
       nzOnOk: () =>
         this._roleService.deleteRole(roleName).subscribe(result => {
           this.refresh();
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
         })
     });
   }

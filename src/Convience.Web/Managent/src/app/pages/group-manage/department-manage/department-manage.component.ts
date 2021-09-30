@@ -109,11 +109,11 @@ export class DepartmentManageComponent implements OnInit {
 
   remove(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除该部门?',
+      nzTitle: '是否刪除該部門?',
       nzContent: null,
       nzOnOk: () => {
         this._departmentService.delete(id).subscribe(reuslt => {
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
           this.refresh();
         });
       },

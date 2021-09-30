@@ -71,7 +71,7 @@ export class ArticleManageComponent implements OnInit {
   }
 
   initNodes() {
-    let nodes: NzTreeNodeOptions[] = [{ title: '文章栏目', key: null, icon: 'database', expanded: true, children: [] }];
+    let nodes: NzTreeNodeOptions[] = [{ title: '文章欄目', key: null, icon: 'database', expanded: true, children: [] }];
     this._columnService.getAll().subscribe((result: any) => {
       this.treeData = result;
       this.makeNodes(null, nodes[0], this.treeData);
@@ -100,7 +100,7 @@ export class ArticleManageComponent implements OnInit {
     this._articleService.get(id).subscribe((result: any) => {
       this.viewedArticle = result;
       this._modalService.create({
-        nzTitle: "文章预览",
+        nzTitle: "文章預覽",
         nzContent: this.preViewTpl,
         nzFooter: null,
         nzWidth: "70%"
@@ -127,11 +127,11 @@ export class ArticleManageComponent implements OnInit {
 
   remove(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除该文章?',
+      nzTitle: '是否刪除該文章?',
       nzContent: null,
       nzOnOk: () => {
         this._articleService.delete(id).subscribe(result => {
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
           this.refresh();
         })
       },
@@ -175,7 +175,7 @@ export class ArticleManageComponent implements OnInit {
       sort: [null, [Validators.required]]
     });
     this.modal = this._modalService.create({
-      nzTitle: '添加栏目',
+      nzTitle: '添加欄目',
       nzContent: this.columnTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -193,7 +193,7 @@ export class ArticleManageComponent implements OnInit {
       });
 
       this.modal = this._modalService.create({
-        nzTitle: '编辑栏目',
+        nzTitle: '編輯欄目',
         nzContent: this.columnTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -203,12 +203,12 @@ export class ArticleManageComponent implements OnInit {
 
   deleteColumn() {
     this._modalService.confirm({
-      nzTitle: '是否删除该栏目?',
+      nzTitle: '是否刪除該欄目?',
       nzContent: null,
       nzOnOk: () => {
         this._columnService.delete(this.selectedNode?.key).subscribe(() => {
           this.initNodes();
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
         });
       },
     });
