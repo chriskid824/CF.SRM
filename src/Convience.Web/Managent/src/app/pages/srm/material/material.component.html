@@ -62,7 +62,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of dataTable.data;let i = index">
-                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" *canOperate="'updateUserBtn'" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
+                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
                 <td nzAlign="center" >{{ data.srmMatnr1 }}</td>
                 <td nzAlign="center">{{ data.matnrGroup }}</td>
                 <td nzAlign="left">{{ data.description }}</td>
