@@ -6,20 +6,20 @@
         </nz-card>
     </div>
     <div class="right">
-        <!--搜索栏-->
+        <!--搜索欄-->
         <nz-card [nzSize]="'small'" id="searchBar">
             <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
                 <nz-form-item>
-                    <nz-form-label [nzFor]="'userName'">账号</nz-form-label>
+                    <nz-form-label [nzFor]="'userName'">帳號</nz-form-label>
                     <nz-form-control>
-                        <input nz-input placeholder="账号" [formControlName]="'userName'" [attr.id]="'userName'"
+                        <input nz-input placeholder="帳號" [formControlName]="'userName'" [attr.id]="'userName'"
                             autocomplete="off" />
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzFor]="'phoneNumber'">电话</nz-form-label>
+                    <nz-form-label [nzFor]="'phoneNumber'">電話</nz-form-label>
                     <nz-form-control>
-                        <input nz-input placeholder="电话号码" [formControlName]="'phoneNumber'" [attr.id]="'phoneNumber'"
+                        <input nz-input placeholder="電話號碼" [formControlName]="'phoneNumber'" [attr.id]="'phoneNumber'"
                             autocomplete="off" />
                     </nz-form-control>
                 </nz-form-item>
@@ -33,15 +33,15 @@
                 <nz-form-item>
                     <nz-form-label [nzFor]="'roleid'">角色</nz-form-label>
                     <nz-form-control>
-                        <nz-select nzAllowClear nzPlaceHolder="请选择" [attr.id]="'roleid'" [formControlName]="'roleid'">
+                        <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'roleid'" [formControlName]="'roleid'">
                             <nz-option *ngFor="let role of roles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24">职位</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24">職位</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <nz-select style="width: 150px;" nzAllowClear nzPlaceHolder="请选择职位" formControlName="position">
+                        <nz-select style="width: 150px;" nzAllowClear nzPlaceHolder="請選擇職位" formControlName="position">
                             <nz-option *ngFor="let position of positionOptions" [nzValue]="position.id"
                                 [nzLabel]="position.name">
                             </nz-option>
@@ -58,12 +58,12 @@
             </form>
         </nz-card>
 
-        <!--用户数据-->
+        <!--用戶數據-->
         <nz-card [nzSize]="'small'" id="userCard">
             <div>
                 <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
-                    *canOperate="'adduserbtn'"><i nz-icon nzType="plus"></i>添加用户</button>
-                <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新数据</button>
+                    *canOperate="'adduserbtn'"><i nz-icon nzType="plus"></i>添加用戶</button>
+                <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button>
             </div>
             <div class="mt-10">
                 <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -77,8 +77,8 @@
                             <th nzAlign="center" nzWidth="120px">SapId</th>
                             <th nzAlign="center" nzWidth="120px">電話</th>
                             <th nzAlign="center" nzWidth="120px">Email</th>
-                            <th nzAlign="center" nzWidth="60px">性别</th>
-                            <th nzAlign="center">系统角色</th>
+                            <th nzAlign="center" nzWidth="60px">性別</th>
+                            <th nzAlign="center">係統角色</th>
                             <th nzAlign="center" nzWidth="180px">擔任職務</th>
                             <th nzAlign="center" nzWidth="180px">所在部門</th>
                             <th nzAlign="center" nzWidth="60px">狀態</th>
@@ -133,7 +133,7 @@
 </div>
 
 <ng-template #addUserTitleTpl>
-    <span>添加用户</span>
+    <span>添加用戶</span>
 </ng-template>
 <ng-template #editUserTitleTpl>
     <span>編輯用戶</span>
@@ -149,12 +149,12 @@
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_userName'">帳號</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="userNameErrorTpl">
-                <input [attr.id]="'edit_userName'" formControlName="userName" nz-input placeholder="账号"
+                <input [attr.id]="'edit_userName'" formControlName="userName" nz-input placeholder="帳號"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #userNameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    請输入帳號！
+                    請輸入帳號！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
                     角色名長度不能超過15！
@@ -168,10 +168,10 @@
             </nz-form-control>
             <ng-template #nameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入姓名！
+                    請輸入姓名！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    姓名长度不能超过10！
+                    姓名長度不能超過10！
                 </ng-container>
             </ng-template>
         </nz-form-item>
@@ -197,7 +197,7 @@
           </nz-form-control>
       </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sex'">性别</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sex'">性別</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
                 <nz-radio-group [attr.id]="'edit_sex'" formControlName="sex">
                     <label nz-radio [nzValue]="0">未知</label>
@@ -207,7 +207,7 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24">系统角色</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24">係統角色</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
                 <nz-select nzAllowClear nzPlaceHolder="請選擇" [formControlName]="'roleIds'" nzMode="multiple">
                     <nz-option *ngFor="let role of roles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
@@ -254,12 +254,12 @@
         <nz-form-item>
             <nz-form-label [nzRequired]="isNewUser" [nzSm]="6" [nzXs]="24" [nzFor]="'edit_password'">密碼</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="passwordErrorTpl">
-                <input type="password" [attr.id]="'edit_password'" formControlName="password" nz-input placeholder="密码"
+                <input type="password" [attr.id]="'edit_password'" formControlName="password" nz-input placeholder="密碼"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #passwordErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    請输入密碼！
+                    請輸入密碼！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
                     密碼長度不能超過30！
@@ -280,6 +280,6 @@
 
 <ng-template #roleNameErrorTpl let-control>
     <ng-container *ngIf="control.hasError('required')">
-        請输入内容！
+        請輸入內容！
     </ng-container>
 </ng-template>

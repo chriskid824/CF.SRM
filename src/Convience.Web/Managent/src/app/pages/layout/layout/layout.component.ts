@@ -16,7 +16,7 @@ export class LayoutComponent implements OnInit {
   // 菜單數據
   public menuTree = [
     {
-      canOperate: 'dashaboard', routerLink: '/dashboard', iconType: 'dot-chart', firstBreadcrumb: '儀錶盤', lastBreadcrumb: '', name: '儀錶盤',
+      canOperate: 'dashaboard', routerLink: '/dashboard', iconType: 'dot-chart', firstBreadcrumb: '首頁', lastBreadcrumb: '', name: '首頁',
       children: []
     },
     {
