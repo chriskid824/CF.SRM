@@ -36,7 +36,7 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
-        public List<SapResultData> UpdateSapData(SapPoData data,string userName);
+        public List<SapResultData> UpdateSapData(SapPoData data, string userName);
     }
 
     public class SrmPoService : ISrmPoService
@@ -282,7 +282,7 @@ namespace Convience.Service.SRM
                               Org = h.Org,
                               DocDate = h.DocDate,
                               ReplyDate = h.ReplyDate,
-                              CreateDate=h.CreateDate,
+                              CreateDate = h.CreateDate,
                           })
               .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
               .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
@@ -306,28 +306,59 @@ namespace Convience.Service.SRM
             data.T_EKKO.ForEach(po =>
             {
                 SapResultData r = new SapResultData() { Id = po.EBELN, Type = "採購單" };
+                //採購單
                 if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
                 {
+                    //供應商
                     if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
                     {
-                        int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
-                        DateTime now = DateTime.Now;
-                        SrmPoH poH = new SrmPoH()
+                        //採購項次-即將匯入
+                        if (data.T_EKPO.Any(ekpo => ekpo.EBELN == po.EBELN))
                         {
-                            PoNum = po.EBELN,
-                            Status = 21,
-                            VendorId = vendorid,
-                            TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
-                            Buyer = po.EKGRP,
-                            Org = po.EKORG,
-                            DocDate = po.BEDAT,
-                            CreateDate=now,
-                            CreateBy= userName,
-                            LastUpdateDate=now,
-                            LastUpdateBy= userName,
-                        };
-                        _context.SrmPoHs.Add(poH);
-                        r.OutCome = "成功";
+                            List<T_EKPO> ekList = data.T_EKPO.Where(e => e.EBELN == po.EBELN).ToList();
+                            int ekcount = 0;
+                            ekList.ForEach(ek =>
+                            {
+                                if (_context.SrmMatnrs.Any(m => m.SapMatnr == ek.MATNR))
+                                {
+                                    ekcount++;
+                                }
+                            });
+
+                            //採購項次料號
+                            if (ekcount > 0)
+                            {
+                                int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
+                                DateTime now = DateTime.Now;
+                                SrmPoH poH = new SrmPoH()
+                                {
+                                    PoNum = po.EBELN,
+                                    Status = 21,
+                                    VendorId = vendorid,
+                                    TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
+                                    Buyer = po.EKGRP,
+                                    Org = po.EKORG,
+                                    DocDate = po.BEDAT,
+                                    CreateDate = now,
+                                    CreateBy = userName,
+                                    LastUpdateDate = now,
+                                    LastUpdateBy = userName,
+                                };
+                                _context.SrmPoHs.Add(poH);
+                                r.OutCome = "成功";
+                            }
+                            else
+                            {
+                                r.OutCome = "失敗";
+                                r.Reason = "不存在任何可匯入的項次";
+                            }
+                        }
+                        else
+                        {
+                            r.OutCome = "失敗";
+                            r.Reason = "不存在任何可匯入的項次";
+                        }
+
                     }
                     else
                     {
