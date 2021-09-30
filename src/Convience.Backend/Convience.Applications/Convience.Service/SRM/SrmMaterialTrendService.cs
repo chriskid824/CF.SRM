@@ -40,7 +40,7 @@ namespace Convience.Service.SRM
             {
                 Guid g = Guid.NewGuid();
                 var path = viewModel.CurrentDirectory?.TrimEnd('/') + '/' + g + Path.GetExtension(file.FileName);
-                switch (Path.GetExtension(file.FileName))
+                switch (Path.GetExtension(file.FileName).ToLower())
                 {
                     case ".png":
                     case ".jpg":
