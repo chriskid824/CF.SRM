@@ -77,7 +77,7 @@ export class SupplierComponent implements OnInit {
   }
 
   addsupplier() {
-    this._layout.navigateTo('supplier-c');
+    //this._layout.navigateTo('supplier-c');
     this._router.navigate(['srm/supplier-c']);
     //window.open('../srm/rfq');
   }

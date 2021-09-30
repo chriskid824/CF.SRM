@@ -32,7 +32,7 @@
 
       <nz-card [nzSize]="'small'" id="rfqCard">
         <div>
-          <button nz-button class="mr-10" (click)="addmaterial()"><i nz-icon nzType="plus"></i>建立料號</button>
+          <button nz-button class="mr-10" (click)="addmaterial()" *canOperate="'addMatnrBtn'"><i nz-icon nzType="plus"></i>建立料號</button>
           <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
         </div>
         <div class="mt-10">
@@ -62,7 +62,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of dataTable.data;let i = index">
-                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
+                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle"  (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
                 <td nzAlign="center" >{{ data.srmMatnr1 }}</td>
                 <td nzAlign="center">{{ data.matnrGroup }}</td>
                 <td nzAlign="left">{{ data.description }}</td>

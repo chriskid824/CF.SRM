@@ -80,7 +80,7 @@ export class MaterialComponent implements OnInit {
   }
 
   addmaterial() {
-    this._layout.navigateTo('material-c');
+    //this._layout.navigateTo('material-c');
     this._router.navigate(['srm/material-c']);
     //window.open('../srm/rfq');
   }

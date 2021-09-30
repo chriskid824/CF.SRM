@@ -32,7 +32,7 @@
 
       <nz-card [nzSize]="'small'" id="rfqCard">
         <div>
-          <button nz-button class="mr-10" (click)="addsupplier()"><i nz-icon nzType="plus"></i>建立供應商</button>
+          <button nz-button class="mr-10" (click)="addsupplier()" *canOperate="'addSupplierBtn'"><i nz-icon nzType="plus"></i>建立供應商</button>
           <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
         </div>
         <div class="mt-10">
