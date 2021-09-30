@@ -346,17 +346,14 @@ namespace Convience.Service.SRM
                                 };
                                 _context.SrmPoHs.Add(poH);
                                 r.OutCome = "成功";
+                                result.Add(r);
                             }
                             else
                             {
-                                r.OutCome = "失敗";
-                                r.Reason = "不存在任何可匯入的項次";
                             }
                         }
                         else
                         {
-                            r.OutCome = "失敗";
-                            r.Reason = "不存在任何可匯入的項次";
                         }
 
                     }
@@ -364,14 +361,16 @@ namespace Convience.Service.SRM
                     {
                         r.OutCome = "失敗";
                         r.Reason = "供應商 " + po.LIFNR + " 不存在";
+                        result.Add(r);
                     }
                 }
                 else
                 {
                     r.OutCome = "失敗";
                     r.Reason = "該採購單號已存在";
+                    result.Add(r);
                 }
-                result.Add(r);
+
             });
             _context.SaveChanges();
             data.T_EKPO.ForEach(pol =>
