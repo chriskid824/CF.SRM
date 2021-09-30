@@ -35,13 +35,11 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("GetMaterialList")]
-        [Permission("supplier")]
         public IActionResult GetMaterialList(QueryMaterial query)
         {
             return Ok(_srmMaterialService.GetMaterialList(query));
         }
         [HttpPost("GetMaterialDetail")]
-        [Permission("detail")]
         public IActionResult GetSupplierDetail(QueryMaterial query)
         {
             var detail = _srmMaterialService.GetMaterialDetail(query);
@@ -57,7 +55,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult CheckMatnr(ViewSrmMaterial data)
         {
             if (_srmMaterialService.CheckMatnr(data)) return Ok();
-            return BadRequest("此料號已重複使用");
+            return BadRequest("SRM料號已重複使用");
+        }
+        [HttpPost("CheckSAPMatnr")]
+        public IActionResult CheckSAPMatnr(ViewSrmMaterial data)
+        {
+            if (_srmMaterialService.CheckSAPMatnr(data)) return Ok();
+            return BadRequest("SAP料號已重複使用");
         }
         [HttpPost("AddMatnr")]
         public IActionResult AddMatnr(ViewSrmMaterial data)

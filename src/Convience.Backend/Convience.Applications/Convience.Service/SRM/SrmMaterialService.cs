@@ -32,6 +32,7 @@ namespace Convience.Service.SRM
         public bool UpdateMaterial(ViewSrmMaterial data);
         public bool CheckMatnr(ViewSrmMaterial data);
         public bool AddMatnr(ViewSrmMaterial data);
+        public bool CheckSAPMatnr(ViewSrmMaterial data);
     }
     public class SrmMaterialService : ISrmMaterialService
     {
@@ -52,6 +53,7 @@ namespace Convience.Service.SRM
 
             var resultQuery = (from matnr in _context.SrmMatnrs
                                join status in _context.SrmStatuses on matnr.Status equals status.Status
+                               join ekgry in _context.SrmEkgries on matnr.Ekgrp equals ekgry.Ekgry
                                select new ViewSrmMaterial
                                {
                                    SrmMatnr1 = matnr.SrmMatnr1,
@@ -66,6 +68,8 @@ namespace Convience.Service.SRM
                                    Weight = matnr.Weight,
                                    Note = matnr.Note,
                                    StatusDesc = status.StatusDesc,
+                                   Gewei = matnr.Gewei,
+                                   Ekgrp = ekgry.Ekgry+ekgry.EkgryDesc
                                })
                           .AndIfHaveValue(query.material, r => r.SrmMatnr1.Contains(query.material))
                           .AndIfHaveValue(query.name, r => r.SrmMatnr1.Contains(query.name));
@@ -96,6 +100,8 @@ namespace Convience.Service.SRM
                                 Weight = matnr.Weight,
                                 Note = matnr.Note,
                                 StatusDesc = status.StatusDesc,
+                                Gewei = matnr.Gewei,
+                                Ekgrp = matnr.Ekgrp,
                             })
                           .Where(r => r.SrmMatnr1 == query.material).FirstOrDefault()
                           //.Where(r => r.Org == query.Org)
@@ -117,7 +123,9 @@ namespace Convience.Service.SRM
                 Density = material.Density,
                 Weight = material.Weight,
                 Note = material.Note,
-                StatusDesc = material.StatusDesc
+                StatusDesc = material.StatusDesc,
+                Gewei = material.Gewei,
+                Ekgrp = material.Ekgrp,
             };
         }
         public bool UpdateMaterial(ViewSrmMaterial data)
@@ -145,6 +153,8 @@ namespace Convience.Service.SRM
             material.Status = status.Status;
             material.LastUpdateDate = DateTime.Now;
             material.LastUpdateBy = data.User;
+            material.Gewei = data.Gewei;
+            material.Ekgrp = data.Ekgrp;
 
 
             _context.SrmMatnrs.Update(material);
@@ -161,6 +171,23 @@ namespace Convience.Service.SRM
             }
 
             return false;
+        }
+        public bool CheckSAPMatnr(ViewSrmMaterial data)
+        {
+            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
+            if (data.SapMatnr == null)
+            {
+                return true;
+            }
+            else
+            {
+                if (matnr == null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
         public bool AddMatnr(ViewSrmMaterial data)
         {
@@ -193,7 +220,8 @@ namespace Convience.Service.SRM
                 
                 CreateDate = DateTime.Now,
                 CreateBy = data.User,
-                //LastUpdateDate= DateTime.Now,
+                LastUpdateDate= DateTime.Now,
+                LastUpdateBy = data.User,
 
             };
 

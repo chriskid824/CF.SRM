@@ -202,7 +202,8 @@ namespace Convience.Service.SRM
 
                 CreateDate = DateTime.Now,
                 CreateBy = data.User,
-                //LastUpdateDate= DateTime.Now,
+                LastUpdateDate = DateTime.Now,
+                LastUpdateBy = data.User,
             };
 
 

@@ -50,6 +50,8 @@ export class MaterialCComponent implements OnInit {
       density: [null,[Validators.required]],
       weight: [null,[Validators.required]],
       note: [null],
+      ekgrp: [null,[Validators.required]],
+      gewei: [null,[Validators.required]],
       //roles: this._storageService.werks.split(','),
     });
   }
@@ -64,6 +66,7 @@ export class MaterialCComponent implements OnInit {
     //$('#addBar').hide();
     var query = {
       material: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
+      sapMatnr: this.searchForm.value["sap_matnr"] == null ? "" : this.searchForm.value["sap_matnr"],
     }
     if (!this.searchForm.value["matnr"]) {
       alert("請輸入料號");
@@ -75,39 +78,40 @@ export class MaterialCComponent implements OnInit {
     }
     //console.log(query);
     this._srmMaterialService.CheckMatnr(query).subscribe(result => {
-      for (const i in this.searchForm.controls) {
-        console.log(i);
-        if(i!="note" && i!="sap_matnr")
-        {
-          this.searchForm.controls[i].markAsDirty();
-          this.searchForm.controls[i].updateValueAndValidity();
+      this._srmMaterialService.CheckSAPMatnr(query).subscribe(result => {
+        for (const i in this.searchForm.controls) {
+          console.log(i);
+          if(i!="note" && i!="sap_matnr")
+          {
+            this.searchForm.controls[i].markAsDirty();
+            this.searchForm.controls[i].updateValueAndValidity();
+          }
         }
-      }
-      $('#addBar').show();
-      var material ={
-        srmMatnr1 : this.searchForm.value['matnr'],
-        sapMatnr : this.searchForm.value['sap_matnr'],
-        matnrGroup : this.searchForm.value['group'],
-        description : this.searchForm.value['description'],
-        version : this.searchForm.value['version'],
-        material : this.searchForm.value['material'],
-        length : this.searchForm.value['length'],
-        width : this.searchForm.value['width'],
-        height : this.searchForm.value['height'],
-        density : this.searchForm.value['density'],
-        weight : this.searchForm.value['weight'],
-        note : this.searchForm.value['note'],
-        user : this._storageService.userName,     
-        werks : this.searchForm.value['werks'],
-      }
-      console.log(material);
-      if (this.searchForm.valid)
-      {        
-        this._srmMaterialService.AddMatnr(material).subscribe(result => {
-          this._messageService.success("料號建立成功！");
-        });
-      }
-
+        $('#addBar').show();
+        var material ={
+          srmMatnr1 : this.searchForm.value['matnr'],
+          sapMatnr : this.searchForm.value['sap_matnr'],
+          matnrGroup : this.searchForm.value['group'],
+          description : this.searchForm.value['description'],
+          version : this.searchForm.value['version'],
+          material : this.searchForm.value['material'],
+          length : this.searchForm.value['length'],
+          width : this.searchForm.value['width'],
+          height : this.searchForm.value['height'],
+          density : this.searchForm.value['density'],
+          weight : this.searchForm.value['weight'],
+          note : this.searchForm.value['note'],
+          user : this._storageService.userName,     
+          werks : this.searchForm.value['werks'],
+        }
+        console.log(material);
+        if (this.searchForm.valid)
+        {        
+          this._srmMaterialService.AddMatnr(material).subscribe(result => {
+            this._messageService.success("料號建立成功！");
+          });
+        }
+      });
     });
   }
 

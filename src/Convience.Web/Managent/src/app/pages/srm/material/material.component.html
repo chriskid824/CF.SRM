@@ -36,7 +36,7 @@
           <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
         </div>
         <div class="mt-10">
-          <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'1400px'}" nzShowPagination="false" nzFrontPagination="false"
+          <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'1600px'}" nzShowPagination="false" nzFrontPagination="false"
           nzBordered="true" pagination="true">
             <thead>
               <tr>
@@ -51,6 +51,8 @@
                 <th nzAlign="center" nzWidth="40px">高</th>
                 <th nzAlign="center" nzWidth="40px">密度</th>
                 <th nzAlign="center" nzWidth="40px">重量</th>
+                <th nzAlign="center" nzWidth="40px">重量單位</th>
+                <th nzAlign="center" nzWidth="60px">採購群組代碼</th>
                 <th nzAlign="center" nzWidth="40px">狀態</th>
                 <th nzAlign="center" nzWidth="40px">備註</th>
 
@@ -71,6 +73,10 @@
                 <td nzAlign="center">{{ data.height }}</td>
                 <td nzAlign="center">{{ data.density }}</td>
                 <td nzAlign="center">{{ data.weight }}</td>
+
+                <td nzAlign="center">{{ data.gewei}}</td>
+                <td nzAlign="center">{{ data.ekgrp}}</td>
+
                 <td nzAlign="center">{{ data.statusDesc }}</td>
                 <td nzAlign="center">{{ data.note }}</td>
                 
@@ -161,6 +167,20 @@
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_gewei'">重量單位</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_gewei'" formControlName="gewei" nz-input
+                      placeholder="重量單位" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_ekgrp'">採購群組代碼</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_ekgrp'" formControlName="ekgrp" nz-input
+                      placeholder="採購群組代碼" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
               <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_statusDesc'">狀態</nz-form-label>
               <nz-form-control>
                   <input [attr.id]="'edit_statusDesc'" formControlName="statusDesc" nz-input
@@ -171,7 +191,7 @@
               <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_note'">備註</nz-form-label>
               <nz-form-control>
                   <input [attr.id]="'edit_note'" formControlName="note" nz-input
-                      placeholder="備註" autocomplete="off" />
+                      placeholder="備註" autocomplete="off"  />
               </nz-form-control>
             </nz-form-item>
       

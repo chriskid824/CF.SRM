@@ -49,7 +49,7 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-                <nz-form-label [nzFor]="'weight'">重量</nz-form-label>
+                <nz-form-label [nzFor]="'weight'">重量</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <nz-form-control nzErrorTip="欄位必填">
                   <input nz-input placeholder="重量" [formControlName]="'weight'" [attr.id]="'weight'"
                          autocomplete="off" />
@@ -73,12 +73,12 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-              <nz-form-label [nzFor]="'note'">備註</nz-form-label>
-              <nz-form-control>
-                <input nz-input placeholder="備註" [formControlName]="'note'" [attr.id]="'note'"
-                       autocomplete="off"/>
+              <nz-form-label [nzFor]="'gewei'">重量單位</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="重量單位" [formControlName]="'gewei'" [attr.id]="'gewei'"
+                       autocomplete="off" />
               </nz-form-control>
-          </nz-form-item>
+            </nz-form-item>
         </form>
 
 
@@ -98,6 +98,13 @@
                          autocomplete="off" />
                 </nz-form-control>
             </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'ekgrp'">採購群組代碼</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="採購群組代碼" [formControlName]="'ekgrp'" [attr.id]="'ekgrp'"
+                       autocomplete="off" style="width: 137px;"/>
+              </nz-form-control>
+            </nz-form-item>
         </form>
         <br/>
         <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" >
@@ -114,6 +121,13 @@
                   <input nz-input placeholder="密度" [formControlName]="'density'" [attr.id]="'density'"
                          autocomplete="off" />
                 </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'note'">備註</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="備註" [formControlName]="'note'" [attr.id]="'note'"
+                       autocomplete="off" style="width: 185px;"/>
+              </nz-form-control>
             </nz-form-item>
         </form>
 

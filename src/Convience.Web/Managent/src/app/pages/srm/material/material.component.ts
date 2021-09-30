@@ -108,6 +108,8 @@ export class MaterialComponent implements OnInit {
         height: [result['height']],
         density: [result['density']],
         weight: [result['weight']],
+        gewei: [result['gewei']],
+        ekgrp: [result['ekgrp']],
         statusDesc: [result['statusDesc']],
         note: [result['note']],
       });
@@ -141,6 +143,8 @@ export class MaterialComponent implements OnInit {
       material.statusDesc = this.editForm.value['statusDesc'];
       material.note = this.editForm.value['note'];
       material.user = this._storageService.userName;
+      material.gewei = this.editForm.value['gewei'];
+      material.ekgrp = this.editForm.value['ekgrp'];
       console.log(this._storageService.userName);
 
       this._srmMaterialService.update(material).subscribe(result => {

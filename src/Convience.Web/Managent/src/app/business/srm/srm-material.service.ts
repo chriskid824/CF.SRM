@@ -24,4 +24,7 @@ export class SrmMaterialService {
   AddMatnr(material){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/AddMatnr`, material);
   }
+  CheckSAPMatnr(query){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/CheckSAPMatnr`, query);
+  }
 }
