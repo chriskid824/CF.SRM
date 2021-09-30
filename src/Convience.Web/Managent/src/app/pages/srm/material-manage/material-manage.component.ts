@@ -73,13 +73,19 @@ export class MaterialManageComponent implements OnInit {
     });
   }
   add() {
-    var material = {
-      Material: this.addForm.get("material")?.value
-    };
-    this._srmMaterialTrendService.AddMaterial(material).subscribe(result => {
-      this._messageService.success("保存成功！");
-      this.tplModal.close();
-    });
+    for (const i in this.addForm.controls) {
+      this.addForm.controls[i].markAsDirty();
+      this.addForm.controls[i].updateValueAndValidity();
+    }
+    if (this.addForm.valid) {
+      var material = {
+        Material: this.addForm.get("material")?.value
+      };
+      this._srmMaterialTrendService.AddMaterial(material).subscribe(result => {
+        this._messageService.success("保存成功！");
+        this.tplModal.close();
+      });
+    }
   }
   cancelEdit() {
     this.tplModal.close();
