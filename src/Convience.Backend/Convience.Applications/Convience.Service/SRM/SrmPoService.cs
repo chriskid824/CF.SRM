@@ -404,25 +404,41 @@ namespace Convience.Service.SRM
                             };
                             _context.SrmPoLs.Add(poL);
                             r.OutCome = "成功";
+                            result.Add(r);
                         }
                         else
                         {
                             r.OutCome = "失敗";
                             r.Reason = "料號 " + pol.MATNR + " 不存在";
+                            result.Add(r);
                         }
                     }
                     else
                     {
                         r.OutCome = "失敗";
                         r.Reason = "該採購項次已存在";
+                        result.Add(r);
                     }
                 }
                 else
                 {
-                    r.OutCome = "失敗";
-                    r.Reason = "該採購單號不存在";
+                    //如果已經提示過採購單號無法匯入 就不提示採購項次
+                    if (data.T_EKKO.Any(ko => ko.EBELN == pol.EBELN))
+                    {
+                        if (!_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
+                        {
+                            r.OutCome = "失敗";
+                            r.Reason = "料號 " + pol.MATNR + " 不存在";
+                            result.Add(r);
+                        }
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "該採購單號不存在";
+                        result.Add(r);
+                    }
                 }
-                result.Add(r);
             });
             _context.SaveChanges();
             return result;
