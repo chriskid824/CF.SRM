@@ -1,7 +1,7 @@
 <div class="avatar-container" (click)="showAvatarModal()">
     <div *ngIf="!input.value">
         <i class="upload-icon" nz-icon nzType="plus" nzTheme="outline"></i>
-        <div>请选择</div>
+        <div>請選擇</div>
     </div>
     <img *ngIf="input.value" [src]="getImgUrl(input.value)">
 </div>
@@ -16,6 +16,6 @@
 
 <ng-template #avatarFooterTpl>
     <button class="confirmBtn" (click)="confirm()" nz-button nzType="primary">
-        确定
+        確定
     </button>
 </ng-template>

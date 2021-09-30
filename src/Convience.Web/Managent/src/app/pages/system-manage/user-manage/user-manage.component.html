@@ -105,7 +105,7 @@
                             <td nzAlign="center">{{ data.departmentName }}</td>
                             <td nzAlign="center">
                                 <nz-tag *ngIf="!data.isActive" [nzColor]="'red'">停用</nz-tag>
-                                <nz-tag *ngIf="data.isActive" [nzColor]="'green'">激活</nz-tag>
+                                <nz-tag *ngIf="data.isActive" [nzColor]="'green'">啟用</nz-tag>
                             </td>
                             <td nzAlign="center">{{ data.createdTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                             <td nzAlign="center" nzRight>

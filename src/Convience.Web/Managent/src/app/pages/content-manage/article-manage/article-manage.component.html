@@ -2,12 +2,12 @@
     <div class="left">
         <nz-card [nzSize]="'small'">
             <nz-button-group class="mb-10">
-                <button nz-button (click)="addColumn()" *canOperate="'addColumnBtn'">添加栏目</button>
+                <button nz-button (click)="addColumn()" *canOperate="'addColumnBtn'">添加欄目</button>
                 <ng-container *canOperate="'updateColumnBtn'">
-                    <button nz-button (click)="editColumn()" *ngIf="selectedNode?.key">修改栏目</button>
+                    <button nz-button (click)="editColumn()" *ngIf="selectedNode?.key">修改欄目</button>
                 </ng-container>
                 <ng-container *canOperate="'deleteColumnBtn'">
-                    <button nz-button (click)="deleteColumn()" *ngIf="selectedNode?.key">删除栏目</button>
+                    <button nz-button (click)="deleteColumn()" *ngIf="selectedNode?.key">刪除欄目</button>
                 </ng-container>
             </nz-button-group>
             <nz-tree #nzTreeComponent [nzData]="nodes" nzShowIcon="true" (nzClick)="treeClick($event)"
@@ -24,16 +24,16 @@
         <nz-card [nzSize]="'small'" style="height: auto;">
             <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
                 <nz-form-item>
-                    <nz-form-label [nzFor]="'title'">标题</nz-form-label>
+                    <nz-form-label [nzFor]="'title'">標題</nz-form-label>
                     <nz-form-control>
-                        <input nz-input placeholder="标题" [formControlName]="'title'" [attr.id]="'title'"
+                        <input nz-input placeholder="標題" [formControlName]="'title'" [attr.id]="'title'"
                             autocomplete="off" />
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzFor]="'tag'">标签</nz-form-label>
+                    <nz-form-label [nzFor]="'tag'">標簽</nz-form-label>
                     <nz-form-control>
-                        <input nz-input placeholder="标签" [formControlName]="'tag'" [attr.id]="'tag'"
+                        <input nz-input placeholder="標簽" [formControlName]="'tag'" [attr.id]="'tag'"
                             autocomplete="off" />
                     </nz-form-control>
                 </nz-form-item>
@@ -49,7 +49,7 @@
             <div>
                 <button nz-button class="mr-10" (click)="add()" *canOperate="'addArticleBtn'">
                     <i nz-icon nzType="plus"></i>添加文章</button>
-                <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新数据</button>
+                <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button>
             </div>
             <div class="mt-10">
                 <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -57,10 +57,10 @@
                     <thead>
                         <tr>
                             <th nzAlign="center" nzWidth="50px">#</th>
-                            <th nzAlign="center">标题</th>
-                            <th nzAlign="center" nzWidth="120px">栏目</th>
-                            <th nzAlign="center" nzWidth="200px">标签</th>
-                            <th nzAlign="center" nzWidth="180px">创建时间</th>
+                            <th nzAlign="center">標題</th>
+                            <th nzAlign="center" nzWidth="120px">欄目</th>
+                            <th nzAlign="center" nzWidth="200px">標簽</th>
+                            <th nzAlign="center" nzWidth="180px">創建時間</th>
                             <th nzAlign="center" nzWidth="180px">排序</th>
                             <th nzAlign="center" nzWidth="120px">操作</th>
                         </tr>
@@ -98,29 +98,29 @@
 <ng-template #columnTpl>
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24">上级栏目</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24">上級欄目</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
                 <nz-tree-select [nzNodes]="nodes" formControlName="upColumn" nzVirtualHeight="400px"></nz-tree-select>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_columnName'">栏目名称</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_columnName'">欄目名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="columnNameErrorTpl">
-                <input [attr.id]="'edit_columnName'" formControlName="name" nz-input placeholder="栏目名称"
+                <input [attr.id]="'edit_columnName'" formControlName="name" nz-input placeholder="欄目名稱"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #columnNameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入栏目名称！
+                    請輸入欄目名稱！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    栏目名称长度不能超过15！
+                    欄目名稱長度不能超過15！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sort'">排序</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入排序！">
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入排序！">
                 <input type="number" [attr.id]="'edit_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>

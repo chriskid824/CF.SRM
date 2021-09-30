@@ -1,7 +1,7 @@
 <div class="content">
     <div class="left">
         <nz-card [nzSize]="'small'">
-            <button nz-button class="mb-10" (click)="initNodes()"><i nz-icon nzType="sync"></i>刷新数据</button>
+            <button nz-button class="mb-10" (click)="initNodes()"><i nz-icon nzType="sync"></i>刷新數據</button>
             <nz-tree #nzTreeComponent [nzData]="nodes" nzShowIcon="true" (nzClick)="treeClick($event)"
                 [nzExpandedIcon]="mutiExpandedIconTpl">
                 <ng-template #mutiExpandedIconTpl let-node>
@@ -16,7 +16,7 @@
         <nz-card [nzSize]="'small'">
             <div>
                 <button nz-button class="mr-10" (click)="add(addMenuTitleTpl,menuContentTpl)"
-                    *canOperate="'addMenuBtn'"><i nz-icon nzType="plus"></i>添加内容</button>
+                    *canOperate="'addMenuBtn'"><i nz-icon nzType="plus"></i>添加內容</button>
             </div>
             <div class="mt-10">
                 <nz-table #dataTable nzSize="middle" [nzData]="displayData" nzShowPagination="false"
@@ -24,11 +24,11 @@
                     <thead>
                         <tr>
                             <th nzAlign="center" nzWidth="60px">#</th>
-                            <th nzAlign="center" nzWidth="120px">上级菜单</th>
-                            <th nzAlign="center" nzWidth="120px">名称</th>
-                            <th nzAlign="center" nzWidth="120px">前端标识</th>
-                            <th nzAlign="center" nzWidth="200px">后端权限</th>
-                            <th nzAlign="center" nzWidth="60px">类型</th>
+                            <th nzAlign="center" nzWidth="120px">上級菜單</th>
+                            <th nzAlign="center" nzWidth="120px">名稱</th>
+                            <th nzAlign="center" nzWidth="120px">前端標識</th>
+                            <th nzAlign="center" nzWidth="200px">後端權限</th>
+                            <th nzAlign="center" nzWidth="60px">類型</th>
                             <th nzAlign="center">路由</th>
                             <th nzAlign="center" nzWidth="60px">排序</th>
                             <th nzAlign="center" nzWidth="120px">操作</th>
@@ -60,56 +60,56 @@
 </div>
 
 <ng-template #addMenuTitleTpl>
-    <span>添加菜单</span>
+    <span>添加菜單</span>
 </ng-template>
 <ng-template #editUserTitleTpl>
-    <span>编辑菜单</span>
+    <span>編輯菜單</span>
 </ng-template>
 <ng-template #menuContentTpl>
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24">上级菜单</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24">上級菜單</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
                 <nz-tree-select [nzNodes]="nodes" formControlName="upMenu" nzVirtualHeight="400px"></nz-tree-select>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_menuName'">菜单名称</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_menuName'">菜單名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="userNameErrorTpl">
-                <input [attr.id]="'edit_menuName'" formControlName="name" nz-input placeholder="菜单名称"
+                <input [attr.id]="'edit_menuName'" formControlName="name" nz-input placeholder="菜單名稱"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #userNameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入账号！
+                    請輸入賬號！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    角色名长度不能超过10！
+                    角色名長度不能超過10！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_identification'">前端识别</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入前端识别！">
-                <input [attr.id]="'edit_identification'" formControlName="identification" nz-input placeholder="前端识别"
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_identification'">前端識別</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入前端識別！">
+                <input [attr.id]="'edit_identification'" formControlName="identification" nz-input placeholder="前端識別"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_permission'">后端识别</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入后端识别！">
-                <input [attr.id]="'edit_permission'" formControlName="permission" nz-input placeholder="后端识别"
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_permission'">後端識別</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入後端識別！">
+                <input [attr.id]="'edit_permission'" formControlName="permission" nz-input placeholder="後端識別"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_type'">类型</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_type'">類型</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
                 <nz-radio-group [attr.id]="'edit_type'" formControlName="type">
                     <label nz-radio [nzValue]="0">未知</label>
-                    <label nz-radio [nzValue]="1">菜单</label>
-                    <label nz-radio [nzValue]="2">按钮</label>
-                    <label nz-radio [nzValue]="3">链接</label>
+                    <label nz-radio [nzValue]="1">菜單</label>
+                    <label nz-radio [nzValue]="2">按鈕</label>
+                    <label nz-radio [nzValue]="3">鏈接</label>
                 </nz-radio-group>
             </nz-form-control>
         </nz-form-item>
@@ -121,7 +121,7 @@
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_identification'">排序</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入排序！">
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入排序！">
                 <input type="number" [attr.id]="'edit_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>

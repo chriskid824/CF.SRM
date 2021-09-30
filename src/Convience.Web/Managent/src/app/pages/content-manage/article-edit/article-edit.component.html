@@ -6,56 +6,56 @@
 <nz-card [nzSize]="'small'">
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label nzRequired [nzFor]="'edit_title'">文章标题</nz-form-label>
+            <nz-form-label nzRequired [nzFor]="'edit_title'">文章標題</nz-form-label>
             <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="titleErrorTpl">
-                <input [attr.id]="'edit_title'" formControlName="title" nz-input placeholder="文章标题"
+                <input [attr.id]="'edit_title'" formControlName="title" nz-input placeholder="文章標題"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #titleErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入账号！
+                    請輸入賬號！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    角色名长度不能超过50！
+                    角色名長度不能超過50！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'edit_subTitle'">副标题</nz-form-label>
-            <nz-form-control [nzSm]="10" [nzXs]="24" nzErrorTip="副标题长度不能超过200！">
-                <input [attr.id]="'edit_subTitle'" [formControlName]="'subTitle'" nz-input placeholder="副标题"
+            <nz-form-label [nzFor]="'edit_subTitle'">副標題</nz-form-label>
+            <nz-form-control [nzSm]="10" [nzXs]="24" nzErrorTip="副標題長度不能超過200！">
+                <input [attr.id]="'edit_subTitle'" [formControlName]="'subTitle'" nz-input placeholder="副標題"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'edit_columnId'">栏目</nz-form-label>
+            <nz-form-label [nzFor]="'edit_columnId'">欄目</nz-form-label>
             <nz-form-control [nzSm]="10" [nzXs]="24">
-                <nz-tree-select [nzNodes]="nodes" [formControlName]="'columnId'" nzPlaceHolder="栏目" nzVirtualHeight="300px">
+                <nz-tree-select [nzNodes]="nodes" [formControlName]="'columnId'" nzPlaceHolder="欄目" nzVirtualHeight="300px">
                 </nz-tree-select>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'edit_source'">来源</nz-form-label>
-            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'来源长度不能超过200！'">
-                <input [attr.id]="'edit_source'" formControlName="source" nz-input placeholder="来源"
+            <nz-form-label [nzFor]="'edit_source'">來源</nz-form-label>
+            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'來源長度不能超過200！'">
+                <input [attr.id]="'edit_source'" formControlName="source" nz-input placeholder="來源"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzFor]="'edit_sort'">排序</nz-form-label>
-            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'请输入排序！'">
+            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'請輸入排序！'">
                 <input type="number" [attr.id]="'edit_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'edit_tags'">标签</nz-form-label>
-            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'标签长度不能超过200！'">
-                <input [attr.id]="'edit_tags'" formControlName="tags" nz-input placeholder="标签" autocomplete="off" />
+            <nz-form-label [nzFor]="'edit_tags'">標簽</nz-form-label>
+            <nz-form-control [nzSm]="10" [nzXs]="24" [nzErrorTip]="'標簽長度不能超過200！'">
+                <input [attr.id]="'edit_tags'" formControlName="tags" nz-input placeholder="標簽" autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'edit_content'">内容</nz-form-label>
+            <nz-form-label [nzFor]="'edit_content'">內容</nz-form-label>
             <nz-form-control [nzSm]="18" [nzXs]="24">
                 <editor formControlName="content" [init]="tinyConfig"></editor>
             </nz-form-control>
