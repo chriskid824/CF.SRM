@@ -17,6 +17,8 @@ namespace Convience.Service.SRM
     {
         public string UploadAsync(FileUploadViewModel viewModel);
         public PagingResultModel<ViewSrmMaterialTrend> GetMaterialTrendList(QuerySrmMaterialTrend query);
+        public PagingResultModel<SrmMaterial> GetMaterialList(QuerySrmMaterial query);
+        public string AddMaterial(SrmMaterial material);
     }
     public class SrmMaterialTrendService: ISrmMaterialTrendService
     {
@@ -27,6 +29,7 @@ namespace Convience.Service.SRM
             _context = context;
             _fileStore = fileStore;
         }
+        #region upload
         public string UploadAsync(FileUploadViewModel viewModel)
         {
             if (viewModel.EffectiveDate > viewModel.Deadline)
@@ -96,7 +99,7 @@ namespace Convience.Service.SRM
             }
             return path;
         }
-
+        #endregion upload
         public void AddSRM_MATERIAL_TREND(SrmMaterialTrend materialTrend)
         {
             _context.SrmMaterialTrends.Add(materialTrend);
@@ -129,6 +132,29 @@ namespace Convience.Service.SRM
                 Data = JsonConvert.DeserializeObject<ViewSrmMaterialTrend[]>(JsonConvert.SerializeObject(materials)),
                 Count = resultQuery.Count()
             };
+        }
+        public PagingResultModel<SrmMaterial> GetMaterialList(QuerySrmMaterial query) {
+            int skip = (query.Page - 1) * query.Size;
+            var resultQuery = (from material in _context.SrmMaterials
+                               select material)
+                .AndIfHaveValue(query.material.Material, r => r.Material.Contains(query.material.Material));
+            var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
+
+            return new PagingResultModel<SrmMaterial>
+            {
+                Data = JsonConvert.DeserializeObject<SrmMaterial[]>(JsonConvert.SerializeObject(materials)),
+                Count = resultQuery.Count()
+            };
+        }
+        public string AddMaterial(SrmMaterial material) {
+            material.Material = material.Material.Trim();
+            if (_context.SrmMaterials.Where(r => r.Material.Equals(material.Material)).Any()) {
+                return ($"{material.Material}已存在");
+            }
+            material.Staus = (int)Status.已核發;
+            _context.Add(material);
+            _context.SaveChanges();
+            return "";
         }
     }
 }
