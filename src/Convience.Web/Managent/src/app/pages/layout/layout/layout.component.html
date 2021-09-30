@@ -34,10 +34,10 @@
             </a>
             <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                    <li nz-menu-item (click)="modifyPwd()">修改密码
+                    <li nz-menu-item (click)="modifyPwd()">修改密碼
                     </li>
                     <li nz-menu-divider></li>
-                    <li nz-menu-item (click)="logout()">注销</li>
+                    <li nz-menu-item (click)="logout()">登出</li>
                 </ul>
             </nz-dropdown-menu>
         </div>
@@ -109,7 +109,7 @@
 
 
 <ng-template #editPwdTitleTpl>
-    <span>修改密码</span>
+    <span>修改密碼</span>
 </ng-template>
 <ng-template #editPwdContentTpl>
     <form nz-form [formGroup]="modifyForm" (ngSubmit)="submitForm()" nzLayout="horizontal">
@@ -121,30 +121,30 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-control nzErrorTip="请输入旧密码!">
+            <nz-form-control nzErrorTip="請輸入舊密碼!">
                 <nz-input-group nzPrefixIcon="lock">
-                    <input type="text" nz-input type="password" formControlName="oldPassword" placeholder="旧密码" />
+                    <input type="text" nz-input type="password" formControlName="oldPassword" placeholder="舊密碼" />
                 </nz-input-group>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-control nzErrorTip="请输入新密码!">
+            <nz-form-control nzErrorTip="請輸入新密碼!">
                 <nz-input-group nzPrefixIcon="lock">
-                    <input type="text" nz-input type="password" formControlName="newPassword" placeholder="新密码" />
+                    <input type="text" nz-input type="password" formControlName="newPassword" placeholder="新密碼" />
                 </nz-input-group>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
             <nz-form-control [nzErrorTip]="confirmPasswordErrorTpl">
                 <nz-input-group nzPrefixIcon="lock">
-                    <input type="text" nz-input type="password" formControlName="confirmPassword" placeholder="确认密码" />
+                    <input type="text" nz-input type="password" formControlName="confirmPassword" placeholder="確認密碼" />
                 </nz-input-group>
                 <ng-template #confirmPasswordErrorTpl let-control>
                     <ng-container *ngIf="control.hasError('notEqual')">
-                        两次密码输入不一致!
+                        兩次密碼輸入不一緻!
                     </ng-container>
                     <ng-container *ngIf="control.hasError('required')">
-                        请输入确认密码!
+                        請輸入確認密碼!
                     </ng-container>
                 </ng-template>
             </nz-form-control>
@@ -152,7 +152,7 @@
 
         <nz-form-item>
             <nz-form-control>
-                <button nz-button class="login-form-button" [nzType]="'primary'" [nzLoading]="isLoading">确认修改</button>
+                <button nz-button class="login-form-button" [nzType]="'primary'" [nzLoading]="isLoading">確認修改</button>
             </nz-form-control>
         </nz-form-item>
     </form>

@@ -1,7 +1,7 @@
 <div class="content">
     <div class="left">
         <nz-card [nzSize]="'small'">
-            <button nz-button class="mb-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新数据</button>
+            <button nz-button class="mb-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button>
             <app-department-tree #tree (selectedNodeChanged)="selectedChanged($event)"></app-department-tree>
         </nz-card>
     </div>
@@ -9,7 +9,7 @@
         <nz-card [nzSize]="'small'">
             <div>
                 <button nz-button class="mr-10" (click)="add()" *canOperate="'addDepartmentBtn'"><i nz-icon
-                        nzType="plus"></i>创建部门</button>
+                        nzType="plus"></i>創建部門</button>
             </div>
             <div class="mt-10">
                 <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -17,11 +17,11 @@
                     <thead>
                         <tr>
                             <th nzAlign="center" nzWidth="60px">#</th>
-                            <th nzAlign="center" nzWidth="120px">名称</th>
-                            <th nzAlign="center" nzWidth="120px">上级組織</th>
-                            <th nzAlign="center" nzWidth="200px">联系邮箱</th>
-                            <th nzAlign="center" nzWidth="200px">联系电话</th>
-                            <th nzAlign="center">负责人</th>
+                            <th nzAlign="center" nzWidth="120px">名稱</th>
+                            <th nzAlign="center" nzWidth="120px">上級組織</th>
+                            <th nzAlign="center" nzWidth="200px">聯係信箱</th>
+                            <th nzAlign="center" nzWidth="200px">聯係電話</th>
+                            <th nzAlign="center">負責人</th>
                             <th nzAlign="center" nzWidth="60px">排序</th>
                             <th nzAlign="center" nzWidth="120px">操作</th>
                         </tr>
@@ -50,73 +50,73 @@
 </div>
 
 <ng-template #addTitleTpl>
-    <span>添加部门</span>
+    <span>添加部門</span>
 </ng-template>
 <ng-template #editTitleTpl>
-    <span>编辑部门</span>
+    <span>編輯部門</span>
 </ng-template>
 <ng-template #contentTpl>
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24">上级部门</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24">上級部門</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
                 <nz-tree-select [nzNodes]="tree.nodes" formControlName="upDepartment" nzVirtualHeight="400px"></nz-tree-select>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_departmentName'">部门名称</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_departmentName'">部門名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="departmentNameErrorTpl">
-                <input [attr.id]="'edit_departmentName'" formControlName="name" nz-input placeholder="部门名称"
+                <input [attr.id]="'edit_departmentName'" formControlName="name" nz-input placeholder="部門名稱"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #departmentNameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入部门名称！
+                    請輸入部門名稱！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    角色名长度不能超过15！
+                    角色名長度不能超過15！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_email'">联系邮箱</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_email'">聯係信箱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="emailNameErrorTpl">
-                <input [attr.id]="'edit_email'" formControlName="email" nz-input placeholder="联系邮箱"
+                <input [attr.id]="'edit_email'" formControlName="email" nz-input placeholder="聯係信箱"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #emailNameErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('email')">
-                    请输入正确的邮箱格式！
+                    請輸入正確的信箱格式！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    邮箱长度不能超过50！
+                    信箱長度不能超過50！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_telephone'">联系电话</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="联系电话长度不能超过20！">
-                <input [attr.id]="'edit_telephone'" formControlName="telephone" nz-input placeholder="联系电话"
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_telephone'">聯係電話</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="聯係電話長度不能超過20！">
+                <input [attr.id]="'edit_telephone'" formControlName="telephone" nz-input placeholder="聯係電話"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_leaderid'">部门负责人</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_leaderid'">部門負責人</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
-                <nz-select [attr.id]="'edit_leaderid'" nzPlaceHolder="请选择负责人" nzAllowClear nzShowSearch nzServerSearch
+                <nz-select [attr.id]="'edit_leaderid'" nzPlaceHolder="請選擇負責人" nzAllowClear nzShowSearch nzServerSearch
                     formControlName="leaderid" (nzOnSearch)="onSearch($event)">
                     <ng-container *ngFor="let u of userDicList">
                         <nz-option *ngIf="!isLoading" [nzValue]="u.key" [nzLabel]="u.value"></nz-option>
                     </ng-container>
                     <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
-                        <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
+                        <i nz-icon nzType="loading" class="loading-icon"></i> 加載中...
                     </nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sort'">排序</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入排序！">
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入排序！">
                 <input type="number" [attr.id]="'edit_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>

@@ -3,7 +3,7 @@
         <nz-form-item>
             <nz-form-control>
                 <nz-input-group nzPrefixIcon="search">
-                    <input formControlName="roleName" nz-input placeholder="角色名称" nzcli/>
+                    <input formControlName="roleName" nz-input placeholder="角色名稱" nzcli/>
                 </nz-input-group>
             </nz-form-control>
         </nz-form-item>
@@ -18,7 +18,7 @@
     <div>
         <button nz-button class="mr-10" (click)="addRole(addRoleTitleTpl,roleContentTpl)" *canOperate="'addRoleBtn'"><i
                 nz-icon nzType="plus"></i>添加角色</button>
-        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新数据</button>
+        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button>
     </div>
     <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -26,8 +26,8 @@
             <thead>
                 <tr>
                     <th nzAlign="center" nzWidth="100px">#</th>
-                    <th nzAlign="center" nzWidth="230px">名称</th>
-                    <th nzAlign="center">备注</th>
+                    <th nzAlign="center" nzWidth="230px">名稱</th>
+                    <th nzAlign="center">備註</th>
                     <th nzAlign="center" nzWidth="120px">操作</th>
                 </tr>
             </thead>
@@ -37,13 +37,13 @@
                     <td nzAlign="center">{{ data.name }}</td>
                     <td nzAlign="center">{{ data.remark }}</td>
                     <td nzAlign="center">
-                        <button nz-button nzType="default" nzShape="circle" [disabled]="data.name=='超级管理员'"
+                        <button nz-button nzType="default" nzShape="circle" [disabled]="data.name=='超級管理員'"
                             *canOperate="'updateRoleBtn'" (click)="editRole(editRoleTitleTpl,roleContentTpl,data)"
                             class="mr-10">
                             <i nz-icon nzType="edit"></i>
                         </button>
                         <button nz-button nzType="default" nzShape="circle" (click)="removeRole(data.name)"
-                            *canOperate="'deleteRoleBtn'" [disabled]="data.name=='超级管理员'">
+                            *canOperate="'deleteRoleBtn'" [disabled]="data.name=='超級管理員'">
                             <i nz-icon nzType="delete"></i>
                         </button>
                     </td>
@@ -58,30 +58,30 @@
 </nz-card>
 
 <ng-template #editRoleTitleTpl>
-    <span>编辑角色</span>
+    <span>編輯角色</span>
 </ng-template>
 <ng-template #addRoleTitleTpl>
-    <span>创建新角色</span>
+    <span>創建新角色</span>
 </ng-template>
 <ng-template #roleContentTpl>
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_roleName'">角色名称</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_roleName'">角色名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-                <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="角色名称" autocomplete="off"/>
+                <input [attr.id]="'edit_roleName'" formControlName="roleName" nz-input placeholder="角色名稱" autocomplete="off"/>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_roleRemark'">角色备注</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="备注长度不能超过30！">
-                <textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="角色备注"
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_roleRemark'">角色備註</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="備註長度不能超過30！">
+                <textarea [attr.id]="'edit_roleRemark'" formControlName="remark" nz-input placeholder="角色備註"
                     rows="2"></textarea>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_menu'">菜单权限</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_menu'">菜單權限</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24">
-                <nz-tree-select #menuTree [nzNodes]="nodes" nzCheckable nzPlaceHolder="请选择" formControlName="menus" nzVirtualHeight="300px">
+                <nz-tree-select #menuTree [nzNodes]="nodes" nzCheckable nzPlaceHolder="請選擇" formControlName="menus" nzVirtualHeight="300px">
                 </nz-tree-select>
             </nz-form-control>
         </nz-form-item>
@@ -98,9 +98,9 @@
 
 <ng-template #roleNameErrorTpl let-control>
     <ng-container *ngIf="control.hasError('required')">
-        请输入角色名称！
+        請輸入角色名稱！
     </ng-container>
     <ng-container *ngIf="control.hasError('maxlength')">
-        角色名长度不能超过15！
+        角色名長度不能超過15！
     </ng-container>
 </ng-template>

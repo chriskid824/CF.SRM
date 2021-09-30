@@ -1,8 +1,8 @@
 <nz-card [nzSize]="'small'" class="mt-10 full-single">
     <div>
         <button nz-button class="mr-10" (click)="add()" *canOperate="'addPositionBtn'"><i nz-icon
-                nzType="plus"></i>添加职位</button>
-        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync" [nzSpin]="isSpinning"></i>刷新数据</button>
+                nzType="plus"></i>添加職位</button>
+        <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync" [nzSpin]="isSpinning"></i>刷新數據</button>
     </div>
     <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -10,7 +10,7 @@
             <thead>
                 <tr>
                     <th nzAlign="center" nzWidth="100px">#</th>
-                    <th nzAlign="center">名称</th>
+                    <th nzAlign="center">名稱</th>
                     <th nzAlign="center" nzWidth="120px">排序</th>
                     <th nzAlign="center" nzWidth="120px">操作</th>
                 </tr>
@@ -41,17 +41,17 @@
 </nz-card>
 
 <ng-template #editTitleTpl>
-    <span>编辑职位</span>
+    <span>編輯職位</span>
 </ng-template>
 <ng-template #addTitleTpl>
-    <span>创建新职位</span>
+    <span>創建新職位</span>
 </ng-template>
 <ng-template #contentTpl>
     <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
         <nz-form-item>
-            <nz-form-label nzRequired="true" [nzSm]="6" [nzXs]="24" [nzFor]="'edit_name'">职位名称</nz-form-label>
+            <nz-form-label nzRequired="true" [nzSm]="6" [nzXs]="24" [nzFor]="'edit_name'">職位名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="errorTpl">
-                <input [attr.id]="'edit_name'" formControlName="name" nz-input autocomplete="off" placeholder="职位名称" />
+                <input [attr.id]="'edit_name'" formControlName="name" nz-input autocomplete="off" placeholder="職位名稱" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -59,13 +59,13 @@
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="sortErrorTpl">
                 <input type="number" [attr.id]="'edit_sort'" formControlName="sort" nz-input autocomplete="off"
                     placeholder="排序" maxlength="8"/>
-            </nz-form-control>            
+            </nz-form-control>
             <ng-template #sortErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入排序
+                    請輸入排序
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    排序长度不能超过8！
+                    排序長度不能超過8！
                 </ng-container>
             </ng-template>
         </nz-form-item>
@@ -82,9 +82,9 @@
 
 <ng-template #errorTpl let-control>
     <ng-container *ngIf="control.hasError('required')">
-        请输入职位名称！
+        請輸入職位名稱！
     </ng-container>
     <ng-container *ngIf="control.hasError('maxlength')">
-        职位名称长度不能超过15！
+        職位名稱長度不能超過15！
     </ng-container>
 </ng-template>
