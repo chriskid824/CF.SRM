@@ -36,7 +36,7 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
-        public List<SapResultData> UpdateSapData(SapPoData data);
+        public List<SapResultData> UpdateSapData(SapPoData data,string userName);
     }
 
     public class SrmPoService : ISrmPoService
@@ -281,7 +281,8 @@ namespace Convience.Service.SRM
                               Matnr = matnr.SapMatnr,
                               Org = h.Org,
                               DocDate = h.DocDate,
-                              ReplyDate = h.ReplyDate
+                              ReplyDate = h.ReplyDate,
+                              CreateDate=h.CreateDate,
                           })
               .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
               .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
@@ -299,7 +300,7 @@ namespace Convience.Service.SRM
                 Count = result.Count()
             };
         }
-        public List<SapResultData> UpdateSapData(SapPoData data)
+        public List<SapResultData> UpdateSapData(SapPoData data, string userName)
         {
             List<SapResultData> result = new List<SapResultData>();
             data.T_EKKO.ForEach(po =>
@@ -310,6 +311,7 @@ namespace Convience.Service.SRM
                     if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
                     {
                         int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
+                        DateTime now = DateTime.Now;
                         SrmPoH poH = new SrmPoH()
                         {
                             PoNum = po.EBELN,
@@ -319,6 +321,10 @@ namespace Convience.Service.SRM
                             Buyer = po.EKGRP,
                             Org = po.EKORG,
                             DocDate = po.BEDAT,
+                            CreateDate=now,
+                            CreateBy= userName,
+                            LastUpdateDate=now,
+                            LastUpdateBy= userName,
                         };
                         _context.SrmPoHs.Add(poH);
                         r.OutCome = "成功";

@@ -82,6 +82,7 @@ namespace Convience.Model.Models.SRM
         public string OrgName { get; set; }
         public DateTime? DocDate { get; set; }
         public DateTime? ReplyDate { get; set; }
+        public DateTime? CreateDate { get; set; }
     }
 
 

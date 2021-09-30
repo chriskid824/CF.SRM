@@ -52,14 +52,11 @@
                   nzBordered="true" [nzScroll]="{ x: '180px' }">
           <thead>
             <tr>
+              <th nzAlign="center" nzWidth="20px">狀態</th>
               <th nzAlign="center" nzWidth="20px">採購單號</th>
               <th nzAlign="center" nzWidth="20px">供應商</th>
-              <th nzAlign="center" nzWidth="20px">狀態</th>
-              <th nzAlign="center" nzWidth="20px">採購人員</th>
-              <th nzAlign="center" nzWidth="20px">採購組織</th>
-              <th nzAlign="center" nzWidth="20px">文件日期</th>
-              <th nzAlign="center" nzWidth="20px">廠商接收日期</th>
-              <th nzAlign="center" nzWidth="20px">拋轉日期</th>
+
+
               <th nzAlign="center" nzWidth="20px">料號識別碼</th>
               <th nzAlign="center" nzWidth="20px">物料內文</th>
               <th nzAlign="center" nzWidth="20px">數量</th>
@@ -67,7 +64,11 @@
               <th nzAlign="center" nzWidth="20px">廠商交貨日期</th>
               <th nzAlign="center" nzWidth="20px">交貨地點</th>
               <th nzAlign="center" nzWidth="20px">關鍵零組件/首件</th>
-              <th nzAlign="center" nzWidth="20px">檢驗時間</th>
+              <th nzAlign="center" nzWidth="20px">檢驗時間(天)</th>
+              <th nzAlign="center" nzWidth="20px">採購人員</th>
+              <th nzAlign="center" nzWidth="20px">採購組織</th>
+              <th nzAlign="center" nzWidth="20px">廠商接收日期</th>
+              <th nzAlign="center" nzWidth="20px">拋轉日期</th>
               <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
               <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
             </tr>
@@ -76,22 +77,23 @@
             <tr *ngFor="let data of dataTable.data;let i = index">
               <!--<td nzAlign="center"  (click)="open(data.rfqId)">{{ data.rfqNum }}</td>-->
               <!-- <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.rfqId)"> {{ data.poNum }}</a></td> -->
+              <td nzAlign="center">{{ data.statusDesc }}</td>
               <td nzAlign="center">{{ data.poNum }}</td>
               <td nzAlign="center">{{ data.vendorName }}</td>
-              <td nzAlign="center">{{ data.statusDesc }}</td>
-              <td nzAlign="center">{{ data.buyer }}</td>
-              <td nzAlign="center">{{ data.org }}</td>
-              <td nzAlign="center">{{ data.docDate }}</td>
-              <td nzAlign="center">{{ data.replyDate }}</td>
-              <td nzAlign="center"></td>
+
+
               <td nzAlign="center">{{ data.matnr }}</td>
               <td nzAlign="center">{{ data.description }}</td>
               <td nzAlign="center">{{ data.qty }}</td>
-              <td nzAlign="center">{{ data.deliveryDate }}</td>
-              <td nzAlign="center">{{ data.replyDeliveryDate }}</td>
+              <td nzAlign="center">{{ data.deliveryDate| date: "yyyy-MM-dd" }}</td>
+              <td nzAlign="center">{{ data.replyDeliveryDate| date: "yyyy-MM-dd" }}</td>
               <td nzAlign="center">{{ data.deliveryPlace }}</td>
               <td nzAlign="center">{{ data.criticalPart }}</td>
               <td nzAlign="center">{{ data.inspectionTime }}</td>
+              <td nzAlign="center">{{ data.buyer }}</td>
+              <td nzAlign="center">{{ data.org }}</td>
+              <td nzAlign="center">{{ data.replyDate| date: "yyyy-MM-dd" }}</td>
+              <td nzAlign="center">{{data.createDate| date: "yyyy-MM-dd"}}</td>
 
               <td *ngIf="status==5" nzAlign="center" nzRight>
                 <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"

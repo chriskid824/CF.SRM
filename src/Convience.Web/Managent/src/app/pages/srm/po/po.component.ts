@@ -188,7 +188,7 @@ export class PoComponent implements OnInit {
             field: 'CriticalPart',
           },
           {
-            headerName:'檢驗時間',
+            headerName:'檢驗時間(天)',
             field: 'InspectionTime',
           },
 

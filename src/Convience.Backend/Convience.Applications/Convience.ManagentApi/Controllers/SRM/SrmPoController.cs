@@ -125,7 +125,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         if (!string.IsNullOrWhiteSpace(result) && result != "null")
                         {
                             SapPoData dataSet = JsonConvert.DeserializeObject<SapPoData>(result);
-                            returndata.List = _srmPoService.UpdateSapData(dataSet);
+                            returndata.List = _srmPoService.UpdateSapData(dataSet, User.GetUserName());
                             return Ok(returndata);
                         }
                     }
