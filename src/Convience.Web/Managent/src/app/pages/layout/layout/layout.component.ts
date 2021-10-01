@@ -112,6 +112,13 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'material-c', routerLink: '/srm/material-c', iconType: 'fund-view', firstBreadcrumb: '料號管理', lastBreadcrumb: '料號建立', name: '料號建立', },
       ]
     }
+    ,
+    {
+      canOperate: 'eqp_m', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '工程/品質問題',
+      children: [
+        { canOperate: 'eqp', routerLink: '/srm/eqp', iconType: 'fund-view', firstBreadcrumb: '工程/品質問題反應單', lastBreadcrumb: '工程/品質問題反應單', name: '工程/品質問題反應單', },
+      ]
+    } 
   ];
 
   // 麵包渣數據
