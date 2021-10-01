@@ -24,6 +24,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
   size: number = 6;
   total: number;
   imageUrl;
+  materialList=[];
 
   _searchDate;
   _materialTrend;
@@ -43,6 +44,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
       searchDate: [null, [Validators.required]],
     });
     this.initaddForm();
+    this.initMaterialList();
   }
   ngAfterViewInit(): void {
     if (sessionStorage.getItem("material-trend")) {
@@ -183,6 +185,17 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
       this.page = 1;
       this.refresh();
     }
+  }
+  initMaterialList() {
+    var query = {
+      material: {},
+      page: 1,
+      size: 999
+    }
+    this._srmMaterialTrendService.GetMaterialList(query).subscribe(result => {
+      console.log(result);
+      this.materialList = result["data"];
+    });
   }
 }
 function dateFormatter(data) {

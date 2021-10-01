@@ -5,8 +5,13 @@
         <nz-form-item>
           <nz-form-label nzRequired>原物料</nz-form-label>
           <nz-form-control nzErrorTip="欄位必填">
-            <input nz-input placeholder="原物料" formControlName="material"
-                   autocomplete="off" />
+            <!--<input nz-input placeholder="原物料" formControlName="material"
+         autocomplete="off" />-->
+            <nz-select nzAllowClear nzPlaceHolder="請選擇" formControlName="material" style="width:100px">
+              <nz-option *ngFor="let material of materialList" [nzValue]="material.material"
+                         [nzLabel]="material.material">
+              </nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -77,8 +82,13 @@
     <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">原物料</nz-form-label>
       <nz-form-control nzErrorTip="欄位必填">
-        <input nz-input placeholder="原物料" formControlName="material"
-               autocomplete="off" />
+        <!--<input nz-input placeholder="原物料" formControlName="material"
+   autocomplete="off" />-->
+        <nz-select nzAllowClear nzPlaceHolder="請選擇" formControlName="material">
+          <nz-option *ngFor="let material of materialList" [nzValue]="material.material"
+                     [nzLabel]="material.material">
+          </nz-option>
+          </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
