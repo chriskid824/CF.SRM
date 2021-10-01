@@ -45,9 +45,6 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { DeliveryAddComponent } from './delivery-add/delivery-add.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-<<<<<<< HEAD
-import { EqpComponent } from './eqp/eqp.component';
-=======
 import { SupplierComponent } from './supplier/supplier.component';
 import { SupplierCComponent } from './supplier-c/supplier-c.component';
 import { MaterialComponent } from './material/material.component';
@@ -57,7 +54,6 @@ import { PoExamineComponent } from './po-examine/po-examine.component';
 import { MaterialTrendComponent } from './material-trend/material-trend.component';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { MaterialManageComponent } from './material-manage/material-manage.component';
->>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
 @NgModule({
   declarations: [
     RfqComponent,
@@ -76,9 +72,6 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
     ButtonRendererComponent,
     EditButtonComponent,
     DeliveryAddComponent,
-<<<<<<< HEAD
-    EqpComponent,
-=======
     SupplierComponent,
     SupplierCComponent,
     MaterialComponent,
@@ -87,7 +80,6 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
     PoExamineComponent,
     MaterialTrendComponent,
     MaterialManageComponent,
->>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
   ],
   imports: [
     CommonModule,
@@ -108,10 +100,6 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
        //{ path: "qotlist", component: QotlistComponent},
        { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
        { path: "price", component: PriceComponent, canActivate: [LoginGuard] },
-<<<<<<< HEAD
-       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] } ,
-       { path: "eqp", component: EqpComponent },
-=======
        { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
        { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] },
        { path: "supplier-c", component: SupplierCComponent, canActivate: [LoginGuard] },
@@ -119,7 +107,6 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
       { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] },
       { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
       { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
->>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
