@@ -13,10 +13,10 @@ namespace Convience.Entity.Entity
 
         public string Name { get; set; }
 
-        [Description("前端识别")]
+        [Description("前端識別")]
         public string Identification { get; set; }
 
-        [Description("后端权限")]
+        [Description("後端權限")]
         public string Permission { get; set; }
 
         public MenuType Type { get; set; }
@@ -43,9 +43,9 @@ namespace Convience.Entity.Entity
     public enum MenuType
     {
         未知 = 0,
-        菜单 = 1,
-        按钮 = 2,
-        链接 = 3,
+        菜單 = 1,
+        按鈕 = 2,
+        鏈結 = 3,
     }
 
 }

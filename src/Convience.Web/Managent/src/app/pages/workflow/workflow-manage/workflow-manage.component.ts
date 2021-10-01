@@ -31,36 +31,36 @@ export class WorkflowManageComponent implements OnInit {
   @ViewChild('flowEditTpl', { static: true })
   flowEditTpl;
 
-  // 分页器
+  // 分頁器
   size: number = 10;
   page: number = 1;
   total: number = 0;
 
-  // 模态框
+  // 模態框
   nzModal: NzModalRef;
 
-  // 工作流类别编辑表单
+  // 工作流類別編輯錶單
   workflowGroupEditForm: FormGroup = new FormGroup({});
 
-  // 工作流编辑表单
+  // 工作流編輯錶單
   workflowEditForm: FormGroup = new FormGroup({});
 
-  // 编辑中的工作流类别ID
+  // 編輯中的工作流類別ID
   editingWorkflowGroupId;
 
-  // 编辑中的工作流ID
+  // 編輯中的工作流ID
   editingWorkflowId;
 
-  // 选中的工作流类别id
+  // 選中的工作流類別id
   checkedWorkflowGroupId;
 
-  // 工作流数据
+  // 工作流數據
   data: WorkFlow[] = [];
 
-  // 编辑中的工作流id
+  // 編輯中的工作流id
   editWorkflowId;
 
-  // 编辑中的工作流名称
+  // 編輯中的工作流名稱
   editWorkflowName;
 
   constructor(
@@ -94,7 +94,7 @@ export class WorkflowManageComponent implements OnInit {
       describe: [null, [Validators.required, Validators.maxLength(30)]]
     });
     this.nzModal = this._modalService.create({
-      nzTitle: '创建工作流',
+      nzTitle: '創建工作流',
       nzContent: this.workflowEditTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -110,7 +110,7 @@ export class WorkflowManageComponent implements OnInit {
         describe: [result.describe, [Validators.required, Validators.maxLength(30)]]
       });
       this.nzModal = this._modalService.create({
-        nzTitle: '创建工作流',
+        nzTitle: '創建工作流',
         nzContent: this.workflowEditTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -120,11 +120,11 @@ export class WorkflowManageComponent implements OnInit {
 
   remove(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除该工作流?',
+      nzTitle: '是否刪除該工作流?',
       nzContent: null,
       nzOnOk: () => {
         this._workflowService.delete(id).subscribe(result => {
-          this._messageService.success('删除成功！');
+          this._messageService.success('刪除成功！');
           this.refresh();
         });
       }
@@ -168,7 +168,7 @@ export class WorkflowManageComponent implements OnInit {
     this.editWorkflowId = id;
     this.editWorkflowName = name;
     this._modalService.create({
-      nzTitle: "编辑表单",
+      nzTitle: "編輯錶單",
       nzContent: this.flowEditTpl,
       nzFooter: null,
       nzWidth: "90%"
@@ -179,7 +179,7 @@ export class WorkflowManageComponent implements OnInit {
     this.editWorkflowId = id;
     this.editWorkflowName = name;
     this._modalService.create({
-      nzTitle: "编辑表单",
+      nzTitle: "編輯錶單",
       nzContent: this.formEditTpl,
       nzFooter: null,
       nzWidth: "90%"
@@ -214,7 +214,7 @@ export class WorkflowManageComponent implements OnInit {
       sort: [null, Validators.required]
     });
     this.nzModal = this._modalService.create({
-      nzTitle: '添加分类',
+      nzTitle: '添加分類',
       nzContent: this.workflowGroupEditTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -235,7 +235,7 @@ export class WorkflowManageComponent implements OnInit {
       });
 
       this.nzModal = this._modalService.create({
-        nzTitle: '修改分类',
+        nzTitle: '修改分類',
         nzContent: this.workflowGroupEditTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -245,12 +245,12 @@ export class WorkflowManageComponent implements OnInit {
 
   deleteWorkFlowGroup() {
     this._modalService.confirm({
-      nzTitle: '是否删除该分类?',
+      nzTitle: '是否刪除該分類?',
       nzContent: null,
       nzOnOk: () => {
         let id = this.workflowGroupTree.selectedNode?.key?.toString();
         this._workflowGroupService.delete(id).subscribe(result => {
-          this._messageService.success('成功删除');
+          this._messageService.success('成功刪除');
           this.workflowGroupTree.initNodes();
         });
       }

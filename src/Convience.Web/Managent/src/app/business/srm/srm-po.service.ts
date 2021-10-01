@@ -16,6 +16,9 @@ export class SrmPoService {
   GetPoL(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPoL`,query);
   }
+  GetPoPoL(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPoPoL`,query);
+  }
   SAVE(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/Save`,po);
   }
@@ -36,5 +39,9 @@ export class SrmPoService {
   }
   GetSourcerList(user) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/GetSourcerList`, user);
+  }
+
+  Sap_GetPoData(data) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/Sap_GetPoData`, data);
   }
 }

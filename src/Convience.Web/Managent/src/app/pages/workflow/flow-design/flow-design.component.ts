@@ -23,23 +23,23 @@ import { UserService } from 'src/app/business/system-manage/user.service';
 })
 export class FlowDesignComponent implements OnInit {
 
-  // 流程图
+  // 流程圖
   @ViewChild('flowContainer', { static: true })
   private _flowContainer: ElementRef;
 
   @ViewChild('selectedBorder', { static: true })
   private _sborder: ElementRef;
 
-  // 节点编辑
+  // 節點編輯
   @ViewChild('nodeEditTpl', { static: true })
   private _nodeEditTpl;
 
-  // 编辑节点表单
+  // 編輯節點錶單
   workflowNodeEditForm: FormGroup = new FormGroup({});
   connections = [];
   connectionFormControls: { [key: string]: any[]; } = {};
 
-  // 节点数据
+  // 節點數據
   private _nodeDataList: WorkflowNode[] = [];
   private _linkDataList: WorkflowLink[] = [];
   private _conditionDataList: WorkflowNodeCondition[] = [];
@@ -61,36 +61,36 @@ export class FlowDesignComponent implements OnInit {
   };
 
   nodes = [
-    { key: 'start', name: '开始节点', icon: 'play-circle' },
-    { key: 'work', name: '工作节点', icon: 'check-circle' },
-    { key: 'end', name: '结束节点', icon: 'stop' }
+    { key: 'start', name: '開始節點', icon: 'play-circle' },
+    { key: 'work', name: '工作節點', icon: 'check-circle' },
+    { key: 'end', name: '結束節點', icon: 'stop' }
   ];
 
-  // 拖拽的节点类型key
+  // 拖拽的節點類型key
   private _draggedKey;
 
-  // 点击选中的节点
+  // 點選選中的節點
   private _checkedNode = null;
 
-  // 加载中
+  // 加載中
   isLoading = false;
 
-  // 用户
+  // 用戶
   userSearchChange$ = new BehaviorSubject('');
   userList = [];
 
-  // 用户
+  // 用戶
   positionSearchChange$ = new BehaviorSubject('');
   positionList = [];
 
-  // 用户
+  // 用戶
   departmentSearchChange$ = new BehaviorSubject('');
   departmentList = [];
 
-  // 模态框
+  // 模態框
   nzModal: NzModalRef;
 
-  // 表单选项
+  // 錶單選項
   formControlList = [];
 
   // 工作流ID
@@ -138,28 +138,28 @@ export class FlowDesignComponent implements OnInit {
       });
     });
 
-    // 初始化表单选项
+    // 初始化錶單選項
     this._formService.getControlDic(this.workflowId).subscribe((result: any) => {
       this.formControlList = result;
     });
   }
 
-  // 初始化流程图
+  // 初始化流程圖
   initGraph() {
 
-    // 创建实例
+    // 創建實例
     this._jsPlumbInstance = this._jsPlumb.getInstance({
       DragOptions: { cursor: 'move', zIndex: 2000 },
       Container: 'flow-container'
     });
 
-    // 绑定点击
+    // 綁定點選
     this._jsPlumbInstance.bind('click', (conn, orignalEvent) => {
       this._jsPlumbInstance.deleteConnection(conn);
     });
   }
 
-  // 监听键盘
+  // 監聽鍵盤
   listenKeyboard() {
     fromEvent(window, 'keydown').subscribe((event: any) => {
       if (this._checkedNode) {
@@ -171,7 +171,7 @@ export class FlowDesignComponent implements OnInit {
     });
   }
 
-  // 初始化数据
+  // 初始化數據
   initData() {
     this._flowService.get(this.workflowId).subscribe((result: any) => {
       this._nodeDataList = result.workFlowNodeResults ? result.workFlowNodeResults : [];
@@ -204,7 +204,7 @@ export class FlowDesignComponent implements OnInit {
   }
 
 
-  addStartNode(id, x, y, title = "开始节点") {
+  addStartNode(id, x, y, title = "開始節點") {
 
     this.addNode(id, x, y, title);
 
@@ -222,7 +222,7 @@ export class FlowDesignComponent implements OnInit {
     }, this._endpointOption);
   }
 
-  addWorkNode(id, x, y, title = '工作节点') {
+  addWorkNode(id, x, y, title = '工作節點') {
 
     this.addNode(id, x, y, title, true);
 
@@ -239,7 +239,7 @@ export class FlowDesignComponent implements OnInit {
       }
     }, this._endpointOption);
 
-    // 配置目标
+    // 配置目標
     this._jsPlumbInstance.makeTarget(id, {
       anchor: 'Continuous',
       allowLoopback: false,
@@ -249,7 +249,7 @@ export class FlowDesignComponent implements OnInit {
     }, this._endpointOption);
   }
 
-  addEndNode(id, x, y, title = '结束节点') {
+  addEndNode(id, x, y, title = '結束節點') {
 
     this.addNode(id, x, y, title);
 
@@ -270,23 +270,23 @@ export class FlowDesignComponent implements OnInit {
 
   addNode(id, x, y, title, hasDblClickEvent = false) {
 
-    // 节点
+    // 節點
     let node = this._renderer.createElement('div');
     this._renderer.setStyle(node, 'top', `${y}px`);
     this._renderer.setStyle(node, 'left', `${x}px`);
     this._renderer.addClass(node, 'node');
     this._renderer.setAttribute(node, 'id', id);
 
-    // 设置节点事件
+    // 設定節點事件
     this._renderer.listen(node, 'mousedown', event => {
       this._checkedNode = node;
 
-      // 绑定四个元素作为border的目的是为了以后修改为调整大小的瞄点
+      // 綁定四個元素作為border的目的是為了以後修改為調整大小的瞄點
       this._renderer.setStyle(this._sborder.nativeElement, 'display', 'block');
       this._renderer.appendChild(node, this._sborder.nativeElement);
     });
 
-    // 双击编辑节点事件
+    // 雙擊編輯節點事件
     if (hasDblClickEvent) {
       this._renderer.listen(node, 'dblclick', event => {
         let data = this._nodeDataList.find(d => d.domId == node.id);
@@ -315,7 +315,7 @@ export class FlowDesignComponent implements OnInit {
             return element.sourceId == node.id;
           });
 
-          // 构建表单成员
+          // 構建錶單成員
           this.workflowNodeEditForm = this._formBuilder.group({
             id: data.domId,
             name: [data.name, [Validators.required, Validators.maxLength(15)]],
@@ -325,20 +325,20 @@ export class FlowDesignComponent implements OnInit {
             department: [Number.parseInt(data.department), [Validators.required]]
           });
 
-          // 构建条件列表
+          // 構建條件列錶
           this.connectionFormControls = {};
           this.connections.forEach(connection => {
             this.connectionFormControls[connection.targetId] = [];
             let conditions = this._conditionDataList.filter(data => data.sourceId == node.id && data.targetId == connection.targetId);
             conditions.forEach(condition => {
 
-              // 添加表单项并赋值
+              // 添加錶單項並賦值
               this.addFormControl(connection.targetId, condition.formControlId, condition.compareMode, condition.compareValue);
             });
           });
 
           this.nzModal = this._modalServce.create({
-            nzTitle: '编辑节点信息',
+            nzTitle: '編輯節點信息',
             nzContent: this._nodeEditTpl,
             nzFooter: null,
             nzMaskClosable: false,
@@ -348,10 +348,10 @@ export class FlowDesignComponent implements OnInit {
       });
     }
 
-    // 拼接节点到流程图
+    // 拚接節點到流程圖
     this._renderer.appendChild(this._flowContainer.nativeElement, node);
 
-    // 设置节点连线区域
+    // 設定節點連線區域
     let iconArea = this._renderer.createElement('div');
     this._renderer.addClass(iconArea, 'connectable');
     // let newEl = icon.nativeElement.cloneNode(true);
@@ -359,14 +359,14 @@ export class FlowDesignComponent implements OnInit {
     // this._renderer.appendChild(iconArea, newEl);
     this._renderer.appendChild(node, iconArea);
 
-    // 设置节点拖拽区域
+    // 設定節點拖拽區域
     let draggableArea = this._renderer.createElement('div');
     this._renderer.addClass(draggableArea, 'draggable');
     let titleEl = this._renderer.createText(title);
     this._renderer.appendChild(draggableArea, titleEl);
     this._renderer.appendChild(node, draggableArea);
 
-    // 设施元素在流程图中可拖拽
+    // 設施元素在流程圖中可拖拽
     this._jsPlumbInstance.draggable(node, {
       filter: '.draggable',
       filterExclude: false,
@@ -378,7 +378,7 @@ export class FlowDesignComponent implements OnInit {
     });
   }
 
-  // 添加一组条件
+  // 添加一組條件
   addFormControl(targetId, formControlIdValue = null, compareModeValue = null, compareValueValue = null) {
     let formControlId = `formControlId${this.randomKey()}`;
     let compareMode = `compareMode${this.randomKey()}`;
@@ -393,7 +393,7 @@ export class FlowDesignComponent implements OnInit {
     this.workflowNodeEditForm.addControl(compareValue, new FormControl(compareValueValue));
   }
 
-  // 删除一组条件
+  // 刪除一組條件
   removeFormControl(targetId, formControlId) {
     let controlInfo = this.connectionFormControls[targetId].find(o => o.formControlId == formControlId);
     this.workflowNodeEditForm.removeControl(controlInfo.formControlId);
@@ -412,7 +412,7 @@ export class FlowDesignComponent implements OnInit {
   //   }
   // }
 
-  // // 禁止任何元素进入
+  // // 禁止任何元素進入
   //noReturnPredicate() {
   //  return false;
   //}
@@ -421,7 +421,7 @@ export class FlowDesignComponent implements OnInit {
     history.go(-1);
   }
 
-  // 保存流程图
+  // 保存流程圖
   save() {
     this._linkDataList = [];
     this._jsPlumbInstance.getAllConnections().forEach(element => {
@@ -459,36 +459,36 @@ export class FlowDesignComponent implements OnInit {
   dropZone(event) {
     event.preventDefault();
 
-    // 取得offsetx时，如果有子元素会冒泡，将子元素的offset设置
+    // 取得offsetx時，如果有子元素會冒泡，將子元素的offset設定
     let rect = event.currentTarget.getBoundingClientRect();
     let x = event.clientX - rect.left - 100;
     let y = event.clientY - rect.top - 25;
     let id = `node${this.randomKey()}`;
 
-    // 保存节点数据
+    // 保存節點數據
     let nodeData = new WorkflowNode();
 
     switch (this._draggedKey) {
       case 'start':
         if (this._nodeDataList.find(d => d.nodeType == 0)) {
-          this._messageService.error('已经有一个开始节点了！');
+          this._messageService.error('已經有一個開始節點了！');
         } else {
           this.addStartNode(id, x, y);
-          nodeData.name = '开始节点';
+          nodeData.name = '開始節點';
           nodeData.nodeType = 0;
         }
         break;
       case 'work':
         this.addWorkNode(id, x, y);
-        nodeData.name = '工作节点';
+        nodeData.name = '工作節點';
         nodeData.nodeType = 1;
         break;
       case 'end':
         if (this._nodeDataList.find(d => d.nodeType == 99)) {
-          this._messageService.error('已经有一个开始节点了！');
+          this._messageService.error('已經有一個開始節點了！');
         } else {
           this.addEndNode(id, x, y);
-          nodeData.name = '结束节点';
+          nodeData.name = '結束節點';
           nodeData.nodeType = 99;
         }
         break;
@@ -500,7 +500,7 @@ export class FlowDesignComponent implements OnInit {
     this._nodeDataList.push(nodeData);
   }
 
-  // 键入用户关键字搜索
+  // 鍵入用戶關鍵字搜索
   onSearchUser(value: string): void {
     if (value) {
       this.isLoading = true;
@@ -508,7 +508,7 @@ export class FlowDesignComponent implements OnInit {
     }
   }
 
-  // 键入职位关键字搜索
+  // 鍵入職位關鍵字搜索
   onSearchPosition(value: string): void {
     if (value) {
       this.isLoading = true;
@@ -516,7 +516,7 @@ export class FlowDesignComponent implements OnInit {
     }
   }
 
-  // 键入职位关键字搜索
+  // 鍵入職位關鍵字搜索
   onSearchDepartment(value: string): void {
     if (value) {
       this.isLoading = true;
@@ -524,7 +524,7 @@ export class FlowDesignComponent implements OnInit {
     }
   }
 
-  // 提交节点编辑结果
+  // 提交節點編輯結果
   submitWorkflowNodeEdit() {
 
     this.workflowNodeEditForm.controls['name'].markAsDirty();
@@ -559,7 +559,7 @@ export class FlowDesignComponent implements OnInit {
 
     if (validResult) {
 
-      // 基本信息，办理信息
+      // 基本信息，辦理信息
       let data = this._nodeDataList.find(d => d.domId == this.workflowNodeEditForm.value['id']);
       data.name = this.workflowNodeEditForm.value['name'];
       data.handleMode = this.workflowNodeEditForm.value['handleMode'];
@@ -568,11 +568,11 @@ export class FlowDesignComponent implements OnInit {
       data.department = this.workflowNodeEditForm.value['department'];
       this._checkedNode.childNodes[1].innerText = data.name;
 
-      // 转出条件
+      // 轉出條件
       for (let key in this.connectionFormControls) {
         let data = this.connectionFormControls[key];
 
-        // 清理当前节点的指向key节点的所有条件，在下边重新添加
+        // 清理當前節點的指嚮key節點的所有條件，在下邊重新添加
         this._conditionDataList = this._conditionDataList.filter(data => !(data.sourceId == this._checkedNode.id && data.targetId == key));
         data.forEach(element => {
           let formControlId = this.workflowNodeEditForm.value[element.formControlId];

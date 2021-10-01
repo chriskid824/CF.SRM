@@ -20,6 +20,11 @@ export class RfqManageComponent implements OnInit {
   size: number = 6;
   total: number;
   t = "";
+
+  _rfqNum;
+  _status;
+  _name;
+
   constructor(private _formBuilder: FormBuilder,
     private _srmRfqService: SrmRfqService,
     private _storageService: StorageService,
@@ -32,13 +37,32 @@ export class RfqManageComponent implements OnInit {
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
       RFQ_NUM: [null],
-      STATUS: [1],
+      STATUS: ["1"],
       NAME:[null]
     });
+    if (sessionStorage.getItem("rfq-manage")) {
+      var query = JSON.parse(sessionStorage.getItem("rfq-manage"));
+      this._rfqNum = query.rfqNum;
+      this._name = query.name;
+      this._status = query.status;
+      this.page = query.page;
+      this.size = query.size;
+      console.log(this._status);
+      this.searchForm.patchValue({
+        RFQ_NUM: this._rfqNum,
+        NAME: this._name,
+        STATUS: this._status
+      });
+      console.log(this.searchForm);
+      this.refresh();
+    }
   }
 
   submitSearch() {
-
+    this._rfqNum = this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"];
+    this._status = this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"];
+    this._name = this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"];
+    this.page = 1;
     this.refresh();
   }
 
@@ -59,12 +83,10 @@ export class RfqManageComponent implements OnInit {
   refresh() {
     //this.t = this.test();
     console.log(this.searchForm.value["STATUS"]);
-    console.log(this._storageService.werks);
     var query = {
-      rfqNum: this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"],
-      status: this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"],
-      name: this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"],
-      werks: this._storageService.werks,
+      rfqNum: this._rfqNum,
+      status: this._status,
+      name: this._name,
       page: this.page,
       size: this.size
     }
@@ -75,12 +97,7 @@ export class RfqManageComponent implements OnInit {
       console.log(this.data);
     })
     this.status = query.status;
-    //this.data = [
-    //  { RFQ_ID: 1, RFQ_NUM: 'order 1', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST'},
-    //  { RFQ_ID: 2, RFQ_NUM: 'order 2', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
-    //  { RFQ_ID: 3, RFQ_NUM: 'order 3', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' },
-    //  { RFQ_ID: 4, RFQ_NUM: 'order 4', STATUS: 1, SOURCER: 'TEST', DateString: this.t,CREATE_BY:'TEST' }
-    //];
+    sessionStorage.setItem("rfq-manage", JSON.stringify(query));
   }
 
   // reset the search form content 
@@ -96,6 +113,11 @@ export class RfqManageComponent implements OnInit {
 
 
   pageChange() {
+    this.refresh();
+  }
+
+  sizeChange() {
+    this.page = 1;
     this.refresh();
   }
 

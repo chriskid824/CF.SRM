@@ -32,39 +32,39 @@ namespace Convience.ManagentApi.Controllers.SystemManage
 
         [HttpDelete]
         [Permission("menuDelete")]
-        [LogFilter("系统管理", "菜单管理", "删除菜单")]
+        [LogFilter("系统管理", "菜單管理", "删除菜單")]
         public async Task<IActionResult> Delete(int id)
         {
             var isSuccess = await _menuService.DeleteMenuAsync(id);
             if (!isSuccess)
             {
-                return this.BadRequestResult("删除失败!");
+                return this.BadRequestResult("删除失敗!");
             }
             return Ok();
         }
 
         [HttpPost]
         [Permission("menuAdd")]
-        [LogFilter("系统管理", "菜单管理", "创建菜单")]
+        [LogFilter("系统管理", "菜單管理", "創建菜單")]
         public async Task<IActionResult> Add(MenuViewModel menuViewModel)
         {
             var isSuccess = await _menuService.AddMenuAsync(menuViewModel);
             if (!isSuccess)
             {
-                return this.BadRequestResult("添加失败!");
+                return this.BadRequestResult("添加失敗!");
             }
             return Ok();
         }
 
         [HttpPatch]
         [Permission("menuUpdate")]
-        [LogFilter("系统管理", "菜单管理", "更新菜单")]
+        [LogFilter("系统管理", "菜單管理", "更新菜單")]
         public async Task<IActionResult> Update(MenuViewModel menuViewModel)
         {
             var isSuccess = await _menuService.UpdateMenuAsync(menuViewModel);
             if (!isSuccess)
             {
-                return this.BadRequestResult("更新失败!");
+                return this.BadRequestResult("更新失敗!");
             }
             return Ok();
         }

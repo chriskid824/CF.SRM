@@ -38,20 +38,20 @@ export class MyFlowComponent implements OnInit {
   @ViewChild('flowRouteTpl', { static: true })
   _flowRouteTpl;
 
-  // 工作流实例数据
+  // 工作流實例數據
   data: WorkflowInstance[] = [];
 
-  // 表单设计数据
+  // 錶單設計數據
   private _formData: WorkFlowForm = new WorkFlowForm();
 
-  // 表单控件数据
+  // 錶單控件數據
   formControlList: WorkFlowFormControl[] = [];
 
-  // 节点数据
+  // 節點數據
   nodeDataList: WorkflowNode[] = [];
   linkDataList: WorkflowLink[] = [];
 
-  // 节点处理数据
+  // 節點處理數據
   routeDataList: WorkflowInstanceRoute[] = [];
 
   // 控件值
@@ -84,7 +84,7 @@ export class MyFlowComponent implements OnInit {
 
   add() {
     this._nzModal = this._modalService.create({
-      nzTitle: '选择工作流类型',
+      nzTitle: '選擇工作流類型',
       nzContent: this.wfTypeTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -100,14 +100,14 @@ export class MyFlowComponent implements OnInit {
       });
   }
 
-  // 查看内容
+  // 檢視內容
   viewForm(data) {
     this.checkedData = data;
     this._formService.get(data.workFlowId).subscribe((result: any) => {
       this._formData = result.formResult;
       this.formControlList = result.formControlResults;
 
-      // 初始化表单区域状态
+      // 初始化錶單區域狀態
       //this._renderer.setStyle(this._formArea.nativeElement, 'height', `${this._formData.height}px`);
       //this._renderer.setStyle(this._formArea.nativeElement, 'width', `${this._formData.width}px`);
       //this._renderer.setStyle(this._formArea.nativeElement, 'background-color', this._formData.background);
@@ -120,7 +120,7 @@ export class MyFlowComponent implements OnInit {
       });
 
       this._nzModal = this._modalService.create({
-        nzTitle: '编辑内容',
+        nzTitle: '編輯內容',
         nzContent: this._formTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -134,7 +134,7 @@ export class MyFlowComponent implements OnInit {
     });
   }
 
-  // 查看流程
+  // 檢視流程
   viewflow(data) {
 
     this.checkedData = data;
@@ -143,7 +143,7 @@ export class MyFlowComponent implements OnInit {
       this.linkDataList = result.workFlowLinkResults ? result.workFlowLinkResults : [];
 
       this._modalService.create({
-        nzTitle: '查看流程',
+        nzTitle: '檢視流程',
         nzContent: this._flowTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -247,7 +247,7 @@ export class MyFlowComponent implements OnInit {
 
   startFlow(workflowId) {
     this._workflowInstanceService.createInstance(workflowId).subscribe(result => {
-      this._messageService.success('发起成功');
+      this._messageService.success('發起成功');
       this._nzModal.close();
       this.refresh();
     });
@@ -255,10 +255,10 @@ export class MyFlowComponent implements OnInit {
 
   delete(data) {
     this._modalService.confirm({
-      nzTitle: '是否删除？',
+      nzTitle: '是否刪除？',
       nzOnOk: () => {
         this._workflowInstanceService.deleteInstance(data.id).subscribe(result => {
-          this._messageService.success('删除成功');
+          this._messageService.success('刪除成功');
           this.refresh();
         });
       }
@@ -284,10 +284,10 @@ export class MyFlowComponent implements OnInit {
     });
   }
 
-  // 提交审批
+  // 提交審批
   submitApprove() {
     this._modalService.confirm({
-      nzTitle: '确认内容无误，是否提交？',
+      nzTitle: '確認內容無誤，是否提交？',
       nzOnOk: () => {
 
         let values: WorkflowInstanceValue[] = [];
@@ -315,12 +315,12 @@ export class MyFlowComponent implements OnInit {
     })
   }
 
-  // 查看流程
+  // 檢視流程
   viewRoutes() {
     this._workflowInstanceService.getInstanceRoute(this.checkedData.id).subscribe((result: any) => {
       this.routeDataList = result;
       this._modalService.create({
-        nzTitle: '处理过程',
+        nzTitle: '處理過程',
         nzContent: this._flowRouteTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -332,7 +332,7 @@ export class MyFlowComponent implements OnInit {
   // 取消流程
   cancelWf() {
     this._modalService.confirm({
-      nzTitle: '确认取消流程？',
+      nzTitle: '確認取消流程？',
       nzOnOk: () => {
         this._workflowInstanceService.cancelInstance({
           workFlowInstanceId: this.checkedData.id
@@ -368,16 +368,16 @@ export class MyFlowComponent implements OnInit {
         result = '未提交';
         break;
       case 2:
-        result = '流转中';
+        result = '流轉中';
         break;
       case 3:
-        result = '已拒绝';
+        result = '已拒絕';
         break;
       case 4:
-        result = '已结束';
+        result = '已結束';
         break;
       case 5:
-        result = '无法进行';
+        result = '無法進行';
         break;
       case 6:
         result = '已取消';
@@ -390,13 +390,13 @@ export class MyFlowComponent implements OnInit {
     let result;
     switch (state) {
       case 1:
-        result = '未处理';
+        result = '未處理';
         break;
       case 2:
-        result = '通过';
+        result = '通過';
         break;
       case 3:
-        result = '拒绝';
+        result = '拒絕';
         break;
     }
     return result;

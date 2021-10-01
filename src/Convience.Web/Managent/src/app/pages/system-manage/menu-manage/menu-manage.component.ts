@@ -38,7 +38,7 @@ export class MenuManageComponent implements OnInit {
   }
 
   initNodes() {
-    let nodes: NzTreeNodeOptions[] = [{ title: '菜单管理', key: null, icon: 'global', expanded: true, children: [] }];
+    let nodes: NzTreeNodeOptions[] = [{ title: '菜單管理', key: null, icon: 'global', expanded: true, children: [] }];
     this._menuService.get().subscribe((result: any) => {
       this.data = result;
       this.makeNodes(null, nodes[0], this.data);
@@ -60,7 +60,7 @@ export class MenuManageComponent implements OnInit {
     if (this.selectedNode) {
       let selectMenu: Menu = this.data.find(menu => menu.id.toString() == this.selectedNode?.key);
       if (selectMenu && (selectMenu.type == 2 || selectMenu.type == 3)) {
-        this._messageService.warning("按钮和链接类型节点无法添加子元素！");
+        this._messageService.warning("按鈕和鏈接類型節點無法添加子元素！");
         return;
       }
     }
@@ -140,12 +140,12 @@ export class MenuManageComponent implements OnInit {
 
   remove(id: string) {
     this._modalService.confirm({
-      nzTitle: '是否删除该菜单?',
-      nzContent: '删除菜单会导致相关用户的权限无法使用，请谨慎操作！',
+      nzTitle: '是否刪除該菜單?',
+      nzContent: '刪除菜單會導緻相關用戶的權限無法使用，請謹慎操作！',
       nzOnOk: () =>
         this._menuService.delete(id).subscribe(result => {
           this.initNodes();
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
         })
     });
   }

@@ -13,7 +13,6 @@ namespace Convience.Entity.Entity.SRM
         {
             AspNetUserRoles = new HashSet<AspNetUserRole>();
         }
-
         public int Id { get; set; }
         public string Avatar { get; set; }
         public int Sex { get; set; }
@@ -35,7 +34,7 @@ namespace Convience.Entity.Entity.SRM
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string CostNo { get; set; }
-
+        public string SapId { get; set; }
         public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
     }
 }

@@ -1,0 +1,72 @@
+<div class="two-column" style="width: 93%;">
+  <div class="right">
+    <nz-card [nzSize]="'small'">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label>原物料</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="原物料" formControlName="material"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button *canOperate="'price-manage'" nz-button nzType="primary">搜索</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+    <nz-card [nzSize]="'small'" style="height: auto;">
+      <button *canOperate="'RFQ_ACTION'" nz-button class="mr-10" (click)="open(AddHeader,AddContent)">
+        <i nz-icon nzType="plus"></i>新增原物料
+      </button>
+      <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+                  nzBordered="true" pagination="true">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="40px">原物料</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <td nzAlign="center">{{ data.material }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
+        </nz-pagination>
+      </div>
+
+    </nz-card>
+  </div>
+</div>
+
+
+
+<ng-template #AddHeader>
+  <span>新增原物料</span>
+</ng-template>
+<ng-template #AddContent>
+  <form nz-form [formGroup]="addForm">
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">原物料</nz-form-label>
+      <nz-form-control nzErrorTip="欄位必填">
+        <input nz-input placeholder="原物料" formControlName="material"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button *canOperate="'RFQ_ACTION'" nz-button [nzType]="'primary'" (click)="add()"
+                 style="margin-top: 16px" class="mr-10">提交
+        </button>
+        <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>

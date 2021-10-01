@@ -38,26 +38,26 @@ export class HandleWorkFlowComponent implements OnInit {
   @ViewChild('flowRouteTpl', { static: true })
   _flowRouteTpl;
 
-  // 工作流实例数据
+  // 工作流實例數據
   data: WorkflowInstance[] = [];
 
-  // 表单设计数据
+  // 錶單設計數據
   private _formData: WorkFlowForm = new WorkFlowForm();
 
-  // 表单控件数据
+  // 錶單控件數據
   formControlList: WorkFlowFormControl[] = [];
 
-  // 节点数据
+  // 節點數據
   nodeDataList: WorkflowNode[] = [];
   linkDataList: WorkflowLink[] = [];
 
-  // 节点处理数据
+  // 節點處理數據
   routeDataList: WorkflowInstanceRoute[] = [];
 
   // 控件值
   controlValues: { [key: string]: string; } = {};
 
-  // 评论
+  // 評論
   comment;
 
   page: number = 1;
@@ -94,21 +94,21 @@ export class HandleWorkFlowComponent implements OnInit {
       });
   }
 
-  // 查看内容
+  // 檢視內容
   viewForm(data) {
     this.checkedData = data;
 
-    // 取得当前工作流的处理流程
+    // 取得當前工作流的處理流程
     this._workflowInstanceService.getInstanceRoute(this.checkedData.id).subscribe((result: any) => {
       this.routeDataList = result;
     });
 
-    // 取得表单以及表单组件的数据,渲染页面
+    // 取得錶單以及錶單組件的數據,渲染頁麵
     this._formService.get(data.workFlowId).subscribe((result: any) => {
       this._formData = result.formResult;
       this.formControlList = result.formControlResults;
 
-      // 初始化表单区域状态
+      // 初始化錶單區域狀態
       //this._renderer.setStyle(this._formArea.nativeElement, 'height', `${this._formData.height}px`);
       //this._renderer.setStyle(this._formArea.nativeElement, 'width', `${this._formData.width}px`);
       //this._renderer.setStyle(this._formArea.nativeElement, 'background-color', this._formData.background);
@@ -121,7 +121,7 @@ export class HandleWorkFlowComponent implements OnInit {
       });
 
       this._nzModal = this._modalService.create({
-        nzTitle: '编辑内容',
+        nzTitle: '編輯內容',
         nzContent: this._formTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -135,22 +135,22 @@ export class HandleWorkFlowComponent implements OnInit {
     });
   }
 
-  // 查看流程
+  // 檢視流程
   viewflow(data) {
     this.checkedData = data;
 
-    // 取得当前工作流的处理流程
+    // 取得當前工作流的處理流程
     this._workflowInstanceService.getInstanceRoute(this.checkedData.id).subscribe((result: any) => {
       this.routeDataList = result;
     });
 
-    // 取得工作流的节点和链接数据,生成图形
+    // 取得工作流的節點和鏈接數據,生成圖形
     this._flowService.get(data.workFlowId).subscribe((result: any) => {
       this.nodeDataList = result.workFlowNodeResults ? result.workFlowNodeResults : [];
       this.linkDataList = result.workFlowLinkResults ? result.workFlowLinkResults : [];
 
       this._modalService.create({
-        nzTitle: '查看流程',
+        nzTitle: '檢視流程',
         nzContent: this._flowTpl,
         nzFooter: null,
         nzMaskClosable: false,
@@ -177,7 +177,7 @@ export class HandleWorkFlowComponent implements OnInit {
       //   jsPlumbInstance.makeSource(node.domId, {});
       // });
 
-      // 因为nz的模态框的创建需要时间,因此对dom操作设置了延时
+      // 因為nz的模態框的創建需要時間,因此對dom操作設定了延時
       setTimeout(() => {
         this.nodeDataList.forEach(node => {
 
@@ -208,7 +208,7 @@ export class HandleWorkFlowComponent implements OnInit {
 
   }
 
-  // 是否是当前处理的流程
+  // 是否是當前處理的流程
   canHandle() {
     return this.routeDataList.find(data => data.handlePepleAccount == this._storageService.userName &&
       data.handleState == 1) && this.checkedData.workFlowInstanceState == 2
@@ -270,7 +270,7 @@ export class HandleWorkFlowComponent implements OnInit {
           IsPass: true,
           handleComment: this.comment
         }).subscribe(() => {
-          this._messageService.success('处理完毕!');
+          this._messageService.success('處理完畢!');
           this.refresh();
           this._nzModal.close();
         });
@@ -278,18 +278,18 @@ export class HandleWorkFlowComponent implements OnInit {
     });
   }
 
-  // 拒绝
+  // 拒絕
   disApprove() {
     this.comment = '';
     this._modalService.confirm({
-      nzTitle: '是否拒绝？',
+      nzTitle: '是否拒絕？',
       nzOnOk: () => {
         this._workflowInstanceService.approveHandledInstance({
           workFlowInstanceId: this.checkedData.id,
           IsPass: false,
           handleComment: this.comment
         }).subscribe(() => {
-          this._messageService.success('处理完毕!');
+          this._messageService.success('處理完畢!');
           this.refresh();
           this._nzModal.close();
         });
@@ -297,10 +297,10 @@ export class HandleWorkFlowComponent implements OnInit {
     });
   }
 
-  // 查看处理流程
+  // 檢視處理流程
   viewRoutes() {
     this._modalService.create({
-      nzTitle: '处理过程',
+      nzTitle: '處理過程',
       nzContent: this._flowRouteTpl,
       nzFooter: null,
       nzMaskClosable: false,
@@ -319,16 +319,16 @@ export class HandleWorkFlowComponent implements OnInit {
         result = '未提交';
         break;
       case 2:
-        result = '流转中';
+        result = '流轉中';
         break;
       case 3:
-        result = '已拒绝';
+        result = '已拒絕';
         break;
       case 4:
-        result = '已结束';
+        result = '已結束';
         break;
       case 5:
-        result = '无法进行';
+        result = '無法進行';
         break;
       case 6:
         result = '已取消';
@@ -342,13 +342,13 @@ export class HandleWorkFlowComponent implements OnInit {
     let result;
     switch (state) {
       case 1:
-        result = '未处理';
+        result = '未處理';
         break;
       case 2:
-        result = '通过';
+        result = '通過';
         break;
       case 3:
-        result = '拒绝';
+        result = '拒絕';
         break;
     }
     return result;

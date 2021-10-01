@@ -84,6 +84,7 @@ export class UserManageComponent implements OnInit {
     this.editedUser = new User();
     this.editForm = this._formBuilder.group({
       avatar: [''],
+      sapId: [''],
       userName: ['', [Validators.required, Validators.maxLength(15)]],
       name: ['', [Validators.required, Validators.maxLength(10)]],
       phoneNumber: ['', [Validators.pattern(/^0\d{9}$/)]],
@@ -105,10 +106,12 @@ export class UserManageComponent implements OnInit {
 
   edit(title: TemplateRef<{}>, content: TemplateRef<{}>, user: User) {
     this._userService.getUser(user.id).subscribe(user => {
+      console.log(user['userName']);
       this.isNewUser = false;
       this.editedUser = user;
       this.editForm = this._formBuilder.group({
         avatar: [user['avatar']],
+        sapId: [user['sapId']],
         userName: [user['userName'], [Validators.required, Validators.maxLength(15)]],
         name: [user['name'], [Validators.required, Validators.maxLength(10)]],
         phoneNumber: [user['phoneNumber'], [Validators.pattern(/^0\d{9}$/)]],
@@ -129,14 +132,14 @@ export class UserManageComponent implements OnInit {
     });
   }
 
-  // 设置用户密码
+  // 設定用戶密碼
   setPassword(tpl: TemplateRef<{}>, user: User) {
     this.passwordSetForm = this._formBuilder.group({
       id: [user['id']],
       password: [null, [Validators.maxLength(30), Validators.minLength(4), Validators.required]]
     });
     this.tplModal = this._modalService.create({
-      nzTitle: "设置密码",
+      nzTitle: "設定密碼",
       nzContent: tpl,
       nzFooter: null,
       nzClosable: true,
@@ -146,12 +149,12 @@ export class UserManageComponent implements OnInit {
 
   remove(id: string) {
     this._modalService.confirm({
-      nzTitle: '是否删除该用户?',
+      nzTitle: '是否刪除該用戶?',
       nzContent: null,
       nzOnOk: () =>
         this._userService.delete(id).subscribe(result => {
           this.refresh();
-          this._messageService.success("删除成功！");
+          this._messageService.success("刪除成功！");
         })
     });
   }
@@ -186,6 +189,7 @@ export class UserManageComponent implements OnInit {
     if (this.editForm.valid) {
       let user: any = {};
       user.avatar = this.editForm.value['avatar'];
+      user.sapId=this.editForm.value['sapId'];
       user.userName = this.editForm.value['userName'];
       user.password = this.editForm.value['password'];
       user.name = this.editForm.value['name'];

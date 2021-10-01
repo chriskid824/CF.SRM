@@ -2,16 +2,16 @@
     <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
 
         <nz-form-item>
-            <nz-form-label [nzFor]="'module'">模块名</nz-form-label>
+            <nz-form-label [nzFor]="'module'">模塊名</nz-form-label>
             <nz-form-control>
-                <input nz-input placeholder="模块名" [formControlName]="'module'" [attr.id]="'module'"
+                <input nz-input placeholder="模塊名" [formControlName]="'module'" [attr.id]="'module'"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'submodule'">子模块名</nz-form-label>
+            <nz-form-label [nzFor]="'submodule'">子模塊名</nz-form-label>
             <nz-form-control>
-                <input nz-input placeholder="子模块名" [formControlName]="'submodule'" [attr.id]="'submodule'"
+                <input nz-input placeholder="子模塊名" [formControlName]="'submodule'" [attr.id]="'submodule'"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>
@@ -23,7 +23,7 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzFor]="'operateAt'">操作时间</nz-form-label>
+            <nz-form-label [nzFor]="'operateAt'">操作時間</nz-form-label>
             <nz-form-control>
                 <nz-range-picker [nzShowTime]="true" [formControlName]="'operateAt'" [attr.id]="'operateAt'">
                 </nz-range-picker>
@@ -40,7 +40,7 @@
 <nz-card [nzSize]="'small'" class="full-double">
 
     <button nz-button nzType="outline" (click)="openOperateLogSettingPage()" *canOperate="'updateLogSettingBtn'"><i
-            nz-icon nzType="setting" nzTheme="outline"></i>设置</button>
+            nz-icon nzType="setting" nzTheme="outline"></i>設定</button>
     <div class="mt-10">
         <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
             nzBordered="true" (nzQueryParams)="onQueryParamsChange($event)" [nzScroll]="{ x: '2460px' }">
@@ -48,21 +48,21 @@
                 <tr>
                     <th nzAlign="center" nzWidth="50px">#</th>
                     <th nzAlign="center" nzWidth="200px" nzColumnKey="module" [nzSortFn]="true" [nzSortPriority]="true">
-                        模块名</th>
+                        模塊名</th>
                     <th nzAlign="center" nzWidth="200px" nzColumnKey="subModule" [nzSortFn]="true"
-                        [nzSortPriority]="true">子模块名</th>
+                        [nzSortPriority]="true">子模塊名</th>
                     <th nzAlign="center" nzWidth="200px">功能</th>
-                    <th nzAlign="center" nzWidth="200px">请求uri</th>
-                    <th nzAlign="center" nzWidth="100px">请求方法</th>
-                    <th nzAlign="center">http请求内容</th>
-                    <!-- <th nzAlign="center" nzWidth="200px">变更字段</th>
-                    <th nzAlign="center" nzWidth="200px">旧值</th>
+                    <th nzAlign="center" nzWidth="200px">請求uri</th>
+                    <th nzAlign="center" nzWidth="100px">請求方法</th>
+                    <th nzAlign="center">http請求內容</th>
+                    <!-- <th nzAlign="center" nzWidth="200px">變更字段</th>
+                    <th nzAlign="center" nzWidth="200px">舊值</th>
                     <th nzAlign="center" nzWidth="200px">新值</th> -->
-                    <th nzAlign="center" nzWidth="100px">操作结果</th>
+                    <th nzAlign="center" nzWidth="100px">操作結果</th>
                     <th nzAlign="center" nzWidth="100px" nzColumnKey="operatorName" [nzSortFn]="true"
                         [nzSortPriority]="true">操作人</th>
                     <th nzAlign="center" nzWidth="200px" nzColumnKey="operateAt" [nzSortFn]="true"
-                        [nzSortPriority]="true">操作时间</th>
+                        [nzSortPriority]="true">操作時間</th>
                 </tr>
             </thead>
             <tbody>

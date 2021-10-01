@@ -25,6 +25,7 @@ using Convience.ManagentApi.Controllers.Extension;
 using BPMAPI;
 using System.ServiceModel;
 using System.Data;
+using Convience.JwtAuthentication;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -81,6 +82,11 @@ namespace Convience.ManagentApi.Controllers.SRM
             ViewSrmPriceDetail detail = _srmPriceService.GetDetail(qots);
             ViewSrmRfqH rfqH = _srmRfqHService.GetDataByRfqId(query.rfqId.Value);
             List<ViewSummary> summ = new List<ViewSummary>();
+
+            if (query.caseId.HasValue && !infos.Any(r=>r.Caseid==query.caseId)) {
+                return Ok(new ViewSummary[0]);
+            }
+
             foreach (var qot in qots) {
                 int max = 1;
                 var material = detail.material.AsEnumerable().Where(r => r.QotId == qot.QotId);
@@ -98,10 +104,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[i] = new ViewSummary();
                 }
                 SrmVendor vendor = _srmVendorService.GetVendorById(qot.VendorId.Value);
-                ViewSrmRfqM matnr = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
+                ViewSrmRfqM rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM { RfqId = qot.RfqId, MatnrId = qot.MatnrId });
+                SrmMatnr matnr =  _srmMatnrService.GetMatnrById(qot.MatnrId.Value);
                 temp[0].RfqId = rfqH.RfqId;
                 temp[0].RfqNum = rfqH.RfqNum;
+                temp[0].InfoId = infos.Where(r => r.QotId == qot.QotId).FirstOrDefault()?.InfoId ?? 0;
                 temp[0].isStarted = infos.Any(r => r.QotId == qot.QotId) || qot.Status.GetValueOrDefault()!=(int)Status.確認;
+                temp[0].canEdit = query.caseId.HasValue ? infos.Any(r => r.Status == (int)Status.初始 && r.Caseid == query.caseId.Value) &&(!infos.Any(r => r.QotId == qot.QotId) || infos.Any(r=>r.Caseid==query.caseId.Value&&r.QotId==qot.QotId&&r.Status==(int)Status.初始)) : false;
+                temp[0].isStarted = query.caseId.HasValue ? !temp[0].canEdit || temp[0].isStarted: temp[0].isStarted;
+                temp[0].caseId = infoRecord.Any() ? infoRecord.First().Caseid : null;
                 temp[0].qotStatus = ((Status)qot.Status.GetValueOrDefault());
                 temp[0].Status = rfqH.Status;
                 temp[0].sourcerName = rfqH.sourcerName;
@@ -109,12 +120,14 @@ namespace Convience.ManagentApi.Controllers.SRM
                 temp[0].vendor = vendor.SrmVendor1;
                 temp[0].vendorId = vendor.VendorId;
                 temp[0].vendorName = vendor.VendorName;
-                temp[0].matnr = matnr.srmMatnr;
-                temp[0].matnrId = matnr.MatnrId.Value;
-                temp[0].material = matnr.Material;
-                temp[0].volume = $"{matnr.Length}*{matnr.Width}*{matnr.Height}";
-                temp[0].weight = matnr.Weight.HasValue? matnr.Weight.Value.ToString():"";
-                temp[0].machineName = matnr.MachineName;
+                temp[0].vendorObject = vendor;
+                temp[0].matnrObject = matnr;
+                temp[0].matnr = rfqM.srmMatnr;
+                temp[0].matnrId = rfqM.MatnrId.Value;
+                temp[0].material = rfqM.Material;
+                temp[0].volume = $"{rfqM.Length}*{rfqM.Width}*{rfqM.Height}";
+                temp[0].weight = rfqM.Weight.HasValue? rfqM.Weight.Value.ToString():"";
+                temp[0].machineName = rfqM.MachineName;
                 temp[0].qotNum = qot.QotNum;
                 temp[0].qotId = qot.QotId.ToString();
                 foreach (var item in material.Select((value, i) => new { i, value })) {
@@ -174,6 +187,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                         temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() : qot.LeadTime.GetValueOrDefault().ToString();
                         temp[item.i].standQty = (item.value.StandQty.HasValue) ? item.value.StandQty.Value.ToString() : "1";
                         temp[item.i].minQty = (item.value.MinQty.HasValue) ? item.value.MinQty.Value.ToString() : "1";
+                        temp[item.i].org = item.value.Org.HasValue? item.value.Org.Value: rfqH.Werks.Value;
+                        temp[item.i].infoKind = (item.value.InfoKind.HasValue ? item.value.InfoKind.Value : (int)INFO_KIND.標準).ToString();
+                        temp[item.i].infoKindName = item.value.InfoKind.HasValue ? $"{item.value.InfoKind} {item.value.infoKindName}" : $"{(int)INFO_KIND.標準} {INFO_KIND.標準}";
+                        temp[item.i].type = item.value.Type?.ToString() ?? ((char)TYPE.物料).ToString();
+                        temp[item.i].typeName = string.IsNullOrWhiteSpace(item.value.Type) ? $"{(char)TYPE.物料} {TYPE.物料}" : $"{item.value.Type} {((TYPE)Convert.ToChar(item.value.Type))}";
                         temp[item.i].ekgry = item.value.Ekgry ?? rfqH.ekgry;
                         temp[item.i].taxcode = item.value.Taxcode?.ToString() ?? "V4";
                         temp[item.i].taxcodeName = string.IsNullOrWhiteSpace(item.value.Taxcode) ? "V4 進項稅5%" : $"{item.value.Taxcode} {item.value.taxcodeName}";
@@ -201,15 +219,20 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult Start(JObject jobj) {
             int rfqId = (int)jobj["rfqId"];
             var rfqH = _srmRfqHService.GetDataByRfqId(rfqId);
-            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.已核發) {
+            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成) {
                 return this.BadRequestResult("詢價單狀態異常");
             }
-            viewSrmInfoRecord[] infos = jobj["infos"].ToObject<viewSrmInfoRecord[]>();
-            string logonid = jobj["logonid"].ToString();
-            DateTime now = DateTime.Now;
-            foreach (viewSrmInfoRecord info in infos)
+            ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
+            UserClaims user = User.GetUserClaims();
+            if (user.UserName != rfqH.Sourcer)
             {
-                    info.Status = (int)Status.初始;
+                return this.BadRequestResult("非詢價本人");
+            }
+            string logonid = user.UserName;
+            DateTime now = DateTime.Now;
+            foreach (ViewSrmInfoRecord info in infos)
+            {
+                    info.Status = (int)Status.簽核中;
                     info.CreateDate = now;
                     info.CreateBy = logonid;
                     info.LastUpdateDate = now;
@@ -225,7 +248,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     rfqId = _srmPriceService.Start(infos).Value;
                     _srmRfqHService.UpdateStatus((int)Status.簽核中, new SrmRfqH { RfqId = rfqId, LastUpdateDate = now, LastUpdateBy = logonid });
-                    RunBorg(infos);
+                    RunBorg(rfqH,infos);
                     transaction.Complete();
                     return Ok();
                 }
@@ -236,26 +259,65 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
+        [HttpPost("Save")]
+        [Permission("price")]
+        public IActionResult Save(JObject jobj) {
+            int rfqId = (int)jobj["rfqId"];
+            int caseId = (int)jobj["caseId"];
+            var rfqH = _srmRfqHService.GetDataByRfqId(rfqId);
+            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成)
+            {
+                return this.BadRequestResult("詢價單狀態異常");
+            }
+            ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
+            UserClaims user = User.GetUserClaims();
+            if (user.UserName != rfqH.Sourcer)
+            {
+                return this.BadRequestResult("非詢價本人");
+            }
+            string logonid = user.UserName;
+            DateTime now = DateTime.Now;
+            foreach (ViewSrmInfoRecord info in infos)
+            {
+                if (info.InfoId == 0)
+                {
+                    info.CreateDate = now;
+                    info.CreateBy = logonid;
+                }
+                if (info.Caseid.HasValue && info.Caseid.Value != caseId) {
+                    throw new Exception("caseId不一致");
+                }
+                info.Status = (int)Status.初始;
+                info.Caseid = caseId;
+                info.LastUpdateDate = now;
+                info.LastUpdateBy = logonid;
+                var matnr = _srmMatnrService.GetMatnrById(info.MatnrId.Value);
+                if (string.IsNullOrWhiteSpace(matnr.SapMatnr))
+                {
+                    return this.BadRequestResult($"報價單號:{info.qotNum}，料號:{matnr.SrmMatnr1}，SapMatnr未存在");
+                }
+            }
+            using (var transaction = new System.Transactions.TransactionScope())
+            {
+                try
+                {
+                    _srmPriceService.Save(infos);
+                    UpdateCF(rfqH, infos, caseId);
+                    transaction.Complete();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Dispose();
+                    return this.BadRequestResult(ex.Message);
+                }
+            }
+        }
 
-
-        private void RunBorg(viewSrmInfoRecord[] infos)
-        {
-            BasicHttpBinding binding = new BasicHttpBinding();
-
-            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
-
-            BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
-
-            CallMethodParams callMethodParm = new CallMethodParams();
-            JObject param = new JObject();
-            param.Add("logonid", "137680");
-            param.Add("signType", "採購資訊紀錄簽核單");
-            Dictionary<string, object> Variables = new Dictionary<string, object>();
-            Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
-            Dictionary<string, object> FormControls = new Dictionary<string, object>();
+        private DataSet GetCfInfoRecord(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos) {
             DataSet ds = new DataSet();
             DataTable InfoRecord = new DataTable("CF_InfoRecord");
-            InfoRecord.Columns.Add("SapMatnr");
+            //InfoRecord.Columns.Add("SapMatnr");
             InfoRecord.Columns.Add("DESCRIPTION");
             InfoRecord.Columns.Add("QTY");
             InfoRecord.Columns.Add("Height");
@@ -269,6 +331,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("DTotal");
             InfoRecord.Columns.Add("Total");
             InfoRecord.Columns.Add("Price");
+            InfoRecord.Columns.Add("Currency");
             InfoRecord.Columns.Add("HistoricalPrice");
             InfoRecord.Columns.Add("HistoricalDate");
             InfoRecord.Columns.Add("LastPrice");
@@ -277,14 +340,31 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("LastBargainingRate");
             InfoRecord.Columns.Add("ExpirationDate");
             InfoRecord.Columns.Add("InfoId");
-            InfoRecord.Columns.Add("Img1");
-            InfoRecord.Columns.Add("Img2");
+            //InfoRecord.Columns.Add("Img1");
+            //InfoRecord.Columns.Add("Img2");
             InfoRecord.Columns.Add("Note");
-            var rfqH = _srmRfqHService.GetDataByRfqId(int.Parse(infos[0].rfqId));
-            foreach (var info in infos) {
+            InfoRecord.Columns.Add("Org");
+            InfoRecord.Columns.Add("InfoKind");
+            InfoRecord.Columns.Add("InfoKindName");
+            InfoRecord.Columns.Add("Type");
+            InfoRecord.Columns.Add("TypeName");
+            InfoRecord.Columns.Add("SAP_VENDOR");
+            InfoRecord.Columns.Add("SAP_MATNR");
+            InfoRecord.Columns.Add("MATNR_GROUP");
+            InfoRecord.Columns.Add("EKGRY");
+            InfoRecord.Columns.Add("LEAD_TIME");
+            InfoRecord.Columns.Add("STAND_QTY");
+            InfoRecord.Columns.Add("MIN_QTY");
+            InfoRecord.Columns.Add("TAXCODE");
+            InfoRecord.Columns.Add("UNIT");
+            InfoRecord.Columns.Add("EFFECTIVE_DATE");
+            InfoRecord.Columns.Add("EXPIRATION_DATE");
+
+            foreach (var info in infos)
+            {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
-                dr["SapMatnr"] = rfqM.matnr;
+                //dr["SapMatnr"] = rfqM.matnr;
                 dr["DESCRIPTION"] = rfqM.description;
                 dr["QTY"] = rfqM.Qty;
                 dr["Height"] = rfqM.Height;
@@ -298,61 +378,111 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["DTotal"] = info.Dtotal;
                 dr["Total"] = info.total;
                 dr["Price"] = info.Price;
+                dr["Currency"] = info.Currency;
                 dr["InfoId"] = info.InfoId;
-                dr["Img1"] = "/BPM/images/logo.jpg";
-                dr["Img2"] = "/BPM/images/logo2.png";
+                //dr["Img1"] = "/BPM/images/logo.jpg";
+                //dr["Img2"] = "/BPM/images/logo2.png";
                 dr["Note"] = info.Note;
+                dr["Org"] = info.Org;
+                dr["InfoKind"] = info.InfoKind;
+                dr["InfoKindName"] = $"{info.InfoKind} {info.infoKindName}";
+                dr["Type"] = info.Type;
+                dr["TypeName"] = $"{info.Type} {info.typeName}";
+                dr["SAP_VENDOR"] = info.vendorObject.SapVendor;
+                dr["SAP_MATNR"] = info.matnrObject.SapMatnr;
+                dr["MATNR_GROUP"] = info.matnrObject.MatnrGroup;
+                dr["EKGRY"] = info.Ekgry;
+                dr["LEAD_TIME"] = info.LeadTime;
+                dr["STAND_QTY"] = info.StandQty;
+                dr["MIN_QTY"] = info.MinQty;
+                dr["TAXCODE"] = info.Taxcode;
+                dr["UNIT"] = info.Unit;
+                dr["EFFECTIVE_DATE"] = info.EffectiveDate;
+                dr["EXPIRATION_DATE"] = info.ExpirationDate;
                 InfoRecord.Rows.Add(dr);
             }
-
             ds.Tables.Add(InfoRecord);
+            return ds;
+        }
+
+        private void UpdateCF(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos,int caseId) {
+            BasicHttpBinding binding = new BasicHttpBinding();
+
+            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
+
+            BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
+
+            CallMethodParams callMethodParm = new CallMethodParams();//GetBorgEmpDataByLogonID
+            JObject param = new JObject();
+            param.Add("logonid", rfqH.Sourcer);
+            param.Add("caseId", caseId);
+            param.Add("ds", JObject.FromObject(GetCfInfoRecord(rfqH, infos)));
+            callMethodParm.Method = "UpdateCF";
+            callMethodParm.Options = JsonConvert.SerializeObject(param);
+            Task<CallMethodResponse> response = client.CallMethodAsync(callMethodParm);
+            CallMethodResult result = response.Result.Body.CallMethodResult;
+            if (!result.Success)
+            {
+                throw new Exception(result.Message);
+            }
+        }
+
+        private void RunBorg(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos)
+        {
+            BasicHttpBinding binding = new BasicHttpBinding();
+
+            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
+
+            BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
+
+            CallMethodParams callMethodParm = new CallMethodParams();//GetBorgEmpDataByLogonID
+            callMethodParm.Method = "GetBorgEmpDataByLogonID";
+            callMethodParm.Options = rfqH.Sourcer;
+
+            Task<CallMethodResponse> response = client.CallMethodAsync(callMethodParm);
+            CallMethodResult result = response.Result.Body.CallMethodResult;
+            if (!result.Success)
+            {
+                throw new Exception(result.Message);
+            }
+
+
+
+            JObject param = new JObject();
+            param.Add("logonid", rfqH.Sourcer);
+            param.Add("signType", "採購資訊紀錄簽核單");
+            Dictionary<string, object> Variables = new Dictionary<string, object>();
+            Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
+            Dictionary<string, object> FormControls = new Dictionary<string, object>();
+            FormControls.Add("werks", rfqH.Werks.Value);
+            FormControls.Add("rfqId", rfqH.RfqId);
+            DataTable resultdt = JsonConvert.DeserializeObject<DataTable>(result.Options.ToString());
+            FormControls.Add("ddlUserName_USERNAME", resultdt.Rows[0]["USERNAME"].ToString());
+            FormControls.Add("ddlDeptName", resultdt.Rows[0]["DEPTNAME"].ToString());
+            FormControls.Add("txtEXT", resultdt.Rows[0]["EXT"].ToString());
+            FormControls.Add("txtEmail", resultdt.Rows[0]["EMAIL"].ToString());
+            FormControls.Add("ddlDept", resultdt.Rows[0]["DEPTID"].ToString());
+            FormControls.Add("txtUserLOGONID", resultdt.Rows[0]["LOGONID"].ToString());
+            FormControls.Add("txtUserTitle", resultdt.Rows[0]["TITLE"].ToString());
+            FormControls.Add("txtUserWorkplace", resultdt.Rows[0]["workplaceName"].ToString());
+            FormControls.Add("txtUserArriveDate", resultdt.Rows[0]["ArriveTime"].ToString());
+
             param.Add("Variables",JObject.FromObject(Variables));
             param.Add("FormControls",JObject.FromObject(FormControls));
-            param.Add("ds", JObject.FromObject(ds));
+            param.Add("ds", JObject.FromObject(GetCfInfoRecord(rfqH,infos)));
             callMethodParm.Method = "Sign";
             callMethodParm.Options = JsonConvert.SerializeObject(param);
 
-            Task<CallMethodResponse> testResponseTask = client.CallMethodAsync(callMethodParm);
-            CallMethodResult result = testResponseTask.Result.Body.CallMethodResult;
+            response = client.CallMethodAsync(callMethodParm);
+            result = response.Result.Body.CallMethodResult;
             if (!result.Success) {
                 throw new Exception(result.Message);
             }
-            //var bpm = new BPMAPISoapClient(new BPMAPISoapClient.EndpointConfiguration());
-            //JObject param = new JObject();
-            //param.Add("logonid", Request.QueryString["logon"]);
-            //param.Add("signType", "文件新增變更申請單");
-            //Dictionary<string, object> Variables = new Dictionary<string, object>();
-            //Variables.Add("SUBJECT", $"文件編號:{obj.doc_no} 文件名稱:{obj.doc_name} 申請類別:{(isNew ? "新增" : "改版")}");
-            //Dictionary<string, object> FormControls = new Dictionary<string, object>();
-            //setUser(ViewState["logonid"].ToString(), FormControls);
-            //FormControls.Add("txtdoc_id", ViewState["doc_id"].ToString());
-            //FormControls.Add("txtfolder_id", ViewState["folder_id"].ToString());
-            //FormControls.Add("rblAppType", isNew ? "新增" : "改版");
-            //FormControls.Add("txtdoc_no", obj.doc_no);
-            //FormControls.Add("txtdoc_name", obj.doc_name);
-            //FormControls.Add("txtversion_major", obj.version_major);
-            //FormControls.Add("txtversion_minor", obj.version_minor);
-            //FormControls.Add("txtVersion", obj.version);
-            //FormControls.Add("txtwriter", obj.writer);
-            //FormControls.Add("txtdms_type", dms_type);
-            //FormControls.Add("txtAppDescription", obj.change_desc);
-            //FormControls.Add("txtworkflow_id", workflow_id);
-            //FormControls.Add("txtFolderPath", Utility.GetVirtualPath(ViewState["folder_id"].ToString()));
-            //Variables.Add("APPLYDEPT", FormControls["ddlDept"].ToString());
-            //param.Add("Variables", JObject.FromObject(Variables));
-            //param.Add("FormControls", JObject.FromObject(FormControls));
-            //IZ.WebFileManager.BPMAPI.CallMethodParams cmp = new IZ.WebFileManager.BPMAPI.CallMethodParams()
-            //{
-            //    Token = "",
-            //    Method = "Sign",
-            //    Options = JsonConvert.SerializeObject(param)
-            //};
-            //IZ.WebFileManager.BPMAPI.CallMethodResult result = bpm.CallMethod(cmp);
-            //if (!result.Success)
-            //{
-            //    throw new Exception(result.Message);
-            //}
-            //return;
+
+            foreach (var info in infos) {
+                info.Caseid = int.Parse(result.Options.ToString());
+            }
+            _srmPriceService.UpdateCaseid(infos);
         }
 
 
@@ -369,15 +499,18 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
         [HttpPost("GetEkgry")]
         [Permission("price")]
-        public IActionResult GetEkgry(int[] werks)
+        public IActionResult GetEkgry()
         {
-            return Ok(_srmPriceService.GetEkgry(werks));
+            UserClaims user = User.GetUserClaims();
+            return Ok(_srmPriceService.GetEkgry(user.Werks));
         }
 
         [HttpPost("QueryInfoRecord")]
         [Permission("price")]
         public IActionResult QueryInfoRecord(QueryInfoRecordModels query)
         {
+            UserClaims user = User.GetUserClaims();
+            query.werks = user.Werks;
             return Ok(_srmInfoRecordService.Query(query));
         }
     }

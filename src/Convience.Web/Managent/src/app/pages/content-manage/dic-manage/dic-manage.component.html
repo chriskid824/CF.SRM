@@ -3,7 +3,7 @@
         <nz-card [nzSize]="'small'">
             <div>
                 <button nz-button class="mr-10" (click)="addDicType()" *canOperate="'addDicTypeBtn'"><i nz-icon
-                        nzType="plus"></i>添加类型</button>
+                        nzType="plus"></i>添加類型</button>
             </div>
             <nz-list>
                 <nz-list-item *ngFor="let item of dicTypes">
@@ -24,7 +24,7 @@
             <div>
                 <ng-container *ngIf="selectedDicType">
                     <button nz-button class="mr-10" (click)="addDicData()" *canOperate="'addDicDataBtn'"><i nz-icon
-                            nzType="plus"></i>添加数据</button>
+                            nzType="plus"></i>添加數據</button>
                 </ng-container>
             </div>
             <div class="mt-10">
@@ -33,7 +33,7 @@
                     <thead>
                         <tr>
                             <th nzAlign="center" nzWidth="60px">#</th>
-                            <th nzAlign="center">名称</th>
+                            <th nzAlign="center">名稱</th>
                             <th nzAlign="center" nzWidth="120px">排序</th>
                             <th nzAlign="center" nzWidth="120px">操作</th>
                         </tr>
@@ -64,36 +64,36 @@
 <ng-template #dicTypeTpl>
     <form nz-form [formGroup]="editDicTypeForm" (ngSubmit)="submitDicTypeEdit()">
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_Name'">名称</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_Name'">名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="dicType_Name_ErrorTpl">
-                <input [attr.id]="'dicType_Name'" formControlName="name" nz-input placeholder="名称" autocomplete="off" />
+                <input [attr.id]="'dicType_Name'" formControlName="name" nz-input placeholder="名稱" autocomplete="off" />
             </nz-form-control>
             <ng-template #dicType_Name_ErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入字典分类名称！
+                    請輸入字典分類名稱！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    字典分类名称长度不能超过15！
+                    字典分類名稱長度不能超過15！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_Code'">代码</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_Code'">代碼</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="dicType_Code_ErrorTpl">
-                <input [attr.id]="'dicType_Code'" formControlName="code" nz-input placeholder="代码" autocomplete="off" />
+                <input [attr.id]="'dicType_Code'" formControlName="code" nz-input placeholder="代碼" autocomplete="off" />
             </nz-form-control>
             <ng-template #dicType_Code_ErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入字典分类代码！
+                    請輸入字典分類代碼！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    字典分类代码长度不能超过15！
+                    字典分類代碼長度不能超過15！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_sort'">排序</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入排序！">
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入排序！">
                 <input type="number" [attr.id]="'dicType_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>
@@ -114,22 +114,22 @@
 <ng-template #dicDataTpl>
     <form nz-form [formGroup]="editDicDataForm" (ngSubmit)="submitDicDataEdit()">
         <nz-form-item>
-            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicData_Name'">名称</nz-form-label>
+            <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicData_Name'">名稱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="dicData_Name_ErrorTpl">
-                <input [attr.id]="'dicData_Name'" formControlName="name" nz-input placeholder="名称" autocomplete="off" />
+                <input [attr.id]="'dicData_Name'" formControlName="name" nz-input placeholder="名稱" autocomplete="off" />
             </nz-form-control>
             <ng-template #dicData_Name_ErrorTpl let-control>
                 <ng-container *ngIf="control.hasError('required')">
-                    请输入字典数据名称！
+                    請輸入字典數據名稱！
                 </ng-container>
                 <ng-container *ngIf="control.hasError('maxlength')">
-                    字典数据名称长度不能超过15！
+                    字典數據名稱長度不能超過15！
                 </ng-container>
             </ng-template>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" [nzFor]="'dicType_sort'">排序</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入排序！">
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="請輸入排序！">
                 <input type="number" [attr.id]="'dicType_sort'" formControlName="sort" nz-input placeholder="排序"
                     autocomplete="off" />
             </nz-form-control>

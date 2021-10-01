@@ -34,32 +34,32 @@ export class FormDesignComponent implements OnInit {
 
   isloading = false;
 
-  // 选中框
+  // 選中框
   @ViewChild('selectedBorder', { static: true })
   private _sborder: ElementRef;
 
-  // 节点数据
+  // 節點數據
   private _nodeDataList: WorkFlowFormControl[] = [];
 
-  // 表单设计数据
+  // 錶單設計數據
   formData: WorkFlowForm = new WorkFlowForm();
 
-  // 选中节点的数据
+  // 選中節點的數據
   checkedNodeData: WorkFlowFormControl = null;
 
   private _jsPlumb = jp.jsPlumb;
   private _jsPlumbInstance;
 
-  // 拖拽的节点类型key
+  // 拖拽的節點類型key
   private _draggedKey;
 
-  // 点击选中的节点
+  // 點選選中的節點
   checkedNode = null;
 
-  // 字号
+  // 字號
   fontsize = [];
 
-  // 编辑select的选项
+  // 編輯select的選項
   inputOption = null;
 
   // 工作流ID
@@ -86,7 +86,7 @@ export class FormDesignComponent implements OnInit {
     }
   }
 
-  // 初始化流程图
+  // 初始化流程圖
   initGraph() {
     this._jsPlumbInstance = this._jsPlumb.getInstance({
       DragOptions: { cursor: 'move', zIndex: 2000 },
@@ -94,7 +94,7 @@ export class FormDesignComponent implements OnInit {
     });
   }
 
-  // 键盘事件
+  // 鍵盤事件
   initKeyboardListening() {
     fromEvent(window, 'keydown').subscribe((event: any) => {
       if (this.checkedNode) {
@@ -134,7 +134,7 @@ export class FormDesignComponent implements OnInit {
     });
   }
 
-  // 初始化流程图区域点击
+  // 初始化流程圖區域點選
   initFormAreaClick() {
     this._renderer.listen(this._formArea.nativeElement, 'mousedown', event => {
       this.checkedNode = null;
@@ -154,7 +154,7 @@ export class FormDesignComponent implements OnInit {
         this.formData.background = 'black';
       }
 
-      // 初始化表单区域状态
+      // 初始化錶單區域狀態
       this._renderer.setStyle(this._formArea.nativeElement, 'height', `${this.formData.height}px`);
       this._renderer.setStyle(this._formArea.nativeElement, 'width', `${this.formData.width}px`);
       this._renderer.setStyle(this._formArea.nativeElement, 'background-color', this.formData.background);
@@ -163,7 +163,7 @@ export class FormDesignComponent implements OnInit {
         this._nodeDataList = new Array<WorkFlowFormControl>();
       }
 
-      // 初始化各个元素状态
+      // 初始化各個元素狀態
       this.checkedNode = null;
       for (let node of this._formArea.nativeElement.childNodes) {
         this._renderer.removeChild(this._formArea.nativeElement, node);
@@ -174,7 +174,7 @@ export class FormDesignComponent implements OnInit {
     });
   }
 
-  // 根据数据绘制节点
+  // 根據數據繪製節點
   initNode(node: WorkFlowFormControl) {
 
     node.optionList = node.options ? node.options.split(',') : [];
@@ -223,7 +223,7 @@ export class FormDesignComponent implements OnInit {
     }
     this._renderer.setStyle(newEle, 'font-size', `${node.fontSize}px`);
 
-    // 设置节点事件
+    // 設定節點事件
     this._renderer.listen(newEle, 'mousedown', event => {
       this.checkedNode = newEle;
 
@@ -269,7 +269,7 @@ export class FormDesignComponent implements OnInit {
     switch (this._draggedKey) {
       case 1:
         ele = this._label;
-        control.content = '标签';
+        control.content = '標簽';
         break;
       case 2:
         ele = this._input;
@@ -304,15 +304,15 @@ export class FormDesignComponent implements OnInit {
     this._renderer.setStyle(newEle, 'top', `${y}px`);
     this._renderer.setStyle(newEle, 'left', `${x}px`);
 
-    // 设置节点事件
+    // 設定節點事件
     this._renderer.listen(newEle, 'mousedown', event => {
       this.checkedNode = newEle;
 
-      // 把选项数据分割成list
+      // 把選項數據分割成list
       this.checkedNodeData = this._nodeDataList.find(data => data.domId == newEle.id);
       this.checkedNodeData.optionList = this.checkedNodeData.options ? this.checkedNodeData.options.split(',') : [];
 
-      // 点击选中的效果
+      // 點選選中的效果
       let rect = newEle.getBoundingClientRect();
       this._renderer.setStyle(this._sborder.nativeElement, 'width', `${rect.width}px`);
       this._renderer.setStyle(this._sborder.nativeElement, 'height', `${rect.height}px`);
@@ -427,7 +427,7 @@ export class FormDesignComponent implements OnInit {
 
     this.isloading = true;
 
-    // 把选项list拼接成string
+    // 把選項list拚接成string
     for (let data of this._nodeDataList) {
       data.options = data.optionList?.join(',');
     }

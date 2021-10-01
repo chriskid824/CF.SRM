@@ -1,0 +1,137 @@
+<div class="two-column" style="width: 93%;" colon={false}>
+    <div class="right">
+      <!--搜索欄-->
+      <nz-card [nzSize]="'small'" id="searchBar">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="add()">
+          <nz-form-item>
+            <nz-form-label [nzFor]="'matnr'">SRM料號</nz-form-label>
+            <nz-form-control >
+              <input nz-input placeholder="料號" [formControlName]="'matnr'" [attr.id]="'matnr'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzFor]="'matnr'">SAP料號</nz-form-label>
+            <nz-form-control >
+              <input nz-input placeholder="SAP料號" [formControlName]="'sap_matnr'" [attr.id]="'sap_matnr'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzFor]="'werk'">廠別</nz-form-label>
+            <nz-form-control>
+                <nz-select nzPlaceHolder="请選擇" [attr.id]="'werk'" [formControlName]="'werks'" style="width: 80px;">
+                    <nz-option *ngFor="let werk of werks" [nzValue]="werk" [nzLabel]="werk"></nz-option>
+                </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary">新增</button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+      <nz-card [nzSize]="'small'" id="addBar" style="display:block" >
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'group'">物料群組</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="物料群組" [formControlName]="'group'" [attr.id]="'group'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzFor]="'length'">長</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <nz-form-control nzErrorTip="欄位必填">
+                  <input nz-input placeholder="長" [formControlName]="'length'" [attr.id]="'length'"
+                         autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzFor]="'weight'">重量</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <nz-form-control nzErrorTip="欄位必填">
+                  <input nz-input placeholder="重量" [formControlName]="'weight'" [attr.id]="'weight'"
+                         autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+        <br/>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'description'">物料內文</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填"> 
+                <input nz-input placeholder="物料內文" [formControlName]="'description'" [attr.id]="'description'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzFor]="'width'">寬</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <nz-form-control nzErrorTip="欄位必填">
+                  <input nz-input placeholder="寬" [formControlName]="'width'" [attr.id]="'width'"
+                         autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'gewei'">重量單位</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="重量單位" [formControlName]="'gewei'" [attr.id]="'gewei'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+        </form>
+
+
+        <br/>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'version'">版次</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="版次" [formControlName]="'version'" [attr.id]="'version'"
+                       autocomplete="off"/>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzFor]="'height'">高</nz-form-label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <nz-form-control nzErrorTip="欄位必填">
+                  <input nz-input placeholder="高" [formControlName]="'height'" [attr.id]="'height'"
+                         autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'ekgrp'">採購群組代碼</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="採購群組代碼" [formControlName]="'ekgrp'" [attr.id]="'ekgrp'"
+                       autocomplete="off" style="width: 137px;"/>
+              </nz-form-control>
+            </nz-form-item>
+        </form>
+        <br/>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" >
+            <nz-form-item>
+              <nz-form-label [nzFor]="'material'">材質規格</nz-form-label>
+              <nz-form-control nzErrorTip="欄位必填">
+                <input nz-input placeholder="材質規格" [formControlName]="'material'" [attr.id]="'material'"
+                       autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzFor]="'density'">密度</nz-form-label>
+                <nz-form-control nzErrorTip="欄位必填">
+                  <input nz-input placeholder="密度" [formControlName]="'density'" [attr.id]="'density'"
+                         autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'note'">備註</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="備註" [formControlName]="'note'" [attr.id]="'note'"
+                       autocomplete="off" style="width: 185px;"/>
+              </nz-form-control>
+            </nz-form-item>
+        </form>
+
+      </nz-card>
+    </div>
+    
+</div>

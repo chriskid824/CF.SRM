@@ -64,7 +64,12 @@
           <mat-tab-group class="inforecord">
             <mat-tab label="彙總表">
               <h1>
-                <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
+                <ng-container *ngIf="!caseId">
+                  <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 20px" (click)="start()"><i nz-icon nzType="send"></i>啟動簽核</button>
+                </ng-container>
+                <ng-container *ngIf="caseId&&canEdit">
+                  <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 20px" (click)="save()"><i nz-icon nzType="send"></i>保存</button>
+                </ng-container>
               </h1>
                 <div>
                   <ag-grid-angular #agGrid
@@ -204,7 +209,7 @@
                autocomplete="off" nz-input>
         <ng-template #priceErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">需為正整數</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -216,7 +221,7 @@
       </nz-form-control>
       <ng-template #unitErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-        <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">需為正整數</ng-container>
       </ng-template>
     </nz-form-item>
     <nz-form-item>
@@ -230,10 +235,33 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">採購組織</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
+        <input nz-input placeholder="採購組織" formControlName="org" disabled="disabled"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">資訊紀錄種類</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇資訊紀錄種類" formControlName="infoKind">
+          <nz-option *ngFor="let option of InfoKindList" [nzLabel]="option.value + ' ' + option.name" [nzValue]="option.value"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">資訊紀錄類型</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇資訊紀錄類型" formControlName="type">
+          <nz-option *ngFor="let option of TypeList" [nzLabel]="option.value + ' ' + option.name" [nzValue]="option.value"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzErrorTip="欄位必填">採購群組</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
-       autocomplete="off" />-->
+      autocomplete="off" />-->
         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="採購群組" formControlName="ekgry">
           <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option>
         </nz-select>
@@ -247,6 +275,7 @@
         <ng-template #leadTimeErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
           <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+          <ng-container *ngIf="control.hasError('min') && !control.hasError('pattern')">必須大於等於1</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -258,6 +287,7 @@
         <ng-template #standQtyErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
           <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+          <ng-container *ngIf="control.hasError('min') && !control.hasError('pattern')">必須大於等於1</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -304,10 +334,10 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control [nzSpan]="14" [nzOffset]="6">
-        <button nz-button nzType="primary">提交</button>
+        <button nz-button nzType="primary" class="mr-10">提交</button>
         <button nz-button type="reset" (click)="cancelEdit()">取消</button>
       </nz-form-control>
     </nz-form-item>
   </form>
-
+  </ng-template>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />

@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
@@ -35,6 +36,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmRfqVService _srmRfqVService;
         private readonly ISrmQotService _srmQotHService;
         private readonly IUserService _userService;
+        private readonly ISrmSupplierService _srmSupplierService;
 
         public SrmRfqController(ISrmMatnrService srmMatnrService,
             ISrmVendorService srmVendorService,
@@ -42,7 +44,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             ISrmRfqMService srmRfqMService,
             ISrmRfqVService srmRfqVService,
             ISrmQotService srmQotHService,
-            IUserService userService)
+            IUserService userService,
+            ISrmSupplierService srmSupplierService)
         {
             _srmMatnrService = srmMatnrService;
             _srmVendorService = srmVendorService;
@@ -51,18 +54,23 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqVService = srmRfqVService;
             _srmQotHService = srmQotHService;
             _userService = userService;
+            _srmSupplierService = srmSupplierService;
         }
 
         [HttpPost("GetMatnr")]
         [Permission("rfq")]
         public IActionResult GetMatnr(QueryMatnrModel matnrQuery)
         {
+            UserClaims user = User.GetUserClaims();
+            matnrQuery.Werks = user.Werks;
             return Ok(_srmMatnrService.GetMatnr(matnrQuery));
         }
 
         [HttpPost("GetVendor")]
         [Permission("rfq")]
         public IActionResult GetVendor(QueryVendorModel vendorQuery) {
+            UserClaims user = User.GetUserClaims();
+            vendorQuery.Werks = user.Werks;
             return Ok(_srmVendorService.GetVendor(vendorQuery));
         }
         [HttpPost("Save")]
@@ -72,7 +80,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
             SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
             DateTime now = DateTime.Now;
+            UserClaims user = User.GetUserClaims();
+            if (user.UserName != h.Sourcer) {
+                return this.BadRequestResult("非詢價本人");
+            }
+            h.LastUpdateBy = user.UserName;
             h.LastUpdateDate = now;
+            h.Werks = user.Werks[0];
             _srmRfqHService.Save(h, ms, vs);
             return Ok();
         }
@@ -108,7 +122,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.rfqNum = query["rfqNum"].ToString();
             q.status = (int)query["status"];
             q.name = query["name"].ToString();
-            q.werks = Array.ConvertAll(query["werks"].ToString().Split(","), s => int.Parse(s));
+            UserClaims user = User.GetUserClaims();
+            q.werks = user.Werks;
             int page = (int)query["page"];
             int size = (int)query["size"];
             var h = _srmRfqHService.GetRfqList(q,page,size);
@@ -129,8 +144,15 @@ namespace Convience.ManagentApi.Controllers.SRM
             using (var transaction = new System.Transactions.TransactionScope()) {
                 try
                 {
-                    _srmRfqHService.Save(h, matnrs, vendors);
+                    UserClaims user = User.GetUserClaims();
+                    if (user.UserName != h.Sourcer)
+                    {
+                        return this.BadRequestResult("非詢價本人");
+                    }
+                    h.LastUpdateBy = user.UserName;
                     h.LastUpdateDate = DateTime.Now;
+                    h.Werks = user.Werks[0];
+                    _srmRfqHService.Save(h, matnrs, vendors);
                     _srmRfqHService.UpdateStatus((int)Status.啟動, h);
                     List<SrmQotH> qots = new List<SrmQotH>();
                     foreach (var matnr in matnrs)
@@ -204,6 +226,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 try
                 {
+                    UserClaims user = User.GetUserClaims();
+                    if (user.UserName != rfqH.Sourcer)
+                    {
+                        return this.BadRequestResult("非詢價本人");
+                    }
+                    rfqH.EndBy = user.UserName;
+                    rfqH.LastUpdateBy = user.UserName;
                     rfqH.LastUpdateDate = DateTime.Now;
                     var rfq = _srmRfqHService.UpdateStatus(((int)Status.作廢), rfqH);
                     _srmQotHService.UpdateStatus((int)Status.作廢, rfqH);
@@ -270,16 +299,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     MailMessage mail = new MailMessage();
                     mail.From = new MailAddress("mis@chenfull.com.tw");
-                    mail.To.Add("leon.jcg@chenfull.com.tw");
+                    mail.To.Add(vendor.Mail);
                     mail.CC.Add("leo.lai@chenfull.com.tw");
                     var sourcer = _userService.GetUsers(new UserQueryModel { UserName = rfq.CreateBy, Page = 1, Size = 1 });
                     if (!string.IsNullOrWhiteSpace(sourcer.Data[0].Email)) { mail.CC.Add(sourcer.Data[0].Email); }
                     //mail.To.Add("leo.lai@chenfull.com.tw");
                     SrmQotH[] qots = _srmQotHService.Get(new QueryQot() { rfqId = rfq.RfqId, vendorId = vendor.VendorId });
                     sb.Clear();
-                    sb.AppendLine("收件者:<br />");
-                    sb.AppendLine(vendor.Mail+ "<br />");
-                    //sb.AppendLine(sourcer.Data[0].Email + "<br />");
+                    //sb.AppendLine("收件者:<br />");
+                    //sb.AppendLine(vendor.Mail+ "<br />");
                     qotNums.Clear();
                     foreach (var qot in qots)
                     {
@@ -314,30 +342,37 @@ namespace Convience.ManagentApi.Controllers.SRM
  請回覆此E-MAIL致採購窗口或致電協調。<br />
 <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
 { sb.ToString()}";
-                        subject = "詢價單作廢通知";
+                        subject = "詢價單啟動通知";
                     }
 
                     mail.Body = body;
                     mail.Subject = subject;
                     mail.IsBodyHtml = true;
-                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
-                    {
-                        MySMTP.Send(mail);
-                        MySMTP.Dispose();
-                    }
+                    sendMail(mail);
                 }
                 catch (Exception ex) {
                     MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress("leon.jcg@chenfull.com.tw");
+                    mail.From = new MailAddress("mis@chenfull.com.tw");
                     mail.To.Add("leon.jcg@chenfull.com.tw");
                     mail.Body = $"寄信異常，供應商:{vendor.VendorName}，EX:{ex.Message}";
                     mail.Subject = "寄信異常";
-                    using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
-                    {
-                        MySMTP.Send(mail);
-                        MySMTP.Dispose();
-                    }
+                    sendMail(mail);
                 }
+            }
+        }
+
+        private void sendMail(MailMessage mail) {
+            #region test
+            mail.To.Clear();
+            mail.CC.Clear();
+            mail.Bcc.Clear();
+            mail.To.Add("leon.jcg@chenfull.com.tw");
+            #endregion test
+
+            using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
+            {
+                MySMTP.Send(mail);
+                MySMTP.Dispose();
             }
         }
 
@@ -348,6 +383,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             try
             {
+                UserClaims user = User.GetUserClaims();
+                if (user.UserName != rfqH.Sourcer)
+                {
+                    return this.BadRequestResult("非詢價本人");
+                }
+                rfqH.EndBy = user.UserName;
+                rfqH.LastUpdateBy = user.UserName;
                 rfqH.LastUpdateDate = DateTime.Now;
                 _srmRfqHService.UpdateStatus(((int)Status.刪除), rfqH);
                 return Ok();
@@ -359,7 +401,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("GetSourcerList")]
         public IActionResult GetSourcerList(JObject jobj) {
             string name = jobj["name"].ToString();
-            int[] werks = Array.ConvertAll(jobj["werks"].ToString().Split(","), s => int.Parse(s));
+            UserClaims user = User.GetUserClaims();
+            int[] werks = user.Werks;
             int page = (int)jobj["page"];
             int size = (int)jobj["size"];
             var users = _srmRfqHService.GetSourcer(name, werks, size,page);
@@ -370,6 +413,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         [Permission("price")]
         [Permission("rfq")]
         public IActionResult GetRfq(QueryRfq query) {
+            UserClaims user = User.GetUserClaims();
+            query.werks = user.Werks;
             return Ok(_srmRfqHService.GetRfq(query));
         }
         [HttpPost("AsyncSourcer")]

@@ -20,7 +20,7 @@ export class OperateLogManageComponent implements OnInit {
 
   public searchForm: FormGroup = new FormGroup({});
 
-  // 表格排序功能
+  // 錶格排序功能
   private _sortArray: string[] = [];
 
   private _orderArray: string[] = [];
@@ -44,7 +44,7 @@ export class OperateLogManageComponent implements OnInit {
     this.initData();
   }
 
-  // 初始化搜索表单
+  // 初始化搜索錶單
   public initSearchForm() {
     this.searchForm = this._formBuilder.group({
       "module": [null],
@@ -52,7 +52,7 @@ export class OperateLogManageComponent implements OnInit {
     });
   }
 
-  // 初始化数据
+  // 初始化數據
   public initData() {
     this._operateLogService.getSettings(this.page, this.size, this._sortArray, this._orderArray, this._searchObject).subscribe((result: any) => {
       this.data = result.data;
@@ -78,7 +78,7 @@ export class OperateLogManageComponent implements OnInit {
     })
 
     this._nzModal = this._modalService.create({
-      nzTitle: "修改日志配置",
+      nzTitle: "修改日誌配置",
       nzContent: this.editTpl,
       nzFooter: null
     });
@@ -112,7 +112,7 @@ export class OperateLogManageComponent implements OnInit {
     this._nzModal.close();
   }
 
-  // 排序发生变化
+  // 排序發生變化
   public onQueryParamsChange(params: NzTableQueryParams) {
     let currentSort = params.sort.filter(s => s.value != null);
 

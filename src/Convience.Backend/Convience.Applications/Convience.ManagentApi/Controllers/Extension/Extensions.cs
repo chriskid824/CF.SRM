@@ -13,7 +13,7 @@ namespace Convience.ManagentApi.Controllers.Extension
         }
         public static string NormalizeTwoDigits(this decimal value)
         {
-            return string.Format("{0:N2}", value);
+            return string.Format("{0:N2}", value).Replace(".00", "");
         }
     }
 }

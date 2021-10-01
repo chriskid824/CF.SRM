@@ -41,6 +41,7 @@ namespace Convience.Model.Models.SystemManage
         public bool IsActive { get; set; }
 
         public string Password { get; set; }
+        public string SapId { get; set; }
     }
 
     public record UserResultModel : UserViewModel

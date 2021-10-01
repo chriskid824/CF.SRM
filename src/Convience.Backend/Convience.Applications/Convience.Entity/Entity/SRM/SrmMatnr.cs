@@ -30,5 +30,7 @@ namespace Convience.Entity.Entity.SRM
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
+        public string Gewei { get; set; }
+        public string Ekgrp { get; set; }
     }
 }

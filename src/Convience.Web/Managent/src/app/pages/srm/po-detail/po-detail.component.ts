@@ -115,7 +115,7 @@ export class PoDetailComponent implements OnInit {
         hide:'true'
       },
       {
-        headerName:'檢驗時間',
+        headerName:'檢驗時間(天)',
         field: 'InspectionTime',
         hide:'true'
       },

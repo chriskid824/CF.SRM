@@ -15,6 +15,9 @@ export class SrmPriceService {
   Start(obj) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/Start`, obj);
   }
+  Save(obj) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/Save`, obj);
+  }
   GetSummary(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetSummary`, query);
   }
@@ -24,8 +27,8 @@ export class SrmPriceService {
   GetCurrency() {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetCurrency`, null);
   }
-  GetEkgry(werks) {
-    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, werks);
+  GetEkgry() {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetEkgry`, null);
   }
   QueryInfoRecord(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/QueryInfoRecord`, query);

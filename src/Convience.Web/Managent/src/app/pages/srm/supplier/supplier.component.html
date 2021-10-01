@@ -1,0 +1,199 @@
+<div class="two-column" style="width: 93%;">
+    <div class="right">
+      <!--搜索欄-->
+      <nz-card [nzSize]="'small'" id="searchBar">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+          <nz-form-item>
+            <nz-form-label [nzFor]="'SRM_VENDOR'">供應商代碼</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="供應商代碼" [formControlName]="'SRM_VENDOR'" [attr.id]="'SRM_VENDOR'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzFor]="'VENDOR_NAME'">供應商名稱</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="供應商名稱" [formControlName]="'VENDOR_NAME'" [attr.id]="'VENDOR_NAME'"
+                     autocomplete="off" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary">搜索</button>
+              <!--<button nz-button nzType="outline" type="button" class="ml-10"
+                (click)="resetSearchForm()">
+          重置
+        </button>-->
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-card>
+  
+
+      <nz-card [nzSize]="'small'" id="rfqCard">
+        <div>
+          <button nz-button class="mr-10" (click)="addsupplier()" *canOperate="'addSupplierBtn'"><i nz-icon nzType="plus"></i>建立供應商</button>
+          <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+        </div>
+        <div class="mt-10">
+          <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'1600px'}" nzShowPagination="false" nzFrontPagination="false"
+          nzBordered="true" pagination="true">
+            <thead>
+              <tr>
+                <th nzAlign="center" nzWidth="40px">操作</th>
+                <th nzAlign="center" nzWidth="60px">供應商代碼</th>
+                <th nzAlign="center" nzWidth="100px">供應商名稱</th>
+                <th nzAlign="center" nzWidth="60px">公司代碼</th>
+                <th nzAlign="center" nzWidth="60px">採購組織</th>
+                <th nzAlign="center" nzWidth="60px">聯絡人</th>
+                <th nzAlign="center" nzWidth="140px">地址</th>
+                <th nzAlign="center" nzWidth="60px">電話號碼</th>
+                <th nzAlign="center" nzWidth="60px">分機</th>
+                <th nzAlign="center" nzWidth="60px">傳真號碼</th>
+                <th nzAlign="center" nzWidth="60px">手機號碼</th>
+                <th nzAlign="center" nzWidth="140px">信箱</th>
+                <th nzAlign="center" nzWidth="60px">狀態</th>
+
+                
+                <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of dataTable.data;let i = index">
+                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
+                <td nzAlign="center">{{ data.srmVendor1 }}</td>
+                <td nzAlign="center">{{ data.vendorName }}</td>
+                <td nzAlign="center">{{ data.org }}</td>
+                <td nzAlign="center">{{ data.ekorg }}</td>
+                <td nzAlign="center">{{ data.person }}</td>
+                <td nzAlign="center">{{ data.address }}</td>
+                <td nzAlign="center">{{ data.telPhone }}</td>
+                <td nzAlign="center">{{ data.ext }}</td>
+                <td nzAlign="center">{{ data.faxNumber }}</td>
+                <td nzAlign="center">{{ data.cellPhone }}</td>
+                <td nzAlign="center">{{ data.mail }}</td>
+                <td nzAlign="center">{{ data.statusDesc }}</td>
+                
+              </tr>
+            </tbody>            
+          </nz-table>
+        </div>
+        <div class="mt-10">
+          <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                         nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+          </nz-pagination>
+        </div>
+      </nz-card>
+
+
+      <ng-template #editUserTitleTpl>
+        <span>编辑供應商</span>
+    </ng-template>
+    <ng-template #userContentTpl>
+        <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_srmvendor'">供應商代碼</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="srm_vendorErrorTpl">
+                    <input [attr.id]="'edit_srmvendor'" formControlName="srmvendor" nz-input placeholder="供應商代碼"
+                        autocomplete="off" readonly="readonly" style="background-color:#F5F5F5"/>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_vendorname'">供應商名稱</nz-form-label>
+                <nz-form-control>
+                    <input [attr.id]="'edit_vendorname'" formControlName="vendorname" nz-input placeholder="供應商名稱" 
+                    autocomplete="off" readonly="readonly" style="background-color:#F5F5F5"/>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_org'">公司代碼</nz-form-label>
+                <nz-form-control>
+                    <input [attr.id]="'edit_org'" formControlName="org" nz-input
+                        placeholder="公司代碼" autocomplete="off" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_ekorg'">採購組織</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_ekorg'" formControlName="ekorg" nz-input
+                      placeholder="採購組織" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_person'">聯絡人</nz-form-label>
+              <nz-form-control>
+                <input [attr.id]="'edit_person'" formControlName="person" nz-input
+                placeholder="聯絡人" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_address'">地址</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_address'" formControlName="address" nz-input
+                      placeholder="地址" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_tel_hone'">電話號碼</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_telphone'" formControlName="telphone" nz-input
+                      placeholder="電話號碼" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_ext'">分機</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_ext'" formControlName="ext" nz-input
+                      placeholder="分機" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_faxnumber'">傳真號碼</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_faxnumber'" formControlName="faxnumber" nz-input
+                      placeholder="傳真號碼" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_cellphone'">手機號碼</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_cellphone'" formControlName="cellphone" nz-input
+                      placeholder="手機號碼" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_mail'">信箱</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_mail'" formControlName="mail" nz-input
+                      placeholder="信箱" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_status'">狀態</nz-form-label>
+              <nz-form-control>
+                  <input [attr.id]="'edit_status'" formControlName="status" nz-input
+                      placeholder="狀態" autocomplete="off" readonly="readonly" style="background-color:#F5F5F5"/>
+              </nz-form-control>
+            </nz-form-item>
+      
+
+
+            <nz-form-item>
+                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                    <button nz-button nzType="primary" class="mr-10">提交</button>
+                    <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-template>
+
+
+
+      
+
+
+
+    </div>
+  </div>
+
+  

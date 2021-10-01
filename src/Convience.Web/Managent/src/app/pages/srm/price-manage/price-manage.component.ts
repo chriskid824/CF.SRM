@@ -26,7 +26,11 @@ export class PriceManageComponent implements OnInit {
   matnrListForm: FormGroup = new FormGroup({});
   vendorListForm: FormGroup = new FormGroup({});
 
-
+  _matnrId;
+  _vendorId;
+  _status;
+  txtMatnr;
+  txtVendor;
 
   constructor(private _formBuilder: FormBuilder
     , private _router: Router
@@ -41,28 +45,60 @@ export class PriceManageComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       matnr: [null],
       vendor: [null],
-      status: [1],
+      status: ["1"],
       queryMatnr: [null],
       queryVendor:[null]
     });
+    if (sessionStorage.getItem("price-manage")) {
+      var query = JSON.parse(sessionStorage.getItem("price-manage"));
+      this.selectedMatnrId = query.matnrId;
+      this._matnrId = query.matnrId;
+      this.selectedVendorId = query.vendorId;
+      this._vendorId = query.vendorId;
+      this._status = query.status;
+      this.page = query.page;
+      this.size = query.size;
+      this.txtMatnr = query.txtMatnr;
+      this.txtVendor = query.txtVendor;
+      console.log(this._status);
+      this.searchForm.patchValue({
+        matnr: this.txtMatnr,
+        vendor: this.txtVendor,
+        status: this._status
+      });
+      console.log(this.searchForm);
+      this.refresh();
+    }
   }
 
   pageChange() {
     this.refresh();
   }
+  sizeChange() {
+    this.page = 1;
+    this.refresh();
+  }
   submitSearch() {
+    this._matnrId = this.selectedMatnrId;
+    this._vendorId = this.selectedVendorId;
+    this._status = this.searchForm.value["status"] == null ? "" : this.searchForm.value["status"];
+    this.page = 1;
+    this.txtMatnr = this.searchForm.value["matnr"];
+    this.txtVendor = this.searchForm.value["vendor"];
     this.refresh();
   }
   refresh() {
-    if (!this.selectedMatnrId && !this.selectedVendorId) { alert('料號或供應商擇一必填!'); return;}
+    if (!this._matnrId && !this._vendorId) { alert('料號或供應商擇一必填!'); return;}
     var query = {
-      matnrId: this.selectedMatnrId,
-      vendorId: this.selectedVendorId,
-      status: this.searchForm.value["status"] == null ? "" : this.searchForm.value["status"],
-      werks: this._storageService.werks.split(','),
+      matnrId: this._matnrId,
+      vendorId: this._vendorId,
+      status: this._status,
       page: this.page,
       size: this.size
     }
+    query["txtMatnr"] = this.txtMatnr;
+    query["txtVendor"] = this.txtVendor;
+    sessionStorage.setItem("price-manage", JSON.stringify(query));
     this._srmPriceService.QueryInfoRecord(query).subscribe(result => {
       this.data = result["data"];
       this.total = result["count"];
@@ -94,9 +130,8 @@ export class PriceManageComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("queryMatnr")?.value,
-      werks: this._storageService.werks.split(','),
-      page: this.page,
-      size: this.size
+      page: 1,
+      size: 50
     }
     this._srmRfqService.GetMatnr(matnrQuery).subscribe(result => {
       this.MatnrList = [];
@@ -115,9 +150,8 @@ export class PriceManageComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["queryVendor"],
-      werks: this._storageService.werks.split(','),
-      page: this.page,
-      size: this.size
+      page: 1,
+      size: 50
     }
     this._srmRfqService.GetVendor(vendorQuery).subscribe(result => {
       this.VendorList = [];
@@ -156,5 +190,9 @@ export class PriceManageComponent implements OnInit {
     });
     this.selectedMatnrId = "";
     this.selectedVendorId = "";
+  }
+  openInfoRecord(rfqId,caseId) {
+    this._layout.navigateTo('price');
+    this._router.navigate(['srm/price', { id: rfqId, caseId: caseId }]);
   }
 }

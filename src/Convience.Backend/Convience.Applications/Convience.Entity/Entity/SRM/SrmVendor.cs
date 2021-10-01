@@ -23,7 +23,7 @@ namespace Convience.Entity.Entity.SRM
         public string FaxNumber { get; set; }
         public string CellPhone { get; set; }
         public string Mail { get; set; }
-        public int? Status { get; set; }
+        public int? Status { get; set; }        
         public DateTime? CreateDate { get; set; }
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }

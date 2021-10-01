@@ -45,7 +45,19 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { DeliveryAddComponent } from './delivery-add/delivery-add.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+<<<<<<< HEAD
 import { EqpComponent } from './eqp/eqp.component';
+=======
+import { SupplierComponent } from './supplier/supplier.component';
+import { SupplierCComponent } from './supplier-c/supplier-c.component';
+import { MaterialComponent } from './material/material.component';
+import { MaterialCComponent } from './material-c/material-c.component';
+import { PoSapComponent } from './po-sap/po-sap.component';
+import { PoExamineComponent } from './po-examine/po-examine.component';
+import { MaterialTrendComponent } from './material-trend/material-trend.component';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { MaterialManageComponent } from './material-manage/material-manage.component';
+>>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
 @NgModule({
   declarations: [
     RfqComponent,
@@ -64,7 +76,18 @@ import { EqpComponent } from './eqp/eqp.component';
     ButtonRendererComponent,
     EditButtonComponent,
     DeliveryAddComponent,
+<<<<<<< HEAD
     EqpComponent,
+=======
+    SupplierComponent,
+    SupplierCComponent,
+    MaterialComponent,
+    MaterialCComponent,
+    PoSapComponent,
+    PoExamineComponent,
+    MaterialTrendComponent,
+    MaterialManageComponent,
+>>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
   ],
   imports: [
     CommonModule,
@@ -74,17 +97,29 @@ import { EqpComponent } from './eqp/eqp.component';
        { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
        { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
        { path: "po", component: PoComponent , canActivate: [LoginGuard]},
-       { path: "deliveryh", component: PoDetailComponent },
-       { path: "deliveryl", component: DelyveryLComponent },
-       { path: "deliverymodal", component: DeliveryModalComponent },
-       { path: "deliveryreceive", component: DeliveryReceiveComponent },
+       { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
+       { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
+       { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
+       { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
+       { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},
+       { path: "deliveryreceive", component: DeliveryReceiveComponent , canActivate: [LoginGuard]},
        { path: "qot", component: QotComponent },
        { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
        //{ path: "qotlist", component: QotlistComponent},
        { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
        { path: "price", component: PriceComponent, canActivate: [LoginGuard] },
+<<<<<<< HEAD
        { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] } ,
        { path: "eqp", component: EqpComponent },
+=======
+       { path: "price-manage", component: PriceManageComponent, canActivate: [LoginGuard] },
+       { path: "supplier", component: SupplierComponent, canActivate: [LoginGuard] },
+       { path: "supplier-c", component: SupplierCComponent, canActivate: [LoginGuard] },
+       { path: "material", component: MaterialComponent, canActivate: [LoginGuard] },
+      { path: "material-c", component: MaterialCComponent, canActivate: [LoginGuard] },
+      { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
+      { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
+>>>>>>> bd2f24d984e46cea0cca6e308a8baf80519a7c96
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
@@ -111,6 +146,7 @@ import { EqpComponent } from './eqp/eqp.component';
     NzToolTipModule,
     MatButtonModule,
     MatInputModule,
+    NzUploadModule,
   ]
 })
 export class SrmModule {

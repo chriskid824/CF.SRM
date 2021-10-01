@@ -15,6 +15,7 @@ namespace Convience.Model.Models.SRM
         public Status? status { get; set; }
         public int? vendorId { get; set; }
         public int? qotId { get; set; }
+        public int? caseId { get; set; }
     }
     public class ViewSrmPriceDetail {
         public ViewSrmRfqM matnr { get; set; }
@@ -23,7 +24,7 @@ namespace Convience.Model.Models.SRM
         public viewSrmQotProcess[] process { get; set; }
         public viewSrmQotSurface[] surface { get; set; }
         public viewSrmQotOther[] other { get; set; }
-        public viewSrmInfoRecord[] infoRecord { get; set; }
+        public ViewSrmInfoRecord[] infoRecord { get; set; }
     }
     public class viewSrmQotMaterial : SrmQotMaterial
     {

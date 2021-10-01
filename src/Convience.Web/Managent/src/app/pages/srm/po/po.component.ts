@@ -88,7 +88,7 @@ export class PoComponent implements OnInit {
         if(params.data.Status==21)
         {
           var eDiv = document.createElement('div');
-          eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span>';
+          eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span>';
           var eButton = eDiv.querySelectorAll('.btn-simple')[0];
 
           eButton.addEventListener('click', function() {
@@ -188,7 +188,7 @@ export class PoComponent implements OnInit {
             field: 'CriticalPart',
           },
           {
-            headerName:'檢驗時間',
+            headerName:'檢驗時間(天)',
             field: 'InspectionTime',
           },
 

@@ -1,9 +1,11 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.JwtAuthentication;
 using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
 using Convience.Model.Models.SRM;
 using Convience.Service.SRM;
+using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +15,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Convience.ManagentApi.Controllers.SRM
@@ -23,10 +28,12 @@ namespace Convience.ManagentApi.Controllers.SRM
     public class SrmDeliveryController : ControllerBase
     {
         private readonly ISrmDeliveryService _srmDeliveryService;
+        private readonly IUserService _userService;
 
-        public SrmDeliveryController(ISrmDeliveryService srmDeliveryService)
+        public SrmDeliveryController(ISrmDeliveryService srmDeliveryService, IUserService userService)
         {
             _srmDeliveryService = srmDeliveryService;
+            _userService = userService;
         }
 
         [HttpPost("AddDelivery")]
@@ -41,10 +48,63 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (_srmDeliveryService.UpdateDeliveryL(dls)) return Ok();
             return BadRequest("項次 新增/修改 失敗");
         }
+        [HttpPost("DeleteDeliveryL")]
+        public IActionResult DeleteDeliveryL(ViewSrmDeliveryL dls)
+        {
+            if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
+            return BadRequest("項次 新增/修改 失敗");
+        }
+        [HttpPost("ReceiveDeliveryL")]
+        public async Task<IActionResult> ReceiveDeliveryLAsync(List<ViewSrmDeliveryL> dls)
+        {
+            string UserName = User.GetUserName();
+            foreach (var item in dls)
+            {
+                item.LastUpdateBy = _userService.GetUserSapiId(UserName);
+            }
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string json = JsonConvert.SerializeObject(dls);
+                    HttpContent httpContent = new StringContent(json,
+                                    Encoding.UTF8,
+                                    "application/json");
+                    HttpResponseMessage response = await client.PostAsync("http://localhost:64779/api/srm/T_RECEIPT", httpContent);// + Query.RequestUri.Query);
 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        if (!string.IsNullOrWhiteSpace(result) && result != "null")
+                        {
+                            return BadRequest(response.Content.ReadAsStringAsync().Result);
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //throw e;
+                return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
+            }
+            if (dls != null && dls.Count > 0)
+            {
+                string result = _srmDeliveryService.ReceiveDeliveryL(dls);
+                if (string.IsNullOrEmpty(result)) return Ok();
+                return BadRequest(result);
+            }
+            //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
+            return BadRequest("項次 新增/修改 失敗");
+        }
         [HttpPost("GetDelivery")]
         public string GetDelivery(JObject query)
         {
+            //SapDeliveryService sc = new SapDeliveryService();
+            //sc.test();
             if (query == null)
             {
                 return null;

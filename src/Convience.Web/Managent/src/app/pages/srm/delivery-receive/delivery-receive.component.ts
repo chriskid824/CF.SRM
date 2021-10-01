@@ -57,6 +57,18 @@ export class DeliveryReceiveComponent implements OnInit {
     //     this.rowData = data;
     //   });
   }
+  receive(){
+    console.info(this.rowData);
+    if(this.rowData ==undefined||this.rowData ==null) {alert("請先輸入出貨單資料"); return;}
+    this._srmDeliveryService.ReceiveDeliveryL(this.rowData)
+    .subscribe((result) => {
+      console.info(result);
+      alert("操作成功");
+      // this.rowData = result[0].SrmDeliveryLs;
+      // this.deliveryNum=result[0].DeliveryNum;
+    });
+
+  }
   submitSearch() {
     this.refresh();
   }

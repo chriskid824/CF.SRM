@@ -33,8 +33,10 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewSrmPoH> GetAll(QueryPoList query);
 
         public IEnumerable<ViewSrmPoL> GetPoL(QueryPoList query);
+        public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
+        public List<SapResultData> UpdateSapData(SapPoData data, string userName);
     }
 
     public class SrmPoService : ISrmPoService
@@ -102,6 +104,7 @@ namespace Convience.Service.SRM
                               SapVendor = vendor.SapVendor,
                               //SrmPoLs = poh.SrmPoLs,
                           })
+                          .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
@@ -172,8 +175,10 @@ namespace Convience.Service.SRM
                               TotalAmount = h.TotalAmount,
                               Buyer = h.Buyer,
                               StatusDesc = status.StatusDesc,
-                              Matnr = matnr.SapMatnr
+                              Matnr = matnr.SapMatnr,
+                              Org = h.Org
                           })
+                          .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
@@ -242,6 +247,201 @@ namespace Convience.Service.SRM
             }
             _context.SaveChanges();
             return true;
+        }
+        public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size)
+        {
+            int skip = (page - 1) * size;
+
+            var result = (from l in _context.SrmPoLs
+                          join h in _context.SrmPoHs on l.PoId equals h.PoId
+                          join status in _context.SrmStatuses on l.Status equals status.Status
+                          join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
+                          select new ViewSrmPoPoL
+                          {
+                              PoNum = h.PoNum,
+                              PoLId = l.PoLId,
+                              PoId = l.PoId,
+                              MatnrId = l.MatnrId,
+                              Description = l.Description,
+                              Qty = l.Qty,
+                              Price = l.Price,
+                              DeliveryDate = l.DeliveryDate,
+                              ReplyDeliveryDate = l.ReplyDeliveryDate,
+                              DeliveryPlace = l.DeliveryPlace,
+                              CriticalPart = l.CriticalPart,
+                              InspectionTime = l.InspectionTime,
+                              Status = h.Status,
+                              VendorId = h.VendorId,
+                              VendorName = vendor.VendorName,
+                              SapVendor = vendor.SapVendor,
+                              TotalAmount = h.TotalAmount,
+                              Buyer = h.Buyer,
+                              StatusDesc = status.StatusDesc,
+                              Matnr = matnr.SapMatnr,
+                              Org = h.Org,
+                              DocDate = h.DocDate,
+                              ReplyDate = h.ReplyDate,
+                              CreateDate = h.CreateDate,
+                          })
+              .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
+              .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+                  .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+    //.AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
+    //.AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
+    //.AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+    .AndIfCondition(query.status != 0, p => p.Status == query.status)
+                .AndIfHaveValue(query.buyer, p => p.Buyer == query.buyer).ToList();
+
+            var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);
+            return new PagingResultModel<ViewSrmPoPoL>
+            {
+                Data = r,
+                Count = result.Count()
+            };
+        }
+        public List<SapResultData> UpdateSapData(SapPoData data, string userName)
+        {
+            List<SapResultData> result = new List<SapResultData>();
+            data.T_EKKO.ForEach(po =>
+            {
+                SapResultData r = new SapResultData() { Id = po.EBELN, Type = "採購單" };
+                //採購單
+                if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
+                {
+                    //供應商
+                    if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
+                    {
+                        //採購項次-即將匯入
+                        if (data.T_EKPO.Any(ekpo => ekpo.EBELN == po.EBELN))
+                        {
+                            List<T_EKPO> ekList = data.T_EKPO.Where(e => e.EBELN == po.EBELN).ToList();
+                            int ekcount = 0;
+                            ekList.ForEach(ek =>
+                            {
+                                if (_context.SrmMatnrs.Any(m => m.SapMatnr == ek.MATNR))
+                                {
+                                    ekcount++;
+                                }
+                            });
+
+                            //採購項次料號
+                            if (ekcount > 0)
+                            {
+                                int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
+                                DateTime now = DateTime.Now;
+                                SrmPoH poH = new SrmPoH()
+                                {
+                                    PoNum = po.EBELN,
+                                    Status = 21,
+                                    VendorId = vendorid,
+                                    TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
+                                    Buyer = po.EKGRP,
+                                    Org = po.EKORG,
+                                    DocDate = po.BEDAT,
+                                    CreateDate = now,
+                                    CreateBy = userName,
+                                    LastUpdateDate = now,
+                                    LastUpdateBy = userName,
+                                };
+                                _context.SrmPoHs.Add(poH);
+                                r.OutCome = "成功";
+                                result.Add(r);
+                            }
+                            else
+                            {
+                            }
+                        }
+                        else
+                        {
+                        }
+
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "供應商 " + po.LIFNR + " 不存在";
+                        result.Add(r);
+                    }
+                }
+                else
+                {
+                    r.OutCome = "失敗";
+                    r.Reason = "該採購單號已存在";
+                    result.Add(r);
+                }
+
+            });
+            _context.SaveChanges();
+            data.T_EKPO.ForEach(pol =>
+            {
+                SapResultData r = new SapResultData() { Id = pol.EBELN, LId = pol.EBELP, Type = "採購項次" };
+                //採購單號
+                if (_context.SrmPoHs.Any(p => p.PoNum == pol.EBELN))
+                {
+                    SrmPoH poH = _context.SrmPoHs.FirstOrDefault(h => h.PoNum == pol.EBELN);
+                    //採購項次
+                    if (!_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
+                    {
+                        //料號
+                        if (_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
+                        {
+                            int matnrid = _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
+                            SrmPoL poL = new SrmPoL()
+                            {
+                                PoLId = pol.EBELP,
+                                PoId = poH.PoId,
+                                MatnrId = matnrid,
+                                Description = pol.MAKTX,
+                                Qty = Convert.ToInt32(Convert.ToDouble(pol.MENGE)),
+                                Price = pol.NETPR,
+                                DeliveryDate = pol.EINDT,
+                                DeliveryPlace = pol.LGOBE,
+                                CriticalPart = pol.KZKRI,
+                                InspectionTime = 1,
+                                Status = 21,
+                                WoNum = pol.AUFNR,
+                            };
+                            _context.SrmPoLs.Add(poL);
+                            r.OutCome = "成功";
+                            result.Add(r);
+                        }
+                        else
+                        {
+                            r.OutCome = "失敗";
+                            r.Reason = "料號 " + pol.MATNR + " 不存在";
+                            result.Add(r);
+                        }
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "該採購項次已存在";
+                        result.Add(r);
+                    }
+                }
+                else
+                {
+                    //如果已經提示過採購單號無法匯入 就不提示採購項次
+                    if (data.T_EKKO.Any(ko => ko.EBELN == pol.EBELN))
+                    {
+                        if (!_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
+                        {
+                            r.OutCome = "失敗";
+                            r.Reason = "料號 " + pol.MATNR + " 不存在";
+                            result.Add(r);
+                        }
+                    }
+                    else
+                    {
+                        r.OutCome = "失敗";
+                        r.Reason = "該採購單號不存在";
+                        result.Add(r);
+                    }
+                }
+            });
+            _context.SaveChanges();
+            return result;
         }
     }
 }

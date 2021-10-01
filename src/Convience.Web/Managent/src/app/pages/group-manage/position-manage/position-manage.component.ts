@@ -87,10 +87,10 @@ export class PositionManageComponent implements OnInit {
 
   remove(id) {
     this._modalService.confirm({
-      nzTitle: '是否删除该职位?',
+      nzTitle: '是否刪除該職位?',
       nzContent: null,
       nzOnOk: () => this._positionService.delete(id).subscribe(() => {
-        this._messageService.success("删除成功！");
+        this._messageService.success("刪除成功！");
         this.refresh();
       }),
     });
