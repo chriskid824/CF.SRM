@@ -1,5 +1,5 @@
 <body style="color: black;">
-  <div class="shape-ex3">
+  <div>
     <!--<div id="_header" class="parent"
       style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
       <h1 id="heading001"
@@ -50,8 +50,8 @@
         <form nz-form [formGroup]="info1">
           <nz-card [nzSize]="'middle'" id="info1">
             <nz-form-item>
-              <div class="child">
-                <div class="cc" style="margin: 0px auto;">
+              <div>
+                <div style="margin: 0px auto;">
                   <table style="  text-align: left;">
                     <tr>
                       <td class="content2" id="tdcreateddate">建立日期</td>
@@ -96,8 +96,8 @@
         <form nz-form [formGroup]="info2">
           <nz-card [nzSize]="'middle'" id="info2">
             <nz-form-item>
-              <div class="child">
-                <div class="cc" style="margin: 0px auto;">
+              <div>
+                <div style="margin: 0px auto;">
                   <table style=" text-align: left;">
                     <tr>
                       <td class="content2" id="tdmatnr">料號</td>
@@ -156,7 +156,6 @@
           <!--<mat-tab label="材料明細">-->
           <div>
             <h4>A.材料</h4>
-
             <button id="btnaddm" nz-button class="mr-10" (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"
               disabled="{{canModifymaterial==false}}"><i nz-icon nzType="plus"></i>新增材料費用</button>
             <button id="btndeletem" nz-button class="mr-10" (click)="deleteMaterial()"
@@ -267,7 +266,7 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
+          <nz-form-label style="color: black !important;" nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">
