@@ -1,4 +1,4 @@
-<body>
+<body style="color: black;">
   <div class="shape-ex3">
     <!--<div id="_header" class="parent"
       style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
@@ -135,7 +135,7 @@
             </nz-form-item>
           </nz-card>
         </form>
-        <nz-card [nzSize]="'small'" id="btnBar">       
+        <nz-card [nzSize]="'small'" id="btnBar">
           <div>
             <button id="btnRejectQot" nz-button class="mr-10" (click)="Reject(addRejectTitleTp,RejectContentTp)"
               disabled="{{canModify==false}}"><i nz-icon nzType="default"></i>拒絕報價</button>
@@ -148,7 +148,7 @@
             <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
           </div>
-        </nz-card>     
+        </nz-card>
         <!--<p class="line2"><span></span> </p>-->
         <!--<mat-tab-group style="font-family:微軟正黑體;">-->
 
@@ -292,36 +292,7 @@
           </nz-form-control>-->
         </td>
       </tr>
-      <tr>
-        <td>
-          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
-        </td>
-        <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
-            <input [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input placeholder="材料成本價"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
-            <ng-template #material_costErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
-            </ng-template>
 
-          </nz-form-control>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_price'">材料單價</nz-form-label>
-        </td>
-        <td>
-          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_priceErrorTpl">
-            <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
-            <ng-template #material_priceErrorTpl let-control>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
-            </ng-template>
-          </nz-form-control>
-        </td>
-      </tr>
 
       <tr>
         <td>
@@ -381,18 +352,52 @@
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_weight'">重量</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_weight'">重量</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_weightErrorTpl">
             <input [attr.id]="'add_material_weight'" formControlName="material_weight" nz-input placeholder="重量"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="material_weight" />
             <ng-template #material_weightErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
             </ng-template>
           </nz-form-control>
         </td>
       </tr>
+      <tr>
+        <td>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_price'">材料單價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_priceErrorTpl">
+            <input [attr.id]="'add_material_price'" formControlName="material_price" nz-input placeholder="材料單價"
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="material_price" />
+            <ng-template #material_priceErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+          </nz-form-control>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_cost'">材料成本價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
+            <input readonly="readonly" [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input
+              placeholder="材料成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+              [ngModel]="material_weight*material_price" />
+            <ng-template #material_costErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+
+          </nz-form-control>
+        </td>
+      </tr>
+
       <!--<tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_totalcost'">總金額</nz-form-label>

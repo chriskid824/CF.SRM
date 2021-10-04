@@ -501,13 +501,13 @@ export class QotComponent implements OnInit {
       material_name: [this.editedMatetial.name, [Validators.required]],
       material_cost: [this.editedMatetial.cost, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //material_name: [this.editedMatetial.name,],
-      material_price: [this.editedMatetial.price, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_price: [this.editedMatetial.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //material_cost: [this.editedMatetial.cost,],
       material_length: [this.editedMatetial.length, [Validators.pattern(SrmModule.decimalTwoDigits)]],
       material_width: [this.editedMatetial.width, [Validators.pattern(SrmModule.decimalTwoDigits)]],
       material_height: [this.editedMatetial.height, [Validators.pattern(SrmModule.decimalTwoDigits)]],
       material_density: [this.editedMatetial.density, [Validators.pattern(SrmModule.decimalTwoDigits)]],
-      material_weight: [this.editedMatetial.weight, [Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_weight: [this.editedMatetial.weight, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
 
       //material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
       material_note: [this.editedMatetial.note,]
@@ -560,7 +560,7 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
-      
+
       this.rowData_Surface.push({
         "sProcess": this.editedSurface.process,
         "sTimes": this.editedSurface.times,
@@ -578,6 +578,7 @@ export class QotComponent implements OnInit {
       return;
     }*/
   }
+
   addSurface(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editedSurface = new Surface();
     this.editForm_Surface = this._formBuilder.group({
