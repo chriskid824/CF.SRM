@@ -27,7 +27,7 @@ export class SupplierCComponent implements OnInit {
     this.initRoleList();
 
     this.searchForm = this._formBuilder.group({
-      sap_vendor:[null,[Validators.required]],
+      sap_vendor:[null],
       srm_vendor: [null,[Validators.required]],
       vendorname: [null,[Validators.required]],
       companyid: [null,[Validators.required]],
@@ -47,14 +47,10 @@ export class SupplierCComponent implements OnInit {
   getsrmvendorID(){
     var query = {
       srmVendor1: this.searchForm.value["srm_vendor"] == null ? "" : this.searchForm.value["srm_vendor"],
-    }
- 
+    } 
     this._srmSrmService.GetVendorID(query).subscribe(result =>{
       console.log(result['srmVendor1'])
-      this.searchForm = this._formBuilder.group({
-        srm_vendor: [result['srmVendor1']],
-
-      });
+      this.searchForm.controls['srm_vendor'].setValue(result['srmVendor1']);
     });
   }
   initRoleList() {    
@@ -75,40 +71,42 @@ export class SupplierCComponent implements OnInit {
       return;
     }
     //console.log(query);
-    this._srmSrmService.CheckSupplier(query).subscribe(result => {
-      for (const i in this.searchForm.controls) {
-        console.log(i);
-        if(i!="sap_vendor" && i!="telphone" && i!="ext" && i!="faxnumber" && i!="cellphone")
-        {
-          this.searchForm.controls[i].markAsDirty();
-          this.searchForm.controls[i].updateValueAndValidity();
+    if(this.searchForm.valid)
+    {
+      this._srmSrmService.CheckSupplier(query).subscribe(result => {
+        $('#addBar').show();
+        var supplier ={
+          srmVendor1 : this.searchForm.value['srm_vendor'],
+          sapVendor : this.searchForm.value['sap_vendor'],
+          vendorName : this.searchForm.value['vendorname'],
+          org : this.searchForm.value['companyid'],
+          ekorg : this.searchForm.value['werks'],
+          person : this.searchForm.value['person'],
+          address : this.searchForm.value['address'],
+          telphone : this.searchForm.value['telphone'],
+          ext : this.searchForm.value['ext'],
+          faxnumber : this.searchForm.value['faxnumber'],
+          cellphone : this.searchForm.value['cellphone'],
+          mail : this.searchForm.value['email'],
+          user : this._storageService.userName,     
         }
-      }
-      $('#addBar').show();
-      var supplier ={
-        srmVendor1 : this.searchForm.value['srm_vendor'],
-        sapVendor : this.searchForm.value['sap_vendor'],
-        vendorName : this.searchForm.value['vendorname'],
-        org : this.searchForm.value['companyid'],
-        ekorg : this.searchForm.value['werks'],
-        person : this.searchForm.value['person'],
-        address : this.searchForm.value['address'],
-        telphone : this.searchForm.value['telphone'],
-        ext : this.searchForm.value['ext'],
-        faxnumber : this.searchForm.value['faxnumber'],
-        cellphone : this.searchForm.value['cellphone'],
-        mail : this.searchForm.value['email'],
-        user : this._storageService.userName,     
-      }
-      console.log(supplier);
-      if (this.searchForm.valid)
-      {        
-        this._srmSrmService.AddSupplier(supplier).subscribe(result => {
-          this._messageService.success("供應商建立成功！");
-        });
-      }
+        console.log(supplier);
+        if (this.searchForm.valid)
+        {        
+          this._srmSrmService.AddSupplier(supplier).subscribe(result => {
+            this._messageService.success("供應商建立成功！");
+          });
+        }
 
-    });
+      });
+    }
+    else
+    {
+      for (const i in this.searchForm.controls) {
+        this.searchForm.controls[i].markAsDirty();
+        this.searchForm.controls[i].updateValueAndValidity();
+      }
+    }
   }
 
 }

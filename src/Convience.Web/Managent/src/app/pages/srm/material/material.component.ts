@@ -92,13 +92,13 @@ export class MaterialComponent implements OnInit {
     }
     this._srmMaterialService.GetMaterialDetail(query).subscribe(result => {      
 
-      //console.log(result);
+      console.log(result);
 
       this.isNewUser = false;
       this.editedMaterial = result;
       this.editForm = this._formBuilder.group({
-               
         srmMatnr1: [result['srmMatnr1']],
+        sapMatnr: [result['sapMatnr']],
         matnrGroup: [result['matnrGroup']],
         description: [result['description']],
         version: [result['version']],
@@ -110,6 +110,7 @@ export class MaterialComponent implements OnInit {
         weight: [result['weight']],
         gewei: [result['gewei']],
         ekgrp: [result['ekgrp']],
+        bnnum: [result['bn_num']],
         statusDesc: [result['statusDesc']],
         note: [result['note']],
       });
@@ -131,6 +132,7 @@ export class MaterialComponent implements OnInit {
     if (this.editForm.valid) {
       let material: any = {};
       material.srmMatnr1 = this.editForm.value['srmMatnr1'];
+      material.sapMatnr = this.editForm.value['sapMatnr'];
       material.matnrGroup = this.editForm.value['matnrGroup'];
       material.description = this.editForm.value['description'];
       material.version = this.editForm.value['version'];
@@ -145,6 +147,7 @@ export class MaterialComponent implements OnInit {
       material.user = this._storageService.userName;
       material.gewei = this.editForm.value['gewei'];
       material.ekgrp = this.editForm.value['ekgrp'];
+      material.bn_num = this.editForm.value['bnnum'];
       console.log(this._storageService.userName);
 
       this._srmMaterialService.update(material).subscribe(result => {

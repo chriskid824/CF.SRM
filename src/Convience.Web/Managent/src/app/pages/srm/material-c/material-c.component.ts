@@ -6,6 +6,7 @@ import { SrmMaterialService } from '../../../business/srm/srm-material.service';
 import { StorageService } from '../../../services/storage.service';
 import { Role } from '../../system-manage/model/role';
 import { RoleService } from 'src/app/business/system-manage/role.service';
+import { NullLogger } from '@microsoft/signalr';
 
 @Component({
   selector: 'app-material-c',
@@ -16,7 +17,6 @@ export class MaterialCComponent implements OnInit {
   formDetail: FormGroup = new FormGroup({});
   searchForm: FormGroup = new FormGroup({});
   editForm: FormGroup = new FormGroup({});
-
   werks = [];
 
 
@@ -36,6 +36,10 @@ export class MaterialCComponent implements OnInit {
   ngOnInit(): void {
     this.initRoleList();
 
+    
+    //console.log(this.matnr);
+
+
     this.searchForm = this._formBuilder.group({
       sap_matnr:[null],
       matnr: [null,[Validators.required]],
@@ -52,6 +56,7 @@ export class MaterialCComponent implements OnInit {
       note: [null],
       ekgrp: [null,[Validators.required]],
       gewei: [null,[Validators.required]],
+      bn_num: [null,[Validators.required]],
       //roles: this._storageService.werks.split(','),
     });
     this.getsrmmatnr();
@@ -66,15 +71,15 @@ export class MaterialCComponent implements OnInit {
       matnr: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
     } 
     this._srmMaterialService.GetMatnr(query).subscribe(result =>{
-      console.log(result['srmMatnr1'])
-      this.searchForm = this._formBuilder.group({
-        matnr: [result['srmMatnr1']],
-      });
+      console.log(result['srmMatnr1']);
+      this.searchForm.controls['matnr'].setValue(result['srmMatnr1']);
+
     });
   }
 
 
   add() {
+    //console.log(this.matnr);
     //$('#addBar').hide();
     var query = {
       material: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
@@ -89,42 +94,50 @@ export class MaterialCComponent implements OnInit {
       return;
     }
     //console.log(query);
-    this._srmMaterialService.CheckMatnr(query).subscribe(result => {
-      this._srmMaterialService.CheckSAPMatnr(query).subscribe(result => {
-        for (const i in this.searchForm.controls) {
-          console.log(i);
-          if(i!="note" && i!="sap_matnr")
-          {
-            this.searchForm.controls[i].markAsDirty();
-            this.searchForm.controls[i].updateValueAndValidity();
-          }
-        }
-        $('#addBar').show();
-        var material ={
-          srmMatnr1 : this.searchForm.value['matnr'],
-          sapMatnr : this.searchForm.value['sap_matnr'],
-          matnrGroup : this.searchForm.value['group'],
-          description : this.searchForm.value['description'],
-          version : this.searchForm.value['version'],
-          material : this.searchForm.value['material'],
-          length : this.searchForm.value['length'],
-          width : this.searchForm.value['width'],
-          height : this.searchForm.value['height'],
-          density : this.searchForm.value['density'],
-          weight : this.searchForm.value['weight'],
-          note : this.searchForm.value['note'],
-          user : this._storageService.userName,     
-          werks : this.searchForm.value['werks'],
-        }
-        console.log(material);
-        if (this.searchForm.valid)
-        {        
-          this._srmMaterialService.AddMatnr(material).subscribe(result => {
-            this._messageService.success("料號建立成功！");
-          });
-        }
-      });
-    });
-  }
+    if(this.searchForm.valid)
+    {
+      //alert(111);
+      this._srmMaterialService.CheckMatnr(query).subscribe(result => {
+        this._srmMaterialService.CheckSAPMatnr(query).subscribe(result => {
 
+          $('#addBar').show();
+          var material ={
+            srmMatnr1 : this.searchForm.value['matnr'],
+            sapMatnr : this.searchForm.value['sap_matnr'],
+            matnrGroup : this.searchForm.value['group'],
+            description : this.searchForm.value['description'],
+            version : this.searchForm.value['version'],
+            material : this.searchForm.value['material'],
+            length : this.searchForm.value['length'],
+            width : this.searchForm.value['width'],
+            height : this.searchForm.value['height'],
+            density : this.searchForm.value['density'],
+            weight : this.searchForm.value['weight'],
+            note : this.searchForm.value['note'],
+            user : this._storageService.userName,     
+            werks : this.searchForm.value['werks'],
+            gewei : this.searchForm.value['gewei'],
+            ekgrp : this.searchForm.value['ekgrp'],
+            bn_num : this.searchForm.value['bn_num'],
+          }
+          console.log(material);
+          if (this.searchForm.valid)
+          {        
+            this._srmMaterialService.AddMatnr(material).subscribe(result => {
+              this._messageService.success("料號建立成功！");
+            });
+          }
+        });
+      });
+    }
+    else
+    {
+      //alert(222);
+      for (const i in this.searchForm.controls) {
+
+        this.searchForm.controls[i].markAsDirty();
+        this.searchForm.controls[i].updateValueAndValidity();
+      }
+    }
+  }
 }

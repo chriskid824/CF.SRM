@@ -58,6 +58,7 @@ namespace Convience.Service.SRM
                                select new ViewSrmMatnr1
                                {
                                    SrmMatnr1 = matnr.SrmMatnr1,
+                                   SapMatnr = matnr.SapMatnr,
                                    MatnrGroup = matnr.MatnrGroup,
                                    Description = matnr.Description,
                                    Version = matnr.Version,
@@ -70,7 +71,8 @@ namespace Convience.Service.SRM
                                    Note = matnr.Note,
                                    StatusDesc = status.StatusDesc,
                                    Gewei = matnr.Gewei,
-                                   Ekgrp = ekgry.Ekgry+ekgry.EkgryDesc
+                                   Ekgrp = ekgry.Ekgry+ekgry.EkgryDesc,
+                                   Bn_num = matnr.Bn_num,
                                })
                           .AndIfHaveValue(query.material, r => r.SrmMatnr1.Contains(query.material))
                           .AndIfHaveValue(query.name, r => r.SrmMatnr1.Contains(query.name));
@@ -90,6 +92,7 @@ namespace Convience.Service.SRM
                             select new ViewSrmMatnr1
                             {
                                 SrmMatnr1 = matnr.SrmMatnr1,
+                                SapMatnr = matnr.SapMatnr,
                                 MatnrGroup = matnr.MatnrGroup,
                                 Description = matnr.Description,
                                 Version = matnr.Version,
@@ -103,6 +106,7 @@ namespace Convience.Service.SRM
                                 StatusDesc = status.StatusDesc,
                                 Gewei = matnr.Gewei,
                                 Ekgrp = matnr.Ekgrp,
+                                Bn_num = matnr.Bn_num,
                             })
                           .Where(r => r.SrmMatnr1 == query.material).FirstOrDefault()
                           //.Where(r => r.Org == query.Org)
@@ -114,6 +118,7 @@ namespace Convience.Service.SRM
             return new ViewSrmMatnr1
             {
                 SrmMatnr1 = material.SrmMatnr1,
+                SapMatnr = material.SapMatnr,
                 MatnrGroup = material.MatnrGroup,
                 Description = material.Description,
                 Version = material.Version,
@@ -127,6 +132,7 @@ namespace Convience.Service.SRM
                 StatusDesc = material.StatusDesc,
                 Gewei = material.Gewei,
                 Ekgrp = material.Ekgrp,
+                Bn_num = material.Bn_num,
             };
         }
         public bool UpdateMaterial(ViewSrmMatnr1 data)
@@ -141,6 +147,7 @@ namespace Convience.Service.SRM
 
 
             material.SrmMatnr1 = data.SrmMatnr1;
+            material.SapMatnr = data.SapMatnr;
             material.MatnrGroup = data.MatnrGroup;
             material.Description = data.Description;
             material.Version = data.Version;
@@ -156,6 +163,7 @@ namespace Convience.Service.SRM
             material.LastUpdateBy = data.User;
             material.Gewei = data.Gewei;
             material.Ekgrp = data.Ekgrp;
+            material.Bn_num = data.Bn_num;
 
 
             _context.SrmMatnrs.Update(material);
@@ -218,6 +226,9 @@ namespace Convience.Service.SRM
                 Werks=data.Werks,
                 Status = 1,
                 Note = data.Note,
+                Bn_num = data.Bn_num,
+                Gewei = data.Gewei,
+                Ekgrp = data.Ekgrp,
                 
                 CreateDate = DateTime.Now,
                 CreateBy = data.User,
@@ -247,7 +258,7 @@ namespace Convience.Service.SRM
             }
             else
             {
-                no = "BN" + (int.Parse(matnr.Substring(4,6)) + 1).ToString().PadLeft(6, '0');
+                no = "BN" + year + (int.Parse(matnr.Substring(4,6)) + 1).ToString().PadLeft(6, '0');
             }
 
             return new ViewSrmMatnr1

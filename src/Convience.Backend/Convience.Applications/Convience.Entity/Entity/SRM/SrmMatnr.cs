@@ -32,5 +32,6 @@ namespace Convience.Entity.Entity.SRM
         public string LastUpdateBy { get; set; }
         public string Gewei { get; set; }
         public string Ekgrp { get; set; }
+        public string Bn_num { get; set; }
     }
 }
