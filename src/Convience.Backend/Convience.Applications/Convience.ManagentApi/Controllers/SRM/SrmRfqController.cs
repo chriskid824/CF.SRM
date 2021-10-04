@@ -37,6 +37,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmQotService _srmQotHService;
         private readonly IUserService _userService;
         private readonly ISrmSupplierService _srmSupplierService;
+        private readonly appSettings _appSettingsService;
 
         public SrmRfqController(ISrmMatnrService srmMatnrService,
             ISrmVendorService srmVendorService,
@@ -45,7 +46,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             ISrmRfqVService srmRfqVService,
             ISrmQotService srmQotHService,
             IUserService userService,
-            ISrmSupplierService srmSupplierService)
+            ISrmSupplierService srmSupplierService,
+            IOptions<appSettings> appSettingsOption)
         {
             _srmMatnrService = srmMatnrService;
             _srmVendorService = srmVendorService;
@@ -55,6 +57,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmQotHService = srmQotHService;
             _userService = userService;
             _srmSupplierService = srmSupplierService;
+            _appSettingsService = appSettingsOption.Value;
         }
 
         [HttpPost("GetMatnr")]
@@ -363,10 +366,13 @@ namespace Convience.ManagentApi.Controllers.SRM
 
         private void sendMail(MailMessage mail) {
             #region test
-            mail.To.Clear();
-            mail.CC.Clear();
-            mail.Bcc.Clear();
-            mail.To.Add("leon.jcg@chenfull.com.tw");
+            if (_appSettingsService.Environment == "dev")
+            {
+                mail.To.Clear();
+                mail.CC.Clear();
+                mail.Bcc.Clear();
+                mail.To.Add("leon.jcg@chenfull.com.tw");
+            }
             #endregion test
 
             using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))

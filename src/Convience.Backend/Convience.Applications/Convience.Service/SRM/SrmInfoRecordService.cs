@@ -66,7 +66,8 @@ namespace Convience.Service.SRM
                                             rfqNum = r.RfqNum,
                                             rfqId = r.RfqId.ToString(),
                                             viewstatus = ((Status)info.Status).ToString(),
-                                            Org = info.Org
+                                            Org = info.Org,
+                                            viewQotStatus = ((Status)q.Status).ToString()
                                         }
                                      )
                                      .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))

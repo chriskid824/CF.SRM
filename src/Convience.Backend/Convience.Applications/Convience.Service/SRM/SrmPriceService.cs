@@ -118,7 +118,7 @@ namespace Convience.Service.SRM
             must.Add("taxcode", "稅碼");
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");
-            must.Add("note", "備註");
+            //must.Add("note", "備註");
             must.Add("org", "採購組織");
             must.Add("infoKind", "資訊紀錄種類");
             must.Add("type", "資訊紀錄類型");
@@ -131,6 +131,9 @@ namespace Convience.Service.SRM
                     {
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
+                }
+                if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl)) {
+                    throw new Exception($"報價單號:{info.qotNum}，資訊紀錄類型W時，排序條件必填");
                 }
 
                 if (info.ExpirationDate <= info.EffectiveDate)
@@ -173,7 +176,7 @@ namespace Convience.Service.SRM
             must.Add("taxcode", "稅碼");
             must.Add("effectiveDate", "生效日期");
             must.Add("expirationDate", "有效日期");
-            must.Add("note", "備註");
+            //must.Add("note", "備註");
             must.Add("org", "採購組織");
             must.Add("infoKind", "資訊紀錄種類");
             must.Add("type", "資訊紀錄類型");
@@ -187,6 +190,10 @@ namespace Convience.Service.SRM
                     {
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
+                }
+                if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl))
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，資訊紀錄類型W時，排序條件必填");
                 }
 
                 if (info.ExpirationDate <= info.EffectiveDate)

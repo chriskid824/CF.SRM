@@ -198,6 +198,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue) ? item.value.EffectiveDate.Value.ToString("yyyy/MM/dd") : DateTime.Now.ToString("yyyy/MM/dd");
                         temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue) ? item.value.ExpirationDate.Value.ToString("yyyy/MM/dd") : new DateTime(DateTime.Now.Year + 1, 1, 1).AddDays(-1).ToString("yyyy/MM/dd");
                         temp[item.i].note = item.value.Note;
+                        temp[item.i].sortl = item.value.Sortl;
                     }
                 }
                 summ.AddRange(temp.ToList());
@@ -359,6 +360,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("UNIT");
             InfoRecord.Columns.Add("EFFECTIVE_DATE");
             InfoRecord.Columns.Add("EXPIRATION_DATE");
+            InfoRecord.Columns.Add("Sortl");
 
             foreach (var info in infos)
             {
@@ -399,6 +401,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["UNIT"] = info.Unit;
                 dr["EFFECTIVE_DATE"] = info.EffectiveDate;
                 dr["EXPIRATION_DATE"] = info.ExpirationDate;
+                dr["Sortl"] = info.Sortl;
                 InfoRecord.Rows.Add(dr);
             }
             ds.Tables.Add(InfoRecord);

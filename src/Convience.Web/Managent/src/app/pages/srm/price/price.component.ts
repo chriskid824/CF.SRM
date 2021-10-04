@@ -268,6 +268,12 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
       }, {
+        headerName: "報價單狀態",
+        field: "viewQotStatus",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      }, {
         headerName: "材料名稱",
         field: "mMaterial",
         enableRowGroup: true,
@@ -543,6 +549,14 @@ export class PriceComponent implements OnInit {
         width: "150px",
       },
       {
+        headerName: "排序條件",
+        field: "sortl",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "summary",
+        width: "150px",
+      },
+      {
         headerName: "採購群組",
         field: "ekgry",
         enableRowGroup: true,
@@ -649,12 +663,26 @@ export class PriceComponent implements OnInit {
       taxcode: [null, [Validators.required]],
       effectiveDate: [null, [Validators.required]],
       expirationDate: [null, [Validators.required]],
-      note: [null, [Validators.required]],
+      note: [null],
       org: [null, [Validators.required]],
       infoKind: [null, [Validators.required]],
-      type: [null, [Validators.required]]
+      type: [null, [Validators.required]],
+      sortl:[null]
+    }, {
+      validator: (formControl) => {
+        console.log(formControl);
+        var typeCtrl = formControl.controls.type;
+        var sortlCtrl = formControl.controls.sortl;
+        if (typeCtrl != undefined && typeCtrl.value && typeCtrl.value.toUpperCase() == "W" && !(sortlCtrl.value)) {
+          /*return { invalid: true };*/
+          return {
+            SORTLRequired: {
+              text: '資訊紀錄類型W時，排序條件必填'
+            }
+          }
+        }
+      }
     });
-
 
     this.editForm.setValue({
       qotId: e.rowData.qotId
@@ -670,8 +698,9 @@ export class PriceComponent implements OnInit {
       , expirationDate: e.rowData.expirationDate ? e.rowData.expirationDate : ""
       , note: e.rowData.note ? e.rowData.note : ""
       , org: e.rowData.org ? e.rowData.org : ""
-      , infoKind: e.rowData.infoKind ? e.rowData.infoKind: ""
+      , infoKind: e.rowData.infoKind ? e.rowData.infoKind : ""
       , type: e.rowData.type ? e.rowData.type : ""
+      , sortl: e.rowData.sortl ? e.rowData.sortl : ""
     });
     console.log(e.rowData);
 
@@ -712,6 +741,7 @@ export class PriceComponent implements OnInit {
       r.effectiveDate = dateFormatter(this.editForm.get('effectiveDate').value);
       r.expirationDate = dateFormatter(this.editForm.get('expirationDate').value);
       r.note = this.editForm.get('note').value;
+      r.sortl = this.editForm.get('sortl').value;
 
       var selectedRows = this.gridApi_summary.getSelectedRows();
       this.gridApi_summary.setRowData(this.rowData_summary);

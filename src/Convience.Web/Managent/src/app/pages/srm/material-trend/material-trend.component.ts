@@ -40,8 +40,22 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      material: [null, [Validators.required]],
-      searchDate: [null, [Validators.required]],
+      material: [null],
+      searchDate: [null],
+    }, {
+      validator: (formControl) => {
+        console.log(formControl);
+        var materialCtrl = formControl.controls.material;
+        var searchDateCtrl = formControl.controls.searchDate;
+        if (materialCtrl != undefined && searchDateCtrl != undefined)
+          if (!(materialCtrl.value || searchDateCtrl.value))
+            /*return { invalid: true };*/
+            return {
+              atLeastOneRequired: {
+                text: '原物料，日期擇一必填'
+              }
+            }
+      }
     });
     this.initaddForm();
     this.initMaterialList();

@@ -258,6 +258,17 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24">排序條件</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input placeholder="排序條件" formControlName="sortl" 
+               autocomplete="off" />
+        <br />
+        <small *ngIf="editForm.hasError('SORTLRequired')" style="color:red" class="mat-text-warn data_light">
+          {{'資訊紀錄類型W時，排序條件必填'}}
+        </small>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzErrorTip="欄位必填">採購群組</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
@@ -325,7 +336,7 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">備註</nz-form-label>
+      <nz-form-label [nzSm]="6" [nzXs]="24">備註</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <textarea nz-input
                   placeholder="備註"

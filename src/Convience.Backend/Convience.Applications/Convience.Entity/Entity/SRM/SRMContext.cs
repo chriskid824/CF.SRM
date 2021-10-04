@@ -879,6 +879,10 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.QotId).HasColumnName("QOT_ID");
 
+                entity.Property(e => e.Sortl)
+                .HasMaxLength(10)
+                .HasColumnName("SORTL");
+
                 entity.Property(e => e.StandQty).HasColumnName("STAND_QTY");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");

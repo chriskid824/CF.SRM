@@ -6,12 +6,16 @@
           <nz-form-label nzRequired>原物料</nz-form-label>
           <nz-form-control nzErrorTip="欄位必填">
             <!--<input nz-input placeholder="原物料" formControlName="material"
-         autocomplete="off" />-->
+  autocomplete="off" />-->
             <nz-select nzAllowClear nzPlaceHolder="請選擇" formControlName="material" style="width:100px">
               <nz-option *ngFor="let material of materialList" [nzValue]="material.material"
                          [nzLabel]="material.material">
               </nz-option>
             </nz-select>
+            <br/>
+            <small *ngIf="searchForm.hasError('atLeastOneRequired')" style="color:red" class="mat-text-warn data_light">
+    {{'原物料，日期擇一必填'}}
+  </small>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>

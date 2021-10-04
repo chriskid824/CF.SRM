@@ -49,6 +49,7 @@ namespace Convience.Model.Models.SRM
         public string rfqId { get; set; }
         public string rfqNum { get; set; }
         public string qotNum { get; set; }
+        public string viewQotStatus { get; set; }
         public string viewstatus { get; set; }
         public string EffectiveDate_str { get { return EffectiveDate?.ToString("yyyy/MM/dd"); } }
         public string ExpirationDate_str { get { return ExpirationDate?.ToString("yyyy/MM/dd"); } }
@@ -72,6 +73,9 @@ namespace Convience.Model.Models.SRM
         public bool canEdit { get; set; }
         public bool isStarted { get; set; }
         public Status qotStatus { get; set; }
+        public string viewQotStatus {
+            get { return ((qotStatus == 0)? "" : qotStatus.ToString()); }
+        }
         public string vendor { get; set; }
         public int vendorId { get; set; }
         public string vendorName { get; set; }
@@ -132,6 +136,7 @@ namespace Convience.Model.Models.SRM
         public string infoKindName { get; set; }
         public string type { get; set; }
         public string typeName { get; set; }
+        public string sortl { get; set; }
     }
 
     public enum INFO_KIND {

@@ -66,9 +66,8 @@ namespace Convience.ManagentApi
             services.AddCustomDbContext<SRMContext>(Configuration.GetConnectionString("ConnDB"), DataBaseType.SqlServer);
             //services.AddCustomDbContext<CFEDIContext>(Configuration.GetConnectionString("CFEDISQL"), DataBaseType.SqlServer);
             //services.AddTransient<ISrmMatnrService, SrmMatnrService>();
-
-
-
+            services.Configure<Model.Models.SRM.appSettings>(
+    Configuration.GetSection("appSettings"));
 
             JsonConvert.DefaultSettings = () => {
                 return new JsonSerializerSettings()

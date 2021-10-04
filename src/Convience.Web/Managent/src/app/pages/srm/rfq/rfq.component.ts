@@ -534,10 +534,10 @@ export class RfqComponent implements OnInit {
         alert("料號" + rfq.m[i].srmMatnr1 + "數量格式錯誤");
         return;
       }
-      if (!rfq.m[i].machineName) {
-        alert("料號" + rfq.m[i].srmMatnr1 + "機種未填");
-        return;
-      }
+      //if (!rfq.m[i].machineName) {
+      //  alert("料號" + rfq.m[i].srmMatnr1 + "機種未填");
+      //  return;
+      //}
     }
     if (rfq.v.length == 0) { alert('供應商至少需一筆!'); return; }
     this._srmRfqService.StartUp(rfq).subscribe(result => {
@@ -546,6 +546,12 @@ export class RfqComponent implements OnInit {
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
     });
+  }
+
+  checkCancel() {
+    if (confirm("確定作廢?")) {
+      this.cancel();
+    }
   }
 
   cancel() {

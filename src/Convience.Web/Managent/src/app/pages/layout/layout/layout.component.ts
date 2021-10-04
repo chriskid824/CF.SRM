@@ -71,8 +71,8 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
         { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '價格資訊', name: '價格資訊', },
         { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
-        { canOperate: 'price-manage', routerLink: '/srm/material-trend', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料趨勢圖', name: '原物料趨勢圖', },
-        { canOperate: 'price-manage', routerLink: '/srm/material-manage', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料管理', name: '原物料管理', },
+        { canOperate: 'material-trend', routerLink: '/srm/material-trend', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料趨勢圖', name: '原物料趨勢圖', },
+        { canOperate: 'material-manage', routerLink: '/srm/material-manage', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料管理', name: '原物料管理', },
       ]
     },
     {

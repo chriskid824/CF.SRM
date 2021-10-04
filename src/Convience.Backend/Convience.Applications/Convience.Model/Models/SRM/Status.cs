@@ -27,4 +27,9 @@ namespace Convience.Model.Models.SRM
         刪除 = 17,
         作廢 = 18
     }
+
+    public class appSettings
+    {
+        public string Environment { get; set; }
+    }
 }
