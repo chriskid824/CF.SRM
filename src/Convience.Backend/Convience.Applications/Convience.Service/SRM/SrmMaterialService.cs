@@ -235,11 +235,11 @@ namespace Convience.Service.SRM
         }
         public ViewSrmMatnr1 GetMatnr(ViewSrmMatnr1 query)
         {
-
-            var matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN")).Max(p1 => p1.SrmMatnr1);
-
             string no = string.Empty;
             string year = DateTime.Now.ToString("yy");
+
+            var matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN"+year)).Max(p1 => p1.SrmMatnr1);
+
 
             if (matnr == null)
             {
