@@ -23,4 +23,7 @@ export class SrmSupplierService {
   AddSupplier(supplier){
     return this.httpClient.post(`${this.uriConstant.SrmSupplier}/AddSupplier`, supplier);
   }
+  GetVendorID(query){
+    return this.httpClient.post(`${this.uriConstant.SrmSupplier}/GetVendorID`,query);
+  }
 }

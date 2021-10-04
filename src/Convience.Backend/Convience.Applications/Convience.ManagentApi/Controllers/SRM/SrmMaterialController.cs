@@ -46,28 +46,33 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok(detail);
         }
         [HttpPost("UpdateMaterial")]
-        public IActionResult UpdateDeliveryL(ViewSrmMaterial data)
+        public IActionResult UpdateDeliveryL(ViewSrmMatnr1 data)
         {
             if (_srmMaterialService.UpdateMaterial(data)) return Ok();
             return BadRequest("料號資料 更新 失敗");
         }
         [HttpPost("CheckMatnr")]
-        public IActionResult CheckMatnr(ViewSrmMaterial data)
+        public IActionResult CheckMatnr(ViewSrmMatnr1 data)
         {
             if (_srmMaterialService.CheckMatnr(data)) return Ok();
             return BadRequest("SRM料號已重複使用");
         }
         [HttpPost("CheckSAPMatnr")]
-        public IActionResult CheckSAPMatnr(ViewSrmMaterial data)
+        public IActionResult CheckSAPMatnr(ViewSrmMatnr1 data)
         {
             if (_srmMaterialService.CheckSAPMatnr(data)) return Ok();
             return BadRequest("SAP料號已重複使用");
         }
         [HttpPost("AddMatnr")]
-        public IActionResult AddMatnr(ViewSrmMaterial data)
+        public IActionResult AddMatnr(ViewSrmMatnr1 data)
         {
             if (_srmMaterialService.AddMatnr(data)) return Ok();
             return BadRequest("料號建立失敗");
+        }
+        [HttpPost("GetMatnr")]
+        public IActionResult GetMatnr(ViewSrmMatnr1 query)
+        {
+            return Ok(_srmMaterialService.GetMatnr(query));
         }
     }
 }

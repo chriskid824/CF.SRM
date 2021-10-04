@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
-    public class ViewSrmMaterial : SrmMatnr
+    public class ViewSrmMatnr1 : SrmMatnr
     {
         public string StatusDesc { get; set; }
         public string User { get; set; }

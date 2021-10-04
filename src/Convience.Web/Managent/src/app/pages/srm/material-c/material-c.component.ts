@@ -54,11 +54,23 @@ export class MaterialCComponent implements OnInit {
       gewei: [null,[Validators.required]],
       //roles: this._storageService.werks.split(','),
     });
+    this.getsrmmatnr();
   }
 
   initRoleList() {    
     this.werks = this._storageService.werks.split(',');
     console.log(this.werks );
+  }
+  getsrmmatnr(){
+    var query = {
+      matnr: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
+    } 
+    this._srmMaterialService.GetMatnr(query).subscribe(result =>{
+      console.log(result['srmMatnr1'])
+      this.searchForm = this._formBuilder.group({
+        matnr: [result['srmMatnr1']],
+      });
+    });
   }
 
 

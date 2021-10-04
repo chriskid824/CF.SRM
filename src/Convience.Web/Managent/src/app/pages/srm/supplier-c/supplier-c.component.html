@@ -4,9 +4,9 @@
     <nz-card [nzSize]="'small'" id="searchBar">
       <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="add()">
         <nz-form-item>
-          <nz-form-label [nzFor]="'sap_vendor'">SRM供應商代碼</nz-form-label>
+          <nz-form-label [nzFor]="'srm_vendor'">SRM供應商代碼</nz-form-label>
           <nz-form-control >
-            <input nz-input placeholder="SRM供應商代碼" [formControlName]="'srm_vendor'" [attr.id]="'sap_vendor'"
+            <input nz-input placeholder="SRM供應商代碼" [formControlName]="'srm_vendor'" [attr.id]="'srm_vendor'"
                    autocomplete="off" />
           </nz-form-control>
         </nz-form-item>

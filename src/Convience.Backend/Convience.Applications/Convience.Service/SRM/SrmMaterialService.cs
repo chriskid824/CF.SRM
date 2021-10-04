@@ -27,12 +27,13 @@ namespace Convience.Service.SRM
     {
         /// <summary>
         /// 取得全部角色
-        public PagingResultModel<ViewSrmMaterial> GetMaterialList(QueryMaterial query);
-        public ViewSrmMaterial GetMaterialDetail(QueryMaterial query);
-        public bool UpdateMaterial(ViewSrmMaterial data);
-        public bool CheckMatnr(ViewSrmMaterial data);
-        public bool AddMatnr(ViewSrmMaterial data);
-        public bool CheckSAPMatnr(ViewSrmMaterial data);
+        public PagingResultModel<ViewSrmMatnr1> GetMaterialList(QueryMaterial query);
+        public ViewSrmMatnr1 GetMaterialDetail(QueryMaterial query);
+        public bool UpdateMaterial(ViewSrmMatnr1 data);
+        public bool CheckMatnr(ViewSrmMatnr1 data);
+        public bool AddMatnr(ViewSrmMatnr1 data);
+        public bool CheckSAPMatnr(ViewSrmMatnr1 data);
+        public ViewSrmMatnr1 GetMatnr(ViewSrmMatnr1 query);
     }
     public class SrmMaterialService : ISrmMaterialService
     {
@@ -47,14 +48,14 @@ namespace Convience.Service.SRM
             _context = context;
         }
 
-        public PagingResultModel<ViewSrmMaterial> GetMaterialList(QueryMaterial query)
+        public PagingResultModel<ViewSrmMatnr1> GetMaterialList(QueryMaterial query)
         {
             int skip = (query.Page - 1) * query.Size;
 
             var resultQuery = (from matnr in _context.SrmMatnrs
                                join status in _context.SrmStatuses on matnr.Status equals status.Status
                                join ekgry in _context.SrmEkgries on matnr.Ekgrp equals ekgry.Ekgry
-                               select new ViewSrmMaterial
+                               select new ViewSrmMatnr1
                                {
                                    SrmMatnr1 = matnr.SrmMatnr1,
                                    MatnrGroup = matnr.MatnrGroup,
@@ -76,17 +77,17 @@ namespace Convience.Service.SRM
 
             var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
 
-            return new PagingResultModel<ViewSrmMaterial>
+            return new PagingResultModel<ViewSrmMatnr1>
             {
-                Data = JsonConvert.DeserializeObject<ViewSrmMaterial[]>(JsonConvert.SerializeObject(materials)),
+                Data = JsonConvert.DeserializeObject<ViewSrmMatnr1[]>(JsonConvert.SerializeObject(materials)),
                 Count = resultQuery.Count()
             };
         }
-        public ViewSrmMaterial GetMaterialDetail(QueryMaterial query)
+        public ViewSrmMatnr1 GetMaterialDetail(QueryMaterial query)
         {
             var material = (from matnr in _context.SrmMatnrs
                             join status in _context.SrmStatuses on matnr.Status equals status.Status
-                            select new ViewSrmMaterial
+                            select new ViewSrmMatnr1
                             {
                                 SrmMatnr1 = matnr.SrmMatnr1,
                                 MatnrGroup = matnr.MatnrGroup,
@@ -110,7 +111,7 @@ namespace Convience.Service.SRM
 
             //var suppliers = supplier.ToArray();
             //
-            return new ViewSrmMaterial
+            return new ViewSrmMatnr1
             {
                 SrmMatnr1 = material.SrmMatnr1,
                 MatnrGroup = material.MatnrGroup,
@@ -128,7 +129,7 @@ namespace Convience.Service.SRM
                 Ekgrp = material.Ekgrp,
             };
         }
-        public bool UpdateMaterial(ViewSrmMaterial data)
+        public bool UpdateMaterial(ViewSrmMatnr1 data)
         {
             SrmMatnr material = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
@@ -162,7 +163,7 @@ namespace Convience.Service.SRM
 
             return true;
         }
-        public bool CheckMatnr(ViewSrmMaterial data)
+        public bool CheckMatnr(ViewSrmMatnr1 data)
         {
             SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.Material).FirstOrDefault();
             if (matnr == null)
@@ -172,7 +173,7 @@ namespace Convience.Service.SRM
 
             return false;
         }
-        public bool CheckSAPMatnr(ViewSrmMaterial data)
+        public bool CheckSAPMatnr(ViewSrmMatnr1 data)
         {
             SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
             if (data.SapMatnr == null)
@@ -189,7 +190,7 @@ namespace Convience.Service.SRM
                 return false;
             }
         }
-        public bool AddMatnr(ViewSrmMaterial data)
+        public bool AddMatnr(ViewSrmMatnr1 data)
         {
             SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.Material).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
@@ -231,6 +232,28 @@ namespace Convience.Service.SRM
 
 
             return true;
+        }
+        public ViewSrmMatnr1 GetMatnr(ViewSrmMatnr1 query)
+        {
+
+            var matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN")).Max(p1 => p1.SrmMatnr1);
+
+            string no = string.Empty;
+            string year = DateTime.Now.ToString("yy");
+
+            if (matnr == null)
+            {
+                no = "BN"+year+"000001";
+            }
+            else
+            {
+                no = "BN" + (int.Parse(matnr.Substring(4,6)) + 1).ToString().PadLeft(6, '0');
+            }
+
+            return new ViewSrmMatnr1
+            {
+                SrmMatnr1 = no,
+            };
         }
     }
 }

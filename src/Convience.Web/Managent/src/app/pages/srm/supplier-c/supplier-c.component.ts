@@ -14,17 +14,20 @@ export class SupplierCComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   werks = [];
 
+
   constructor(
     private _storageService: StorageService, 
     private _formBuilder: FormBuilder,
     private _srmSrmService: SrmSupplierService,
-    private _messageService: NzMessageService) { }
+    private _messageService: NzMessageService) {
+}
+    
 
-  ngOnInit(): void { 
-    this.initRoleList();    
+  ngOnInit(): void {     
+    this.initRoleList();
 
     this.searchForm = this._formBuilder.group({
-      sap_vendor:[null],
+      sap_vendor:[null,[Validators.required]],
       srm_vendor: [null,[Validators.required]],
       vendorname: [null,[Validators.required]],
       companyid: [null,[Validators.required]],
@@ -35,8 +38,23 @@ export class SupplierCComponent implements OnInit {
       ext: [null],
       faxnumber: [null],
       cellphone: [null],
-      email: [null,[Validators.required]],
-      //roles: this._storageService.werks.split(','),
+      email: [null,[Validators.required]], 
+    });
+
+    this.getsrmvendorID();
+
+  }
+  getsrmvendorID(){
+    var query = {
+      srmVendor1: this.searchForm.value["srm_vendor"] == null ? "" : this.searchForm.value["srm_vendor"],
+    }
+ 
+    this._srmSrmService.GetVendorID(query).subscribe(result =>{
+      console.log(result['srmVendor1'])
+      this.searchForm = this._formBuilder.group({
+        srm_vendor: [result['srmVendor1']],
+
+      });
     });
   }
   initRoleList() {    

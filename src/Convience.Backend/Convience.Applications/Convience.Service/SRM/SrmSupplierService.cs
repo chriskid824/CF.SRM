@@ -36,6 +36,7 @@ namespace Convience.Service.SRM
         public bool UpdateSupplier(ViewSrmSupplier data);
         public bool CheckVendor(ViewSrmSupplier data);
         public bool AddVendor(ViewSrmSupplier data);
+        public ViewSrmSupplier GetVendorID(ViewSrmSupplier query);
 
     }
     public class SrmSupplierService : ISrmSupplierService
@@ -212,6 +213,27 @@ namespace Convience.Service.SRM
 
 
             return true;
+        }
+        public ViewSrmSupplier GetVendorID(ViewSrmSupplier query) 
+        {
+
+            var vendor = _context.SrmVendors.Where(p => p.SrmVendor1.StartsWith("S")).Max(p1 => p1.SrmVendor1);
+
+            string no = string.Empty;
+
+            if (vendor == null)
+            {
+                no = "S00001";
+            }
+            else
+            {
+                no = "S" + (int.Parse(vendor.Substring(1, 5)) + 1).ToString().PadLeft(5, '0');
+            }
+
+            return new ViewSrmSupplier
+            {
+                SrmVendor1 = no,
+            };
         }
 
     }
