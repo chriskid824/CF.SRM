@@ -970,22 +970,6 @@ export class QotComponent implements OnInit {
         editable: this.canModify,
       },
       {
-        headerName: "材料成本價",
-        field: "mCostPrice",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
-        headerName: "材料單價",
-        field: "mPrice",
-        enableRowGroup: true,
-        cellClass: "show-cell",
-        width: "150px",
-        editable: this.canModify,
-      },
-      {
         headerName: "長",
         field: "length",
         cellClass: "show-cell",
@@ -1024,7 +1008,25 @@ export class QotComponent implements OnInit {
         //editable: true,
         width: "150px",
         editable: this.canModify,
-      },
+      }
+      ,
+      {
+        headerName: "材料單價",
+        field: "mPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      }
+      ,   
+      {
+        headerName: "材料成本價",
+        field: "mCostPrice",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+      } ,
       {
         headerName: "備註",
         field: "note",
@@ -1034,7 +1036,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
       }
-
+      
     ]
     this.defaultColDef = {
       filter: "agTextColumnFilter",
