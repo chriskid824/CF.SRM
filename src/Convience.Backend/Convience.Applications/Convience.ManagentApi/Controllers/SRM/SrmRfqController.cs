@@ -377,6 +377,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 
             using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
             {
+                MySMTP.Credentials = new System.Net.NetworkCredential("mis@chenfull.com.tw", "Chen@full");
                 MySMTP.Send(mail);
                 MySMTP.Dispose();
             }
