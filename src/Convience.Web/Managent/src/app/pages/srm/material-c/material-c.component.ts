@@ -56,7 +56,7 @@ export class MaterialCComponent implements OnInit {
       note: [null],
       ekgrp: [null,[Validators.required]],
       gewei: [null,[Validators.required]],
-      bn_num: [null,[Validators.required]],
+      bn_num: [null],
       //roles: this._storageService.werks.split(','),
     });
     this.getsrmmatnr();
