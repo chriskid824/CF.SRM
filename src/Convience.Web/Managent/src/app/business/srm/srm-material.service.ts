@@ -27,7 +27,10 @@ export class SrmMaterialService {
   CheckSAPMatnr(query){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/CheckSAPMatnr`, query);
   }
-  GetMatnr(query){
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetMatnr`,query);
+  GetEkgrp(query){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetEkgrp`, query);
+  }
+  GetGroupList(querygroup){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetGroupList`, querygroup);
   }
 }

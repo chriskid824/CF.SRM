@@ -18,9 +18,9 @@ namespace Convience.Entity.Entity.SRM
         public string Description { get; set; }
         public string Version { get; set; }
         public string Material { get; set; }
-        public double? Length { get; set; }
-        public double? Width { get; set; }
-        public double? Height { get; set; }
+        public string? Length { get; set; }
+        public string? Width { get; set; }
+        public string? Height { get; set; }
         public string Density { get; set; }
         public double? Weight { get; set; }
         public int? Werks { get; set; }
@@ -33,5 +33,7 @@ namespace Convience.Entity.Entity.SRM
         public string Gewei { get; set; }
         public string Ekgrp { get; set; }
         public string Bn_num { get; set; }
+        public string Major_diameter { get; set; }
+        public string Minor_diameter { get; set; }
     }
 }

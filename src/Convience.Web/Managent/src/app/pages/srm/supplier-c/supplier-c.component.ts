@@ -28,7 +28,7 @@ export class SupplierCComponent implements OnInit {
 
     this.searchForm = this._formBuilder.group({
       sap_vendor:[null],
-      srm_vendor: [null,[Validators.required]],
+      srm_vendor: [null],
       vendorname: [null,[Validators.required]],
       companyid: [null,[Validators.required]],
       werks: [null,[Validators.required]],
@@ -36,22 +36,11 @@ export class SupplierCComponent implements OnInit {
       address: [null,[Validators.required]],
       telphone: [null],
       ext: [null],
-      faxnumber: [null],
+      faxnumber: [null,[Validators.required]],
       cellphone: [null],
       email: [null,[Validators.required]], 
     });
 
-    this.getsrmvendorID();
-
-  }
-  getsrmvendorID(){
-    var query = {
-      srmVendor1: this.searchForm.value["srm_vendor"] == null ? "" : this.searchForm.value["srm_vendor"],
-    } 
-    this._srmSrmService.GetVendorID(query).subscribe(result =>{
-      console.log(result['srmVendor1'])
-      this.searchForm.controls['srm_vendor'].setValue(result['srmVendor1']);
-    });
   }
   initRoleList() {    
     this.werks = this._storageService.werks.split(',');
@@ -61,14 +50,6 @@ export class SupplierCComponent implements OnInit {
   add(){
     var query = {
       srmVendor1: this.searchForm.value["srm_vendor"] == null ? "" : this.searchForm.value["srm_vendor"],
-    }
-    if (!this.searchForm.value["srm_vendor"]) {
-      alert("請輸入SRM供應商代碼");
-      return;
-    }
-    if (!this.searchForm.value["werks"]) {
-      alert("請選擇採購組織");
-      return;
     }
     //console.log(query);
     if(this.searchForm.valid)
@@ -94,7 +75,7 @@ export class SupplierCComponent implements OnInit {
         if (this.searchForm.valid)
         {        
           this._srmSrmService.AddSupplier(supplier).subscribe(result => {
-            this._messageService.success("供應商建立成功！");
+            this._messageService.success("SRM供應商："+result['srmVendor1']+"，存檔成功！");
           });
         }
 

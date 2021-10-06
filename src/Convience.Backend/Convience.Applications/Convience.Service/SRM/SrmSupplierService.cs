@@ -35,8 +35,7 @@ namespace Convience.Service.SRM
 
         public bool UpdateSupplier(ViewSrmSupplier data);
         public bool CheckVendor(ViewSrmSupplier data);
-        public bool AddVendor(ViewSrmSupplier data);
-        public ViewSrmSupplier GetVendorID(ViewSrmSupplier query);
+        public ViewSrmSupplier AddVendor(ViewSrmSupplier data);
 
     }
     public class SrmSupplierService : ISrmSupplierService
@@ -65,6 +64,7 @@ namespace Convience.Service.SRM
                           select new ViewSrmSupplier
                           {
                               SrmVendor1 = vendor.SrmVendor1,
+                              SapVendor = vendor.SapVendor,
                               VendorName = vendor.VendorName,
                               Org = vendor.Org,
                               Ekorg = vendor.Ekorg,
@@ -96,6 +96,7 @@ namespace Convience.Service.SRM
                             select new ViewSrmSupplier
                             {
                                 SrmVendor1 = vendor.SrmVendor1,
+                                SapVendor = vendor.SapVendor,
                                 VendorName = vendor.VendorName,
                                 Org = vendor.Org,
                                 Ekorg = vendor.Ekorg,
@@ -118,6 +119,7 @@ namespace Convience.Service.SRM
             return new ViewSrmSupplier
             {
                 SrmVendor1 = supplier.SrmVendor1,
+                SapVendor = supplier.SapVendor,
                 VendorName = supplier.VendorName,
                 Org = supplier.Org,
                 Ekorg = supplier.Ekorg,
@@ -144,6 +146,7 @@ namespace Convience.Service.SRM
 
 
             vendor.SrmVendor1 = data.SrmVendor1;
+            vendor.SapVendor = data.SapVendor;
             vendor.VendorName = data.VendorName;
             vendor.Org = data.Org;
             vendor.Ekorg = data.Ekorg;
@@ -175,20 +178,31 @@ namespace Convience.Service.SRM
 
             return false;
         }
-        public bool AddVendor(ViewSrmSupplier data)
+        public ViewSrmSupplier AddVendor(ViewSrmSupplier data)
         {
-            SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
-            //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            var vendor = _context.SrmVendors.Where(p => p.SrmVendor1.StartsWith("S")).Max(p1 => p1.SrmVendor1);
 
-            if (vendor != null)
+            string no = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(data.SrmVendor1))
             {
-                return false;
+                if (vendor == null)
+                {
+                    no = "S00001";
+                }
+                else
+                {
+                    no = "S" + (int.Parse(vendor.Substring(1, 5)) + 1).ToString().PadLeft(5, '0');
+                }
             }
-
+            else
+            {
+                no = data.SrmVendor1;
+            }
 
             SrmVendor srmvendor = new SrmVendor()
             {
-                SrmVendor1 = data.SrmVendor1,
+                SrmVendor1 = no,
                 VendorName = data.VendorName,
                 Org = data.Org,
                 Ekorg = data.Ekorg,
@@ -212,29 +226,11 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
 
 
-            return true;
-        }
-        public ViewSrmSupplier GetVendorID(ViewSrmSupplier query) 
-        {
-
-            var vendor = _context.SrmVendors.Where(p => p.SrmVendor1.StartsWith("S")).Max(p1 => p1.SrmVendor1);
-
-            string no = string.Empty;
-
-            if (vendor == null)
-            {
-                no = "S00001";
-            }
-            else
-            {
-                no = "S" + (int.Parse(vendor.Substring(1, 5)) + 1).ToString().PadLeft(5, '0');
-            }
-
             return new ViewSrmSupplier
             {
                 SrmVendor1 = no,
             };
-        }
+        }       
 
     }
 }

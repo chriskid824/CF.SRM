@@ -7,6 +7,7 @@ import { StorageService } from '../../../services/storage.service';
 import { Role } from '../../system-manage/model/role';
 import { RoleService } from 'src/app/business/system-manage/role.service';
 import { NullLogger } from '@microsoft/signalr';
+import { Result } from '@zxing/library';
 
 @Component({
   selector: 'app-material-c',
@@ -18,6 +19,7 @@ export class MaterialCComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   editForm: FormGroup = new FormGroup({});
   werks = [];
+  grouplist= [];
 
 
  
@@ -30,19 +32,13 @@ export class MaterialCComponent implements OnInit {
     private _roleService: RoleService,) { 
            
     }
-
     
 
-  ngOnInit(): void {
-    this.initRoleList();
-
-    
-    //console.log(this.matnr);
-
+  ngOnInit(): void {  
 
     this.searchForm = this._formBuilder.group({
       sap_matnr:[null],
-      matnr: [null,[Validators.required]],
+      matnr: [null],
       werks: [null,[Validators.required]],
       group: [null,[Validators.required]],
       description: [null,[Validators.required]],
@@ -57,37 +53,42 @@ export class MaterialCComponent implements OnInit {
       ekgrp: [null,[Validators.required]],
       gewei: [null,[Validators.required]],
       bn_num: [null],
-      //roles: this._storageService.werks.split(','),
+      major_diameter: [null],
+      minor_diameter: [null],
+      //roles: this._storageService.werks.split(','),      
     });
-    this.getsrmmatnr();
+    this.initRoleList();
   }
 
   initRoleList() {    
     this.werks = this._storageService.werks.split(',');
-    console.log(this.werks );
-  }
-  getsrmmatnr(){
+    console.log(this._storageService);
     var query = {
-      matnr: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
-    } 
-    this._srmMaterialService.GetMatnr(query).subscribe(result =>{
-      console.log(result['srmMatnr1']);
-      this.searchForm.controls['matnr'].setValue(result['srmMatnr1']);
-
+      empid: this._storageService.userName == null ? "" : this._storageService.userName,
+    }
+    var querygroup = {
+      material: {},
+      page: 1,
+      size: 999
+    }
+    /*this._srmMaterialService.GetGroupList(querygroup).subscribe(result => {
+      console.log(result);
+      this.grouplist = result["data"];
+    });*/
+    this._srmMaterialService.GetEkgrp(query).subscribe(result => {
+      this.searchForm.controls['ekgrp'].setValue(result['ekgry']);
     });
+
   }
+  
 
 
   add() {
     //console.log(this.matnr);
     //$('#addBar').hide();
     var query = {
-      material: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
+      srmMatnr1: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
       sapMatnr: this.searchForm.value["sap_matnr"] == null ? "" : this.searchForm.value["sap_matnr"],
-    }
-    if (!this.searchForm.value["matnr"]) {
-      alert("請輸入料號");
-      return;
     }
     if (!this.searchForm.value["werks"]) {
       alert("請選擇廠別");
@@ -119,12 +120,15 @@ export class MaterialCComponent implements OnInit {
             gewei : this.searchForm.value['gewei'],
             ekgrp : this.searchForm.value['ekgrp'],
             bn_num : this.searchForm.value['bn_num'],
+            minor_diameter : this.searchForm.value['minor_diameter'],
+            major_diameter : this.searchForm.value['major_diameter'],
           }
           console.log(material);
           if (this.searchForm.valid)
           {        
             this._srmMaterialService.AddMatnr(material).subscribe(result => {
-              this._messageService.success("料號建立成功！");
+              console.log(result);
+              this._messageService.success("SRM料號："+result['srmMatnr1']+"，存檔成功！");
             });
           }
         });

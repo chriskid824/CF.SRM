@@ -66,13 +66,17 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("AddMatnr")]
         public IActionResult AddMatnr(ViewSrmMatnr1 data)
         {
-            if (_srmMaterialService.AddMatnr(data)) return Ok();
-            return BadRequest("料號建立失敗");
+            return Ok(_srmMaterialService.AddMatnr(data));
         }
-        [HttpPost("GetMatnr")]
-        public IActionResult GetMatnr(ViewSrmMatnr1 query)
+        [HttpPost("GetEkgrp")]
+        public IActionResult GetEkgrp(SrmEkgry data)
         {
-            return Ok(_srmMaterialService.GetMatnr(query));
+            return Ok(_srmMaterialService.GetEkgrp(data));
         }
+        /*[HttpPost("GetGroupList")]
+        public IActionResult GetGroupList(QueryMaterial data)
+        {
+            return Ok(_srmMaterialService.GetGroupList(data));
+        }*/
     }
 }

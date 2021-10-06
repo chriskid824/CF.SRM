@@ -4,9 +4,9 @@
       <nz-card [nzSize]="'small'" id="searchBar">
         <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
           <nz-form-item>
-            <nz-form-label [nzFor]="'material'">料號</nz-form-label>
+            <nz-form-label [nzFor]="'material'">SRM料號</nz-form-label>
             <nz-form-control>
-              <input nz-input placeholder="料號" [formControlName]="'material'" [attr.id]="'material'"
+              <input nz-input placeholder="SRM料號" [formControlName]="'material'" [attr.id]="'material'"
                      autocomplete="off" />
             </nz-form-control>
           </nz-form-item>
@@ -36,7 +36,7 @@
           <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
         </div>
         <div class="mt-10">
-          <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'1700px'}" nzShowPagination="false" nzFrontPagination="false"
+          <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'1900px'}" nzShowPagination="false" nzFrontPagination="false"
           nzBordered="true" pagination="true">
             <thead>
               <tr>
@@ -49,7 +49,9 @@
                 <th nzAlign="center" nzWidth="40px">材質規格</th>
                 <th nzAlign="center" nzWidth="40px">長</th>
                 <th nzAlign="center" nzWidth="40px">寬</th>
-                <th nzAlign="center" nzWidth="40px">高</th>
+                <th nzAlign="center" nzWidth="40px">高(厚)</th>
+                <th nzAlign="center" nzWidth="40px">園內徑</th>
+                <th nzAlign="center" nzWidth="40px">圓外徑</th>
                 <th nzAlign="center" nzWidth="40px">密度</th>
                 <th nzAlign="center" nzWidth="40px">重量</th>
                 <th nzAlign="center" nzWidth="40px">重量單位</th>
@@ -74,6 +76,10 @@
                 <td nzAlign="center">{{ data.length }}</td>
                 <td nzAlign="center">{{ data.width }}</td>
                 <td nzAlign="center">{{ data.height }}</td>
+
+                <td nzAlign="center">{{ data.minor_diameter }}</td>
+                <td nzAlign="center">{{ data.major_diameter }}</td>
+
                 <td nzAlign="center">{{ data.density }}</td>
                 <td nzAlign="center">{{ data.weight }}</td>
 
@@ -156,10 +162,24 @@
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_height'">高</nz-form-label>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_height'">高(厚)</nz-form-label>
               <nz-form-control [nzSm]="10" [nzXs]="24">
                   <input [attr.id]="'edit_height'" formControlName="height" nz-input
-                      placeholder="高" autocomplete="off" />
+                      placeholder="高(厚)" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_minor_diameter'">圓內徑</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                  <input [attr.id]="'edit_minor_diameter'" formControlName="minor_diameter" nz-input
+                      placeholder="圓內徑" autocomplete="off" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_major_diameter'">圓外徑</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                  <input [attr.id]="'edit_major_diameter'" formControlName="major_diameter" nz-input
+                      placeholder="圓外徑" autocomplete="off" />
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>

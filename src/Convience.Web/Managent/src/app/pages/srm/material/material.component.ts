@@ -111,6 +111,8 @@ export class MaterialComponent implements OnInit {
         gewei: [result['gewei']],
         ekgrp: [result['ekgrp']],
         bnnum: [result['bn_num']],
+        major_diameter: [result['major_diameter']],
+        minor_diameter: [result['minor_diameter']],
         statusDesc: [result['statusDesc']],
         note: [result['note']],
       });
@@ -148,6 +150,8 @@ export class MaterialComponent implements OnInit {
       material.gewei = this.editForm.value['gewei'];
       material.ekgrp = this.editForm.value['ekgrp'];
       material.bn_num = this.editForm.value['bnnum'];
+      material.minor_diameter = this.editForm.value['minor_diameter'];
+      material.major_diameter = this.editForm.value['major_diameter'];
       console.log(this._storageService.userName);
 
       this._srmMaterialService.update(material).subscribe(result => {

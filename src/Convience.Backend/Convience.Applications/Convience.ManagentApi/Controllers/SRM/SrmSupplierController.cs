@@ -59,13 +59,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("AddSupplier")]
         public IActionResult AddSupplier(ViewSrmSupplier data)
         {
-            if (_srmSupplierService.AddVendor(data)) return Ok();
-            return BadRequest("供應商建立失敗");
-        }
-        [HttpPost("GetVendorID")]
-        public IActionResult GetVendorID(ViewSrmSupplier query)
-        {
-            return Ok(_srmSupplierService.GetVendorID(query));
+            return Ok(_srmSupplierService.AddVendor(data));
         }
     }
 }

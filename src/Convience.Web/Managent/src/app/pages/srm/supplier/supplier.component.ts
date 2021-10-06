@@ -98,6 +98,7 @@ export class SupplierComponent implements OnInit {
       this.editForm = this._formBuilder.group({
                
         srmvendor: [result['srmVendor1']],
+        sapvendor: [result['sapVendor']],
         vendorname: [result['vendorName']],
         org: [result['org']],
         ekorg: [result['ekorg']],
@@ -128,6 +129,7 @@ export class SupplierComponent implements OnInit {
     if (this.editForm.valid) {
       let supplier: any = {};
       supplier.srmVendor1 = this.editForm.value['srmvendor'];
+      supplier.sapVendor = this.editForm.value['sapvendor'];
       supplier.vendorname = this.editForm.value['vendorname'];
       supplier.org = this.editForm.value['org'];
       supplier.ekorg = this.editForm.value['ekorg'];

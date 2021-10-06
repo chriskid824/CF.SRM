@@ -31,9 +31,10 @@ namespace Convience.Service.SRM
         public ViewSrmMatnr1 GetMaterialDetail(QueryMaterial query);
         public bool UpdateMaterial(ViewSrmMatnr1 data);
         public bool CheckMatnr(ViewSrmMatnr1 data);
-        public bool AddMatnr(ViewSrmMatnr1 data);
+        public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data);
         public bool CheckSAPMatnr(ViewSrmMatnr1 data);
-        public ViewSrmMatnr1 GetMatnr(ViewSrmMatnr1 query);
+        public SrmEkgry GetEkgrp(SrmEkgry data);
+        //public PagingResultModel<ViewSrmMatnr1> GetGrouplList(QueryMaterial query);
     }
     public class SrmMaterialService : ISrmMaterialService
     {
@@ -73,9 +74,11 @@ namespace Convience.Service.SRM
                                    Gewei = matnr.Gewei,
                                    Ekgrp = ekgry.Ekgry+ekgry.EkgryDesc,
                                    Bn_num = matnr.Bn_num,
+                                   Major_diameter = matnr.Major_diameter,
+                                   Minor_diameter = matnr.Minor_diameter,
                                })
                           .AndIfHaveValue(query.material, r => r.SrmMatnr1.Contains(query.material))
-                          .AndIfHaveValue(query.name, r => r.SrmMatnr1.Contains(query.name));
+                          .AndIfHaveValue(query.name, r => r.Description.Contains(query.name));
 
             var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
 
@@ -107,6 +110,8 @@ namespace Convience.Service.SRM
                                 Gewei = matnr.Gewei,
                                 Ekgrp = matnr.Ekgrp,
                                 Bn_num = matnr.Bn_num,
+                                Major_diameter= matnr.Major_diameter,
+                                Minor_diameter = matnr.Minor_diameter,
                             })
                           .Where(r => r.SrmMatnr1 == query.material).FirstOrDefault()
                           //.Where(r => r.Org == query.Org)
@@ -133,6 +138,8 @@ namespace Convience.Service.SRM
                 Gewei = material.Gewei,
                 Ekgrp = material.Ekgrp,
                 Bn_num = material.Bn_num,
+                Major_diameter = material.Major_diameter,
+                Minor_diameter = material.Minor_diameter,
             };
         }
         public bool UpdateMaterial(ViewSrmMatnr1 data)
@@ -164,6 +171,8 @@ namespace Convience.Service.SRM
             material.Gewei = data.Gewei;
             material.Ekgrp = data.Ekgrp;
             material.Bn_num = data.Bn_num;
+            material.Major_diameter = data.Major_diameter;
+            material.Minor_diameter = data.Minor_diameter;
 
 
             _context.SrmMatnrs.Update(material);
@@ -173,7 +182,7 @@ namespace Convience.Service.SRM
         }
         public bool CheckMatnr(ViewSrmMatnr1 data)
         {
-            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.Material).FirstOrDefault();
+            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             if (matnr == null)
             {
                 return true;
@@ -198,21 +207,34 @@ namespace Convience.Service.SRM
                 return false;
             }
         }
-        public bool AddMatnr(ViewSrmMatnr1 data)
+        public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data)
         {
-            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.Material).FirstOrDefault();
-            //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            string no = string.Empty;
+            string year = DateTime.Now.ToString("yy");
 
-            if ( matnr != null)
+            var GetMatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN" + year)).Max(p1 => p1.SrmMatnr1);
+
+            if (string.IsNullOrWhiteSpace(data.SrmMatnr1))
             {
-                return false;
+                if (GetMatnr == null)
+                {
+                    no = "BN" + year + "000001";
+                }
+                else
+                {
+                    no = "BN" + year + (int.Parse(GetMatnr.Substring(4, 6)) + 1).ToString().PadLeft(6, '0');
+                }
+            }
+            else
+            {
+                no = data.SrmMatnr1;
             }
 
 
             SrmMatnr material = new SrmMatnr()
             {
 
-                SrmMatnr1 = data.SrmMatnr1,
+                SrmMatnr1 = no,
                 SapMatnr = data.SapMatnr,
                 MatnrGroup = data.MatnrGroup,
                 Description = data.Description,
@@ -229,7 +251,9 @@ namespace Convience.Service.SRM
                 Bn_num = data.Bn_num,
                 Gewei = data.Gewei,
                 Ekgrp = data.Ekgrp,
-                
+                Major_diameter=data.Major_diameter,
+                Minor_diameter=data.Minor_diameter,
+
                 CreateDate = DateTime.Now,
                 CreateBy = data.User,
                 LastUpdateDate= DateTime.Now,
@@ -242,29 +266,40 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
 
 
-            return true;
-        }
-        public ViewSrmMatnr1 GetMatnr(ViewSrmMatnr1 query)
-        {
-            string no = string.Empty;
-            string year = DateTime.Now.ToString("yy");
-
-            var matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN"+year)).Max(p1 => p1.SrmMatnr1);
-
-
-            if (matnr == null)
-            {
-                no = "BN"+year+"000001";
-            }
-            else
-            {
-                no = "BN" + year + (int.Parse(matnr.Substring(4,6)) + 1).ToString().PadLeft(6, '0');
-            }
-
             return new ViewSrmMatnr1
             {
                 SrmMatnr1 = no,
             };
         }
+        public SrmEkgry GetEkgrp(SrmEkgry data)
+        {
+            SrmEkgry ekgry = _context.SrmEkgries.Where(p => p.Empid == data.Empid).FirstOrDefault();
+            string no = string.Empty;
+
+            if (ekgry!=null)
+            {
+                no = ekgry.Ekgry;
+            }
+
+            return new SrmEkgry
+            {
+                Ekgry = no,
+            };
+        }
+        /*public PagingResultModel<ViewSrmMatnr1> GetGrouplList(QueryMaterial query)
+        {
+            int skip = (query.Page - 1) * query.Size;
+            /*var resultQuery = (from material in _context.SrmMaterials
+                               select material)
+                .AndIfHaveValue(query.material.Material, r => r.Material.Contains(query.material.Material));
+            var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
+
+
+            return new PagingResultModel<SrmMaterial>
+            {
+                Data = JsonConvert.DeserializeObject<SrmMaterial[]>(JsonConvert.SerializeObject(materials)),
+                Count = resultQuery.Count()
+            };
+        }*/
     }
 }
