@@ -242,6 +242,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                 if (string.IsNullOrWhiteSpace(matnr.SapMatnr)) { 
                     return this.BadRequestResult($"報價單號:{info.qotNum}，料號:{matnr.SrmMatnr1}，SapMatnr未存在");
                 }
+                var vendor = _srmVendorService.GetVendorById(info.VendorId.Value);
+                if (string.IsNullOrWhiteSpace(vendor.SapVendor))
+                {
+                    return this.BadRequestResult($"報價單號:{info.qotNum}，供應商:{matnr.SrmMatnr1}，SapVendor未存在");
+                }
             }
             using (var transaction = new System.Transactions.TransactionScope())
             {
@@ -296,6 +301,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                 if (string.IsNullOrWhiteSpace(matnr.SapMatnr))
                 {
                     return this.BadRequestResult($"報價單號:{info.qotNum}，料號:{matnr.SrmMatnr1}，SapMatnr未存在");
+                }
+                var vendor = _srmVendorService.GetVendorById(info.VendorId.Value);
+                if (string.IsNullOrWhiteSpace(vendor.SapVendor))
+                {
+                    return this.BadRequestResult($"報價單號:{info.qotNum}，供應商:{matnr.SrmMatnr1}，SapVendor未存在");
                 }
             }
             using (var transaction = new System.Transactions.TransactionScope())
