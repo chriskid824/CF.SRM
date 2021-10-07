@@ -1,4 +1,9 @@
 <!--<h1 style="font-family: 微軟正黑體;">工程/品質問題反應單</h1>-->
+
+<div style="margin-top: 10px;">
+  <button  nz-button class="mr-10"  (click)="save()"><i nz-icon nzType="save"></i>保存</button>
+  <button  nz-button class="mr-10"  (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
+</div>
 <div style="display: -webkit-box;margin-top:20px">
   <div>
     <nz-card>
@@ -10,21 +15,16 @@
             </td>
             <td>
               <nz-form-control>
-                <input [attr.id]="'eqp_no'" nz-input placeholder="編號" autocomplete="off" />
+                <input [attr.id]="'eqp_no'" nz-input autocomplete="off" disabled/>
               </nz-form-control>
             </td>
             <td>
               <nz-form-label [nzFor]="'ddluser'">反應者</nz-form-label>
+              
             </td>
-
-            <!--<td>
-              <nz-select [formControlName]="'ddluser'" style="width: 160px;" ngModel="1">
-                <nz-option nzValue="0" nzLabel="供應商"></nz-option>
-                <nz-option nzValue="1" nzLabel="生產部門"></nz-option>
-                <nz-option nzValue="2" nzLabel="其他部門"></nz-option>
-              </nz-select>
-            </td>-->
-            <td> <input [attr.id]="'txtuser'" nz-input placeholder="" autocomplete="off" />
+            <td> <span >{{name}}
+            </span>
+            <!--<input [attr.id]="'txtuser'" nz-input placeholder="" autocomplete="off" disabled />-->
             </td>
             <td>
               <nz-form-label [nzFor]="'txtdate'">填表日期</nz-form-label>

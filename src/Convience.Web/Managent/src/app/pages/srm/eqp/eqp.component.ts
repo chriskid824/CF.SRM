@@ -28,12 +28,15 @@ import { SrmModule } from '../srm.module';
   styleUrls: ['./eqp.component.less']
 })
 export class EqpComponent implements OnInit {
+  name;
   Quality_Problems: FormGroup = new FormGroup({});
-  constructor() { 
-   
-  }
+  constructor( private _storageService: StorageService,) { 
+  this.name = this._storageService.Name;
 
+  }
+ 
   ngOnInit(): void {
   }
-
+  save(){}
+  start(){}
 }
