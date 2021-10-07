@@ -97,7 +97,7 @@ import {EqpComponent} from'./eqp/eqp.component';
        { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
        { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},
        { path: "deliveryreceive", component: DeliveryReceiveComponent , canActivate: [LoginGuard]},
-       { path: "qot", component: QotComponent, canActivate: [LoginGuard] },
+       { path: "qot", component: QotComponent },
        { path: "qotlist", component: QotlistComponent, canActivate: [LoginGuard] },
        //{ path: "qotlist", component: QotlistComponent},
        { path: "price-work", component: PriceWorkComponent, canActivate: [LoginGuard] },
