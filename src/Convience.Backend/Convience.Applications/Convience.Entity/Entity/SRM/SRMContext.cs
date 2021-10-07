@@ -1040,6 +1040,110 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("MATERIAL");
             });
+            modelBuilder.Entity<SrmEqpH>(entity =>
+            {
+                entity.HasKey(e => e.EqpId);
+
+                entity.ToTable("SRM_EQP_H");
+
+                entity.Property(e => e.EqpId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("EQP_ID")
+                    .HasComment("反應單識別碼");
+
+                entity.Property(e => e.CauseDept)
+                    .HasMaxLength(20)
+                    .HasColumnName("CAUSE_DEPT")
+                    .HasComment("肇因單位");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY")
+                    .HasComment("建立人員");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasComment("建立日期");
+
+                entity.Property(e => e.DeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DELIVERY_DATE")
+                    .HasComment("原定交期");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("DESCRIPTION")
+                    .HasComment("物料內文");
+
+                entity.Property(e => e.Dispoaition)
+                    .HasMaxLength(5)
+                    .HasColumnName("DISPOAITION")
+                    .HasComment("研判措施");
+
+                entity.Property(e => e.EqpNum)
+                    .HasMaxLength(10)
+                    .HasColumnName("EQP_NUM")
+                    .HasComment("反應單號");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY")
+                    .HasComment("最後修改人員");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasComment("最後修改日期");
+
+                entity.Property(e => e.MatnrId)
+                    .HasColumnName("MATNR_ID")
+                    .HasComment("料號識別碼");
+
+                entity.Property(e => e.NgQty)
+                    .HasColumnName("NG_QTY")
+                    .HasComment("異常數量");
+
+                entity.Property(e => e.PoId)
+                    .HasColumnName("PO_ID")
+                    .HasComment("採購單識別碼");
+
+                entity.Property(e => e.PoQty)
+                    .HasColumnName("PO_QTY")
+                    .HasComment("採單/工單數量");
+
+                entity.Property(e => e.QcDispoaition)
+                    .HasMaxLength(5)
+                    .HasColumnName("QC_DISPOAITION")
+                    .HasComment("品質研判措施");
+
+                entity.Property(e => e.QcNote)
+                    .HasColumnName("QC_NOTE")
+                    .HasComment("品質補充說明");
+
+                entity.Property(e => e.Qdr)
+                    .HasMaxLength(1)
+                    .HasColumnName("QDR")
+                    .HasComment("開立QDR");
+
+                entity.Property(e => e.QdrNum)
+                    .HasMaxLength(10)
+                    .HasColumnName("QDR_NUM")
+                    .HasComment("QDR號碼");
+
+                entity.Property(e => e.ReworkCosts)
+                    .HasColumnName("REWORK_COSTS")
+                    .HasComment("預估整修成本");
+
+                entity.Property(e => e.Version)
+                    .HasMaxLength(3)
+                    .HasColumnName("VERSION")
+                    .HasComment("版次");
+
+                entity.Property(e => e.WoNum)
+                    .HasMaxLength(10)
+                    .HasColumnName("WO_NUM")
+                    .HasComment("工單號碼");
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }
