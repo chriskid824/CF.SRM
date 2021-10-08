@@ -301,7 +301,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 try
                 {
                     MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress("mis@chenfull.com.tw");
+                    //mail.From = new MailAddress("mis@chenfull.com.tw");
                     mail.To.Add(vendor.Mail);
                     mail.CC.Add("leo.lai@chenfull.com.tw");
                     var sourcer = _userService.GetUsers(new UserQueryModel { UserName = rfq.CreateBy, Page = 1, Size = 1 });
@@ -318,9 +318,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                     string body = "";
                     string subject = "";
+                    string bodyVendor = $"{vendor.SrmVendor1} {vendor.VendorName}";
                     if (type == "作廢")
                     {
-                        body = $@"親愛的供應商夥伴您好,<br />
+                        body = $@"親愛的{bodyVendor}夥伴您好,<br />
                     因本公司內部原因，<br />
                     詢價單：{rfq.RfqNum}<br />
                     以下報價單：<br />
@@ -334,18 +335,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                      請回覆此E-MAIL致採購窗口或致電協調。<br />
                     <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
                     {sb.ToString()}";
-                        subject = "詢價單作廢通知";
+                        subject = $"千附-{rfq.RfqNum} 詢價單作廢通知";
                     }
                     else if (type == "啟動")
                     {
-                        body = $@"親愛的供應商夥伴您好,<br />
+                        body = $@"親愛的{bodyVendor}夥伴您好,<br />
 此信為系統發送,<br />
 詢價單{rfq.RfqNum}已發送，請協助於詢價截止日期前{rfq.Deadline.Value.ToString("yyyy/MM/dd")}回覆報價資訊，謝謝！<br />
  如有任何問題，<br />
  請回覆此E-MAIL致採購窗口或致電協調。<br />
 <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
 { sb.ToString()}";
-                        subject = "詢價單啟動通知";
+                        subject = $"千附-{rfq.RfqNum} 詢價單啟動通知";
                     }
 
                     mail.Body = body;
@@ -355,11 +356,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 catch (Exception ex) {
                     MailMessage mail = new MailMessage();
-                    mail.From = new MailAddress("mis@chenfull.com.tw");
                     mail.To.Add("leon.jcg@chenfull.com.tw");
                     mail.Body = $"寄信異常，供應商:{vendor.VendorName}，EX:{ex.Message}";
                     mail.Subject = "寄信異常";
-                    sendMail(mail);
+                    sendMailMIS(mail);
                 }
             }
         }
@@ -375,8 +375,30 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             #endregion test
 
+            using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("cfp-ex01.cfprec.com.tw", 25))
+            {
+                mail.From = new MailAddress("purchasing@cfprec.com.tw", "千附-採購部");
+                MySMTP.Credentials = new System.Net.NetworkCredential("purchasing@cfprec.com.tw", "Ab1234567");
+                MySMTP.Send(mail);
+                MySMTP.Dispose();
+            }
+        }
+
+        private void sendMailMIS(MailMessage mail)
+        {
+            #region test
+            if (_appSettingsService.Environment == "dev")
+            {
+                mail.To.Clear();
+                mail.CC.Clear();
+                mail.Bcc.Clear();
+                mail.To.Add("leon.jcg@chenfull.com.tw");
+            }
+            #endregion test
+
             using (System.Net.Mail.SmtpClient MySMTP = new System.Net.Mail.SmtpClient("mail.chenfull.com.tw", 25))
             {
+                mail.From = new MailAddress("mis@chenfull.com.tw");
                 MySMTP.Credentials = new System.Net.NetworkCredential("mis@chenfull.com.tw", "Chen@full");
                 MySMTP.Send(mail);
                 MySMTP.Dispose();
