@@ -1,4 +1,4 @@
-<body style="color: black;">
+<body style="color: black; width: 1200px;">
   <div>
     <!--<div id="_header" class="parent"
       style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
@@ -163,7 +163,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_material" (change)="checkCheckBoxvalue_M($event)"
               disabled="{{canModify==false}}" [checked]="IfCheck_M">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Material"
               (gridReady)="onGridReady($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -185,7 +185,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_process" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_P($event)" [checked]="IfCheck_P">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_PROCESS" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Process"
               (gridReady)="onGridReady_Process($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -207,7 +207,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_surface" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_S($event)" [checked]="IfCheck_S">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width:1000px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width:900px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_SURFACE" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Surface"
               (gridReady)="onGridReady_Surface($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -229,7 +229,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_other" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_O($event)" [checked]="IfCheck_O">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width: 1000px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_OTHER" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Other"
               (gridReady)="onGridReady_Other($event)" [enableCharts]="true" [enableRangeSelection]="true"
