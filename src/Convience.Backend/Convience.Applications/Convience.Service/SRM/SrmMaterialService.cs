@@ -34,7 +34,8 @@ namespace Convience.Service.SRM
         public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data);
         public bool CheckSAPMatnr(ViewSrmMatnr1 data);
         public SrmEkgry GetEkgrp(SrmEkgry data);
-        //public PagingResultModel<ViewSrmMatnr1> GetGrouplList(QueryMaterial query);
+        public PagingResultModel<SrmMaterialGroup> GetGroupList(QueryMaterial query);
+        public PagingResultModel<SrmWeightUnit> GetUnitList(QueryMaterial query);
     }
     public class SrmMaterialService : ISrmMaterialService
     {
@@ -286,20 +287,33 @@ namespace Convience.Service.SRM
                 Ekgry = no,
             };
         }
-        /*public PagingResultModel<ViewSrmMatnr1> GetGrouplList(QueryMaterial query)
+        public PagingResultModel<SrmMaterialGroup> GetGroupList(QueryMaterial query)
         {
             int skip = (query.Page - 1) * query.Size;
-            /*var resultQuery = (from material in _context.SrmMaterials
-                               select material)
-                .AndIfHaveValue(query.material.Material, r => r.Material.Contains(query.material.Material));
+            var resultQuery = (from material in _context.SrmMaterialGroups
+                               select material);
             var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
 
 
-            return new PagingResultModel<SrmMaterial>
+            return new PagingResultModel<SrmMaterialGroup>
             {
-                Data = JsonConvert.DeserializeObject<SrmMaterial[]>(JsonConvert.SerializeObject(materials)),
+                Data = JsonConvert.DeserializeObject<SrmMaterialGroup[]>(JsonConvert.SerializeObject(materials)),
                 Count = resultQuery.Count()
             };
-        }*/
+        }
+        public PagingResultModel<SrmWeightUnit> GetUnitList(QueryMaterial query)
+        {
+            int skip = (query.Page - 1) * query.Size;
+            var resultQuery = (from material in _context.SrmWeightUnits
+                               select material);
+            var materials = resultQuery.Skip(skip).Take(query.Size).ToArray();
+
+
+            return new PagingResultModel<SrmWeightUnit>
+            {
+                Data = JsonConvert.DeserializeObject<SrmWeightUnit[]>(JsonConvert.SerializeObject(materials)),
+                Count = resultQuery.Count()
+            };
+        }
     }
 }

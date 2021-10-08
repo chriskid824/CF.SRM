@@ -73,10 +73,15 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             return Ok(_srmMaterialService.GetEkgrp(data));
         }
-        /*[HttpPost("GetGroupList")]
+        [HttpPost("GetGroupList")]
         public IActionResult GetGroupList(QueryMaterial data)
         {
             return Ok(_srmMaterialService.GetGroupList(data));
-        }*/
+        }
+        [HttpPost("GetUnitList")]
+        public IActionResult GetUnitList(QueryMaterial data)
+        {
+            return Ok(_srmMaterialService.GetUnitList(data));
+        }
     }
 }
