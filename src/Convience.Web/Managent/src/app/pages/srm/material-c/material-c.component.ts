@@ -20,6 +20,7 @@ export class MaterialCComponent implements OnInit {
   editForm: FormGroup = new FormGroup({});
   werks = [];
   grouplist= [];
+  unitlist= [];
 
 
  
@@ -66,18 +67,24 @@ export class MaterialCComponent implements OnInit {
     var query = {
       empid: this._storageService.userName == null ? "" : this._storageService.userName,
     }
-    var querygroup = {
-      material: {},
+    var querylist = {
+      //material: {},
       page: 1,
       size: 999
     }
-    /*this._srmMaterialService.GetGroupList(querygroup).subscribe(result => {
+    this._srmMaterialService.GetGroupList(querylist).subscribe(result => {
       console.log(result);
       this.grouplist = result["data"];
-    });*/
+    });
+    this._srmMaterialService.GetUnitList(querylist).subscribe(result => {
+      console.log(result);
+      this.unitlist = result["data"];
+    });
+
     this._srmMaterialService.GetEkgrp(query).subscribe(result => {
       this.searchForm.controls['ekgrp'].setValue(result['ekgry']);
     });
+    
 
   }
   
@@ -89,10 +96,6 @@ export class MaterialCComponent implements OnInit {
     var query = {
       srmMatnr1: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
       sapMatnr: this.searchForm.value["sap_matnr"] == null ? "" : this.searchForm.value["sap_matnr"],
-    }
-    if (!this.searchForm.value["werks"]) {
-      alert("請選擇廠別");
-      return;
     }
     //console.log(query);
     if(this.searchForm.valid)

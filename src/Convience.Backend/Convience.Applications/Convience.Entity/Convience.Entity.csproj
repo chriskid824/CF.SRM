@@ -11,7 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Convience.FrameWork\Convience.Core\Convience.Core.csproj" >
+    <Compile Remove="Entity\SRM\SRMContext - 複製.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Convience.FrameWork\Convience.Core\Convience.Core.csproj">
 		
 	  </ProjectReference>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">

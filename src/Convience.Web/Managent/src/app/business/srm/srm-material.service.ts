@@ -30,7 +30,10 @@ export class SrmMaterialService {
   GetEkgrp(query){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetEkgrp`, query);
   }
-  GetGroupList(querygroup){
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetGroupList`, querygroup);
+  GetGroupList(querylist){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetGroupList`, querylist);
+  }
+  GetUnitList(querylist){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetUnitList`, querylist);
   }
 }

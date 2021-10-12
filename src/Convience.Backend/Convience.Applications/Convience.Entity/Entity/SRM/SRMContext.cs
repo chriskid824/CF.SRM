@@ -42,6 +42,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmProcess> SrmProcesss { get; set; }
         public virtual DbSet<SrmMaterial> SrmMaterials { get; set; }
         public virtual DbSet<SrmMaterialTrend> SrmMaterialTrends { get; set; }
+        public virtual DbSet<SrmMaterialGroup> SrmMaterialGroups { get; set; }
+        public virtual DbSet<SrmWeightUnit> SrmWeightUnits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1152,6 +1154,34 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("WO_NUM")
                     .HasComment("工單號碼");
+            });
+            modelBuilder.Entity<SrmMaterialGroup>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("SRM_MATERIAL_GROUP");
+
+                entity.Property(e => e.GroupDesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("GROUP_DESC");
+
+                entity.Property(e => e.GroupId)
+                    .HasMaxLength(255)
+                    .HasColumnName("GROUP_ID");
+            });
+            modelBuilder.Entity<SrmWeightUnit>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("SRM_WEIGHT_UNIT");
+
+                entity.Property(e => e.UnitDesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("UNIT_DESC");
+
+                entity.Property(e => e.UnitId)
+                    .HasMaxLength(255)
+                    .HasColumnName("UNIT_ID");
             });
 
             OnModelCreatingPartial(modelBuilder);
