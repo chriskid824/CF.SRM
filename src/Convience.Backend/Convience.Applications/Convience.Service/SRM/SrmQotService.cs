@@ -604,7 +604,9 @@ namespace Convience.Service.SRM
                                mEmptyFlag = q.MEmptyFlag,
                                pEmptyFlag = q.PEmptyFlag,
                                sEmptyFlag = q.SEmptyFlag,
-                               oPEmptyFlag = q.OEmptyFlag
+                               oPEmptyFlag = q.OEmptyFlag,
+                               Description = m.Description,
+                               Qty = rm.Qty
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
@@ -1008,12 +1010,16 @@ namespace Convience.Service.SRM
                 qot.PEmptyFlag = qotH.PEmptyFlag;
                 qot.SEmptyFlag = qotH.SEmptyFlag;
                 qot.OEmptyFlag = qotH.OEmptyFlag;
+                qot.LeadTime = qotH.LeadTime;
+                qot.ExpirationDate = qotH.ExpirationDate;
                 db.Entry(qot).Property(p => p.LastUpdateBy).IsModified = true;
                 db.Entry(qot).Property(p => p.LastUpdateDate).IsModified = true;
                 db.Entry(qot).Property(p => p.MEmptyFlag).IsModified = true;
                 db.Entry(qot).Property(p => p.PEmptyFlag).IsModified = true;
                 db.Entry(qot).Property(p => p.SEmptyFlag).IsModified = true;
                 db.Entry(qot).Property(p => p.OEmptyFlag).IsModified = true;
+                db.Entry(qot).Property(p => p.LeadTime).IsModified = true;
+                db.Entry(qot).Property(p => p.ExpirationDate).IsModified = true;
 
                 var result = db.SaveChanges();
                 //return result;

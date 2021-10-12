@@ -59,6 +59,7 @@
                       <td class="content2" id="tdstatus">狀態</td>
                       <td class="content2" id="tdrfqnum">詢價單號</td>
                       <td class="content2" id="tdqotnum">報價單號</td>
+                      <td class="content2" id="tdmatnr">料號</td>
 
                     </tr>
                     <tr id="rowtype2">
@@ -84,6 +85,11 @@
                         <label class="content2" type="text" id="qotnum" name="qotnum" disabled
                           value="">{{matnrIndex==null?"": qotv.q[matnrIndex].qotNum}}</label>
                       </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="matnr" name="matnr" disabled
+                          value="">{{matnrIndex==null?"": qotv.q[matnrIndex].matnr}}</label>
+                      </td>
+
 
 
                     </tr>
@@ -100,16 +106,17 @@
                 <div style="margin: 0px auto;">
                   <table style=" text-align: left;">
                     <tr>
-                      <td class="content2" id="tdmatnr">料號</td>
+                      <td class="content2" id="tdmatnrname">物料內文</td>
                       <td class="content2" id="tdmaterial">材料規格</td>
                       <td class="content2" id="tdsize">成本尺寸</td>
                       <td class="content2" id="tdweight">工件重量(KG)</td>
                       <td class="content2" id="tdmachinename">機種名稱</td>
+                      <td class="content2" id="tdamount">數量</td>
                     </tr>
                     <tr id="rowtype2">
                       <td class="content2">
-                        <label class="content2" type="text" id="matnr" name="matnr" disabled
-                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].matnr}}</label>
+                        <label class="content2" type="text" id="matnrname" name="matnrname" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].description}}</label>
                       </td>
                       <td class="content2">
                         <label class="content2" type="text" id="material" name="material" disabled
@@ -127,6 +134,10 @@
                         <label class="content2" type="text" id="machinename" name="machinename" disabled
                           value="">{{matnrIndex==null?"":qotv.q[matnrIndex].machineName}}</label>
                       </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="amount" name="amount" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].qty}}</label>
+                      </td>
 
                     </tr>
                   </table>
@@ -135,6 +146,7 @@
             </nz-form-item>
           </nz-card>
         </form>
+
         <nz-card [nzSize]="'small'" id="btnBar">
           <div>
             <button id="btnRejectQot" nz-button class="mr-10" (click)="Reject(addRejectTitleTp,RejectContentTp)"
@@ -149,6 +161,77 @@
       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
           </div>
         </nz-card>
+        <form nz-form [formGroup]="info3">
+          <nz-card [nzSize]="'small'" id="btnBar">
+            <div>
+              <!--table style=" text-align: left;">
+                <tr>
+                  <td class="content2" id="tdleadtime">
+                    <nz-form-label [nzFor]="'leadtime'">計劃交貨時間</nz-form-label>
+                  </td>
+                  <td class="content2" id="tdexpiringdate">
+                    <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
+                  </td>
+                  <td class="content2"></td>
+                  <td class="content2"></td>
+                  <td class="content2"></td>
+                  <td class="content2"></td>
+                </tr>
+                <tr id="rowtype2">
+                  <td class="content2">
+                    <nz-form-control>
+                      <input [attr.id]="'leadtime'" formControlName="leadtime" nz-input placeholder="計劃交貨時間"
+                        autocomplete="off" disabled="{{canModify==false}}" />
+                    </nz-form-control>
+                  </td>
+                  <td class="content2">
+                   
+                    <nz-form-control>
+                      <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" [(ngModel)]="H.deadline" disabled="{{canModify==false}}"></nz-date-picker>
+                      <nz-date-picker style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
+                        formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
+                    </nz-form-control>
+                    <nz-date-picker style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate" formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
+                  </td>
+                  <td class="content2">
+                  </td>
+                  <td class="content2">
+                  </td>
+                  <td class="content2">
+                  </td>
+                  <td class="content2">
+                  </td>
+
+                </tr>
+              </table>-->
+              <div style="display: -webkit-box;margin-top:20px">
+                <div>
+                  <form nz-form [nzLayout]="'inline'" [formGroup]="info3">
+                    <nz-form-item>
+                      <nz-form-label [nzFor]="'leadtime'">計劃交貨時間</nz-form-label>
+                      <nz-form-control>
+                        <input  required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間" formControlName="leadtime" autocomplete="off"  />
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
+                      <nz-form-control>
+                        <nz-date-picker required  style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
+                          formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
+                      </nz-form-control>
+                    </nz-form-item>
+                    <!--<nz-form-item>
+                  <nz-form-label [nzFor]="'status'">狀態</nz-form-label>
+                  <nz-form-control>
+                    <label>{{H.viewstatus}}</label>
+                  </nz-form-control>
+                </nz-form-item>-->
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nz-card>
+        </form>
         <!--<p class="line2"><span></span> </p>-->
         <!--<mat-tab-group style="font-family:微軟正黑體;">-->
 
@@ -266,7 +349,8 @@
     <table border="1">
       <tr>
         <td>
-          <nz-form-label style="color: black !important;" nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'add_material_name'">素材材質</nz-form-label>
+          <nz-form-label style="color: black !important;" nzRequired [nzSm]="24" [nzXs]="24"
+            [nzFor]="'add_material_name'">素材材質</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_nameErrorTpl">

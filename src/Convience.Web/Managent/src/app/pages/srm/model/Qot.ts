@@ -12,7 +12,7 @@ export class QotH {
   vendorId?: string;
   matnrId?: string;
   rfqId?: string;
-  leadTime?: Date;
+  leadTime?: string;
   minQty?: number;
   totalAmount?: number;
   createDate?: Date;

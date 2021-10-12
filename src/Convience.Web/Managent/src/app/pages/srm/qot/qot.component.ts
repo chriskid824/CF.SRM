@@ -46,6 +46,7 @@ export class QotComponent implements OnInit {
   //departmentNode: NzTreeNodeOptions[] = [];
   selectedMatnr;
   matnrList: FormGroup = new FormGroup({});
+  info3: FormGroup = new FormGroup({});
   info2: FormGroup = new FormGroup({});
   info1: FormGroup = new FormGroup({});
   selectedDepartmentKey: string = '';
@@ -171,6 +172,7 @@ export class QotComponent implements OnInit {
 
     });
     this.info2 = this._formBuilder.group({});
+    
     /* */
     var qot = {
       q: null
@@ -192,7 +194,11 @@ export class QotComponent implements OnInit {
     this.search();
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
     // this.canModify = this.H.status == 1;
-
+    this.info3 = this._formBuilder.group({
+      leadtime: [null],
+      expiringdate: [null]
+    });
+    this.info3.setValue({ leadtime: this.Q.leadtime??"",expiringdate: this.Q.expiringdate??""});
 
   }
 
@@ -652,6 +658,25 @@ export class QotComponent implements OnInit {
     qot.q.PEmptyFlag = ($('#chkreject_process-input').prop("checked")) ? "X" : "";
     qot.q.SEmptyFlag = ($('#chkreject_surface-input').prop("checked")) ? "X" : "";
     qot.q.OEmptyFlag = ($('#chkreject_other-input').prop("checked")) ? "X" : "";
+    
+    
+    console.log('expiringdate' + this.info3.get('expiringdate').value);
+    if (this.info3.value["expiringdate"] != null) {
+      var ExpirationDate = new Date(this.info3.value["expiringdate"]);
+      //qot.q.expiringdate = expiringdate.getFullYear() + '-' + (expiringdate.getMonth() + 1) + '-' + expiringdate.getDate();
+      qot.q.ExpirationDate = ExpirationDate.getFullYear() + '-' + (ExpirationDate.getMonth() + 1) + '-' + ExpirationDate.getDate();
+    } else {
+      qot.q.ExpirationDate = null;
+    }
+
+    if (this.info3.value["leadtime"] != null) {
+      var LeadTime = this.info3.value["leadtime"];
+      qot.q.LeadTime = LeadTime;
+    } else {
+      qot.q.LeadTime = null;
+    }
+    console.log("!!!!!!!!!!!!!!!!!!!!");
+    console.log(qot.q)
     //alert(qot.q.OEmptyFlag)
     /*
     var rfq = {
@@ -1328,6 +1353,14 @@ export class QotComponent implements OnInit {
     //1.需先檢核內容
     //2.檢查通過後執行SAVE及變更狀態
     var qot = this.getqot();
+    console.log('---------------------------------------------------')
+    console.log(qot.q)
+    if ((qot.q.LeadTime == null) ||(qot.q.LeadTime == "")) { alert("計劃交貨時間未輸入"); return; }
+    if ((qot.q.ExpirationDate == null)||(qot.q.ExpirationDate =="NaN-NaN-NaN")){ alert("有效期限未選擇"); return; }
+
+    //if (this.Q.leadtime == "") { alert("計劃交貨時間未選擇"); return; }
+    //if (this.Q.expiringdate == "") { alert("有效期限未選擇"); return; }
+    
 
     if (((qot.material.length) == 0) && (!$('#chkreject_material-input').prop("checked"))) {
       alert('材料至少需一筆或請勾選材料不回填!'); return;
@@ -1389,10 +1422,10 @@ export class QotComponent implements OnInit {
         alert("工序未填");
         return;
       }
-      if (!qot.surface[i].sTimes) {
+      /*if (!qot.surface[i].sTimes) {
         alert("工序" + qot.surface[i].sProcess + "次數未填");
         return;
-      }
+      }*/
       if (isNaN(qot.surface[i].sTimes)) {
         alert("工序" + qot.surface[i].sProcess + "次數格式錯誤");
         return;
