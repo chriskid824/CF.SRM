@@ -29,8 +29,10 @@ export class PriceManageComponent implements OnInit {
   _matnrId;
   _vendorId;
   _status;
+  _ekgry;
   txtMatnr;
   txtVendor;
+  EkgryList;
 
   constructor(private _formBuilder: FormBuilder
     , private _router: Router
@@ -46,9 +48,11 @@ export class PriceManageComponent implements OnInit {
       matnr: [null],
       vendor: [null],
       status: ["1"],
+      ekgry:[null],
       queryMatnr: [null],
       queryVendor:[null]
     });
+    this.initEkgry();
     if (sessionStorage.getItem("price-manage")) {
       var query = JSON.parse(sessionStorage.getItem("price-manage"));
       this.selectedMatnrId = query.matnrId;
@@ -56,6 +60,7 @@ export class PriceManageComponent implements OnInit {
       this.selectedVendorId = query.vendorId;
       this._vendorId = query.vendorId;
       this._status = query.status;
+      this._ekgry = query.ekgry;
       this.page = query.page;
       this.size = query.size;
       this.txtMatnr = query.txtMatnr;
@@ -64,11 +69,18 @@ export class PriceManageComponent implements OnInit {
       this.searchForm.patchValue({
         matnr: this.txtMatnr,
         vendor: this.txtVendor,
-        status: this._status
+        status: this._status,
+        ekgry: this._ekgry
       });
       console.log(this.searchForm);
       this.refresh();
     }
+  }
+  initEkgry() {
+    this._srmPriceService.GetEkgry().subscribe(result => {
+      console.log(result);
+      this.EkgryList = result;
+    });
   }
 
   pageChange() {
@@ -82,17 +94,19 @@ export class PriceManageComponent implements OnInit {
     this._matnrId = this.selectedMatnrId;
     this._vendorId = this.selectedVendorId;
     this._status = this.searchForm.value["status"] == null ? "" : this.searchForm.value["status"];
+    this._ekgry = this.searchForm.value["ekgry"] == null ? "" : this.searchForm.value["ekgry"];
     this.page = 1;
     this.txtMatnr = this.searchForm.value["matnr"];
     this.txtVendor = this.searchForm.value["vendor"];
     this.refresh();
   }
   refresh() {
-    if (!this._matnrId && !this._vendorId) { alert('料號或供應商擇一必填!'); return;}
+    if (!this._matnrId && !this._vendorId && !this._ekgry) { alert('料號或供應商或採購群組擇一必填!'); return;}
     var query = {
       matnrId: this._matnrId,
       vendorId: this._vendorId,
       status: this._status,
+      ekgry: this._ekgry,
       page: this.page,
       size: this.size
     }

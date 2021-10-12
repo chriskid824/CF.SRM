@@ -673,11 +673,22 @@ export class PriceComponent implements OnInit {
         console.log(formControl);
         var typeCtrl = formControl.controls.type;
         var sortlCtrl = formControl.controls.sortl;
+        var expirationDateCtrl = formControl.controls.expirationDate;
+        var effectiveDateCtrl = formControl.controls.effectiveDate;
+        var expDate = typeof expirationDateCtrl.value == 'string' ? new Date(expirationDateCtrl.value) : expirationDateCtrl.value;
+        var effDate = typeof effectiveDateCtrl.value == 'string' ? new Date(effectiveDateCtrl.value) : effectiveDateCtrl.value;
         if (typeCtrl != undefined && typeCtrl.value && typeCtrl.value.toUpperCase() == "W" && !(sortlCtrl.value)) {
           /*return { invalid: true };*/
           return {
             SORTLRequired: {
               text: '資訊紀錄類型W時，排序條件必填'
+            }
+          }
+        }
+        if (expirationDateCtrl != undefined && effectiveDateCtrl != undefined && expDate <= effDate) {
+          return {
+            DateValid: {
+              text: '有效日期需大於生效日期'
             }
           }
         }

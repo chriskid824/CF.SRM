@@ -196,7 +196,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                         temp[item.i].taxcode = item.value.Taxcode?.ToString() ?? "V4";
                         temp[item.i].taxcodeName = string.IsNullOrWhiteSpace(item.value.Taxcode) ? "V4 進項稅5%" : $"{item.value.Taxcode} {item.value.taxcodeName}";
                         temp[item.i].effectiveDate = (item.value.EffectiveDate.HasValue) ? item.value.EffectiveDate.Value.ToString("yyyy/MM/dd") : DateTime.Now.ToString("yyyy/MM/dd");
-                        temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue) ? item.value.ExpirationDate.Value.ToString("yyyy/MM/dd") : new DateTime(DateTime.Now.Year + 1, 1, 1).AddDays(-1).ToString("yyyy/MM/dd");
+                        //temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue) ? item.value.ExpirationDate.Value.ToString("yyyy/MM/dd") : new DateTime(DateTime.Now.Year + 1, 1, 1).AddDays(-1).ToString("yyyy/MM/dd");
+                        temp[item.i].expirationDate = (item.value.ExpirationDate.HasValue) ? item.value.ExpirationDate.Value.ToString("yyyy/MM/dd") : qot.ExpirationDate.HasValue? qot.ExpirationDate.Value.ToString("yyyy/MM/dd") : new DateTime(DateTime.Now.Year + 1, 1, 1).AddDays(-1).ToString("yyyy/MM/dd");
                         temp[item.i].note = item.value.Note;
                         temp[item.i].sortl = item.value.Sortl;
                     }

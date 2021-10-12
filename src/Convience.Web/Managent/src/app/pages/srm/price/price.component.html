@@ -260,7 +260,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24">排序條件</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input placeholder="排序條件" formControlName="sortl" 
+        <input nz-input placeholder="排序條件" formControlName="sortl"
                autocomplete="off" />
         <br />
         <small *ngIf="editForm.hasError('SORTLRequired')" style="color:red" class="mat-text-warn data_light">
@@ -333,6 +333,10 @@
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">有效日期</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="expirationDate" formControlName="expirationDate"></nz-date-picker>
+        <br />
+        <small *ngIf="editForm.hasError('DateValid')" style="color:red" class="mat-text-warn data_light">
+          {{'有效日期需大於生效日期'}}
+        </small>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
