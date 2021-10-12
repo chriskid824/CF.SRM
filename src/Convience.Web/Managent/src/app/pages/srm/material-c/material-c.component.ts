@@ -91,50 +91,39 @@ export class MaterialCComponent implements OnInit {
 
 
   add() {
-    //console.log(this.matnr);
-    //$('#addBar').hide();
-    var query = {
-      srmMatnr1: this.searchForm.value["matnr"] == null ? "" : this.searchForm.value["matnr"],
-      sapMatnr: this.searchForm.value["sap_matnr"] == null ? "" : this.searchForm.value["sap_matnr"],
-    }
-    //console.log(query);
     if(this.searchForm.valid)
     {
-      //alert(111);
-      this._srmMaterialService.CheckMatnr(query).subscribe(result => {
-        this._srmMaterialService.CheckSAPMatnr(query).subscribe(result => {
-
-          $('#addBar').show();
-          var material ={
-            srmMatnr1 : this.searchForm.value['matnr'],
-            sapMatnr : this.searchForm.value['sap_matnr'],
-            matnrGroup : this.searchForm.value['group'],
-            description : this.searchForm.value['description'],
-            version : this.searchForm.value['version'],
-            material : this.searchForm.value['material'],
-            length : this.searchForm.value['length'],
-            width : this.searchForm.value['width'],
-            height : this.searchForm.value['height'],
-            density : this.searchForm.value['density'],
-            weight : this.searchForm.value['weight'],
-            note : this.searchForm.value['note'],
-            user : this._storageService.userName,     
-            werks : this.searchForm.value['werks'],
-            gewei : this.searchForm.value['gewei'],
-            ekgrp : this.searchForm.value['ekgrp'],
-            bn_num : this.searchForm.value['bn_num'],
-            minor_diameter : this.searchForm.value['minor_diameter'],
-            major_diameter : this.searchForm.value['major_diameter'],
-          }
-          console.log(material);
-          if (this.searchForm.valid)
-          {        
-            this._srmMaterialService.AddMatnr(material).subscribe(result => {
-              console.log(result);
-              this._messageService.success("SRM料號："+result['srmMatnr1']+"，存檔成功！");
-            });
-          }
-        });
+      $('#addBar').show();
+      var material ={
+        srmMatnr1 : this.searchForm.value['matnr'],
+        sapMatnr : this.searchForm.value['sap_matnr'],
+        matnrGroup : this.searchForm.value['group'],
+        description : this.searchForm.value['description'],
+        version : this.searchForm.value['version'],
+        material : this.searchForm.value['material'],
+        length : this.searchForm.value['length'],
+        width : this.searchForm.value['width'],
+        height : this.searchForm.value['height'],
+        density : this.searchForm.value['density'],
+        weight : this.searchForm.value['weight'],
+        note : this.searchForm.value['note'],
+        user : this._storageService.userName,     
+        werks : this.searchForm.value['werks'],
+        gewei : this.searchForm.value['gewei'],
+        ekgrp : this.searchForm.value['ekgrp'],
+        bn_num : this.searchForm.value['bn_num'],
+        minor_diameter : this.searchForm.value['minor_diameter'],
+        major_diameter : this.searchForm.value['major_diameter'],
+      }
+      this._srmMaterialService.Checkdata(material).subscribe(result => {
+        console.log(material);
+        if (this.searchForm.valid)
+        {        
+          this._srmMaterialService.AddMatnr(material).subscribe(result => {
+            console.log(result);
+            this._messageService.success("SRM料號："+result['srmMatnr1']+"，存檔成功！");
+          });
+        }
       });
     }
     else

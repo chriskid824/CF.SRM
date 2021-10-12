@@ -48,13 +48,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult UpdateDeliveryL(ViewSrmSupplier dls)
         {
             if (_srmSupplierService.UpdateSupplier(dls)) return Ok();
-            return BadRequest("供應商資料更新失敗");
+            return BadRequest("供應商名稱已重複使用");
         }
-        [HttpPost("CheckSupplier")]
-        public IActionResult CheckSupplier(ViewSrmSupplier data)
+        [HttpPost("Checkdata")]
+        public IActionResult Checkdata(ViewSrmSupplier data)
         {
-            if (_srmSupplierService.CheckVendor(data)) return Ok();
-            return BadRequest("此供應商代碼已重複使用");
+            if (string.IsNullOrWhiteSpace(_srmSupplierService.Checkdata(data))) return Ok();
+            return BadRequest(_srmSupplierService.Checkdata(data));
         }
         [HttpPost("AddSupplier")]
         public IActionResult AddSupplier(ViewSrmSupplier data)

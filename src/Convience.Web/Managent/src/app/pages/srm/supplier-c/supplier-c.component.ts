@@ -48,29 +48,25 @@ export class SupplierCComponent implements OnInit {
   }
 
   add(){
-    var query = {
-      srmVendor1: this.searchForm.value["srm_vendor"] == null ? "" : this.searchForm.value["srm_vendor"],
-    }
-    //console.log(query);
     if(this.searchForm.valid)
     {
-      this._srmSrmService.CheckSupplier(query).subscribe(result => {
-        $('#addBar').show();
-        var supplier ={
-          srmVendor1 : this.searchForm.value['srm_vendor'],
-          sapVendor : this.searchForm.value['sap_vendor'],
-          vendorName : this.searchForm.value['vendorname'],
-          org : this.searchForm.value['companyid'],
-          ekorg : this.searchForm.value['werks'],
-          person : this.searchForm.value['person'],
-          address : this.searchForm.value['address'],
-          telphone : this.searchForm.value['telphone'],
-          ext : this.searchForm.value['ext'],
-          faxnumber : this.searchForm.value['faxnumber'],
-          cellphone : this.searchForm.value['cellphone'],
-          mail : this.searchForm.value['email'],
-          user : this._storageService.userName,     
-        }
+      $('#addBar').show();
+      var supplier ={
+        srmVendor1 : this.searchForm.value['srm_vendor'],
+        sapVendor : this.searchForm.value['sap_vendor'],
+        vendorName : this.searchForm.value['vendorname'],
+        org : this.searchForm.value['companyid'],
+        ekorg : this.searchForm.value['werks'],
+        person : this.searchForm.value['person'],
+        address : this.searchForm.value['address'],
+        telphone : this.searchForm.value['telphone'],
+        ext : this.searchForm.value['ext'],
+        faxnumber : this.searchForm.value['faxnumber'],
+        cellphone : this.searchForm.value['cellphone'],
+        mail : this.searchForm.value['email'],
+        user : this._storageService.userName,     
+      }
+      this._srmSrmService.Checkdata(supplier).subscribe(result => {
         console.log(supplier);
         if (this.searchForm.valid)
         {        
@@ -78,7 +74,6 @@ export class SupplierCComponent implements OnInit {
             this._messageService.success("SRM供應商："+result['srmVendor1']+"，存檔成功！");
           });
         }
-
       });
     }
     else

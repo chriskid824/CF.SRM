@@ -18,14 +18,11 @@ export class SrmMaterialService {
   update(material) {
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/UpdateMaterial`, material);
   }
-  CheckMatnr(query){
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/CheckMatnr`, query);
-  }
   AddMatnr(material){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/AddMatnr`, material);
   }
-  CheckSAPMatnr(query){
-    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/CheckSAPMatnr`, query);
+  Checkdata(query){
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/Checkdata`, query);
   }
   GetEkgrp(query){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetEkgrp`, query);

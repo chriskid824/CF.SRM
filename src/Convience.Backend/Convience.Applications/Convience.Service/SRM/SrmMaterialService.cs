@@ -30,9 +30,8 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmMatnr1> GetMaterialList(QueryMaterial query);
         public ViewSrmMatnr1 GetMaterialDetail(QueryMaterial query);
         public bool UpdateMaterial(ViewSrmMatnr1 data);
-        public bool CheckMatnr(ViewSrmMatnr1 data);
         public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data);
-        public bool CheckSAPMatnr(ViewSrmMatnr1 data);
+        public string Checkdata(ViewSrmMatnr1 data);
         public SrmEkgry GetEkgrp(SrmEkgry data);
         public PagingResultModel<SrmMaterialGroup> GetGroupList(QueryMaterial query);
         public PagingResultModel<SrmWeightUnit> GetUnitList(QueryMaterial query);
@@ -146,9 +145,10 @@ namespace Convience.Service.SRM
         public bool UpdateMaterial(ViewSrmMatnr1 data)
         {
             SrmMatnr material = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
-            SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description).FirstOrDefault();
 
-            if (status == null || material == null)
+            if (description!=null)
             {
                 return false;
             }
@@ -166,7 +166,7 @@ namespace Convience.Service.SRM
             material.Density = data.Density;
             material.Weight = data.Weight;
             material.Note = data.Note;
-            material.Status = status.Status;
+            //material.Status = status.Status;
             material.LastUpdateDate = DateTime.Now;
             material.LastUpdateBy = data.User;
             material.Gewei = data.Gewei;
@@ -181,32 +181,32 @@ namespace Convience.Service.SRM
 
             return true;
         }
-        public bool CheckMatnr(ViewSrmMatnr1 data)
-        {
-            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
-            if (matnr == null)
-            {
-                return true;
-            }
 
-            return false;
-        }
-        public bool CheckSAPMatnr(ViewSrmMatnr1 data)
+        public string Checkdata(ViewSrmMatnr1 data)
         {
-            SrmMatnr matnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
-            if (data.SapMatnr == null)
+            string msg = string.Empty;
+
+            SrmMatnr srmmatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
+            SrmMatnr sapmatnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
+            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description).FirstOrDefault();
+
+            if (description != null)
             {
-                return true;
+                msg = "物料內文 已重複使用";
             }
-            else
+            if (!string.IsNullOrWhiteSpace(data.SapMatnr))
             {
-                if (matnr == null)
+                if (sapmatnr != null)
                 {
-                    return true;
+                    msg = "SAP料號 已重複使用";
                 }
-
-                return false;
             }
+            if (srmmatnr != null)
+            {
+                msg = "SRM料號 已重複使用";
+            }
+
+            return msg;
         }
         public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data)
         {

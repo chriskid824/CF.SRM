@@ -34,7 +34,7 @@ namespace Convience.Service.SRM
         public ViewSrmSupplier GetSupplierDetail(QueryVendorModel query);
 
         public bool UpdateSupplier(ViewSrmSupplier data);
-        public bool CheckVendor(ViewSrmSupplier data);
+        public string Checkdata(ViewSrmSupplier data);
         public ViewSrmSupplier AddVendor(ViewSrmSupplier data);
 
     }
@@ -137,9 +137,11 @@ namespace Convience.Service.SRM
         {
 
             SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
-            SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
+            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName).FirstOrDefault();
 
-            if (status == null || vendor==null)
+
+            if (vendorname!=null)
             {
                 return false;
             }
@@ -157,7 +159,7 @@ namespace Convience.Service.SRM
             vendor.FaxNumber = data.FaxNumber;
             vendor.CellPhone = data.CellPhone;
             vendor.Mail = data.Mail;
-            vendor.Status = status.Status;
+            //vendor.Status = status.Status;
             vendor.LastUpdateDate = DateTime.Now;
             vendor.LastUpdateBy = data.User;
 
@@ -168,15 +170,31 @@ namespace Convience.Service.SRM
 
             return true;
         }
-        public bool CheckVendor(ViewSrmSupplier data)
+        public string Checkdata(ViewSrmSupplier data)
         {
-            SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
-            if (vendor == null)
+            string msg = string.Empty;
+
+            SrmVendor srmvendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
+            SrmVendor sapvendor = _context.SrmVendors.Where(p => p.SapVendor == data.SapVendor).FirstOrDefault();
+            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName).FirstOrDefault();
+
+            if (vendorname != null)
             {
-                return true;
+                msg = "供應商名稱 已重複使用";
+            }
+            if (!string.IsNullOrWhiteSpace(data.SapVendor))
+            {
+                if (sapvendor != null)
+                {
+                    msg = "SAP供應商代碼 已重複使用";
+                }
+            }
+            if (srmvendor != null)
+            {
+                msg = "SRM供應商代碼 已重複使用";
             }
 
-            return false;
+            return msg;
         }
         public ViewSrmSupplier AddVendor(ViewSrmSupplier data)
         {

@@ -17,8 +17,8 @@ export class SrmSupplierService {
   update(supplier) {
     return this.httpClient.post(`${this.uriConstant.SrmSupplier}/UpdateSupplier`, supplier);
   }
-  CheckSupplier(query){
-    return this.httpClient.post(`${this.uriConstant.SrmSupplier}/CheckSupplier`, query);
+  Checkdata(query){
+    return this.httpClient.post(`${this.uriConstant.SrmSupplier}/Checkdata`, query);
   }
   AddSupplier(supplier){
     return this.httpClient.post(`${this.uriConstant.SrmSupplier}/AddSupplier`, supplier);
