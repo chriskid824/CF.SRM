@@ -416,9 +416,9 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("LAST_UPDATE_DATE")
                     .HasComment("最後修改日期");
 
-                entity.Property(e => e.LeadTime)
-                    .HasColumnName("LEAD_TIME")
-                    .HasComment("交貨時間");
+                //entity.Property(e => e.LeadTime)
+                //    .HasColumnName("LEAD_TIME")
+                //    .HasComment("交貨時間");
 
                 entity.Property(e => e.MatnrId)
                     .HasColumnName("MATNR_ID")
@@ -472,6 +472,15 @@ namespace Convience.Entity.Entity.SRM
                    .HasMaxLength(1)
                    .HasColumnName("O_EMPTY_FLAG")
                    .HasComment("其他費用空值指示碼");
+
+                entity.Property(e => e.LeadTime)
+                 .HasColumnName("LEAD_TIME")
+                 .HasComment("計劃交貨時間");
+
+                entity.Property(e => e.ExpirationDate)
+                 .HasColumnType("datetime")
+                 .HasColumnName("EXPIRATION_DATE")
+                 .HasComment("有效期限");
 
             });
 
