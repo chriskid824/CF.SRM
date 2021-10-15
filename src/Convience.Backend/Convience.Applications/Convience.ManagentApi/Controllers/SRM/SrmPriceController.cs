@@ -527,5 +527,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             query.werks = user.Werks;
             return Ok(_srmInfoRecordService.Query(query));
         }
+        [HttpPost("GetIssuedVendor")]
+        [Permission("price")]
+        public IActionResult GetIssuedVendor(QueryInfoRecordModels query)
+        {
+            UserClaims user = User.GetUserClaims();
+            query.werks = user.Werks;
+            return Ok(_srmInfoRecordService.GetIssuedVendor(query));
+        }
     }
 }

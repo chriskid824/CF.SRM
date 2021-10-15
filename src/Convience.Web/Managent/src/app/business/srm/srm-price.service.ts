@@ -33,4 +33,7 @@ export class SrmPriceService {
   QueryInfoRecord(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPrice}/QueryInfoRecord`, query);
   }
+  GetIssuedVendor(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPrice}/GetIssuedVendor`, query);
+  }
 }

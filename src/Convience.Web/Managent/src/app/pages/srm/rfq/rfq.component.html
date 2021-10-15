@@ -159,7 +159,8 @@
           <tr *ngFor="let data of dataTable.data;let i = index">
             <td [nzLeft]="fixedColumn"
                 [nzShowCheckbox]="true"
-                [(nzChecked)]="data.checked"></td>
+                [(nzChecked)]="data.checked"
+                (nzCheckedChange)="onMatnrChange($event,data.matnrId)"></td>
             <td nzAlign="left">{{ data.srmMatnr1 }}</td>
             <td nzAlign="left">{{ data.description }}</td>
             <td nzAlign="left">{{ data.matnrGroup }}</td>

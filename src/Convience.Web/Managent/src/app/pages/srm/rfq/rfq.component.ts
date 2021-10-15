@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common'
 import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutComponent } from '../../layout/layout/layout.component';
+import { SrmPriceService } from '../../../business/srm/srm-price.service';
 
 @Component({
   selector: 'app-rfq',
@@ -62,6 +63,7 @@ export class RfqComponent implements OnInit {
     private _modalService: NzModalService,
     private _formBuilder: FormBuilder,
     private _srmRfqService: SrmRfqService,
+    private _srmPriceService: SrmPriceService,
     public datepipe: DatePipe,
     private _router: Router,
     private _layout: LayoutComponent  ) {
@@ -424,6 +426,25 @@ export class RfqComponent implements OnInit {
     this.gridApi_VENDOR.setRowData(this.rowData_VENDOR);
     console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
+  }
+  onMatnrChange(e, matnrId) {
+    if (e) {
+      var query = {
+        matnrId: matnrId,
+        status: 9,
+        page: 1,
+        size: 50
+      }
+      this._srmPriceService.GetIssuedVendor(query).subscribe(result => {
+        var r = result["data"];
+        if (r.length > 0) {
+          var sb = "已核准過之供應商\n";
+          r.forEach(row => sb += (row.sapVendor + ' ' + row.vendorName + '\n'));
+          alert(sb);
+        }
+        console.log(result["data"]);
+      })
+    }
   }
   //選取
   submitMatnrList() {

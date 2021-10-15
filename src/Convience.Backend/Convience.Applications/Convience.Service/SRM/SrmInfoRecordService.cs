@@ -15,6 +15,7 @@ namespace Convience.Service.SRM
         public SrmInforecord[] Get(QueryInfoRecordModels query);
         public PagingResultModel<ViewSrmInfoRecord> Query(QueryInfoRecordModels query);
         public void UpdateStatus(Status status, SrmInforecord info);
+        public PagingResultModel<SrmVendor> GetIssuedVendor(QueryInfoRecordModels query);
     }
     class SrmInfoRecordService : ISrmInfoRecordService
     {
@@ -90,6 +91,25 @@ namespace Convience.Service.SRM
             var infos = _context.SrmInforecords.AndIfHaveValue(info.Caseid, r => r.Caseid.Value.Equals(info.Caseid)).ToList();
             infos.ForEach(r => r.Status = (int)status);
             _context.SaveChanges();
+        }
+
+        public PagingResultModel<SrmVendor> GetIssuedVendor(QueryInfoRecordModels query)
+        {
+            int skip = (query.page - 1) * query.size;
+
+            SrmVendor[] view = (from info in _context.SrmInforecords where info.MatnrId.Equals(query.MatnrId) && query.werks.Contains(info.Org.Value) && info.Status.Equals(query.Status)
+                                join v in _context.SrmVendors on info.VendorId equals v.VendorId into vgrouping
+                                        from v in vgrouping.DefaultIfEmpty()                                       
+                                        select v
+                                     )
+                                     .Distinct().ToArray();
+
+            var result = view.Skip(skip).Take(query.size);
+            return new PagingResultModel<SrmVendor>
+            {
+                Data = result.ToArray(),
+                Count = view.Count()
+            };
         }
     }
 }
