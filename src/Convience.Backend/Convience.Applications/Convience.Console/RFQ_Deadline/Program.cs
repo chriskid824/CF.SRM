@@ -23,7 +23,7 @@ namespace RFQ_Deadline
             rfqHservice.End(new QueryRfqList()
             {
                 werks = new int[] {1100, 1200, 3100 },
-                status = 7,
+                status = (int)Status.啟動,
                 end = true
             });
 

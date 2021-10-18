@@ -24,7 +24,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
         [HttpPost("UploadFile")]
         [Permission("price")]
-        public IActionResult UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
+        public IActionResult UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel_MaterialTrend fileUploadModel)
         {
             try
             {

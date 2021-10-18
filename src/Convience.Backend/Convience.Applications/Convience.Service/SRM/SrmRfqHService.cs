@@ -20,6 +20,11 @@ using System.Threading.Tasks;
 using Convience.Model.Models.SRM;
 using Newtonsoft.Json;
 using Convience.Service.SystemManage;
+using System.IO;
+using Convience.Filestorage.Abstraction;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System.Data;
 
 namespace Convience.Service.SRM
 {
@@ -35,6 +40,8 @@ namespace Convience.Service.SRM
         public PagingResultModel<AspNetUser> GetSourcer(string name, int[] werks, int size, int page);
         public SrmRfqH GetRfq(QueryRfq query);
         public void AsyncSourcer();
+        public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
+        public DataTable ReadExcel(string path);
     }
     public class SrmRfqHService : ISrmRfqHService
     {
@@ -207,7 +214,7 @@ namespace Convience.Service.SRM
                            Werks = rfq.Werks
                        };
             return rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name))
-                .AndIfCondition(q.end,r=>r.Status==7 && r.Deadline.Value.AddDays(1)<=DateTime.Now.Date)
+                .AndIfCondition(q.end, r => r.Status == (int)Status.啟動 && r.Deadline.Value.AddDays(1) <= DateTime.Now.Date)
                 .Distinct().ToArray();
         }
 
@@ -387,5 +394,131 @@ namespace Convience.Service.SRM
                 }
             }
         }
+
+        #region upload
+        public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel) {
+            Guid g = Guid.NewGuid();
+            var file = fileUploadModel.Files.First();
+            var path = fileUploadModel.CurrentDirectory?.TrimEnd('/') +'/' + fileUploadModel.CreateBy + '/' + g +'_' + file.FileName;
+            switch (Path.GetExtension(file.FileName).ToLower())
+            {
+                case ".xlsx":
+                    break;
+                default:
+                    throw new FileStoreException("限定xlsx！");
+            }
+            var info = GetFileInfoAsync(path);
+            if (info != null)
+            {
+                throw new FileStoreException("文件名重複！");
+            }
+            var stream = file.OpenReadStream();
+            var result = CreateFileFromStreamAsync(path, stream);
+            if (string.IsNullOrEmpty(result))
+            {
+                throw new FileStoreException("文件上傳失敗！");
+            }
+            return path;
+        }
+        public DataTable ReadExcel(string path){
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(0); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers) {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+            
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex ==0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["料號"]) != null)
+                {
+                    row.GetCell(dtHeader["料號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["料號"]).StringCellValue)) { break; }
+                }
+                else {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader) {
+                    if (row.GetCell(h.Value) != null) {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"]) && r.Status.Equals(Status.失效)))
+                {
+
+                }
+                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"]))) { 
+                    
+                }
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            return dt;
+        }
+
+
+        public FileInfo GetFileInfoAsync(string path)
+        {
+            var fileInfo = new FileInfo(path);
+
+            if (fileInfo.Exists)
+            {
+                return fileInfo;
+            }
+
+            return null;
+        }
+        public string CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
+        {
+            if (!overwrite && System.IO.File.Exists(path))
+            {
+                throw new FileStoreException($"Cannot create file '{path}' because it already exists.");
+            }
+
+            if (Directory.Exists(path))
+            {
+                throw new FileStoreException($"Cannot create file '{path}' because it already exists as a directory.");
+            }
+
+            // Create directory path if it doesn't exist.
+            var physicalDirectoryPath = Path.GetDirectoryName(path);
+            Directory.CreateDirectory(physicalDirectoryPath);
+
+            var fileInfo = new FileInfo(path);
+            using (var outputStream = fileInfo.Create())
+            {
+                inputStream.CopyTo(outputStream);
+            }
+            return path;
+        }
+        #endregion upload
     }
 }

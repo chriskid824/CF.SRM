@@ -15,7 +15,7 @@ namespace Convience.Service.SRM
 {
     public interface ISrmMaterialTrendService
     {
-        public string UploadAsync(FileUploadViewModel viewModel);
+        public string UploadAsync(FileUploadViewModel_MaterialTrend viewModel);
         public PagingResultModel<ViewSrmMaterialTrend> GetMaterialTrendList(QuerySrmMaterialTrend query);
         public PagingResultModel<SrmMaterial> GetMaterialList(QuerySrmMaterial query);
         public string AddMaterial(SrmMaterial material);
@@ -30,7 +30,7 @@ namespace Convience.Service.SRM
             _fileStore = fileStore;
         }
         #region upload
-        public string UploadAsync(FileUploadViewModel viewModel)
+        public string UploadAsync(FileUploadViewModel_MaterialTrend viewModel)
         {
             if (viewModel.EffectiveDate > viewModel.Deadline)
             {

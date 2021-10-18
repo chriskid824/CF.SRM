@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Convience.Filestorage.Abstraction;
 using Convience.JwtAuthentication;
 using Convience.Mail;
 using Convience.ManagentApi.Infrastructure.Authorization;
@@ -18,6 +19,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -451,5 +455,19 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqHService.AsyncSourcer();
             return Ok();
         }
+        [HttpPost("BatchUpload")]
+        public IActionResult BatchUpload([FromForm] Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel) {
+            UserClaims user = User.GetUserClaims();
+            fileUploadModel.CreateBy = user.UserName;
+            try
+            {
+                string path = _srmRfqHService.Upload(fileUploadModel);
+                DataTable data = _srmRfqHService.ReadExcel(path);
+                return Ok();
+            }
+            catch (Exception ex) {
+                return this.BadRequestResult(ex.Message);
+            }
+        }        
     }
 }

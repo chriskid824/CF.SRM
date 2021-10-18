@@ -1,5 +1,6 @@
 ﻿using Convience.Entity.Entity.SRM;
 using Convience.Model.Models.SystemManage;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
+    public class FileUploadViewModel_RFQ:SrmRfqH
+    {
+        public string CurrentDirectory { get; set; }
+        // 上传文件
+        public IEnumerable<IFormFile> Files { get; set; }
+    }
     public record QueryMatnrModel : PageQueryModel
     {
         public string Matnr { get; set; }

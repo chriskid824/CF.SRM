@@ -40,4 +40,7 @@ export class SrmRfqService {
   GetRfq(rfqH) {
     return this.httpClient.post(`${this.uriConstant.SrmRfq}/GetRfq`, rfqH);
   }
+  BatchUpload(formData) {
+    return this.httpClient.post(`${this.uriConstant.SrmRfq}/BatchUpload`, formData);
+  }
 }

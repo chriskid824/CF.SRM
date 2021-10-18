@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
-    public class FileUploadViewModel : SrmMaterialTrend
+    public class FileUploadViewModel_MaterialTrend : SrmMaterialTrend
     {
         public string CurrentDirectory { get; set; }
         // 上传文件
