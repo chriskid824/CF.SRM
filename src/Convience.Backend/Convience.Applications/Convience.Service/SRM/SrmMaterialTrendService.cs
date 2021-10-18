@@ -39,7 +39,7 @@ namespace Convience.Service.SRM
             foreach (var file in viewModel.Files)
             {
                 Guid g = Guid.NewGuid();
-                var path = viewModel.CurrentDirectory?.TrimEnd('/') + '/' + g + Path.GetExtension(file.FileName);
+                var path = viewModel.CurrentDirectory?.TrimEnd('/') + '/' + viewModel.Material + '/' + g + Path.GetExtension(file.FileName);
                 switch (Path.GetExtension(file.FileName).ToLower())
                 {
                     case ".png":
@@ -59,7 +59,7 @@ namespace Convience.Service.SRM
                 {
                     return "文件上傳失敗！";
                 }
-                viewModel.ImageUrl = "/assets/material-trend/" + new FileInfo(path).Name;
+                viewModel.ImageUrl = "/assets/material-trend/" + viewModel.Material + '/' + new FileInfo(path).Name;
                 viewModel.CreateDate = DateTime.Now;
                 AddSRM_MATERIAL_TREND(viewModel);
             }
