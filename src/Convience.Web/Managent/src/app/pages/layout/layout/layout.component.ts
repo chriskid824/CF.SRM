@@ -69,7 +69,6 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'rfq', routerLink: '/srm/rfq', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單', name: '詢價單', },
         { canOperate: 'rfq-manage', routerLink: '/srm/rfq-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單查詢', name: '詢價單查詢', },
-        { canOperate: 'rfq-batch-upload', routerLink: '/srm/rfq-batch-upload', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '詢價單批次上傳', name: '詢價單批次上傳', },
         { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '價格資訊', name: '價格資訊', },
         { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
         { canOperate: 'material-trend', routerLink: '/srm/material-trend', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料趨勢圖', name: '原物料趨勢圖', },
@@ -119,7 +118,14 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'eqp', routerLink: '/srm/eqp', iconType: 'fund-view', firstBreadcrumb: '工程/品質問題反應單', lastBreadcrumb: '工程/品質問題反應單', name: '工程/品質問題反應單', },
       ]
-    } 
+    }
+    ,
+    {
+      canOperate: 'batch-upload', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '大量上傳',
+      children: [
+        { canOperate: 'rfq-batch-upload', routerLink: '/srm/rfq-batch-upload', iconType: 'fund-view', firstBreadcrumb: '大量上傳', lastBreadcrumb: '詢價單大量上傳', name: '詢價單大量上傳', },
+      ]
+    }
   ];
 
   // 麵包渣數據
