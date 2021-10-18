@@ -10,38 +10,41 @@ namespace Convience.Service.SRM
 {
     public class Utility
     {
-        public FileInfo GetFileInfoAsync(string path)
+        public class UploadFile
         {
-            var fileInfo = new FileInfo(path);
-
-            if (fileInfo.Exists)
+            public FileInfo GetFileInfoAsync(string path)
             {
-                return fileInfo;
-            }
-            return null;
-        }
-        public string CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
-        {
-            if (!overwrite && System.IO.File.Exists(path))
-            {
-                throw new FileStoreException($"Cannot create file '{path}' because it already exists.");
-            }
+                var fileInfo = new FileInfo(path);
 
-            if (Directory.Exists(path))
-            {
-                throw new FileStoreException($"Cannot create file '{path}' because it already exists as a directory.");
+                if (fileInfo.Exists)
+                {
+                    return fileInfo;
+                }
+                return null;
             }
-
-            // Create directory path if it doesn't exist.
-            var physicalDirectoryPath = Path.GetDirectoryName(path);
-            Directory.CreateDirectory(physicalDirectoryPath);
-
-            var fileInfo = new FileInfo(path);
-            using (var outputStream = fileInfo.Create())
+            public string CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
             {
-                inputStream.CopyTo(outputStream);
+                if (!overwrite && System.IO.File.Exists(path))
+                {
+                    throw new FileStoreException($"Cannot create file '{path}' because it already exists.");
+                }
+
+                if (Directory.Exists(path))
+                {
+                    throw new FileStoreException($"Cannot create file '{path}' because it already exists as a directory.");
+                }
+
+                // Create directory path if it doesn't exist.
+                var physicalDirectoryPath = Path.GetDirectoryName(path);
+                Directory.CreateDirectory(physicalDirectoryPath);
+
+                var fileInfo = new FileInfo(path);
+                using (var outputStream = fileInfo.Create())
+                {
+                    inputStream.CopyTo(outputStream);
+                }
+                return path;
             }
-            return path;
         }
     }
 }

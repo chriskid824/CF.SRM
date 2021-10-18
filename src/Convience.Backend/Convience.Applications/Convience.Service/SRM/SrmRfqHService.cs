@@ -42,6 +42,7 @@ namespace Convience.Service.SRM
         public void AsyncSourcer();
         public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
         public DataTable ReadExcel_Matnr(string path);
+        public DataTable ReadExcel_Vendor(string path);
     }
     public class SrmRfqHService : ISrmRfqHService
     {
@@ -411,13 +412,13 @@ namespace Convience.Service.SRM
                 default:
                     throw new FileStoreException("限定xlsx！");
             }
-            var info = new Utility().GetFileInfoAsync(path);
+            var info = new Utility.UploadFile().GetFileInfoAsync(path);
             if (info != null)
             {
                 throw new FileStoreException("文件名重複！");
             }
             var stream = file.OpenReadStream();
-            var result = new Utility().CreateFileFromStreamAsync(path, stream);
+            var result = new Utility.UploadFile().CreateFileFromStreamAsync(path, stream);
             if (string.IsNullOrEmpty(result))
             {
                 throw new FileStoreException("文件上傳失敗！");
@@ -443,6 +444,7 @@ namespace Convience.Service.SRM
             }
             dt.Columns.Add("IsExists");
             string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量" };
+            //string[] cols = new string[] { ""}
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers) {
                 if (!dt.Columns.Contains(header))
@@ -558,6 +560,12 @@ namespace Convience.Service.SRM
                 rowIndex++;
             }
             return dt;
+        }
+        public void Save(UserClaims user, DataTable m, DataTable v) {
+            SrmRfqH h = new SrmRfqH();
+            var mappings = new Dictionary<string, string>();
+            //mappings.Add("","")
+            //m.ToList<SrmRfqM>(mappings)
         }
         #endregion upload
     }

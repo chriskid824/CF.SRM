@@ -48,13 +48,13 @@ namespace Convience.Service.SRM
                     default:
                         return "限定圖檔(png,jpg)！";
                 }
-                var info = new Utility().GetFileInfoAsync(path);
+                var info = new Utility.UploadFile().GetFileInfoAsync(path);
                 if (info != null)
                 {
                     return "文件名重複！";
                 }
                 var stream = file.OpenReadStream();
-                var result = new Utility().CreateFileFromStreamAsync(path, stream);
+                var result = new Utility.UploadFile().CreateFileFromStreamAsync(path, stream);
                 if (string.IsNullOrEmpty(result))
                 {
                     return "文件上傳失敗！";
