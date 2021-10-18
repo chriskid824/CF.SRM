@@ -411,13 +411,13 @@ namespace Convience.Service.SRM
                 default:
                     throw new FileStoreException("限定xlsx！");
             }
-            var info = GetFileInfoAsync(path);
+            var info = new Utility().GetFileInfoAsync(path);
             if (info != null)
             {
                 throw new FileStoreException("文件名重複！");
             }
             var stream = file.OpenReadStream();
-            var result = CreateFileFromStreamAsync(path, stream);
+            var result = new Utility().CreateFileFromStreamAsync(path, stream);
             if (string.IsNullOrEmpty(result))
             {
                 throw new FileStoreException("文件上傳失敗！");
@@ -558,41 +558,6 @@ namespace Convience.Service.SRM
                 rowIndex++;
             }
             return dt;
-        }
-
-        public FileInfo GetFileInfoAsync(string path)
-        {
-            var fileInfo = new FileInfo(path);
-
-            if (fileInfo.Exists)
-            {
-                return fileInfo;
-            }
-
-            return null;
-        }
-        public string CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false)
-        {
-            if (!overwrite && System.IO.File.Exists(path))
-            {
-                throw new FileStoreException($"Cannot create file '{path}' because it already exists.");
-            }
-
-            if (Directory.Exists(path))
-            {
-                throw new FileStoreException($"Cannot create file '{path}' because it already exists as a directory.");
-            }
-
-            // Create directory path if it doesn't exist.
-            var physicalDirectoryPath = Path.GetDirectoryName(path);
-            Directory.CreateDirectory(physicalDirectoryPath);
-
-            var fileInfo = new FileInfo(path);
-            using (var outputStream = fileInfo.Create())
-            {
-                inputStream.CopyTo(outputStream);
-            }
-            return path;
         }
         #endregion upload
     }
