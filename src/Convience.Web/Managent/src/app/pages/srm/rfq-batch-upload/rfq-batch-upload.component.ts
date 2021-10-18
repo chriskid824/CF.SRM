@@ -12,7 +12,7 @@ export class RfqBatchUploadComponent implements OnInit {
   uploadForm: FormGroup = new FormGroup({});
   fileList: any[] = [];
   uploading: boolean = false;
-  currentDirectory: string = 'D:/CF.SRM/src/Convience.Web/Managent/src/assets/rfq-batch-upload';
+  currentDirectory: string = 'rfq-batch-upload';
   constructor(private _messageService: NzMessageService,
     private _srmRfqService: SrmRfqService,
     private _formBuilder: FormBuilder,  ) { }

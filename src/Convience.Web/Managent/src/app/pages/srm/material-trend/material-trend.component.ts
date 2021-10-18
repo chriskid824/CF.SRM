@@ -17,7 +17,7 @@ export class MaterialTrendComponent implements OnInit, AfterViewInit {
   searchForm: FormGroup = new FormGroup({});
   fileList: any[] = [];
   uploading: boolean = false;
-  currentDirectory: string = 'D:/CF.SRM/src/Convience.Web/Managent/src/assets/material-trend';
+  currentDirectory: string = 'material-trend';
   tplModal: NzModalRef;
   data = [];
   page: number = 1;

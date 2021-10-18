@@ -41,7 +41,7 @@ namespace Convience.Service.SRM
         public SrmRfqH GetRfq(QueryRfq query);
         public void AsyncSourcer();
         public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
-        public DataTable ReadExcel(string path);
+        public DataTable ReadExcel_Matnr(string path);
     }
     public class SrmRfqHService : ISrmRfqHService
     {
@@ -91,6 +91,10 @@ namespace Convience.Service.SRM
                 //rfqH.RfqNum = "V" + rfqH.RfqId.ToString().PadLeft(6,'0');
                 foreach (var rfqM in rfqMs)
                 {
+                    if (rfqM.Qty.HasValue && rfqM.Qty.Value <= 0)
+                    {
+                        throw new Exception($"料號{rfqM.Material}，數量應大於0");
+                    }
                     rfqM.RfqId = rfqH.RfqId;
                 }
                 foreach (var rfqV in rfqVs)
@@ -420,7 +424,7 @@ namespace Convience.Service.SRM
             }
             return path;
         }
-        public DataTable ReadExcel(string path){
+        public DataTable ReadExcel_Matnr(string path){
             IWorkbook workbook;
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -471,19 +475,90 @@ namespace Convience.Service.SRM
                         dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
                     }
                 }
-                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"]) && r.Status.Equals(Status.失效)))
+                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && r.Status.Equals(Status.失效)))
                 {
-
+                    throw new Exception($"料號:{dataRow["料號"].ToString()}已失效");
                 }
-                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"]))) { 
-                    
+                if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) {
+                    throw new Exception($"料號:{dataRow["數量"].ToString()}未填");
                 }
+                double qty = 0;
+                if (!double.TryParse(dataRow["數量"].ToString(),out qty)||qty<=0)
+                {
+                    throw new Exception($"料號:{dataRow["數量"].ToString()}格式錯誤");
+                }
+                dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()));
                 dt.Rows.Add(dataRow);
                 rowIndex++;
             }
             return dt;
         }
+        public DataTable ReadExcel_Vendor(string path)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
 
+            ISheet sheet = workbook.GetSheetAt(1); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            string[] headers = new string[] { "供應商編號", "供應商名稱", "公司代碼", "採購組織", "聯絡人", "地址", "信箱", "傳真號碼", "電話號碼", "分機", "手機號碼" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["供應商編號"]) != null)
+                {
+                    row.GetCell(dtHeader["供應商編號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商編號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+                if (_context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && r.Status.Equals(Status.失效)))
+                {
+                    throw new Exception($"供應商編號:{dataRow["供應商編號"]}已失效");
+                }
+                dataRow["IsExists"] = _context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]));
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            return dt;
+        }
 
         public FileInfo GetFileInfoAsync(string path)
         {

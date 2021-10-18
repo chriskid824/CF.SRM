@@ -5,6 +5,7 @@ using Convience.Model.Models.SRM;
 using Convience.Service.SRM;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,13 @@ namespace Convience.ManagentApi.Controllers.SRM
     public class SrmMaterialTrendController : ControllerBase
     {
         private readonly ISrmMaterialTrendService _srmMaterialTrendService;
+        private readonly appSettings _appSettingsService;
 
-        public SrmMaterialTrendController(ISrmMaterialTrendService srmMaterialTrendService)
+        public SrmMaterialTrendController(ISrmMaterialTrendService srmMaterialTrendService
+            , IOptions<appSettings> appSettingsOption)
         {
             _srmMaterialTrendService = srmMaterialTrendService;
+            _appSettingsService = appSettingsOption.Value;
         }
         [HttpPost("UploadFile")]
         [Permission("price")]
@@ -30,6 +34,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 UserClaims user = User.GetUserClaims();
                 fileUploadModel.CreateBy = user.UserName;
+                fileUploadModel.CurrentDirectory = _appSettingsService.CurrentDirectory + fileUploadModel.CurrentDirectory;
                 var result = _srmMaterialTrendService.UploadAsync(fileUploadModel);
                 if (!string.IsNullOrWhiteSpace(result))
                 {

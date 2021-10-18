@@ -459,10 +459,11 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult BatchUpload([FromForm] Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel) {
             UserClaims user = User.GetUserClaims();
             fileUploadModel.CreateBy = user.UserName;
+            fileUploadModel.CurrentDirectory = _appSettingsService.CurrentDirectory + fileUploadModel.CurrentDirectory;
             try
             {
                 string path = _srmRfqHService.Upload(fileUploadModel);
-                DataTable data = _srmRfqHService.ReadExcel(path);
+                DataTable data = _srmRfqHService.ReadExcel_Matnr(path);
                 return Ok();
             }
             catch (Exception ex) {
