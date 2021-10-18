@@ -8,6 +8,7 @@ import { Role } from '../../system-manage/model/role';
 import { RoleService } from 'src/app/business/system-manage/role.service';
 import { NullLogger } from '@microsoft/signalr';
 import { Result } from '@zxing/library';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-material-c',
@@ -21,9 +22,9 @@ export class MaterialCComponent implements OnInit {
   werks = [];
   grouplist= [];
   unitlist= [];
-
-
- 
+  inputdata = [];
+  arrayBuffer:any;
+  file:File;
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -63,7 +64,7 @@ export class MaterialCComponent implements OnInit {
 
   initRoleList() {    
     this.werks = this._storageService.werks.split(',');
-    console.log(this._storageService);
+    //console.log(this._storageService);
     var query = {
       empid: this._storageService.userName == null ? "" : this._storageService.userName,
     }
@@ -73,11 +74,11 @@ export class MaterialCComponent implements OnInit {
       size: 999
     }
     this._srmMaterialService.GetGroupList(querylist).subscribe(result => {
-      console.log(result);
+      //console.log(result);
       this.grouplist = result["data"];
     });
     this._srmMaterialService.GetUnitList(querylist).subscribe(result => {
-      console.log(result);
+      //console.log(result);
       this.unitlist = result["data"];
     });
 
@@ -87,7 +88,52 @@ export class MaterialCComponent implements OnInit {
     
 
   }
-  
+  // daoru(evt: any) {
+  //   const target: DataTransfer = <DataTransfer>(evt.target);
+  //   if (target.files.length !== 1) {
+  //     throw new Error('Cannot use multiple files');
+  //   }
+  //   const reader: FileReader = new FileReader();
+  //   reader.readAsBinaryString(target.files[0]);
+  //   reader.onload = (e: any) => {
+  //     /* create workbook */
+  //     const binarystr: string = e.target.result;
+  //     const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+
+  //     /* selected the first sheet */
+  //     const wsname: string = wb.SheetNames[0];
+  //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+  //     console.log(wsname)
+  //     console.log(ws)
+
+  //     /* save data */
+  //     const data = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
+  //     console.log(data)
+  //   };
+
+    // const target: DataTransfer = <DataTransfer>(evt.target);
+    // console.log(target.files.length);
+    // if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    // const reader: FileReader = new FileReader();
+    // console.log(reader)
+    // reader.onload = (e: any) => {
+    //   /* read workbook */
+    //   alert('456');
+    //   const bstr: string = e.target.result;
+    //   const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+
+    //   /* grab first sheet */
+    //   const wsname: string = wb.SheetNames[0];
+    //   const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+    //   /* save data */
+    //   this.inputdata = (XLSX.utils.sheet_to_json(ws, {header: 1}));
+    //   console.log(this.inputdata)
+
+    //   evt.target.value="" // 清空
+    //};
+
+  //}
 
 
   add() {

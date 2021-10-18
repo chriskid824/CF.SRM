@@ -208,12 +208,63 @@ namespace Convience.Service.SRM
 
             return msg;
         }
+
         public ViewSrmMatnr1 AddMatnr(ViewSrmMatnr1 data)
         {
             string no = string.Empty;
             string year = DateTime.Now.ToString("yy");
 
             var GetMatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN" + year)).Max(p1 => p1.SrmMatnr1);
+
+            if (string.IsNullOrWhiteSpace(data.MatnrGroup))
+            {
+                throw new Exception("物料群組，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Description))
+            {
+                throw new Exception("物料內文，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Werks.ToString()))
+            {
+                throw new Exception("工廠，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Ekgrp))
+            {
+                throw new Exception("採購群組代碼，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Length))
+            {
+                throw new Exception("長，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Width))
+            {
+                throw new Exception("寬，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Height))
+            {
+                throw new Exception("高(厚)，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Density))
+            {
+                throw new Exception("密度，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Weight.ToString()))
+            {
+                throw new Exception("重量，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Gewei))
+            {
+                throw new Exception("重量單位，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Material))
+            {
+                throw new Exception("材質規格，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Version))
+            {
+                throw new Exception("版次，必填");
+            }
+
 
             if (string.IsNullOrWhiteSpace(data.SrmMatnr1))
             {
@@ -234,7 +285,6 @@ namespace Convience.Service.SRM
 
             SrmMatnr material = new SrmMatnr()
             {
-
                 SrmMatnr1 = no,
                 SapMatnr = data.SapMatnr,
                 MatnrGroup = data.MatnrGroup,
@@ -269,6 +319,7 @@ namespace Convience.Service.SRM
 
             return new ViewSrmMatnr1
             {
+                MatnrId = material.MatnrId,
                 SrmMatnr1 = no,
             };
         }

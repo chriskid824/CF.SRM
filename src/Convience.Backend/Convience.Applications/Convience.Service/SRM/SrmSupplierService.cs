@@ -202,6 +202,35 @@ namespace Convience.Service.SRM
 
             string no = string.Empty;
 
+            if (string.IsNullOrWhiteSpace(data.VendorName))
+            {
+                throw new Exception("供應商名稱，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Org.ToString()))
+            {
+                throw new Exception("公司代碼，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Ekorg.ToString()))
+            {
+                throw new Exception("採購組織，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Person))
+            {
+                throw new Exception("聯絡人，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Address))
+            {
+                throw new Exception("地址，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.Mail))
+            {
+                throw new Exception("信箱，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.FaxNumber))
+            {
+                throw new Exception("傳真號碼，必填");
+            }
+
             if (string.IsNullOrWhiteSpace(data.SrmVendor1))
             {
                 if (vendor == null)
@@ -246,6 +275,7 @@ namespace Convience.Service.SRM
 
             return new ViewSrmSupplier
             {
+                VendorId = srmvendor.VendorId,
                 SrmVendor1 = no,
             };
         }       
