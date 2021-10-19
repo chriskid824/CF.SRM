@@ -8,7 +8,7 @@ import { Role } from '../../system-manage/model/role';
 import { RoleService } from 'src/app/business/system-manage/role.service';
 import { NullLogger } from '@microsoft/signalr';
 import { Result } from '@zxing/library';
-import * as XLSX from 'xlsx';
+
 
 @Component({
   selector: 'app-material-c',
