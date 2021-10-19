@@ -50,12 +50,13 @@ namespace Convience.Service.SRM
                                         from q in qgrouping.DefaultIfEmpty()
                                         join r in _context.SrmRfqHs on q.RfqId equals r.RfqId into rgrouping
                                         from r in rgrouping.DefaultIfEmpty()
+                                        join rfqm in _context.SrmRfqMs on new { x1=r.RfqId, x2=info.MatnrId.Value} equals new { x1=rfqm.RfqId.Value, x2=rfqm.MatnrId.Value } into rfqmgrouping
+                                        from rfqm in rfqmgrouping.DefaultIfEmpty()
                                         select new ViewSrmInfoRecord(info)
                                         {
                                             matnrObject = m,
                                             vendorObject = v,
                                             srmMatnr1 = m.SrmMatnr1,
-                                            MatnrName = m.SrmMatnr1,
                                             srmVendor1 = v.SrmVendor1,
                                             VendorName = v.VendorName,
                                             MatnrId = info.MatnrId,
@@ -69,7 +70,8 @@ namespace Convience.Service.SRM
                                             viewstatus = ((Status)info.Status).ToString(),
                                             Org = info.Org,
                                             viewQotStatus = ((Status)q.Status).ToString(),
-                                            Ekgry = info.Ekgry
+                                            Ekgry = info.Ekgry,
+                                            Description = rfqm.Description
                                         }
                                      )
                                      .AndIfHaveValue(query.MatnrId, r => r.MatnrId.Equals(query.MatnrId))

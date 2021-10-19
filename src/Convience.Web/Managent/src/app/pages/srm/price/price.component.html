@@ -58,6 +58,18 @@
             <div class="col-3">
               詢價數量:{{matnrIndex==null?"": rfq.m[matnrIndex].qty}}
             </div>
+            <div class="col-3">
+              物料內文:{{matnrIndex==null?"": rfq.m[matnrIndex].description}}
+            </div>
+            <div class="col-3">
+              圓內徑:{{matnrIndex==null?"": rfq.m[matnrIndex].minor_diameter}}
+            </div>
+            <div class="col-3">
+              圓外徑:{{matnrIndex==null?"": rfq.m[matnrIndex].major_diameter}}
+            </div>
+            <div class="col-3">
+              評估案號:{{matnrIndex==null?"": rfq.m[matnrIndex].bn_num}}
+            </div>
           </div>
         </nz-form-item>
         <nz-form-item>

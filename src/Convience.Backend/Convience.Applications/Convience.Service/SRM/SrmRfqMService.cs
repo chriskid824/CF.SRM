@@ -81,7 +81,11 @@ namespace Convience.Service.SRM
                             rfqId = a.RfqId,
                             rfqMId = a.RfqMId,
                             matnrId = a.MatnrId,
-                            viewstatus = ((Status)b.Status.Value).ToString()
+                            viewstatus = ((Status)b.Status.Value).ToString(),
+                            Description = a.Description,
+                            Bn_num = a.Bn_num,
+                            Major_diameter = a.Major_diameter,
+                            Minor_diameter = a.Minor_diameter
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }
@@ -109,7 +113,10 @@ namespace Convience.Service.SRM
                             RfqMId = a.RfqMId,
                             MatnrId = a.MatnrId,
                             srmMatnr = b.SrmMatnr1,
-                            description = b.Description
+                            Description = a.Description,
+                            Major_diameter = a.Major_diameter,
+                            Minor_diameter = a.Minor_diameter,
+                            Bn_num = a.Bn_num
                         };
             return query.FirstOrDefault();
         }

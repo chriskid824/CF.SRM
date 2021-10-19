@@ -172,6 +172,7 @@ export class RfqComponent implements OnInit {
   onRefreshMatnr() {
     var matnrQuery = {
       matnr: this.searchForm.get("matnr")?.value,
+      withoutStatus:[17],
       page: this.page,
       size: this.size
     }
@@ -192,6 +193,7 @@ export class RfqComponent implements OnInit {
   onRefreshVendor() {
     var vendorQuery = {
       vendor: this.searchForm.value["vendor"],
+      withoutStatus: [17],
       page: this.page,
       size: this.size
     }
@@ -313,6 +315,13 @@ export class RfqComponent implements OnInit {
         checkboxSelection: true,
       },
       {
+        headerName: "物料內文",
+        field: "description",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
         headerName: "版次",
         field: "version",
         enableRowGroup: true,
@@ -329,6 +338,18 @@ export class RfqComponent implements OnInit {
       {
         headerName: "體積",
         field: "volume",
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "圓內徑",
+        field: "minor_diameter",
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
+        headerName: "圓外徑",
+        field: "major_diameter",
         cellClass: "show-cell",
         width: "150px",
       },
@@ -367,6 +388,13 @@ export class RfqComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         editable: this.canModify,
+        width: "150px",
+      },
+      {
+        headerName: "評估案號",
+        field: "bn_num",
+        enableRowGroup: true,
+        cellClass: "show-cell",
         width: "150px",
       },
       {

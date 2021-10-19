@@ -50,6 +50,8 @@ namespace Convience.Service.SRM
             int skip = (matnrQuery.Page - 1) * matnrQuery.Size;
             var resultQuery = _srmMatnrRepository.Get()
                 .AndIfHaveValue(matnrQuery.Matnr, r => r.SrmMatnr1.Contains(matnrQuery.Matnr))
+                .AndIfHaveValue(matnrQuery.MatnrEquals,r=>r.SrmMatnr1.Equals(matnrQuery.MatnrEquals))
+                .AndIfHaveValue(matnrQuery.withoutStatus, r=>!matnrQuery.withoutStatus.Contains(r.Status.Value))
                 .Where(r => matnrQuery.Werks.Contains(r.Werks.Value));
             var matnrs = resultQuery.Skip(skip).Take(matnrQuery.Size).ToArray();
             return new PagingResultModel<ViewSrmMatnr>

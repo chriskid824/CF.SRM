@@ -21,6 +21,15 @@ export class RfqBatchUploadComponent implements OnInit {
     this.uploadForm = this._formBuilder.group({
     });
   }
+  download() {
+    //this._srmRfqService.downloadUploadExample().subscribe((result: any) => {
+    //  const a = document.createElement('a');
+    //  const blob = new Blob([result], { 'type': "application/octet-stream" });
+    //  a.href = URL.createObjectURL(blob);
+    //  a.download = fileInfo.fileName;
+    //  a.click();
+    //});
+  }
   beforeUpload = (file): boolean => {
     this.fileList = [];
     this.fileList = this.fileList.concat(file);

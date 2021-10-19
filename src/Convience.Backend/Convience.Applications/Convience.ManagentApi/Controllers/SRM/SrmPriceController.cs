@@ -125,6 +125,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                 temp[0].matnr = rfqM.srmMatnr;
                 temp[0].matnrId = rfqM.MatnrId.Value;
                 temp[0].material = rfqM.Material;
+                temp[0].description = rfqM.Description;
+                temp[0].major_diameter = rfqM.Major_diameter;
+                temp[0].minor_diameter = rfqM.Minor_diameter;
+                temp[0].bn_num = rfqM.Bn_num;
                 temp[0].volume = $"{rfqM.Length}*{rfqM.Width}*{rfqM.Height}";
                 temp[0].weight = rfqM.Weight.HasValue? rfqM.Weight.Value.ToString():"";
                 temp[0].machineName = rfqM.MachineName;
@@ -378,7 +382,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
                 //dr["SapMatnr"] = rfqM.matnr;
-                dr["DESCRIPTION"] = rfqM.description;
+                dr["DESCRIPTION"] = rfqM.Description;
                 dr["QTY"] = rfqM.Qty;
                 dr["Height"] = rfqM.Height;
                 dr["Length"] = rfqM.Length;

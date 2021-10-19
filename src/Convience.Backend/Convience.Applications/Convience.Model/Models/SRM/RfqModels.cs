@@ -19,15 +19,19 @@ namespace Convience.Model.Models.SRM
     public record QueryMatnrModel : PageQueryModel
     {
         public string Matnr { get; set; }
+        public string MatnrEquals { get; set; }
         public int[] Werks { get; set; }
+        public int[] withoutStatus { get; set; }
     }
     public record QueryVendorModel : PageQueryModel
     {
         public string Vendor { get; set; }
+        public string VendorEquals { get; set; }
         public string Code { get; set; }
         public int? Org { get; set; }
         public int? Ekorg { get; set; }
         public int[] Werks { get; set; }
+        public int[] withoutStatus { get; set; }
     }
     public class ViewSrmRfqM : SrmRfqM
     {
@@ -35,7 +39,6 @@ namespace Convience.Model.Models.SRM
         public string volume { get; set; }
         public int status { get; set; }
         public string srmMatnr { get; set; }
-        public string description { get; set; }
     }
 
     public class ViewSrmMatnr : SrmMatnr

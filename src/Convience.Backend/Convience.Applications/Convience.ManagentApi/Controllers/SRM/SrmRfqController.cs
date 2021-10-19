@@ -42,6 +42,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly IUserService _userService;
         private readonly ISrmSupplierService _srmSupplierService;
         private readonly appSettings _appSettingsService;
+        private readonly ISrmMaterialService _srmMaterialService;
 
         public SrmRfqController(ISrmMatnrService srmMatnrService,
             ISrmVendorService srmVendorService,
@@ -51,7 +52,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             ISrmQotService srmQotHService,
             IUserService userService,
             ISrmSupplierService srmSupplierService,
-            IOptions<appSettings> appSettingsOption)
+            IOptions<appSettings> appSettingsOption,
+            ISrmMaterialService srmMaterialService
+            )
         {
             _srmMatnrService = srmMatnrService;
             _srmVendorService = srmVendorService;
@@ -62,6 +65,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _userService = userService;
             _srmSupplierService = srmSupplierService;
             _appSettingsService = appSettingsOption.Value;
+            _srmMaterialService = srmMaterialService;
         }
 
         [HttpPost("GetMatnr")]
@@ -83,19 +87,26 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("Save")]
         [Permission("rfq")]
         public IActionResult Save(JObject rfq) {
-            SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
-            SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
-            SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
-            DateTime now = DateTime.Now;
-            UserClaims user = User.GetUserClaims();
-            if (user.UserName != h.Sourcer) {
-                return this.BadRequestResult("非詢價本人");
+            try
+            {
+                SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
+                SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
+                SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
+                DateTime now = DateTime.Now;
+                UserClaims user = User.GetUserClaims();
+                if (user.UserName != h.Sourcer)
+                {
+                    return this.BadRequestResult("非詢價本人");
+                }
+                h.LastUpdateBy = user.UserName;
+                h.LastUpdateDate = now;
+                h.Werks = user.Werks[0];
+                _srmRfqHService.Save(h, ms, vs);
+                return Ok();
             }
-            h.LastUpdateBy = user.UserName;
-            h.LastUpdateDate = now;
-            h.Werks = user.Werks[0];
-            _srmRfqHService.Save(h, ms, vs);
-            return Ok();
+            catch (Exception ex) {
+                return this.BadRequestResult(ex.Message);
+            }
         }
 
         [HttpGet("GetRfqData")]
@@ -462,8 +473,91 @@ namespace Convience.ManagentApi.Controllers.SRM
             fileUploadModel.CurrentDirectory = _appSettingsService.CurrentDirectory + fileUploadModel.CurrentDirectory;
             try
             {
+                if (user.Werks.Count() > 1) {
+                    //throw new Exception("只限單一工廠人員申請");
+                }
                 string path = _srmRfqHService.Upload(fileUploadModel);
-                DataTable data = _srmRfqHService.ReadExcel_Matnr(path);
+                DataTable data_m = _srmRfqHService.ReadExcel_Matnr(path,user);
+                if (data_m.Rows.Count == 0)
+                {
+                    throw new Exception("料號至少需一筆");
+                }
+                DataTable data_v = _srmRfqHService.ReadExcel_Vendor(path,user);
+                if (data_v.Rows.Count == 0) {
+                    throw new Exception("供應商至少需一筆");
+                }
+                using (var transaction = new System.Transactions.TransactionScope())
+                {
+                    try
+                    {
+                        SrmRfqM[] m = JsonConvert.DeserializeObject<SrmRfqM[]>(JsonConvert.SerializeObject(data_m));
+                        for (int i = 0; i < data_m.Rows.Count; i++) {
+                            DataRow dr_m = data_m.Rows[i];
+                            if (!Convert.ToBoolean(dr_m["IsExists"].ToString()))
+                            {
+                                ViewSrmMatnr1 temp = JsonConvert.DeserializeObject<ViewSrmMatnr1>(JsonConvert.SerializeObject(dr_m));
+                                temp.User = user.UserName;
+                                m[i].MatnrId = _srmMaterialService.AddMatnr(temp).MatnrId;
+                            }
+                            else {
+                                var temp_matnr = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0];
+                                m[i] = JsonConvert.DeserializeObject<SrmRfqM>(JsonConvert.SerializeObject(temp_matnr));
+                                m[i].Qty = Convert.ToDouble(data_m.Rows[i]["Qty"].ToString());
+                                //m[i].MatnrId = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(),Werks=user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0].MatnrId;
+                            }
+                        }
+
+                        SrmRfqV[] v = JsonConvert.DeserializeObject<SrmRfqV[]>(JsonConvert.SerializeObject(data_v));
+                        for (int i = 0; i < data_v.Rows.Count; i++)
+                        {
+                            DataRow dr_v = data_v.Rows[i];
+                            if (!Convert.ToBoolean(dr_v["IsExists"].ToString()))
+                            {
+                                ViewSrmSupplier temp = JsonConvert.DeserializeObject<ViewSrmSupplier>(JsonConvert.SerializeObject(dr_v));
+                                temp.User = user.UserName;
+                                v[i].VendorId = _srmSupplierService.AddVendor(temp).VendorId;
+                            }
+                            else {
+                                v[i].VendorId = _srmVendorService.GetVendor(new QueryVendorModel() { VendorEquals = data_v.Rows[i]["SrmVendor1"].ToString(),Werks=user.Werks,withoutStatus=new int[] { (int)Status.失效 },Page=1,Size=1 }).Data[0].VendorId;
+                            }
+                        }
+
+                        //foreach (DataRow dr_m in data_m.Rows)
+                        //{
+                        //    if (!Convert.ToBoolean(dr_m["IsExists"].ToString()))
+                        //    {
+                        //        ViewSrmMatnr1 temp = JsonConvert.DeserializeObject<ViewSrmMatnr1>(JsonConvert.SerializeObject(dr_m));
+                        //        temp.User = user.Name;
+                        //        _srmMaterialService.AddMatnr(temp);
+                        //    }
+                        //}
+
+                        //foreach (DataRow dr_v in data_v.Rows)
+                        //{
+                        //    if (!Convert.ToBoolean(dr_v["IsExists"].ToString()))
+                        //    {
+                        //        ViewSrmSupplier temp = JsonConvert.DeserializeObject<ViewSrmSupplier>(JsonConvert.SerializeObject(dr_v));
+                        //        temp.User = user.Name;
+                        //        _srmSupplierService.AddVendor(temp);
+                        //    }
+                        //}
+                        SrmRfqH h = new SrmRfqH();
+                        h.Sourcer = user.UserName;
+                        h.Werks = user.Werks[0];
+                        h.LastUpdateBy = user.UserName;
+                        h.Status = 1;
+                        //SrmRfqM[] m = JsonConvert.DeserializeObject<SrmRfqM[]>(JsonConvert.SerializeObject(data_m));
+                        //SrmRfqV[] v = JsonConvert.DeserializeObject<SrmRfqV[]>(JsonConvert.SerializeObject(data_v));
+
+                        _srmRfqHService.Save(h, m, v);
+
+                        transaction.Complete();
+                    }
+                    catch (Exception ex) {
+                        transaction.Dispose();
+                        throw;
+                    }
+                }
                 return Ok();
             }
             catch (Exception ex) {

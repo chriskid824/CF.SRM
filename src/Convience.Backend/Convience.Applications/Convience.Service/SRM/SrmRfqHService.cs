@@ -41,8 +41,8 @@ namespace Convience.Service.SRM
         public SrmRfqH GetRfq(QueryRfq query);
         public void AsyncSourcer();
         public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
-        public DataTable ReadExcel_Matnr(string path);
-        public DataTable ReadExcel_Vendor(string path);
+        public DataTable ReadExcel_Matnr(string path, UserClaims user);
+        public DataTable ReadExcel_Vendor(string path, UserClaims user);
     }
     public class SrmRfqHService : ISrmRfqHService
     {
@@ -116,6 +116,10 @@ namespace Convience.Service.SRM
                 _context.SrmRfqHs.Update(rfqH);
                 foreach (var rfqM in rfqMs)
                 {
+                    if (rfqM.Qty.HasValue && rfqM.Qty.Value <= 0)
+                    {
+                        throw new Exception($"料號{rfqM.Material}，數量應大於0");
+                    }
                     rfqM.RfqId = rfqH.RfqId;
                     if (rfqM.RfqMId == 0)
                     {
@@ -425,7 +429,8 @@ namespace Convience.Service.SRM
             }
             return path;
         }
-        public DataTable ReadExcel_Matnr(string path){
+        public DataTable ReadExcel_Matnr(string path, UserClaims user)
+        {
             IWorkbook workbook;
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -444,7 +449,7 @@ namespace Convience.Service.SRM
             }
             dt.Columns.Add("IsExists");
             string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量" };
-            //string[] cols = new string[] { ""}
+            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers) {
                 if (!dt.Columns.Contains(header))
@@ -477,9 +482,17 @@ namespace Convience.Service.SRM
                         dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
                     }
                 }
-                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && r.Status.Equals(Status.失效)))
+                if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && r.Status != (int)(Status.失效) && user.Werks.Contains(r.Werks.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 {
-                    throw new Exception($"料號:{dataRow["料號"].ToString()}已失效");
+                    dataRow["IsExists"] = true;
+                }
+                else
+                {
+                    dataRow["IsExists"] = false;
+                    if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && r.Status.Equals(Status.失效) && user.Werks.Contains(r.Werks.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆
+                    {
+                        throw new Exception($"料號:{dataRow["料號"].ToString()}已失效");
+                    }
                 }
                 if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) {
                     throw new Exception($"料號:{dataRow["數量"].ToString()}未填");
@@ -489,13 +502,16 @@ namespace Convience.Service.SRM
                 {
                     throw new Exception($"料號:{dataRow["數量"].ToString()}格式錯誤");
                 }
-                dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()));
+                //dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && user.Werks.Contains(r.Werks.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 dt.Rows.Add(dataRow);
                 rowIndex++;
             }
+            for (int i = 0; i < headers.Count(); i++) {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
             return dt;
         }
-        public DataTable ReadExcel_Vendor(string path)
+        public DataTable ReadExcel_Vendor(string path, UserClaims user)
         {
             IWorkbook workbook;
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -515,6 +531,7 @@ namespace Convience.Service.SRM
             }
             dt.Columns.Add("IsExists");
             string[] headers = new string[] { "供應商編號", "供應商名稱", "公司代碼", "採購組織", "聯絡人", "地址", "信箱", "傳真號碼", "電話號碼", "分機", "手機號碼" };
+            string[] cols = new string[] { "SrmVendor1", "VendorName", "Org", "Ekorg", "Person", "Address", "Mail", "FaxNumber", "TelPhone", "Ext", "CellPhone" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers)
             {
@@ -551,13 +568,25 @@ namespace Convience.Service.SRM
                         dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
                     }
                 }
-                if (_context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && r.Status.Equals(Status.失效)))
+                if (_context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && r.Status != (int)(Status.失效) && user.Werks.Contains(r.Ekorg.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 {
-                    throw new Exception($"供應商編號:{dataRow["供應商編號"]}已失效");
+                    dataRow["IsExists"] = true;
                 }
-                dataRow["IsExists"] = _context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]));
+                else
+                {
+                    dataRow["IsExists"] = false;
+                    if (_context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && r.Status.Equals(Status.失效) && user.Werks.Contains(r.Ekorg.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆
+                    {
+                        throw new Exception($"供應商編號:{dataRow["供應商編號"]}已失效");
+                    }
+                }
+                //dataRow["IsExists"] = _context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && user.Werks.Contains(r.Ekorg.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 dt.Rows.Add(dataRow);
                 rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
             }
             return dt;
         }

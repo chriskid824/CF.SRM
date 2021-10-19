@@ -39,6 +39,10 @@ export class RfqM {
   note?: string;
   matnr?: string;
   srmMatnr1?: string;
+  description?: string;
+  minor_diameter?: string;
+  major_diameter?: string;
+  bn_num?: string;
 }
 
 export class RfqV {

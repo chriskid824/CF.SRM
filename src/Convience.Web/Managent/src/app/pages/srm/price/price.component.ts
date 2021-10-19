@@ -233,6 +233,14 @@ export class PriceComponent implements OnInit {
         width: "150px",
       },
       {
+        headerName: "料號內文",
+        field: "description",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "rfq",
+        width: "150px",
+      },
+      {
         headerName: "材料規格",
         field: "material",
         enableRowGroup: true,
@@ -247,7 +255,24 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         headerClass: "rfq",
         width: "150px",
-      }, {
+      },
+      {
+        headerName: "圓內徑",
+        field: "minor_diameter",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "rfq",
+        width: "150px",
+      },
+      {
+        headerName: "圓外徑",
+        field: "major_diameter",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "rfq",
+        width: "150px",
+      },
+      {
         headerName: "工件重量(KG)",
         field: "weight",
         enableRowGroup: true,
@@ -261,7 +286,16 @@ export class PriceComponent implements OnInit {
         cellClass: "show-cell",
         headerClass: "rfq",
         width: "150px",
-      }, {
+      },
+      {
+        headerName: "評估案號",
+        field: "bn_num",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "rfq",
+        width: "150px",
+      },
+      {
         headerName: "報價單號",
         field: "qotNum",
         enableRowGroup: true,

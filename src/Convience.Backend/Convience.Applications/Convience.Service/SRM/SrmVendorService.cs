@@ -44,16 +44,13 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public IEnumerable<SrmVendor> GetVendor(string vendor, int page, int size)
-        {
-            int skip = (page - 1) * size;
-            return _srmVendorRepository.Get(r => string.IsNullOrWhiteSpace(vendor) ? true : r.VendorName.IndexOf(vendor) >= 0).ToList().Skip(skip).Take(size).AsQueryable(); ;
-        }
         public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery)
         {
             int skip = (vendorQuery.Page-1) * vendorQuery.Size;
             var resultQuery = _srmVendorRepository.Get()
-                .AndIfHaveValue(vendorQuery.Vendor, r => r.SapVendor.Contains(vendorQuery.Vendor))
+                .AndIfHaveValue(vendorQuery.Vendor, r => r.SrmVendor1.Contains(vendorQuery.Vendor))
+                .AndIfHaveValue(vendorQuery.VendorEquals,r=>r.SrmVendor1.Equals(vendorQuery.VendorEquals))
+                .AndIfHaveValue(vendorQuery.withoutStatus, r => !vendorQuery.withoutStatus.Contains(r.Status.Value))
                 .Where(r => vendorQuery.Werks.Contains(r.Ekorg.Value));
             var vendors =resultQuery.Skip(skip).Take(vendorQuery.Size).ToArray();
             return new PagingResultModel<ViewSrmVendor> 

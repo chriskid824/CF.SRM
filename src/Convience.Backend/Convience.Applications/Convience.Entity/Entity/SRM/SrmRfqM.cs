@@ -24,5 +24,9 @@ namespace Convience.Entity.Entity.SRM
         public string MachineName { get; set; }
         public double? Qty { get; set; }
         public string Note { get; set; }
+        public string Description { get; set; }
+        public string Bn_num { get; set; }
+        public string Major_diameter { get; set; }
+        public string Minor_diameter { get; set; }
     }
 }

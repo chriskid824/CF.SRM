@@ -63,6 +63,7 @@ namespace Convience.Model.Models.SRM
                 return string.IsNullOrWhiteSpace(Type) ? "" : ((TYPE)Convert.ToChar(Type)).ToString();
             }
         }
+        public string Description { get; set; }
     }
 
 
@@ -137,6 +138,10 @@ namespace Convience.Model.Models.SRM
         public string type { get; set; }
         public string typeName { get; set; }
         public string sortl { get; set; }
+        public string description { get; set; }
+        public string minor_diameter { get; set; }
+        public string major_diameter { get; set; }
+        public string bn_num { get; set; }
     }
 
     public enum INFO_KIND {
