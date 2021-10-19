@@ -466,6 +466,17 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmRfqHService.AsyncSourcer();
             return Ok();
         }
+
+        private string Convert_DataRowToJson(DataRow datarow)
+        {
+            var dict = new Dictionary<string, object>();
+            foreach (DataColumn col in datarow.Table.Columns)
+            {
+                dict.Add(col.ColumnName, datarow[col]);
+            }
+            return JsonConvert.SerializeObject(dict);
+        }
+
         [HttpPost("BatchUpload")]
         public IActionResult BatchUpload([FromForm] Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel) {
             UserClaims user = User.GetUserClaims();
@@ -486,6 +497,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 if (data_v.Rows.Count == 0) {
                     throw new Exception("供應商至少需一筆");
                 }
+                string errTitle = "";
                 using (var transaction = new System.Transactions.TransactionScope())
                 {
                     try
@@ -493,14 +505,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                         SrmRfqM[] m = JsonConvert.DeserializeObject<SrmRfqM[]>(JsonConvert.SerializeObject(data_m));
                         for (int i = 0; i < data_m.Rows.Count; i++) {
                             DataRow dr_m = data_m.Rows[i];
+                            errTitle = $"料號:{dr_m["SrmMatnr1"].ToString()}，";
                             if (!Convert.ToBoolean(dr_m["IsExists"].ToString()))
                             {
-                                ViewSrmMatnr1 temp = JsonConvert.DeserializeObject<ViewSrmMatnr1>(JsonConvert.SerializeObject(dr_m));
+                                ViewSrmMatnr1 temp = JsonConvert.DeserializeObject<ViewSrmMatnr1>(Convert_DataRowToJson(dr_m));
                                 temp.User = user.UserName;
                                 m[i].MatnrId = _srmMaterialService.AddMatnr(temp).MatnrId;
                             }
                             else {
-                                var temp_matnr = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0];
+                                var temp_matnr = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = dr_m["SrmMatnr1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0];
                                 m[i] = JsonConvert.DeserializeObject<SrmRfqM>(JsonConvert.SerializeObject(temp_matnr));
                                 m[i].Qty = Convert.ToDouble(data_m.Rows[i]["Qty"].ToString());
                                 //m[i].MatnrId = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(),Werks=user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0].MatnrId;
@@ -511,17 +524,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                         for (int i = 0; i < data_v.Rows.Count; i++)
                         {
                             DataRow dr_v = data_v.Rows[i];
+                            errTitle = $"供應商:{dr_v["SrmVendor1"].ToString()}，";
                             if (!Convert.ToBoolean(dr_v["IsExists"].ToString()))
                             {
-                                ViewSrmSupplier temp = JsonConvert.DeserializeObject<ViewSrmSupplier>(JsonConvert.SerializeObject(dr_v));
+                                ViewSrmSupplier temp = JsonConvert.DeserializeObject<ViewSrmSupplier>(Convert_DataRowToJson(dr_v));
                                 temp.User = user.UserName;
                                 v[i].VendorId = _srmSupplierService.AddVendor(temp).VendorId;
                             }
                             else {
-                                v[i].VendorId = _srmVendorService.GetVendor(new QueryVendorModel() { VendorEquals = data_v.Rows[i]["SrmVendor1"].ToString(),Werks=user.Werks,withoutStatus=new int[] { (int)Status.失效 },Page=1,Size=1 }).Data[0].VendorId;
+                                v[i].VendorId = _srmVendorService.GetVendor(new QueryVendorModel() { VendorEquals = dr_v["SrmVendor1"].ToString(),Werks=user.Werks,withoutStatus=new int[] { (int)Status.失效 },Page=1,Size=1 }).Data[0].VendorId;
                             }
                         }
-
+                        errTitle = "";
                         //foreach (DataRow dr_m in data_m.Rows)
                         //{
                         //    if (!Convert.ToBoolean(dr_m["IsExists"].ToString()))
@@ -555,7 +569,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                     catch (Exception ex) {
                         transaction.Dispose();
-                        throw;
+                        throw new Exception(errTitle + ex.Message);
                     }
                 }
                 return Ok();
