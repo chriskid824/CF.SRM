@@ -32,5 +32,8 @@ namespace Convience.Entity.Entity.SRM
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
+        public string NgDesc { get; set; }
+        public string CauseAnalyses { get; set; }
+        public string PeAction { get; set; }
     }
 }
