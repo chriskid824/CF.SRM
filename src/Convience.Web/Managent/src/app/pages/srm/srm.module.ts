@@ -27,10 +27,10 @@ import { PriceManageComponent } from './price-manage/price-manage.component';
 import { PoDetailComponent } from './po-detail/po-detail.component';
 import { QotlistComponent } from './qotlist/qotlist.component';
 import { DelyveryLComponent } from './delyvery-l/delyvery-l.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatSelectModule} from '@angular/material/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule} from '@angular/material/checkbox';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { DeliveryModalComponent } from './delivery-modal/delivery-modal.component';
 import { MatDialogModule } from "@angular/material/dialog";
@@ -55,7 +55,7 @@ import { MaterialTrendComponent } from './material-trend/material-trend.componen
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { MaterialManageComponent } from './material-manage/material-manage.component';
 import {EqpComponent} from'./eqp/eqp.component';
-import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
+import { EqplistComponent } from './eqplist/eqplist.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -83,16 +83,15 @@ import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.com
     MaterialTrendComponent,
     MaterialManageComponent,
     EqpComponent,
-    RfqBatchUploadComponent
+    EqplistComponent
   ],
   imports: [
     CommonModule,
     AngularDualListBoxModule,
     RouterModule.forChild([
        { path: '', pathMatch: 'full', redirectTo: 'rfq' },
-      { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
-      { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
-      { path: "rfq-batch-upload", component: RfqBatchUploadComponent, canActivate: [LoginGuard] },
+       { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
+       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
        { path: "po", component: PoComponent , canActivate: [LoginGuard]},
        { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
        { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
@@ -113,6 +112,7 @@ import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.com
         { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
         { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
         { path: "eqp", component: EqpComponent, canActivate: [LoginGuard]},
+        { path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
