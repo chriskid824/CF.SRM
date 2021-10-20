@@ -55,7 +55,7 @@ import { MaterialTrendComponent } from './material-trend/material-trend.componen
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { MaterialManageComponent } from './material-manage/material-manage.component';
 import {EqpComponent} from'./eqp/eqp.component';
-import { EqplistComponent } from './eqplist/eqplist.component';
+//import { EqplistComponent } from './eqplist/eqplist.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -83,7 +83,7 @@ import { EqplistComponent } from './eqplist/eqplist.component';
     MaterialTrendComponent,
     MaterialManageComponent,
     EqpComponent,
-    EqplistComponent
+    //EqplistComponent
   ],
   imports: [
     CommonModule,
@@ -112,7 +112,7 @@ import { EqplistComponent } from './eqplist/eqplist.component';
         { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
         { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
         { path: "eqp", component: EqpComponent, canActivate: [LoginGuard]},
-        { path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
+        //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
