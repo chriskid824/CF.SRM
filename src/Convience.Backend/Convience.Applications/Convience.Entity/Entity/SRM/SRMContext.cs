@@ -44,6 +44,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmMaterialTrend> SrmMaterialTrends { get; set; }
         public virtual DbSet<SrmMaterialGroup> SrmMaterialGroups { get; set; }
         public virtual DbSet<SrmWeightUnit> SrmWeightUnits { get; set; }
+        public virtual DbSet<SrmEqpH> SrmEqpHs { get; set; }
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1154,6 +1156,19 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("WO_NUM")
                     .HasComment("工單號碼");
+
+                entity.Property(e => e.NgDesc)
+                   .HasColumnName("NG_DESC")
+                   .HasComment("異常狀況及過程說明");
+
+                entity.Property(e => e.CauseAnalyses)
+                   .HasColumnName("CAUSE_ANALYSES")
+                   .HasComment("初步肇因分析");
+
+                entity.Property(e => e.PeAction)
+                   .HasMaxLength(10)
+                   .HasColumnName("PE_ACTION")
+                   .HasComment("工程處置措施");
             });
             modelBuilder.Entity<SrmMaterialGroup>(entity =>
             {
