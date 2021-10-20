@@ -99,4 +99,5 @@ export class UriConfig {
     get SrmMaterial(): string { return `${this._apiUri}/SrmMaterial` };
 
     get SrmMaterialTrend(): string { return `${this._apiUri}/SrmMaterialTrend` };
+    get SrmEqp(): string { return `${this._apiUri}/SrmEqp` };
 }
