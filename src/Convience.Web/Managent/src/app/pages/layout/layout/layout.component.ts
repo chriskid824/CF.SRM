@@ -121,9 +121,9 @@ export class LayoutComponent implements OnInit {
     }
     ,
     {
-      canOperate: 'batch-upload', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '大量上傳',
+      canOperate: 'batch-upload', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '批次上傳',
       children: [
-        { canOperate: 'rfq-batch-upload', routerLink: '/srm/rfq-batch-upload', iconType: 'fund-view', firstBreadcrumb: '大量上傳', lastBreadcrumb: '詢價單大量上傳', name: '詢價單大量上傳', },
+        { canOperate: 'rfq-batch-upload', routerLink: '/srm/rfq-batch-upload', iconType: 'fund-view', firstBreadcrumb: '批次上傳', lastBreadcrumb: '詢價單批次上傳', name: '詢價單批次上傳', },
       ]
     }
   ];

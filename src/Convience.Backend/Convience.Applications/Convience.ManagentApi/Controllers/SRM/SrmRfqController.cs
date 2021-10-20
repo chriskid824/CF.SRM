@@ -482,12 +482,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             UserClaims user = User.GetUserClaims();
             fileUploadModel.CreateBy = user.UserName;
             fileUploadModel.CurrentDirectory = _appSettingsService.CurrentDirectory + fileUploadModel.CurrentDirectory;
+            string path = "";
             try
             {
                 if (user.Werks.Count() > 1) {
                     //throw new Exception("只限單一工廠人員申請");
                 }
-                string path = _srmRfqHService.Upload(fileUploadModel);
+                path = _srmRfqHService.Upload(fileUploadModel);
                 DataTable data_m = _srmRfqHService.ReadExcel_Matnr(path,user);
                 if (data_m.Rows.Count == 0)
                 {
@@ -503,7 +504,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                     try
                     {
                         SrmRfqM[] m = JsonConvert.DeserializeObject<SrmRfqM[]>(JsonConvert.SerializeObject(data_m));
-                        for (int i = 0; i < data_m.Rows.Count; i++) {
+                        for (int i = 0; i < data_m.Rows.Count; i++)
+                        {
                             DataRow dr_m = data_m.Rows[i];
                             errTitle = $"料號:{dr_m["SrmMatnr1"].ToString()}，";
                             if (!Convert.ToBoolean(dr_m["IsExists"].ToString()))
@@ -512,7 +514,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 temp.User = user.UserName;
                                 m[i].MatnrId = _srmMaterialService.AddMatnr(temp).MatnrId;
                             }
-                            else {
+                            else
+                            {
                                 var temp_matnr = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = dr_m["SrmMatnr1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0];
                                 m[i] = JsonConvert.DeserializeObject<SrmRfqM>(JsonConvert.SerializeObject(temp_matnr));
                                 m[i].Qty = Convert.ToDouble(data_m.Rows[i]["Qty"].ToString());
@@ -531,8 +534,9 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 temp.User = user.UserName;
                                 v[i].VendorId = _srmSupplierService.AddVendor(temp).VendorId;
                             }
-                            else {
-                                v[i].VendorId = _srmVendorService.GetVendor(new QueryVendorModel() { VendorEquals = dr_v["SrmVendor1"].ToString(),Werks=user.Werks,withoutStatus=new int[] { (int)Status.失效 },Page=1,Size=1 }).Data[0].VendorId;
+                            else
+                            {
+                                v[i].VendorId = _srmVendorService.GetVendor(new QueryVendorModel() { VendorEquals = dr_v["SrmVendor1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0].VendorId;
                             }
                         }
                         errTitle = "";
@@ -567,9 +571,16 @@ namespace Convience.ManagentApi.Controllers.SRM
 
                         transaction.Complete();
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         transaction.Dispose();
                         throw new Exception(errTitle + ex.Message);
+                    }
+                    finally {
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            _srmRfqHService.Delete(path);
+                        }
                     }
                 }
                 return Ok();

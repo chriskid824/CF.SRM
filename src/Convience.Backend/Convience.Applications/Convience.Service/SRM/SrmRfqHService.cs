@@ -43,6 +43,7 @@ namespace Convience.Service.SRM
         public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
         public DataTable ReadExcel_Matnr(string path, UserClaims user);
         public DataTable ReadExcel_Vendor(string path, UserClaims user);
+        public void Delete(string path);
     }
     public class SrmRfqHService : ISrmRfqHService
     {
@@ -590,11 +591,17 @@ namespace Convience.Service.SRM
             }
             return dt;
         }
-        public void Save(UserClaims user, DataTable m, DataTable v) {
-            SrmRfqH h = new SrmRfqH();
-            var mappings = new Dictionary<string, string>();
-            //mappings.Add("","")
-            //m.ToList<SrmRfqM>(mappings)
+        public void Delete(string path) {
+            try
+            {
+                FileInfo f = new FileInfo(path);
+                if (f.Exists)
+                {
+                    f.Delete();
+                }
+            }
+            catch (Exception ex) { 
+            }
         }
         #endregion upload
     }
