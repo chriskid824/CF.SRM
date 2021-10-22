@@ -56,6 +56,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { MaterialManageComponent } from './material-manage/material-manage.component';
 import {EqpComponent} from'./eqp/eqp.component';
 //import { EqplistComponent } from './eqplist/eqplist.component';
+import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -91,7 +92,8 @@ import {EqpComponent} from'./eqp/eqp.component';
     RouterModule.forChild([
        { path: '', pathMatch: 'full', redirectTo: 'rfq' },
        { path: "rfq", component: RfqComponent, canActivate: [LoginGuard] },
-       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
+      { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
+      { path: "rfq-batch-upload", component: RfqBatchUploadComponent, canActivate: [LoginGuard] },
        { path: "po", component: PoComponent , canActivate: [LoginGuard]},
        { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
        { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
