@@ -85,6 +85,7 @@ import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.com
     MaterialManageComponent,
     EqpComponent,
     //EqplistComponent
+    RfqBatchUploadComponent,
   ],
   imports: [
     CommonModule,
