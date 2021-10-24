@@ -1,0 +1,145 @@
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label [nzFor]="'I_EBELN'">單號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="單號" [formControlName]="'I_EBELN'" [attr.id]="'I_EBELN'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'I_EKORG'">採購組織</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'I_EKORG'" style="width: 100px;">
+              <!-- <nz-option nzValue="0" nzLabel="全部"></nz-option> -->
+              <nz-option nzValue="1100" nzLabel="廠工事業處"></nz-option>
+              <nz-option nzValue="1200" nzLabel="機械事業處"></nz-option>
+              <nz-option nzValue="3100" nzLabel="精密事業處"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary">搜索</button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+              (click)="resetSearchForm()">
+        重置
+      </button>-->
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+
+    </nz-card>
+
+  <nz-card>
+    <div>
+      <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
+          *canOperate="'adduserbtn'"><i nz-icon nzType="plus"></i>添加樣板</button>
+  </div>
+    <nz-table #sortTable [nzData]="listOfData" nzSize="middle" nzShowPagination="true"
+    nzBordered="true" [nzScroll]="{ x: '180px' }" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+            {{ column.title }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of sortTable.data">
+          <td>{{ data.templateId }}</td>
+          <td>{{ data.templateType }}</td>
+          <td>{{ data.werks }}</td>
+          <td>{{ data.type }}</td>
+          <td>{{ data.effectiveDate }}</td>
+          <td>{{ data.deadline }}</td>
+          <td>
+            <button nz-button nzType="default" nzShape="circle" *canOperate="'updateUserBtn'"
+            (click)="edit(editUserTitleTpl,userContentTpl,data)" class="mr-10"><i nz-icon
+                nzType="edit"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+  <ng-template #addUserTitleTpl>
+    <span>添加樣板</span>
+</ng-template>
+<ng-template #editUserTitleTpl>
+    <span>編輯樣板</span>
+</ng-template>
+<ng-template #userContentTpl>
+    <form nz-form [formGroup]="editForm" (ngSubmit)="submitEdit()">
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_templateId'">樣板編號</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="templateId錯誤！">
+            <input [attr.id]="'edit_templateId'" formControlName="templateId" nz-input
+                placeholder="樣板編號" autocomplete="off" [disabled]="true" />
+        </nz-form-control>
+    </nz-form-item>
+
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">選擇功能</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'templateType'" formControlName="templateType"
+                nzMode="default">
+                <nz-option *ngFor="let role of typeOptions" [nzValue]="role.id.toString()"
+                    [nzLabel]="role.name">
+                </nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24">選擇廠別</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+          <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'werks'" formControlName="werks"
+              nzMode="default">
+              <nz-option *ngFor="let role of werkOptions" [nzValue]="role.id.toString()"
+                  [nzLabel]="role.name">
+              </nz-option>
+          </nz-select>
+      </nz-form-control>
+  </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_sex'">廠內/廠外</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+                <nz-radio-group [attr.id]="'edit_type'" formControlName="type">
+                    <label nz-radio [nzValue]="1">廠內</label>
+                    <label nz-radio [nzValue]="2">廠外</label>
+                </nz-radio-group>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24">檔案類型</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
+                <nz-select nzAllowClear nzPlaceHolder="請選擇" [formControlName]="'filetypes'" nzMode="multiple">
+                    <nz-option *ngFor="let filetype of fileTypes" [nzValue]="filetype.id" [nzLabel]="filetype.name"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_effectiveDate'">生效日期</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="effectiveDate格式錯誤！">
+              <input [attr.id]="'edit_effectiveDate'" formControlName="effectiveDate" nz-input
+                  placeholder="生效日期" type="date" autocomplete="off" />
+          </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_deadline'">截止日期</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="deadline格式錯誤！">
+            <input [attr.id]="'edit_deadline'" formControlName="deadline" nz-input
+                placeholder="截止日期" type="date" autocomplete="off" />
+        </nz-form-control>
+    </nz-form-item>
+        <nz-form-item>
+            <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                <button nz-button nzType="primary" class="mr-10">提交</button>
+                <button nz-button type="reset" (click)="cancelEdit()">取消</button>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>

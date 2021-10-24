@@ -57,6 +57,8 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
 import {EqpComponent} from'./eqp/eqp.component';
 //import { EqplistComponent } from './eqplist/eqplist.component';
 import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
+import { FileTemplateComponent } from './file-template/file-template.component';
+
 @NgModule({
   declarations: [
     RfqComponent,
@@ -86,6 +88,7 @@ import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.com
     EqpComponent,
     //EqplistComponent
     RfqBatchUploadComponent,
+    FileTemplateComponent,
   ],
   imports: [
     CommonModule,
@@ -116,6 +119,7 @@ import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.com
         { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
         { path: "eqp", component: EqpComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
+        { path: "file-t", component: FileTemplateComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

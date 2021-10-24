@@ -4,17 +4,20 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
-import { zh_CN } from 'ng-zorro-antd/i18n';
+import { zh_CN,zh_TW } from 'ng-zorro-antd/i18n';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS,HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from './pages/layout/layout.module';
 import { AuthHeaderInterceptor } from './inceptors/auth-header-inceptor';
 import { CacheInterceptor } from './inceptors/cache-inceptor';
 import { ErrorHandlerInterceptor } from './inceptors/error-handler-inceptor';
 import { UriConfig } from './configs/uri-config';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
 
 
 registerLocaleData(zh);
@@ -22,7 +25,20 @@ registerLocaleData(zh);
 export function initializeApp(uriConstant: UriConfig) {
   return () => uriConstant.init();
 }
-
+// AoT requires an exported function for factories
+// 建立TranslateHttpLoader作為語系檔的讀取器
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+const customLanguagePack = {
+  zh_TW,
+  ...{
+    Pagination: {
+      items_per_page: "per page"
+    }
+  }
+}
+// 將 TranslateHttpLoader作為 TranslateModule 的語系檔讀取器(loader)
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +50,14 @@ export function initializeApp(uriConstant: UriConfig) {
     HttpClientModule,
     BrowserAnimationsModule,
     LayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  }),
   ],
   bootstrap: [AppComponent],
   /** 配置 ng-zorro-antd 国际化（文案 及 日期） **/

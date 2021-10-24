@@ -56,7 +56,7 @@ export class AvatarSelectComponent implements OnInit, ControlValueAccessor {
 
   showAvatarModal() {
     this.modalRef = this._modalService.create({
-      nzTitle: "请选择头像",
+      nzTitle: "請選擇頭像",
       nzContent: this.avatarSelectTpl,
       nzFooter: this.avatarFooterTpl
     });

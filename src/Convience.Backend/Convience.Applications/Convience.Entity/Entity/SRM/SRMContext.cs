@@ -45,7 +45,13 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmMaterialGroup> SrmMaterialGroups { get; set; }
         public virtual DbSet<SrmWeightUnit> SrmWeightUnits { get; set; }
         public virtual DbSet<SrmEqpH> SrmEqpHs { get; set; }
-        
+        public virtual DbSet<SrmFileTypeProfile> SrmFileTypeProfiles { get; set; }
+        public virtual DbSet<SrmFileUploadTemplate> SrmFileUploadTemplates { get; set; }
+        public virtual DbSet<SrmFileuploadRecordH> SrmFileuploadRecordHs { get; set; }
+        public virtual DbSet<SrmFileuploadRecordL> SrmFileuploadRecordLs { get; set; }
+        public virtual DbSet<SrmFunctionList> SrmFunctionLists { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1199,6 +1205,190 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("UNIT_ID");
             });
 
+            modelBuilder.Entity<SrmFileTypeProfile>(entity =>
+            {
+                entity.HasKey(e => e.TypeId);
+
+                entity.ToTable("SRM_FILE_TYPE_PROFILE");
+
+                entity.Property(e => e.TypeId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("TYPE_ID");
+
+                entity.Property(e => e.TypeName)
+                    .HasMaxLength(10)
+                    .HasColumnName("TYPE_NAME");
+            });
+
+            modelBuilder.Entity<SrmFileUploadTemplate>(entity =>
+            {
+                entity.HasKey(e => e.TemplateId);
+
+                entity.ToTable("SRM_FILE_UPLOAD_TEMPLATE");
+
+                entity.Property(e => e.TemplateId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("TEMPLATE_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Deadline)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DEADLINE");
+
+                entity.Property(e => e.EffectiveDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EFFECTIVE_DATE");
+
+                entity.Property(e => e.Filetype)
+                    .HasMaxLength(50)
+                    .HasColumnName("FILETYPE");
+
+                entity.Property(e => e.Filetype1).HasColumnName("FILETYPE1");
+
+                entity.Property(e => e.Filetype10).HasColumnName("FILETYPE10");
+
+                entity.Property(e => e.Filetype11).HasColumnName("FILETYPE11");
+
+                entity.Property(e => e.Filetype12).HasColumnName("FILETYPE12");
+
+                entity.Property(e => e.Filetype13).HasColumnName("FILETYPE13");
+
+                entity.Property(e => e.Filetype14).HasColumnName("FILETYPE14");
+
+                entity.Property(e => e.Filetype15).HasColumnName("FILETYPE15");
+
+                entity.Property(e => e.Filetype16).HasColumnName("FILETYPE16");
+
+                entity.Property(e => e.Filetype17).HasColumnName("FILETYPE17");
+
+                entity.Property(e => e.Filetype18).HasColumnName("FILETYPE18");
+
+                entity.Property(e => e.Filetype19).HasColumnName("FILETYPE19");
+
+                entity.Property(e => e.Filetype2).HasColumnName("FILETYPE2");
+
+                entity.Property(e => e.Filetype20).HasColumnName("FILETYPE20");
+
+                entity.Property(e => e.Filetype3).HasColumnName("FILETYPE3");
+
+                entity.Property(e => e.Filetype4).HasColumnName("FILETYPE4");
+
+                entity.Property(e => e.Filetype5).HasColumnName("FILETYPE5");
+
+                entity.Property(e => e.Filetype6).HasColumnName("FILETYPE6");
+
+                entity.Property(e => e.Filetype7).HasColumnName("FILETYPE7");
+
+                entity.Property(e => e.Filetype8).HasColumnName("FILETYPE8");
+
+                entity.Property(e => e.Filetype9).HasColumnName("FILETYPE9");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.TemplateType).HasColumnName("TEMPLATE_TYPE");
+
+                entity.Property(e => e.Type)
+                    .HasColumnName("TYPE")
+                    .HasComment("(1:場內、2:廠外)");
+
+                entity.Property(e => e.Werks).HasColumnName("WERKS");
+            });
+
+            modelBuilder.Entity<SrmFileuploadRecordH>(entity =>
+            {
+                entity.HasKey(e => e.RecordHId);
+
+                entity.ToTable("SRM_FILEUPLOAD_RECORD_H");
+
+                entity.Property(e => e.RecordHId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("RECORD_H_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.Number)
+                    .HasMaxLength(10)
+                    .HasColumnName("NUMBER");
+
+                entity.Property(e => e.TemplateId).HasColumnName("TEMPLATE_ID");
+            });
+
+            modelBuilder.Entity<SrmFileuploadRecordL>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("SRM_FILEUPLOAD_RECORD_L");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Enable)
+                    .HasMaxLength(1)
+                    .HasColumnName("ENABLE");
+
+                entity.Property(e => e.Filetype).HasColumnName("FILETYPE");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.RecordHId).HasColumnName("RECORD_H_ID");
+
+                entity.Property(e => e.RecordLId).HasColumnName("RECORD_L_ID");
+
+                entity.Property(e => e.Url).HasColumnName("URL");
+            });
+
+            modelBuilder.Entity<SrmFunctionList>(entity =>
+            {
+                entity.HasKey(e => e.FunctionId);
+
+                entity.ToTable("SRM_FUNCTION_LIST");
+
+                entity.Property(e => e.FunctionId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("FUNCTION_ID");
+
+                entity.Property(e => e.FunctionName)
+                    .HasMaxLength(10)
+                    .HasColumnName("FUNCTION_NAME");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

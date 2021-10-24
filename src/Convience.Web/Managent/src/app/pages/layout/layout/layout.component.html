@@ -23,6 +23,9 @@
                 </ng-container>
             </ng-container>
         </ul>
+        <!-- <div class="user">
+          <app-navbar></app-navbar>
+        </div> -->
         <div class="user">
             <a nz-dropdown [nzDropdownMenu]="menu" [nzOverlayStyle]="{width:'130px',top:'15px'}" class="userName">
                 <nz-badge>
@@ -41,6 +44,7 @@
                 </ul>
             </nz-dropdown-menu>
         </div>
+        <!-- <app-navbar></app-navbar> -->
     </nz-header>
     <nz-layout>
         <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" *ngIf="isSideMenu">

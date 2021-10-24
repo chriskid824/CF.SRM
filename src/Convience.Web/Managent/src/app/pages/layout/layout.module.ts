@@ -16,11 +16,15 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { RouterModule } from '@angular/router';
-
-
+//import { SharedModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { NavbarComponent } from './navbar/navbar.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
   declarations: [
-    LayoutComponent
+    LayoutComponent,
+    NavbarComponent
   ],
   imports: [
     CommonModule,
@@ -40,6 +44,9 @@ import { RouterModule } from '@angular/router';
     NzInputModule,
     NzModalModule,
     NzTagModule,
+    TranslateModule,
+    MatToolbarModule,
+    MatMenuModule,
   ],
   exports: [
     LayoutComponent

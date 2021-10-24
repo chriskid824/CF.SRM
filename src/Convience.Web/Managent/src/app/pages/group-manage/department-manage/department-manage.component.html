@@ -19,8 +19,8 @@
                             <th nzAlign="center" nzWidth="60px">#</th>
                             <th nzAlign="center" nzWidth="120px">名稱</th>
                             <th nzAlign="center" nzWidth="120px">上級組織</th>
-                            <th nzAlign="center" nzWidth="200px">聯係信箱</th>
-                            <th nzAlign="center" nzWidth="200px">聯係電話</th>
+                            <th nzAlign="center" nzWidth="200px">聯繫信箱</th>
+                            <th nzAlign="center" nzWidth="200px">聯繫電話</th>
                             <th nzAlign="center">負責人</th>
                             <th nzAlign="center" nzWidth="60px">排序</th>
                             <th nzAlign="center" nzWidth="120px">操作</th>
@@ -79,9 +79,9 @@
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_email'">聯係信箱</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_email'">聯繫信箱</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="emailNameErrorTpl">
-                <input [attr.id]="'edit_email'" formControlName="email" nz-input placeholder="聯係信箱"
+                <input [attr.id]="'edit_email'" formControlName="email" nz-input placeholder="聯繫信箱"
                     autocomplete="off" />
             </nz-form-control>
             <ng-template #emailNameErrorTpl let-control>
@@ -94,9 +94,9 @@
             </ng-template>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_telephone'">聯係電話</nz-form-label>
-            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="聯係電話長度不能超過20！">
-                <input [attr.id]="'edit_telephone'" formControlName="telephone" nz-input placeholder="聯係電話"
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_telephone'">聯繫電話</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="聯繫電話長度不能超過20！">
+                <input [attr.id]="'edit_telephone'" formControlName="telephone" nz-input placeholder="聯繫電話"
                     autocomplete="off" />
             </nz-form-control>
         </nz-form-item>

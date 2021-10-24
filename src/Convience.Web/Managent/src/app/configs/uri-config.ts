@@ -95,9 +95,12 @@ export class UriConfig {
     get SrmDelivery(): string { return `${this._apiUri}/SrmDelivery` };
 
     get SrmSupplier(): string { return `${this._apiUri}/SrmSupplier` };
-    
+
     get SrmMaterial(): string { return `${this._apiUri}/SrmMaterial` };
 
     get SrmMaterialTrend(): string { return `${this._apiUri}/SrmMaterialTrend` };
+
     get SrmEqp(): string { return `${this._apiUri}/SrmEqp` };
+
+    get SrmFile(): string { return `${this._apiUri}/SrmFile` };
 }

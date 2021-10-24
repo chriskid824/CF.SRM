@@ -78,7 +78,7 @@
                             <th nzAlign="center" nzWidth="120px">電話</th>
                             <th nzAlign="center" nzWidth="120px">Email</th>
                             <th nzAlign="center" nzWidth="60px">性別</th>
-                            <th nzAlign="center">係統角色</th>
+                            <th nzAlign="center">系統角色</th>
                             <th nzAlign="center" nzWidth="180px">擔任職務</th>
                             <th nzAlign="center" nzWidth="180px">所在部門</th>
                             <th nzAlign="center" nzWidth="60px">狀態</th>
@@ -207,7 +207,7 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24">係統角色</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24">系統角色</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
                 <nz-select nzAllowClear nzPlaceHolder="請選擇" [formControlName]="'roleIds'" nzMode="multiple">
                     <nz-option *ngFor="let role of roles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
