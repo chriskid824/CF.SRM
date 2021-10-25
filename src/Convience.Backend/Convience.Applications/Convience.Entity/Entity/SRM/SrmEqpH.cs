@@ -35,5 +35,6 @@ namespace Convience.Entity.Entity.SRM
         public string NgDesc { get; set; }
         public string CauseAnalyses { get; set; }
         public string PeAction { get; set; }
+        public string no { get; set; }
     }
 }
