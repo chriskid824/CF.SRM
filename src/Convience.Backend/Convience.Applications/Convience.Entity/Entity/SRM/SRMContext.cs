@@ -1172,9 +1172,14 @@ namespace Convience.Entity.Entity.SRM
                    .HasComment("初步肇因分析");
 
                 entity.Property(e => e.PeAction)
-                   .HasMaxLength(10)
                    .HasColumnName("PE_ACTION")
                    .HasComment("工程處置措施");
+
+                entity.Property(e => e.no)
+                  .HasMaxLength(8)
+                  .HasColumnName("NO")
+                  .HasComment("序號");
+
             });
             modelBuilder.Entity<SrmMaterialGroup>(entity =>
             {
