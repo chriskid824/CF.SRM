@@ -49,7 +49,7 @@ export class RfqBatchUploadComponent implements OnInit {
       console.log(result);
       this.fileList = [];
       this.uploading = false;
-      this._messageService.success("上傳成功！");
+      this._messageService.success(result["RfqNum"] + "已建立成功");
     }, error => {
       this.uploading = false;
     });

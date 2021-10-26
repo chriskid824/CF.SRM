@@ -483,6 +483,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             fileUploadModel.CreateBy = user.UserName;
             fileUploadModel.CurrentDirectory = _appSettingsService.CurrentDirectory + fileUploadModel.CurrentDirectory;
             string path = "";
+            string RfqNum = "";
             try
             {
                 if (user.Werks.Count() > 1) {
@@ -570,6 +571,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         _srmRfqHService.Save(h, m, v);
 
                         transaction.Complete();
+                        RfqNum = h.RfqNum;
                     }
                     catch (Exception ex)
                     {
@@ -583,7 +585,9 @@ namespace Convience.ManagentApi.Controllers.SRM
                         }
                     }
                 }
-                return Ok();
+                var j = new JObject();
+                j.Add("RfqNum", RfqNum);
+                return Ok(j);
             }
             catch (Exception ex) {
                 return this.BadRequestResult(ex.Message);
