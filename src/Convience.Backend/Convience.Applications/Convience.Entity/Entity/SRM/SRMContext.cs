@@ -1066,7 +1066,6 @@ namespace Convience.Entity.Entity.SRM
                 entity.ToTable("SRM_EQP_H");
 
                 entity.Property(e => e.EqpId)
-                    .ValueGeneratedNever()
                     .HasColumnName("EQP_ID")
                     .HasComment("反應單識別碼");
 
@@ -1102,6 +1101,8 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.EqpNum)
                     .HasMaxLength(10)
                     .HasColumnName("EQP_NUM")
+                    .IsUnicode(false)
+                    .HasComputedColumnSql("(('PS'+substring(CONVERT([varchar](10),datepart(year,getdate())),(3),(2)))+right('00000'+CONVERT([varchar],[EQP_ID]),(3)))", false)
                     .HasComment("反應單號");
 
                 entity.Property(e => e.LastUpdateBy)
