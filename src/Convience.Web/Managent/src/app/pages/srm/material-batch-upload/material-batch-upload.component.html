@@ -1,0 +1,28 @@
+<div class="two-column" style="width: 93%;">
+    <div class="right">
+      <nz-card [nzSize]="'small'">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="uploadForm">
+          <nz-form-item>
+            <nz-form-label nzRequired >下載格式</nz-form-label>
+            <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="download"></i>下載格式</button>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzRequired >上傳文件</nz-form-label>
+            <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="20480" nzLimit="1">
+              <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="upload"></i>上傳文件</button>
+            </nz-upload>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control [nzSpan]="14" [nzOffset]="6">
+              <button *canOperate="'RFQ_ACTION'" nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+                      [disabled]="fileList.length == 0" class="mr-10">
+                {{ uploading ? '上傳中...' : '開始上傳' }}
+              </button>
+              <!--<button nz-button type="reset" (click)="cancelEdit()">取消</button>-->
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+        </nz-card>
+    </div>
+  </div>
+  

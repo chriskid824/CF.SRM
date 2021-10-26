@@ -20,6 +20,11 @@ using System.Threading.Tasks;
 using Convience.Model.Models.SRM;
 using Newtonsoft.Json;
 using Convience.Service.SystemManage;
+using System.IO;
+using NPOI.SS.UserModel;
+using System.Data;
+using NPOI.XSSF.UserModel;
+using Convience.Filestorage.Abstraction;
 
 namespace Convience.Service.SRM
 {
@@ -36,6 +41,8 @@ namespace Convience.Service.SRM
         public bool UpdateSupplier(ViewSrmSupplier data);
         public string Checkdata(ViewSrmSupplier data);
         public ViewSrmSupplier AddVendor(ViewSrmSupplier data);
+        public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
+        public void Delete(string path);
 
     }
     public class SrmSupplierService : ISrmSupplierService
@@ -43,7 +50,6 @@ namespace Convience.Service.SRM
         private readonly SRMContext _context;
 
         private readonly IRepository<SrmSupplier> _srmVendorRepository;
-
 
 
 
@@ -138,7 +144,7 @@ namespace Convience.Service.SRM
 
             SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
-            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName).FirstOrDefault();
+            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg == data.Ekorg).FirstOrDefault();
 
 
             if (vendorname!=null)
@@ -199,8 +205,19 @@ namespace Convience.Service.SRM
         public ViewSrmSupplier AddVendor(ViewSrmSupplier data)
         {
             var vendor = _context.SrmVendors.Where(p => p.SrmVendor1.StartsWith("S")).Max(p1 => p1.SrmVendor1);
+            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg==data.Ekorg).FirstOrDefault();
+            SrmVendor srmvendor1 = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
 
             string no = string.Empty;
+            
+            if (vendorname!=null)
+            {
+                throw new Exception("名稱已重複使用");
+            }
+            if (srmvendor1 != null)
+            {
+                throw new Exception("編號已重複使用");
+            }
 
             if (string.IsNullOrWhiteSpace(data.VendorName))
             {
@@ -278,7 +295,46 @@ namespace Convience.Service.SRM
                 VendorId = srmvendor.VendorId,
                 SrmVendor1 = no,
             };
-        }       
+        }
+        public void Delete(string path)
+        {
+            try
+            {
+                FileInfo f = new FileInfo(path);
+                if (f.Exists)
+                {
+                    f.Delete();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel)
+        {
+            Guid g = Guid.NewGuid();
+            var file = fileUploadModel.Files.First();
+            var path = fileUploadModel.CurrentDirectory?.TrimEnd('/') + '/' + fileUploadModel.CreateBy + '/' + g + '_' + file.FileName;
+            switch (Path.GetExtension(file.FileName).ToLower())
+            {
+                case ".xlsx":
+                    break;
+                default:
+                    throw new FileStoreException("限定xlsx！");
+            }
+            var info = new Utility.UploadFile().GetFileInfoAsync(path);
+            if (info != null)
+            {
+                throw new FileStoreException("文件名重複！");
+            }
+            var stream = file.OpenReadStream();
+            var result = new Utility.UploadFile().CreateFileFromStreamAsync(path, stream);
+            if (string.IsNullOrEmpty(result))
+            {
+                throw new FileStoreException("文件上傳失敗！");
+            }
+            return path;
+        }
 
     }
 }

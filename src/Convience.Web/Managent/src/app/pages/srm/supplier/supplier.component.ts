@@ -120,6 +120,25 @@ export class SupplierComponent implements OnInit {
       });
     });
   }
+  delete(title: TemplateRef<{}>, content: TemplateRef<{}>, supplier: Supplier){
+    var query = {
+      code:supplier.srmVendor1,
+      org:supplier.org,
+      ekorg:supplier.ekorg
+    }
+
+    this.tplModal = this._modalService.confirm({
+      nzTitle: '你確定要刪除供應商：'+query.code+' 嗎？',
+      //nzContent: '<b style="color: red;">Some descriptions</b>',
+      nzOkText: '確認',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      //nzOnOk: () => this.submitDelete(e.rowData),
+      nzCancelText: '取消',
+      //nzOnCancel: () => alert("取消")
+    });
+
+  }
 
   submitEdit() {
     for (const i in this.editForm.controls) {

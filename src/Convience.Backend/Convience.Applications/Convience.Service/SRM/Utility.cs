@@ -50,7 +50,7 @@ namespace Convience.Service.SRM
             }
         }
 
-        public DataTable ReadExcel(string path, int sheetNum)
+        public DataTable ReadExcel(string path, int sheetNum , string[] headers,string[] cols,string checkname)
         {
             IWorkbook workbook;
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -68,6 +68,7 @@ namespace Convience.Service.SRM
                 headerRow.GetCell(i).SetCellType(CellType.String);
                 dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
             }
+
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (DataColumn col in dt.Columns)
             {
@@ -79,6 +80,15 @@ namespace Convience.Service.SRM
             foreach (IRow row in sheet)
             {
                 if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader[checkname]) != null)
+                {
+                    row.GetCell(dtHeader[checkname]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader[checkname]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
                 DataFormatter formatter = new DataFormatter();
                 DataRow dataRow = dt.NewRow();
                 foreach (var h in dtHeader)
@@ -92,6 +102,10 @@ namespace Convience.Service.SRM
                 //dataRow["IsExists"] = _context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && user.Werks.Contains(r.Ekorg.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 dt.Rows.Add(dataRow);
                 rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
             }
             return dt;
         }

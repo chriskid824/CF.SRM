@@ -188,7 +188,7 @@ namespace Convience.Service.SRM
 
             SrmMatnr srmmatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             SrmMatnr sapmatnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
-            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description).FirstOrDefault();
+            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks==data.Werks).FirstOrDefault();
 
             if (description != null)
             {
@@ -215,6 +215,19 @@ namespace Convience.Service.SRM
             string year = DateTime.Now.ToString("yy");
 
             var GetMatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN" + year)).Max(p1 => p1.SrmMatnr1);
+            SrmMatnr srmmatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
+            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks == data.Werks).FirstOrDefault();
+
+
+            if (srmmatnr != null)
+            {
+                throw new Exception("編號已重複使用");
+            }
+            if (description != null)
+            {
+                throw new Exception("內文已重複使用");
+            }
+
 
             if (string.IsNullOrWhiteSpace(data.MatnrGroup))
             {

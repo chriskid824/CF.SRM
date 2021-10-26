@@ -40,7 +40,7 @@
           nzBordered="true" pagination="true">
             <thead>
               <tr>
-                <th nzAlign="center" nzWidth="40px">操作</th>
+                <th nzAlign="center" nzWidth="60px">操作</th>
                 <th nzAlign="center" nzWidth="70px">SRM供應商代碼</th>
                 <th nzAlign="center" nzWidth="70px">SAP供應商代碼</th>
                 <th nzAlign="center" nzWidth="100px">供應商名稱</th>
@@ -61,7 +61,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let data of dataTable.data;let i = index">
-                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button></td>
+                <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button>
+                &nbsp;<button nz-button nz-tooltip nzTooltipTitle="刪除" nzShape="circle" (click)="delete(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="delete"></i></button></td>
                 <td nzAlign="center">{{ data.srmVendor1 }}</td>
                 <td nzAlign="center">{{ data.sapVendor }}</td>
                 <td nzAlign="center">{{ data.vendorName }}</td>

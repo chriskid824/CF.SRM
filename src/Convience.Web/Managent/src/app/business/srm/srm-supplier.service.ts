@@ -23,4 +23,7 @@ export class SrmSupplierService {
   AddSupplier(supplier){
     return this.httpClient.post(`${this.uriConstant.SrmSupplier}/AddSupplier`, supplier);
   }
+  BatchUpload(formData) {
+    return this.httpClient.post(`${this.uriConstant.SrmSupplier}/BatchUpload`, formData);
+  }
 }

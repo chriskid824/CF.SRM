@@ -33,4 +33,7 @@ export class SrmMaterialService {
   GetUnitList(querylist){
     return this.httpClient.post(`${this.uriConstant.SrmMaterial}/GetUnitList`, querylist);
   }
+  BatchUpload(formData) {
+    return this.httpClient.post(`${this.uriConstant.SrmMaterial}/BatchUpload`, formData);
+  }
 }

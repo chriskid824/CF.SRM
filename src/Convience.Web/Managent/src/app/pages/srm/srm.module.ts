@@ -57,8 +57,9 @@ import { MaterialManageComponent } from './material-manage/material-manage.compo
 import {EqpComponent} from'./eqp/eqp.component';
 //import { EqplistComponent } from './eqplist/eqplist.component';
 import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
-import { FileTemplateComponent } from './file-template/file-template.component';
-
+import { SupplierBatchUploadComponent } from './supplier-batch-upload/supplier-batch-upload.component';
+import { MaterialBatchUploadComponent } from './material-batch-upload/material-batch-upload.component';
+	
 @NgModule({
   declarations: [
     RfqComponent,
@@ -88,7 +89,8 @@ import { FileTemplateComponent } from './file-template/file-template.component';
     EqpComponent,
     //EqplistComponent
     RfqBatchUploadComponent,
-    FileTemplateComponent,
+    SupplierBatchUploadComponent,
+    MaterialBatchUploadComponent,
   ],
   imports: [
     CommonModule,
@@ -118,8 +120,9 @@ import { FileTemplateComponent } from './file-template/file-template.component';
         { path: "material-trend", component: MaterialTrendComponent, canActivate: [LoginGuard] },
         { path: "material-manage", component: MaterialManageComponent, canActivate: [LoginGuard] },
         { path: "eqp", component: EqpComponent, canActivate: [LoginGuard]},
+        { path: "supplier-batch-upload", component: SupplierBatchUploadComponent, canActivate: [LoginGuard]},
+        { path: "material-batch-upload", component: MaterialBatchUploadComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
-        { path: "file-t", component: FileTemplateComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

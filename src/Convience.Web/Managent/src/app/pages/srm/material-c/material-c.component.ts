@@ -135,7 +135,6 @@ export class MaterialCComponent implements OnInit {
 
   //}
 
-
   add() {
     if(this.searchForm.valid)
     {
