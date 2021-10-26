@@ -39,7 +39,6 @@ export class MaterialCComponent implements OnInit {
   ngOnInit(): void {  
 
     this.searchForm = this._formBuilder.group({
-      sap_matnr:[null],
       matnr: [null],
       werks: [null,[Validators.required]],
       group: [null,[Validators.required]],
@@ -88,52 +87,6 @@ export class MaterialCComponent implements OnInit {
     
 
   }
-  // daoru(evt: any) {
-  //   const target: DataTransfer = <DataTransfer>(evt.target);
-  //   if (target.files.length !== 1) {
-  //     throw new Error('Cannot use multiple files');
-  //   }
-  //   const reader: FileReader = new FileReader();
-  //   reader.readAsBinaryString(target.files[0]);
-  //   reader.onload = (e: any) => {
-  //     /* create workbook */
-  //     const binarystr: string = e.target.result;
-  //     const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
-
-  //     /* selected the first sheet */
-  //     const wsname: string = wb.SheetNames[0];
-  //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-  //     console.log(wsname)
-  //     console.log(ws)
-
-  //     /* save data */
-  //     const data = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
-  //     console.log(data)
-  //   };
-
-    // const target: DataTransfer = <DataTransfer>(evt.target);
-    // console.log(target.files.length);
-    // if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-    // const reader: FileReader = new FileReader();
-    // console.log(reader)
-    // reader.onload = (e: any) => {
-    //   /* read workbook */
-    //   alert('456');
-    //   const bstr: string = e.target.result;
-    //   const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
-
-    //   /* grab first sheet */
-    //   const wsname: string = wb.SheetNames[0];
-    //   const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-    //   /* save data */
-    //   this.inputdata = (XLSX.utils.sheet_to_json(ws, {header: 1}));
-    //   console.log(this.inputdata)
-
-    //   evt.target.value="" // 清空
-    //};
-
-  //}
 
   add() {
     if(this.searchForm.valid)
@@ -141,7 +94,6 @@ export class MaterialCComponent implements OnInit {
       $('#addBar').show();
       var material ={
         srmMatnr1 : this.searchForm.value['matnr'],
-        sapMatnr : this.searchForm.value['sap_matnr'],
         matnrGroup : this.searchForm.value['group'],
         description : this.searchForm.value['description'],
         version : this.searchForm.value['version'],

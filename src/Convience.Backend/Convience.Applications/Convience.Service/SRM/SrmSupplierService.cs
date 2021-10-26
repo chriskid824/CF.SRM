@@ -208,6 +208,9 @@ namespace Convience.Service.SRM
             SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg==data.Ekorg).FirstOrDefault();
             SrmVendor srmvendor1 = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
 
+            string v = data.SrmVendor1;
+
+
             string no = string.Empty;
             
             if (vendorname!=null)
@@ -247,6 +250,7 @@ namespace Convience.Service.SRM
             {
                 throw new Exception("傳真號碼，必填");
             }
+            string sapno = string.Empty;
 
             if (string.IsNullOrWhiteSpace(data.SrmVendor1))
             {
@@ -262,11 +266,20 @@ namespace Convience.Service.SRM
             else
             {
                 no = data.SrmVendor1;
+                if (data.SrmVendor1.Substring(0, 1) == "V")
+                {
+                    sapno = data.SrmVendor1;
+                }
+                else
+                {
+                    throw new Exception("編碼有誤，請重新輸入");
+                }
             }
 
             SrmVendor srmvendor = new SrmVendor()
             {
                 SrmVendor1 = no,
+                SapVendor = sapno,
                 VendorName = data.VendorName,
                 Org = data.Org,
                 Ekorg = data.Ekorg,

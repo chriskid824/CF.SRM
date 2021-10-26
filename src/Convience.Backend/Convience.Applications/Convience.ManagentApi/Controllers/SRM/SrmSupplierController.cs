@@ -70,7 +70,15 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("AddSupplier")]
         public IActionResult AddSupplier(ViewSrmSupplier data)
         {
-            return Ok(_srmSupplierService.AddVendor(data));
+            try
+            {
+                _srmSupplierService.AddVendor(data);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult("供應商："+data.SrmVendor1+"，"+ex.Message);
+            }
         }
         private string Convert_DataRowToJson(DataRow datarow)
         {
@@ -129,7 +137,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                     finally
                     {
-                        if (!string.IsNullOrWhiteSpace(path))
+                    if (!string.IsNullOrWhiteSpace(path))
                         {
                             _srmSupplierService.Delete(path);
                         }

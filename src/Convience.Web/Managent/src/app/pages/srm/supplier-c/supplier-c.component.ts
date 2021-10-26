@@ -27,7 +27,6 @@ export class SupplierCComponent implements OnInit {
     this.initRoleList();
 
     this.searchForm = this._formBuilder.group({
-      sap_vendor:[null],
       srm_vendor: [null],
       vendorname: [null,[Validators.required]],
       companyid: [null,[Validators.required]],
@@ -53,7 +52,6 @@ export class SupplierCComponent implements OnInit {
       $('#addBar').show();
       var supplier ={
         srmVendor1 : this.searchForm.value['srm_vendor'],
-        sapVendor : this.searchForm.value['sap_vendor'],
         vendorName : this.searchForm.value['vendorname'],
         org : this.searchForm.value['companyid'],
         ekorg : this.searchForm.value['werks'],

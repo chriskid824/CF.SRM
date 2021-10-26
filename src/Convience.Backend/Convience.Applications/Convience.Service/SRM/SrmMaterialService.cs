@@ -278,7 +278,7 @@ namespace Convience.Service.SRM
                 throw new Exception("版次，必填");
             }
 
-
+            string sapno = string.Empty;
             if (string.IsNullOrWhiteSpace(data.SrmMatnr1))
             {
                 if (GetMatnr == null)
@@ -293,13 +293,23 @@ namespace Convience.Service.SRM
             else
             {
                 no = data.SrmMatnr1;
+                if (data.SrmMatnr1.Substring(0, 1) == "Z" || data.SrmMatnr1.Substring(0, 1) == "F" ||
+                    data.SrmMatnr1.Substring(0, 1) == "T" || data.SrmMatnr1.Substring(0, 1) == "C" ||
+                    data.SrmMatnr1.Substring(0, 1) == "K")
+                {
+                    sapno = data.SrmMatnr1;
+                }
+                else
+                {
+                    throw new Exception("編碼有誤，請重新確認");
+                }
             }
 
 
             SrmMatnr material = new SrmMatnr()
             {
-                SrmMatnr1 = no,
-                SapMatnr = data.SapMatnr,
+                SrmMatnr1 = no,                
+                SapMatnr = sapno,
                 MatnrGroup = data.MatnrGroup,
                 Description = data.Description,
                 Version = data.Version,

@@ -69,7 +69,15 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("AddMatnr")]
         public IActionResult AddMatnr(ViewSrmMatnr1 data)
         {
-            return Ok(_srmMaterialService.AddMatnr(data));
+            try
+            {
+                _srmMaterialService.AddMatnr(data);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult("料號："+data.SrmMatnr1+"，"+ex.Message);
+            }
         }
         [HttpPost("GetEkgrp")]
         public IActionResult GetEkgrp(SrmEkgry data)
