@@ -77,7 +77,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             catch (Exception ex)
             {
-                return this.BadRequestResult("供應商："+data.SrmVendor1+"，"+ex.Message);
+                return this.BadRequestResult(ex.Message);
             }
         }
         private string Convert_DataRowToJson(DataRow datarow)

@@ -72,7 +72,7 @@ namespace Convience.Service.SRM
                                    Note = matnr.Note,
                                    StatusDesc = status.StatusDesc,
                                    Gewei = matnr.Gewei,
-                                   Ekgrp = ekgry.Ekgry+ekgry.EkgryDesc,
+                                   Ekgrp = ekgry.Ekgry + ekgry.EkgryDesc,
                                    Bn_num = matnr.Bn_num,
                                    Major_diameter = matnr.Major_diameter,
                                    Minor_diameter = matnr.Minor_diameter,
@@ -147,10 +147,15 @@ namespace Convience.Service.SRM
             SrmMatnr material = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description).FirstOrDefault();
+            SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
 
             if (description!=null)
             {
-                return false;
+                throw new Exception("物料內文重複，請重新輸入");
+            }
+            if (ekgrp == null)
+            {
+                throw new Exception("採購群組有誤，請重新輸入");
             }
 
 
@@ -217,7 +222,7 @@ namespace Convience.Service.SRM
             var GetMatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1.StartsWith("BN" + year)).Max(p1 => p1.SrmMatnr1);
             SrmMatnr srmmatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks == data.Werks).FirstOrDefault();
-
+            SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
 
             if (srmmatnr != null)
             {
@@ -226,6 +231,10 @@ namespace Convience.Service.SRM
             if (description != null)
             {
                 throw new Exception("內文已重複使用");
+            }
+            if (ekgrp == null)
+            {
+                throw new Exception("採購群組有誤，請重新輸入");
             }
 
 

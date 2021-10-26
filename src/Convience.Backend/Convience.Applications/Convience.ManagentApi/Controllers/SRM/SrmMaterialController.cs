@@ -57,8 +57,15 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("UpdateMaterial")]
         public IActionResult UpdateDeliveryL(ViewSrmMatnr1 data)
         {
-            if (_srmMaterialService.UpdateMaterial(data)) return Ok();
-            return BadRequest("料號資料 更新 失敗");
+            try
+            {
+                _srmMaterialService.UpdateMaterial(data);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
         }
         [HttpPost("Checkdata")]
         public IActionResult Checkdata(ViewSrmMatnr1 data)
@@ -76,7 +83,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             catch (Exception ex)
             {
-                return this.BadRequestResult("料號："+data.SrmMatnr1+"，"+ex.Message);
+                return this.BadRequestResult(ex.Message);
             }
         }
         [HttpPost("GetEkgrp")]
