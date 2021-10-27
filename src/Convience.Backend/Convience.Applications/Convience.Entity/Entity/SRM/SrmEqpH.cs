@@ -36,5 +36,16 @@ namespace Convience.Entity.Entity.SRM
         public string CauseAnalyses { get; set; }
         public string PeAction { get; set; }
         public string no { get; set; }
+        public int? Status { get; set; }
+        public string FileName { get; set; }
     }
-}
+    public partial class ViewSrmEqpH : SrmEqpH
+    {
+        public string matnr { get; set; }
+        public string filename { get; set; }
+        public string ekgry { get; set; }
+        public string ekgryid { get; set; }
+        public string poNum { get; set; }
+        public int vendorid { get; set; }
+    }
+ }

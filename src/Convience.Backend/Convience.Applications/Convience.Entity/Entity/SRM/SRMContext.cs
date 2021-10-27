@@ -1201,6 +1201,15 @@ namespace Convience.Entity.Entity.SRM
                   .HasColumnName("NO")
                   .HasComment("序號");
 
+
+                entity.Property(e => e.Status)
+                  .HasColumnName("STATUS")
+                  .HasComment("狀態");
+
+                entity.Property(e => e.FileName)
+                  .HasColumnName("FILE_NAME")
+                  .HasComment("附件名稱");
+
             });
             modelBuilder.Entity<SrmMaterialGroup>(entity =>
             {
