@@ -18,9 +18,9 @@ namespace Convience.Entity.Entity.SRM
         public string Description { get; set; }
         public string Version { get; set; }
         public string Material { get; set; }
-        public string? Length { get; set; }
-        public string? Width { get; set; }
-        public string? Height { get; set; }
+        public string Length { get; set; }
+        public string Width { get; set; }
+        public string Height { get; set; }
         public string Density { get; set; }
         public double? Weight { get; set; }
         public int? Werks { get; set; }

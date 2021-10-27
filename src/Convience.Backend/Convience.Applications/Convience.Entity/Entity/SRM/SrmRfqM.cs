@@ -16,9 +16,9 @@ namespace Convience.Entity.Entity.SRM
         public int? MatnrId { get; set; }
         public string Version { get; set; }
         public string Material { get; set; }
-        public double? Length { get; set; }
-        public double? Width { get; set; }
-        public double? Height { get; set; }
+        public string Length { get; set; }
+        public string Width { get; set; }
+        public string Height { get; set; }
         public string Density { get; set; }
         public double? Weight { get; set; }
         public string MachineName { get; set; }
