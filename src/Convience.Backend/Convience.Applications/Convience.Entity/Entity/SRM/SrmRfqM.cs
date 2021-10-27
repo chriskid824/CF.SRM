@@ -1,9 +1,7 @@
-﻿using Convience.Entity.Data;
-using Convience.EntityFrameWork.Infrastructure;
-
+﻿using Convience.EntityFrameWork.Infrastructure;
 using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
 #nullable disable
 
 namespace Convience.Entity.Entity.SRM
@@ -24,9 +22,9 @@ namespace Convience.Entity.Entity.SRM
         public string MachineName { get; set; }
         public double? Qty { get; set; }
         public string Note { get; set; }
-        public string Description { get; set; }
         public string Bn_num { get; set; }
         public string Major_diameter { get; set; }
         public string Minor_diameter { get; set; }
+        public string Description { get; set; }
     }
 }

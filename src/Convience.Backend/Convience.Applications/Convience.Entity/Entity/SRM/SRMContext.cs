@@ -230,16 +230,26 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("RFQ_M_ID")
                     .HasComment("詢價單物料檔識別碼");
 
+                entity.Property(e => e.Bn_num)
+                    .HasMaxLength(9)
+                    .HasColumnName("BN_NUM");
+
                 entity.Property(e => e.Density)
                     .HasMaxLength(8)
                     .HasColumnName("DENSITY")
                     .HasComment("密度");
 
+                entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
                 entity.Property(e => e.Height)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
                     .HasColumnName("HEIGHT")
                     .HasComment("高");
 
                 entity.Property(e => e.Length)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
                     .HasColumnName("LENGTH")
                     .HasComment("長");
 
@@ -247,6 +257,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("MACHINE_NAME")
                     .HasComment("機種名稱");
+
+                entity.Property(e => e.Major_diameter)
+                    .HasMaxLength(10)
+                    .HasColumnName("MAJOR_DIAMETER");
 
                 entity.Property(e => e.Material)
                     .HasMaxLength(10)
@@ -256,6 +270,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.MatnrId)
                     .HasColumnName("MATNR_ID")
                     .HasComment("料號識別碼");
+
+                entity.Property(e => e.Minor_diameter)
+                    .HasMaxLength(10)
+                    .HasColumnName("MINOR_DIAMETER");
 
                 entity.Property(e => e.Note)
                     .HasColumnName("NOTE")
@@ -279,6 +297,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasComment("重量");
 
                 entity.Property(e => e.Width)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
                     .HasColumnName("WIDTH")
                     .HasComment("寬");
             });

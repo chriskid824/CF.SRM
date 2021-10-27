@@ -68,6 +68,7 @@
               <tr *ngFor="let data of dataTable.data;let i = index">
                 <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle"  (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button>
                 &nbsp;<button nz-button nz-tooltip nzTooltipTitle="刪除" nzShape="circle" (click)="delete(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="delete"></i></button></td>
+                <td nzAlign="center" hidden>{{ data.matnrId }}</td>
                 <td nzAlign="center" >{{ data.srmMatnr1 }}</td>
                 <td nzAlign="center" >{{ data.sapMatnr }}</td>
                 <td nzAlign="center">{{ data.matnrGroup }}</td>

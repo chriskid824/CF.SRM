@@ -78,8 +78,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             try
             {
-                _srmMaterialService.AddMatnr(data);
-                return Ok();
+                return Ok(_srmMaterialService.AddMatnr(data));
             }
             catch (Exception ex)
             {
@@ -166,6 +165,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                 }
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
+        }
+        [HttpPost("DeleteList")]
+        public IActionResult DeleteList(ViewSrmMatnr1 data)
+        {
+            try
+            {
+                return Ok(_srmMaterialService.DeleteList(data));
             }
             catch (Exception ex)
             {

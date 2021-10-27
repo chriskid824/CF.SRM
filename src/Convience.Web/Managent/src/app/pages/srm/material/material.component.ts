@@ -126,21 +126,29 @@ export class MaterialComponent implements OnInit {
     });
   }
   delete(title: TemplateRef<{}>, content: TemplateRef<{}>, material: Material){
-    var query = {
-      material:material.srmMatnr1
+    var data = {
+      matnrId:material.matnrId,
+      srmMatnr1:material.srmMatnr1
     }
 
     this.tplModal = this._modalService.confirm({
-      nzTitle: '你確定要刪除料號：'+query.material+' 嗎？',
+      nzTitle: '你確定要刪除料號：'+data.srmMatnr1+' 嗎？',
       //nzContent: '<b style="color: red;">Some descriptions</b>',
       nzOkText: '確認',
       nzOkType: 'primary',
       nzOkDanger: true,
-      //nzOnOk: () => this.submitDelete(e.rowData),
+      nzOnOk: () => this.submitDelete(data),
       nzCancelText: '取消',
       //nzOnCancel: () => alert("取消")
     });
 
+  }
+  submitDelete(data){
+    this._srmMaterialService.DeleteList(data).subscribe((result) => {
+      alert("刪除成功");
+      this.refresh();
+      this.tplModal.close();
+    });
   }
 
   submitEdit() {

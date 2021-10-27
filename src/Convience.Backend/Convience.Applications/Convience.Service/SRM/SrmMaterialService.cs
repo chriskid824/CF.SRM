@@ -35,6 +35,7 @@ namespace Convience.Service.SRM
         public SrmEkgry GetEkgrp(SrmEkgry data);
         public PagingResultModel<SrmMaterialGroup> GetGroupList(QueryMaterial query);
         public PagingResultModel<SrmWeightUnit> GetUnitList(QueryMaterial query);
+        public bool DeleteList(ViewSrmMatnr1 data);
     }
     public class SrmMaterialService : ISrmMaterialService
     {
@@ -58,6 +59,7 @@ namespace Convience.Service.SRM
                                join ekgry in _context.SrmEkgries on matnr.Ekgrp equals ekgry.Ekgry
                                select new ViewSrmMatnr1
                                {
+                                   MatnrId = matnr.MatnrId,
                                    SrmMatnr1 = matnr.SrmMatnr1,
                                    SapMatnr = matnr.SapMatnr,
                                    MatnrGroup = matnr.MatnrGroup,
@@ -148,8 +150,9 @@ namespace Convience.Service.SRM
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description).FirstOrDefault();
             SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
+            SrmMatnr sapnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
 
-            if (description!=null)
+            if (description != null)
             {
                 throw new Exception("物料內文重複，請重新輸入");
             }
@@ -157,9 +160,19 @@ namespace Convience.Service.SRM
             {
                 throw new Exception("採購群組有誤，請重新輸入");
             }
+            if (sapnr != null)
+            {
+                throw new Exception("SAP料號已存在，請重新輸入");
+            }
 
-
-            material.SrmMatnr1 = data.SrmMatnr1;
+            if (string.IsNullOrWhiteSpace(data.SapMatnr))
+            {
+                material.SrmMatnr1 = data.SrmMatnr1;
+            }
+            else
+            {
+                material.SrmMatnr1 = data.SapMatnr;
+            }
             material.SapMatnr = data.SapMatnr;
             material.MatnrGroup = data.MatnrGroup;
             material.Description = data.Description;
@@ -397,6 +410,22 @@ namespace Convience.Service.SRM
                 Data = JsonConvert.DeserializeObject<SrmWeightUnit[]>(JsonConvert.SerializeObject(materials)),
                 Count = resultQuery.Count()
             };
+        }
+        public bool DeleteList(ViewSrmMatnr1 data)
+        {
+            SrmMatnr matnrid = _context.SrmMatnrs.Where(p => p.MatnrId == data.MatnrId).FirstOrDefault();
+            SrmRfqM rfqm = _context.SrmRfqMs.Where(p=> p.MatnrId == data.MatnrId).FirstOrDefault();
+            SrmInforecord inforecord = _context.SrmInforecords.Where(p => p.MatnrId == data.MatnrId).FirstOrDefault();
+            SrmQotH qoth = _context.SrmQotHs.Where(p => p.MatnrId == data.MatnrId).FirstOrDefault();
+
+            if (rfqm != null || inforecord != null || qoth != null)
+            {
+                throw new Exception("此料號已有申請紀錄，無法刪除");
+            }
+
+            _context.SrmMatnrs.Remove(matnrid);
+            _context.SaveChanges();
+            return true;
         }
     }
 }
