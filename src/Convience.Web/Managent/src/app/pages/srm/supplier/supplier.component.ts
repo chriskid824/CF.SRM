@@ -121,23 +121,28 @@ export class SupplierComponent implements OnInit {
     });
   }
   delete(title: TemplateRef<{}>, content: TemplateRef<{}>, supplier: Supplier){
-    var query = {
-      code:supplier.srmVendor1,
-      org:supplier.org,
-      ekorg:supplier.ekorg
+    var data = {
+      vendorId:supplier.vendorId,
+      srmVendor1:supplier.srmVendor1
     }
 
     this.tplModal = this._modalService.confirm({
-      nzTitle: '你確定要刪除供應商：'+query.code+' 嗎？',
+      nzTitle: '你確定要刪除供應商：'+data.srmVendor1+' 嗎？',
       //nzContent: '<b style="color: red;">Some descriptions</b>',
       nzOkText: '確認',
       nzOkType: 'primary',
       nzOkDanger: true,
-      //nzOnOk: () => this.submitDelete(e.rowData),
+      nzOnOk: () => this.submitDelete(data),
       nzCancelText: '取消',
       //nzOnCancel: () => alert("取消")
     });
-
+  }
+  submitDelete(data){
+    this._srmSrmService.DeleteList(data).subscribe((result) => {
+      alert("刪除成功");
+      this.refresh();
+      this.tplModal.close();
+    });
   }
 
   submitEdit() {

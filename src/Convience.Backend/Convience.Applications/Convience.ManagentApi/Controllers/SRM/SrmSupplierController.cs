@@ -150,5 +150,17 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return this.BadRequestResult(ex.Message);
             }
         }
+        [HttpPost("DeleteList")]
+        public IActionResult DeleteList(ViewSrmSupplier data)
+        {
+            try
+            {
+                return Ok(_srmSupplierService.DeleteList(data));
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
+        }
     }
 }

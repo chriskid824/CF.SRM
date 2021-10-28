@@ -63,6 +63,7 @@
               <tr *ngFor="let data of dataTable.data;let i = index">
                 <td nzAlign="center"><button nz-button nz-tooltip nzTooltipTitle="編輯" nzShape="circle" (click)="edit(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="edit"></i></button>
                 &nbsp;<button nz-button nz-tooltip nzTooltipTitle="刪除" nzShape="circle" (click)="delete(editUserTitleTpl,userContentTpl,data)" ><i nz-icon nzType="delete"></i></button></td>
+                <td nzAlign="center" hidden>{{ data.vendorId }}</td>
                 <td nzAlign="center">{{ data.srmVendor1 }}</td>
                 <td nzAlign="center">{{ data.sapVendor }}</td>
                 <td nzAlign="center">{{ data.vendorName }}</td>

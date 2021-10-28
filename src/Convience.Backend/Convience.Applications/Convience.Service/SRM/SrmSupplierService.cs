@@ -43,7 +43,7 @@ namespace Convience.Service.SRM
         public ViewSrmSupplier AddVendor(ViewSrmSupplier data);
         public string Upload(Model.Models.SRM.FileUploadViewModel_RFQ fileUploadModel);
         public void Delete(string path);
-
+        public bool DeleteList(ViewSrmSupplier data);
     }
     public class SrmSupplierService : ISrmSupplierService
     {
@@ -69,6 +69,7 @@ namespace Convience.Service.SRM
                           join status in _context.SrmStatuses on vendor.Status equals status.Status
                           select new ViewSrmSupplier
                           {
+                              VendorId = vendor.VendorId,
                               SrmVendor1 = vendor.SrmVendor1,
                               SapVendor = vendor.SapVendor,
                               VendorName = vendor.VendorName,
@@ -347,6 +348,22 @@ namespace Convience.Service.SRM
                 throw new FileStoreException("文件上傳失敗！");
             }
             return path;
+        }
+        public bool DeleteList(ViewSrmSupplier data)
+        {
+            SrmVendor vendorid = _context.SrmVendors.Where(p => p.VendorId == data.VendorId).FirstOrDefault();
+            SrmRfqV rfqv = _context.SrmRfqVs.Where(p => p.VendorId == data.VendorId).FirstOrDefault();
+            SrmInforecord inforecord = _context.SrmInforecords.Where(p => p.VendorId == data.VendorId).FirstOrDefault();
+            SrmQotH qoth = _context.SrmQotHs.Where(p => p.VendorId == data.VendorId).FirstOrDefault();
+
+            if (rfqv != null || inforecord != null || qoth != null)
+            {
+                throw new Exception("此供應商已有申請紀錄，無法刪除");
+            }
+
+            _context.SrmVendors.Remove(vendorid);
+            _context.SaveChanges();
+            return true;
         }
 
     }

@@ -26,4 +26,7 @@ export class SrmSupplierService {
   BatchUpload(formData) {
     return this.httpClient.post(`${this.uriConstant.SrmSupplier}/BatchUpload`, formData);
   }
+  DeleteList(data) {
+    return this.httpClient.post(`${this.uriConstant.SrmSupplier}/DeleteList`, data);
+  }
 }
