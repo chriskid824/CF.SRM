@@ -360,3 +360,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 src/Convience.Backend/srm/
+src/Convience.Backend/Convience.Applications/Convience.ManagentApi/fileStore/

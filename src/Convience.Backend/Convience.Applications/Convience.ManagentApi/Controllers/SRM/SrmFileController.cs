@@ -4,11 +4,13 @@ using Convience.ManagentApi.Infrastructure.Authorization;
 using Convience.ManagentApi.Infrastructure.Logs;
 using Convience.Model.Models.ContentManage;
 using Convience.Model.Models.SRM;
+using Convience.Service.ContentManage;
 using Convience.Service.SRM;
 using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -27,31 +29,33 @@ namespace Convience.ManagentApi.Controllers.SRM
     //[Authorize]
     public class SrmFileController : ControllerBase
     {
-        private readonly ISrmDeliveryService _srmDeliveryService;
+        private readonly ISrmFileService _srmFileService;
         private readonly IUserService _userService;
+        private readonly IFileManageService _fileManageService;
 
-        public SrmFileController(ISrmDeliveryService srmDeliveryService, IUserService userService)
+        public SrmFileController(ISrmFileService srmFileService, IUserService userService, IFileManageService fileManageService)
         {
-            _srmDeliveryService = srmDeliveryService;
+            _srmFileService = srmFileService;
             _userService = userService;
+            _fileManageService = fileManageService;
         }
 
         [HttpPost("AddTemplate")]
-        public IActionResult AddTemplate(List<ViewSrmPoL> pols)
+        public IActionResult AddTemplate(SrmFileUploadTemplate template)
         {
-            if (_srmDeliveryService.AddDelivery(pols)) return Ok();
-            return BadRequest("出貨單生成失敗");
+            if (_srmFileService.AddTemplate(template)) return Ok();
+            return BadRequest("新增樣板失敗");
         }
-        [HttpPost("UpdateDeliveryL")]
-        public IActionResult UpdateDeliveryL(ViewSrmDeliveryL dls)
+        [HttpPost("UpdateTemplate")]
+        public IActionResult UpdateTemplate(SrmFileUploadTemplate template)
         {
-            if (_srmDeliveryService.UpdateDeliveryL(dls)) return Ok();
-            return BadRequest("項次 新增/修改 失敗");
+            if (_srmFileService.UpdateTemplate(template)) return Ok();
+            return BadRequest("樣板修改失敗");
         }
         [HttpPost("DeleteDeliveryL")]
         public IActionResult DeleteDeliveryL(ViewSrmDeliveryL dls)
         {
-            if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
+            if (_srmFileService.DeleteDeliveryL(dls)) return Ok();
             return BadRequest("項次 新增/修改 失敗");
         }
         [HttpPost("ReceiveDeliveryL")]
@@ -93,15 +97,15 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             if (dls != null && dls.Count > 0)
             {
-                string result = _srmDeliveryService.ReceiveDeliveryL(dls);
+                string result = _srmFileService.ReceiveDeliveryL(dls);
                 if (string.IsNullOrEmpty(result)) return Ok();
                 return BadRequest(result);
             }
             //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
             return BadRequest("項次 新增/修改 失敗");
         }
-        [HttpPost("GetDelivery")]
-        public string GetDelivery(JObject query)
+        [HttpPost("GetTemplateList")]
+        public IActionResult GetTemplateList(JObject query)
         {
             //SapDeliveryService sc = new SapDeliveryService();
             //sc.test();
@@ -109,39 +113,90 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 return null;
             }
-            QueryPoList q = new QueryPoList();
+            QueryFile q = new QueryFile();
             //var aaa = query.Property("poNum");
-            q.deliveryNum = query["deliveryNum"].ToString();
-            q.status = (int)query["status"];
-            q.host = Request.Headers["Referer"].ToString() + "srm/deliveryreceive";
+            q.id = query["templateId"].ToString()==""?0: (int)query["templateId"];
+            q.werk = (int)query["werks"];
             q.user = User;
-            var aaa = _srmDeliveryService.GetDelivery(q);
+            var aaa = _srmFileService.GetTemplateList(q);
 
-            return JsonConvert.SerializeObject(aaa, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        });
+            return Ok(aaa);
+
+            //return JsonConvert.SerializeObject(aaa, Formatting.None,
+            //            new JsonSerializerSettings()
+            //            {
+            //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //            });
+        }
+        [HttpPost("GetFileList")]
+        public IActionResult GetFileList(JObject query)
+        {
+            if (query == null)
+            {
+                return null;
+            }
+            QueryFile q = new QueryFile();
+            //var aaa = query.Property("poNum");
+            q.number = query["number"].ToString();
+            q.functionId = (int)query["functionId"];
+            q.werk=(int)query["werks"];
+            q.type= (int)query["type"];
+            q.user = User;
+            var aaa = _srmFileService.GetFileListByNumer(q);
+
+            return Ok(aaa);
         }
 
-        [HttpPost("GetDeliveryL")]
-        public string GetDeliveryL(JObject query)
+        //[Permission("fileAdd")]
+        //public async Task<IActionResult> UploadFile(List<ViewSrmFileRecordResult> files)
+        //{
+        //var result = await _fileManageService.UploadAsync(fileUploadModel);
+        //if (!string.IsNullOrEmpty(result))
+        //{
+        //    return this.BadRequestResult(result);
+        //}
+        //return Ok();
+        //}
+        [HttpPost("UploadFile")]
+        public async Task<IActionResult> UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
         {
-            //var url=HttpContext.Current.Request.Url;
-            if (query == null) return null;
-            QueryPoList q = new QueryPoList();
-            //var aaa = query.Property("poNum");
-            q.deliveryNum = query["deliveryNum"].ToString();
-            q.deliveryLId = string.IsNullOrWhiteSpace(query["deliveryLId"].ToString()) ? 0 : (int)query["deliveryLId"];
-            q.user = User;
-            if (string.IsNullOrWhiteSpace(q.deliveryNum) && q.deliveryLId == 0) return null;
-            var aaa = _srmDeliveryService.GetDelivery(q);
+            fileUploadModel.file = JsonConvert.DeserializeObject<ViewSrmFileRecordResult>(fileUploadModel.json);
+            fileUploadModel.user = User.GetUserClaims();
+            try
+            {
+                var result = await _srmFileService.UploadAsync(fileUploadModel);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return this.BadRequestResult(result);
+                }
 
-            return JsonConvert.SerializeObject(aaa, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        });
+            }
+            catch (Exception e)
+            { return this.BadRequestResult("上傳失敗"); }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Permission("fileGet")]
+        [LogFilter("内容管理", "文件管理", "下载文件")]
+        public async Task<IActionResult> DownloadFile([FromQuery] Model.Models.SRM.NzFileViewModel viewModel)
+        {
+            var stream = await _srmFileService.DownloadAsync(viewModel);
+            return File(stream, "application/octet-stream", viewModel.Name);
+        }
+
+        [HttpDelete]
+        [Permission("fileDelete")]
+        [LogFilter("内容管理", "文件管理", "删除文件")]
+        public async Task<IActionResult> DeleteFile([FromQuery] NzFileViewModel viewModel)
+        {
+            var isSuccess = await _srmFileService.DeleteFileAsync(viewModel);
+            if (!isSuccess)
+            {
+                return this.BadRequestResult("删除失败！");
+            }
+            return Ok();
         }
     }
 }

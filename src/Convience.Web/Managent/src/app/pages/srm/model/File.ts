@@ -38,6 +38,56 @@ export class ViewSrmFileUploadTemplate {
  filetype18: string;
  filetype19: string;
  filetype20: string;
+}
+export class ViewSrmFileUploadRecordH
+{
+  recordHId?:number;
+  templateId?:number;
+  number?:string;
+  createDate?:Date;
+  createBy?:string;
+  lastUpdateDate?:Date;
+  lastUpdateBy?:string;
+  srmFileuploadRecordL:ViewSrmFileUploadRecordL[] ;
+}
+export class ViewSrmFileUploadRecordL
+{
+  recordLId?:number;
+  recordHId?:number;
+  filetype?:number;
+  url?:string;
+  enable?:string;
+  createDate?:Date;
+  createBy?:string;
+  lastUpdateDate?:Date;
+  lastUpdateBy?:string;
+  filename?:string;
+  filetypename?:string;
+}
 
-
+export class ViewSrmFileRecord
+{
+  recordLId?:number;
+  recordHId?:number;
+  templateId?:number;
+  number?:string;
+  templateType?:number;
+  functionName?:string;
+  werks?:number;
+  type?:number;
+  effectiveDate?:Date;
+  deadline?:Date;
+  filetype?:string;
+  typeName?:string;
+  url?:string;
+  createDate?:Date;
+  createBy?:string;
+  lastUpdateDate?:Date;
+  lastUpdateBy?:string;
+  fileList:any[];
+}
+export class FileEmit
+{
+  filtType:string;
+  file:File;
 }

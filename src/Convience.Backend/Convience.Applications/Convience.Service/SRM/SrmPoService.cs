@@ -136,7 +136,8 @@ namespace Convience.Service.SRM
                                  TotalAmount = h.TotalAmount,
                                  Buyer = h.Buyer,
                                  StatusDesc = status.StatusDesc,
-                                 Matnr = matnr.SapMatnr
+                                 Matnr = matnr.SapMatnr,
+                                 Org = p.Org
                              }).Where(l => l.PoId == p.PoId).ToList();
             });
             return result.ToList();

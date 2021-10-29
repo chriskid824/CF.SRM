@@ -1,0 +1,16 @@
+<nz-form-item>
+  <nz-form-label [nzSpan]="10">{{inputFile.typeName}}</nz-form-label>
+  <nz-form-control [nzSpan]="14">
+    <nz-upload [nzDownload]="download" [nzFileList]="inputFile.fileList" [nzBeforeUpload]="beforeUpload" nzLimit="1" nzMultiple="false"
+    [nzRemove]="delete">
+      <button nz-button><i nz-icon nzType="upload"></i>選擇上傳文件</button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+  <!-- <div nz-col class="gutter-row" [nzSpan]="12"><div class="inner-box">{{inputFile.typeName}}</div></div>
+  <div nz-col class="gutter-row" [nzSpan]="12"><div class="inner-box">
+    <nz-upload [nzDownload]="download" [nzFileList]="inputFile.fileList" [nzBeforeUpload]="beforeUpload" nzLimit="1" nzMultiple="false"
+    [nzRemove]="delete">
+      <button nz-button><i nz-icon nzType="upload"></i>選擇上傳文件</button>
+    </nz-upload></div></div> -->
+

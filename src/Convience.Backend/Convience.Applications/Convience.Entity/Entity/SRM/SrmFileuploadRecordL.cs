@@ -9,7 +9,7 @@ namespace Convience.Entity.Entity.SRM
     [Entity(DbContextType = typeof(SRMContext))]
     public partial class SrmFileuploadRecordL
     {
-        public int? RecordLId { get; set; }
+        public int RecordLId { get; set; }
         public int? RecordHId { get; set; }
         public int? Filetype { get; set; }
         public string Url { get; set; }
@@ -18,5 +18,7 @@ namespace Convience.Entity.Entity.SRM
         public string CreateBy { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
+
+        public virtual SrmFileuploadRecordH RecordH { get; set; }
     }
 }

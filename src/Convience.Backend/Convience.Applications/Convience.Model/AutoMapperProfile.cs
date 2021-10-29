@@ -76,6 +76,9 @@ namespace Convience.Model
             CreateMap<SrmPoL, ViewSrmPoL>();
             CreateMap<List<SrmPoL>, List<ViewSrmPoL>>();
             CreateMap<ViewSrmPoL, SrmPoL>();
+
+            CreateMap<List<ViewSrmFileUploadTemplate>, List<ViewSrmFileRecord>>();
+            CreateMap<ViewSrmFileUploadTemplate, ViewSrmFileRecord>();
         }
     }
 }

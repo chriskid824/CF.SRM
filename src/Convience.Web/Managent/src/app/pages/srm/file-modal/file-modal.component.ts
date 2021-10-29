@@ -1,24 +1,30 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FileInfo } from '../model/fileInfo';
+import { FileInfo } from 'src/app/pages/content-manage/model/fileInfo';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FileService } from 'src/app/business/file.service';
 import { FolderService } from 'src/app/business/folder.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-
+import { SrmFileService } from 'src/app/business/srm/srm-file.service';
+import { ViewSrmFileRecord } from '../model/File';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { UriConfig } from 'src/app/configs/uri-config';
+import{Router} from '@angular/router'
 @Component({
-  selector: 'app-file-manage',
-  templateUrl: './file-manage.component.html',
-  styleUrls: ['./file-manage.component.less']
+  selector: 'app-file-modal',
+  templateUrl: './file-modal.component.html',
+  styleUrls: ['./file-modal.component.less']
 })
-export class FileManageComponent implements OnInit {
+export class FileModalComponent implements OnInit {
 
   folderForm: FormGroup = new FormGroup({});
 
   fileInfoList: FileInfo[] = [];
-
+  uploadUrl=this.uriConstant.SrmFile+'/UploadFile';
   folderList: string[] = [];
+  fileRecordList: ViewSrmFileRecord[] = [];
+  ischanged:boolean=false;
 
   @ViewChild('uploadTitleTpl', { static: true })
   uploadTitleTpl;
@@ -34,24 +40,41 @@ export class FileManageComponent implements OnInit {
 
   modal: NzModalRef;
 
+  formData:FormData;
+
   fileList: any[] = [];
 
   uploading: boolean = false;
 
   currentDirectory: string = '/';
 
+  soucedata:ViewSrmFileRecord;
   emptyValidator = (control: FormControl): { [key: string]: any } | null => {
     const reg = /^\s+/g;
     let value = control.value?.replace(reg, '');
     return value ? null : { 'notEmpty': true };
   };
 
+  parentEventHandlerFunction(valueEmitted,) {
+    this.formData.append('fileTypeList',valueEmitted.filtType);
+    this.formData.append('files',valueEmitted.file);
+    console.info(valueEmitted);
+    this.ischanged=true;
+    // this.options[valueEmitted.index]=valueEmitted;
+    // this.options[9]=valueEmitted;
+    // this.revealed=!this.revealed;
+    // let el: HTMLElement = this.revealbutton.nativeElement;
+    // el.click();
+  }
+
   constructor(
     private _modalService: NzModalService,
     private _messageService: NzMessageService,
     private _fileService: FileService,
     private _folderService: FolderService,
-    private _formBuilder: FormBuilder) {
+    private _formBuilder: FormBuilder,
+    private _srmFileService: SrmFileService,
+    private uriConstant: UriConfig,private router:Router) {
   }
 
   ngOnInit(): void {
@@ -70,36 +93,85 @@ export class FileManageComponent implements OnInit {
   refresh() {
     this._fileService.get(1, 200, this.currentDirectory).subscribe((result: any) => {
       this.fileInfoList = result;
-      console.info(this.currentDirectory);
-      console.info(result);
     });
   }
+  reloadCurrentRoute() {
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+    });
+}
+  upload(data) {
+    this._srmFileService.GetFileList(data).subscribe((result: any) => {
+      this.fileRecordList=result;
+      if(result!=null&&result.length>0)
+      {
+        this.fileRecordList[0].number=data.number;
+        this.fileRecordList[0].deadline=data.deadline;
+        this.soucedata=this.fileRecordList[0];
+      }
 
-  upload() {
-    this.modal = this._modalService.create({
-      nzTitle: this.uploadTitleTpl,
-      nzContent: this.uploadContentTpl,
-      nzFooter: this.uploadFooterTpl,
-      nzMaskClosable: false,
-    })
+      console.warn(this.soucedata);
+      this.formData=new FormData();
+      this.formData.append('json',JSON.stringify(this.fileRecordList[0]));
+      console.warn(this.soucedata);
+      if(this.soucedata != undefined)
+      {
+        this.modal = this._modalService.create({
+          nzTitle: this.uploadTitleTpl,
+          nzContent: this.uploadContentTpl,
+          nzFooter: this.uploadFooterTpl,
+          nzMaskClosable: false,
+        })
+      }
+  else
+  {
+    this._messageService.error("尚未建立檔案模板");
+  }
+      // const a = document.createElement('a');
+      // const blob = new Blob([result], { 'type': "application/octet-stream" });
+      // a.href = URL.createObjectURL(blob);
+      // a.download = fileInfo.fileName;
+      // a.click();
+    });
+
   }
 
-  beforeUpload = (file): boolean => {
-    this.fileList = this.fileList.concat(file);
-    return false;
-  };
+
 
   handleUpload() {
     this.uploading = true;
-    this._fileService.upload(this.currentDirectory, this.fileList).subscribe(result => {
-      this.modal.close();
-      this._messageService.success("上傳完畢！");
-      this.refresh();
-      this.fileList = [];
-      this.uploading = false;
-    }, error => {
-      this.uploading = false;
-    });
+    this._srmFileService.Upload(this.formData).subscribe(result => {
+          this.modal.close();
+          this._messageService.success("上載完畢！");
+          //this.reloadCurrentRoute();
+          this.fileList = [];
+          this.uploading = false;
+        }, error => {
+          this.uploading = false;
+        });
+    //
+    //  this._fileService.upload(this.currentDirectory, this.fileList).subscribe(result => {
+    //    this.modal.close();
+    //    this._messageService.success("上載完畢！");
+    //    this.refresh();
+    //    this.fileList = [];
+    //    this.uploading = false;
+    //  }, error => {
+    //    this.uploading = false;
+    //  });
+  }
+
+  handleChange(info: NzUploadChangeParam): void {
+    console.info(info);
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      this._messageService.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      this._messageService.error(`${info.file.name} file upload failed.`);
+    }
   }
 
   delete(fileInfo: FileInfo) {
@@ -180,4 +252,5 @@ export class FileManageComponent implements OnInit {
       this.refresh();
     }
   }
+
 }

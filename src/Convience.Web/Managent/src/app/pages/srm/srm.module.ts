@@ -59,7 +59,11 @@ import {EqpComponent} from'./eqp/eqp.component';
 import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
 import { SupplierBatchUploadComponent } from './supplier-batch-upload/supplier-batch-upload.component';
 import { MaterialBatchUploadComponent } from './material-batch-upload/material-batch-upload.component';
-	
+import { FileModalComponent } from './file-modal/file-modal.component';
+import { FileModalFiletypeComponent } from './file-modal-filetype/file-modal-filetype.component';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { FileTemplateComponent } from './file-template/file-template.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -91,6 +95,9 @@ import { MaterialBatchUploadComponent } from './material-batch-upload/material-b
     RfqBatchUploadComponent,
     SupplierBatchUploadComponent,
     MaterialBatchUploadComponent,
+    FileModalComponent,
+    FileModalFiletypeComponent,
+    FileTemplateComponent,
   ],
   imports: [
     CommonModule,
@@ -122,6 +129,7 @@ import { MaterialBatchUploadComponent } from './material-batch-upload/material-b
         { path: "eqp", component: EqpComponent, canActivate: [LoginGuard]},
         { path: "supplier-batch-upload", component: SupplierBatchUploadComponent, canActivate: [LoginGuard]},
         { path: "material-batch-upload", component: MaterialBatchUploadComponent, canActivate: [LoginGuard]},
+        { path: "file-t", component: FileTemplateComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
@@ -150,6 +158,8 @@ import { MaterialBatchUploadComponent } from './material-batch-upload/material-b
     MatButtonModule,
     MatInputModule,
     NzUploadModule,
+    NzGridModule,
+    NzDividerModule,
   ]
 })
 export class SrmModule {

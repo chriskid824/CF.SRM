@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewEncapsulation } from '@angular/core';
+import { Component, OnInit,ViewEncapsulation,ViewChild,TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NzDatePickerComponent} from 'ng-zorro-antd/date-picker';
 import datepickerFactory from 'jquery-datepicker';
@@ -6,6 +6,11 @@ import datepickerJAFactory from 'jquery-datepicker/i18n/jquery.ui.datepicker-en-
 import { AgGridDatePickerComponent} from './AGGridDatePickerCompponent';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ViewSrmFileUploadRecordH,ViewSrmFileUploadRecordL } from '../model/File';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { EditButtonComponent } from './button-cell-renderer.component';
+import { FileModalComponent } from '../file-modal/file-modal.component';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -17,6 +22,11 @@ datepickerJAFactory($);
   styleUrls: ['./po.component.less']
 })
 export class PoComponent implements OnInit {
+   @ViewChild('filemodal')
+   filemodal: FileModalComponent;
+
+  // @ViewChild('ctest2')
+  // ctest2: TemplateRef<any>;
   gridApi;
   gridColumnApi;
   columnDefs;
@@ -24,11 +34,18 @@ export class PoComponent implements OnInit {
   detailCellRendererParams;
   components;
   rowData: any;
+  frameworkComponents: any;
   searchForm: FormGroup = new FormGroup({});
   page: number = 1;
   size: number = 2;
   total: number;
-  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService) {
+  isVisible=false;
+  fileRecord: ViewSrmFileUploadRecordH = {recordHId:1,templateId:1100,srmFileuploadRecordL:[{recordLId:1,recordHId:1,filename:"test1",filetypename:"SIP"},{recordLId:2,recordHId:1,filename:"test2",filetypename:"SOP"},{recordLId:3,recordHId:1,filename:"test3",filetypename:"第三方檢驗文件"}]};
+  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService
+    ,private _modalService: NzModalService, private dialog: MatDialog) {
+      this.frameworkComponents = {
+        buttonRenderer: EditButtonComponent,
+      }
     this.columnDefs = [
       {
         headerName:'採購單識別碼',
@@ -124,6 +141,7 @@ export class PoComponent implements OnInit {
     this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
       detailGridOptions: {
+        frameworkComponents:this.frameworkComponents,
         columnDefs: [
           {
             headerName:'採購單明細識別碼',
@@ -191,7 +209,27 @@ export class PoComponent implements OnInit {
             headerName:'檢驗時間(天)',
             field: 'InspectionTime',
           },
+          { headerName: '操作',
+//           cellRenderer : function(params){
+//               var eDiv = document.createElement('div');
+//               eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">編輯檔案</button></span>';
+//               var eButton = eDiv.querySelectorAll('.btn-simple')[0];
 
+//               eButton.addEventListener('click', function() {
+// this.isVisible=true;
+
+//               });
+//               return eDiv;
+
+//             }
+             Width:20,
+             cellRenderer: 'buttonRenderer',
+             cellRendererParams: {
+              ondblclick:this.start.bind(this),
+              label: '',
+            },
+            pinned: 'left',
+          }
         ],
         defaultColDef : {
           editable: false,
@@ -221,6 +259,17 @@ export class PoComponent implements OnInit {
       BUYER:[null]
     });
   }
+  start(e){
+    console.info(e.rowData);
+    const data={
+      functionId:7,
+      number:e.rowData.PoNum.toString()+'-'+ e.rowData.PoLId.toString(),
+      werks:e.rowData.Org,
+      type:2,
+      deadline:e.rowData.ReplyDeliveryDate}
+    this.filemodal.upload(data);
+    //this.isVisible=true;
+  }
   expiryDateFormatter(params) {
     if (params.value) {
       return `${params.value.date.month - 1}/${params.value.date.year}`;
@@ -246,6 +295,15 @@ export class PoComponent implements OnInit {
   }
   pageChange() {
     this.refresh();
+  }
+  handleOk(): void {
+    console.log('Button ok clicked!');
+    this.isVisible = false;
+  }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
   }
   refresh() {
     var query = {

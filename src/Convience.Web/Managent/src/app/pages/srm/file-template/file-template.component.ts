@@ -63,10 +63,6 @@ export class FileTemplateComponent implements OnInit {
   page: number = 1;
   size: number = 2;
   total: number;
-
-
-
-  filetypes: FileType[] = [];
   types: Function[] = [];
   fileTypes: BaseSelect[] = [{id:1,name:"SIP"},{id:2,name:"SOP"},{id:3,name:"ZDR"},{id:4,name:"材證"},{id:5,name:"第三方檢驗文件"},{id:6,name:"進口報關文件"}];
   werkOptions: BaseSelect[] = [{id:1100,name:"廠工事業處"},{id:1200,name:"機械事業處"},{id:3100,name:"精密事業處"}];
@@ -79,13 +75,26 @@ export class FileTemplateComponent implements OnInit {
 }
 
   ngOnInit(): void {
+    this.refresh();
+    this.resetSearchForm();
   }
-
-  submitSearch(){}
+  resetSearchForm() {
+    this.searchForm = this._formBuilder.group({
+      I_EBELN: [null],
+      I_EKORG: [null],
+      // email:[null],
+      // name: [null],
+      // roleid: [null],
+      // position: [null]
+    });
+  }
+  submitSearch(){
+    this.refresh();
+  }
 
   add(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.isNewUser = true;
-    //this.editedUser = new SapResult();
+    this.editedTemplate = new ViewSrmFileUploadTemplate();
     this.editForm = this._formBuilder.group({
       templateId: [''],
       templateType: ['',[Validators.required]],
@@ -93,7 +102,7 @@ export class FileTemplateComponent implements OnInit {
       type: ['', [Validators.required]],
       effectiveDate: [''],
       deadline: [''],
-      filetypes: [[]],
+      filetype: [[]],
     });
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -109,6 +118,7 @@ export class FileTemplateComponent implements OnInit {
     //   console.log(user['userName']);
        this.isNewUser = false;
        this.editedTemplate = template;
+       console.info(template);
        this.editForm = this._formBuilder.group({
         templateId: [template['templateId']],
         templateType: [template['templateType'],[Validators.required, Validators.maxLength(15)]],
@@ -116,8 +126,9 @@ export class FileTemplateComponent implements OnInit {
         type: [template['type'], [Validators.required, Validators.maxLength(10)]],
         effectiveDate: [template['effectiveDate']],
         deadline: [template['deadline']],
-        filetypes: [template['filetypes'].split(',')],
+        filetype: [template['filetype'].split(',')],
        });
+       console.info(this.editForm);
       this.tplModal = this._modalService.create({
         nzTitle: title,
         nzContent: content,
@@ -136,17 +147,15 @@ export class FileTemplateComponent implements OnInit {
 
     if (this.editForm.valid) {
       let template: any = {};
-      alert(this.editForm.value['templateId']);
+      console.info(this.editForm.value);
       template.templateId = this.editForm.value['templateId'];
-      alert(this.editForm.value['templateId']);
       template.templateType=this.editForm.value['templateType'];
       template.werks = this.editForm.value['werks'];
       template.type = this.editForm.value['type'];
       template.effectiveDate = this.editForm.value['effectiveDate'];
       template.deadline = this.editForm.value['deadline'];
-      template.filetypes = this.editForm.value['filetypes'];
+      template.filetype = this.editForm.value['filetype'].join(',');
       if (this.editedTemplate.templateId) {
-        alert(111);
         template.templateId = this.editedTemplate.templateId;
         this._srmFileService.UpdateTemplate(template).subscribe(result => {
           this._messageService.success("更新成功！");
@@ -154,7 +163,7 @@ export class FileTemplateComponent implements OnInit {
           this.refresh();
         });
       } else {
-alert(222);
+        template.templateId=0;
         this._srmFileService.AddTemplate(template).subscribe(result => {
           this._messageService.success("添加成功！");
           this.tplModal.close();
@@ -175,6 +184,10 @@ alert(222);
       .subscribe(result => {
         this.listOfData = result['data'];
         this.total = result['count'];
+        console.info(this.listOfData);
       });
+  }
+  cancelEdit() {
+    this.tplModal.close();
   }
 }

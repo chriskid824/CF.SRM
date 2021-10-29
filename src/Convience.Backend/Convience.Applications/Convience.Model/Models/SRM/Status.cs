@@ -34,5 +34,6 @@ namespace Convience.Model.Models.SRM
     {
         public string Environment { get; set; }
         public string CurrentDirectory { get; set; }
+        public string FileDirectory { get; set; }
     }
 }

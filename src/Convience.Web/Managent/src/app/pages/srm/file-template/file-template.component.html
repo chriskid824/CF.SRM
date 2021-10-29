@@ -49,11 +49,19 @@
       <tbody>
         <tr *ngFor="let data of sortTable.data">
           <td>{{ data.templateId }}</td>
-          <td>{{ data.templateType }}</td>
-          <td>{{ data.werks }}</td>
-          <td>{{ data.type }}</td>
-          <td>{{ data.effectiveDate }}</td>
-          <td>{{ data.deadline }}</td>
+          <td>{{ data.functionName }}</td>
+
+          <td [ngSwitch]="data.werks">
+            <label *ngSwitchCase="1100">廠工事業處</label>
+            <label *ngSwitchCase="1200">機械事業處</label>
+            <label *ngSwitchCase="3100">精密事業處</label>
+            <label *ngSwitchDefault></label>
+            </td>
+          <td *ngIf="data.type==1; else elseBlock">廠內</td>
+          <ng-template #elseBlock><td>廠外</td></ng-template>
+          <td>{{ data.effectiveDate|date:'yyyy-MM-dd'  }}</td>
+          <td>{{ data.deadline|date:'yyyy-MM-dd' }}</td>
+          <td>{{ data.fileTypesDesc }}</td>
           <td>
             <button nz-button nzType="default" nzShape="circle" *canOperate="'updateUserBtn'"
             (click)="edit(editUserTitleTpl,userContentTpl,data)" class="mr-10"><i nz-icon
@@ -75,8 +83,8 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_templateId'">樣板編號</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="templateId錯誤！">
-            <input [attr.id]="'edit_templateId'" formControlName="templateId" nz-input
-                placeholder="樣板編號" autocomplete="off" [disabled]="true" />
+            <input nz-input [attr.id]="'edit_templateId'" formControlName="templateId"
+                placeholder="樣板編號" [disabled]="true" />
         </nz-form-control>
     </nz-form-item>
 
@@ -86,7 +94,7 @@
         <nz-form-control [nzSm]="14" [nzXs]="24">
             <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'templateType'" formControlName="templateType"
                 nzMode="default">
-                <nz-option *ngFor="let role of typeOptions" [nzValue]="role.id.toString()"
+                <nz-option *ngFor="let role of typeOptions" [nzValue]="role.id"
                     [nzLabel]="role.name">
                 </nz-option>
             </nz-select>
@@ -97,7 +105,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24">
           <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'werks'" formControlName="werks"
               nzMode="default">
-              <nz-option *ngFor="let role of werkOptions" [nzValue]="role.id.toString()"
+              <nz-option *ngFor="let role of werkOptions" [nzValue]="role.id"
                   [nzLabel]="role.name">
               </nz-option>
           </nz-select>
@@ -115,8 +123,8 @@
         <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24">檔案類型</nz-form-label>
             <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="roleNameErrorTpl">
-                <nz-select nzAllowClear nzPlaceHolder="請選擇" [formControlName]="'filetypes'" nzMode="multiple">
-                    <nz-option *ngFor="let filetype of fileTypes" [nzValue]="filetype.id" [nzLabel]="filetype.name"></nz-option>
+                <nz-select nzAllowClear nzPlaceHolder="請選擇" [formControlName]="'filetype'" nzMode="multiple">
+                    <nz-option *ngFor="let type of fileTypes" [nzValue]="type.id.toString()" [nzLabel]="type.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
@@ -124,15 +132,17 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_effectiveDate'">生效日期</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="effectiveDate格式錯誤！">
-              <input [attr.id]="'edit_effectiveDate'" formControlName="effectiveDate" nz-input
-                  placeholder="生效日期" type="date" autocomplete="off" />
+            <nz-date-picker [attr.id]="'edit_effectiveDate'" formControlName="effectiveDate" nz-input
+            placeholder="生效日期" type="date" autocomplete="off"></nz-date-picker>
+              <!-- <input [attr.id]="'edit_effectiveDate'" formControlName="effectiveDate" nz-input
+                  placeholder="生效日期" type="date" autocomplete="off" /> -->
           </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_deadline'">截止日期</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="deadline格式錯誤！">
-            <input [attr.id]="'edit_deadline'" formControlName="deadline" nz-input
-                placeholder="截止日期" type="date" autocomplete="off" />
+          <nz-date-picker [attr.id]="'edit_deadline'" formControlName="deadline" nz-input
+          placeholder="截止日期" type="date" autocomplete="off" ></nz-date-picker>
         </nz-form-control>
     </nz-form-item>
         <nz-form-item>
