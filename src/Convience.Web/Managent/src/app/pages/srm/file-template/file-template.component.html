@@ -35,7 +35,7 @@
   <nz-card>
     <div>
       <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
-          *canOperate="'adduserbtn'"><i nz-icon nzType="plus"></i>添加樣板</button>
+          *canOperate="'addFileTemplatebtn'"><i nz-icon nzType="plus"></i>添加樣板</button>
   </div>
     <nz-table #sortTable [nzData]="listOfData" nzSize="middle" nzShowPagination="true"
     nzBordered="true" [nzScroll]="{ x: '180px' }" style="margin-top: 20px;">
@@ -63,7 +63,7 @@
           <td>{{ data.deadline|date:'yyyy-MM-dd' }}</td>
           <td>{{ data.fileTypesDesc }}</td>
           <td>
-            <button nz-button nzType="default" nzShape="circle" *canOperate="'updateUserBtn'"
+            <button nz-button nzType="default" nzShape="circle" *canOperate="'updateFileTemplateBtn'"
             (click)="edit(editUserTitleTpl,userContentTpl,data)" class="mr-10"><i nz-icon
                 nzType="edit"></i></button>
           </td>

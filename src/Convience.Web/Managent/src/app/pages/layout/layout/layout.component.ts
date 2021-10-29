@@ -128,6 +128,12 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'supplier-batch-upload', routerLink: '/srm/supplier-batch-upload', iconType: 'fund-view', firstBreadcrumb: '批次上傳', lastBreadcrumb: '供應商批次上傳', name: '供應商批次上傳', },
         { canOperate: 'material-batch-upload', routerLink: '/srm/material-batch-upload', iconType: 'fund-view', firstBreadcrumb: '批次上傳', lastBreadcrumb: '料號批次上傳', name: '料號批次上傳', },
       ]
+    },
+    {
+      canOperate: 'filetemplate', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '檔案上傳',
+      children: [
+        { canOperate: 'filetemplate', routerLink: '/srm/file-t', iconType: 'fund-view', firstBreadcrumb: '檔案上傳', lastBreadcrumb: '模板設定', name: '模板設定', },
+      ]
     }
   ];
 

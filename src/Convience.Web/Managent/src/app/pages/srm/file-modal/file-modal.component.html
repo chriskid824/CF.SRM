@@ -61,7 +61,7 @@
 </div>
 </ng-template>
 <ng-template #uploadFooterTpl>
-  <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+  <button *canOperate="'UploadFilebtn'" nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
     [disabled]="!ischanged" style="margin-top: 16px">
     {{ uploading ? '上傳中...' : '開始上傳' }}
   </button>
