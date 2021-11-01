@@ -13,6 +13,7 @@ using Convience.Model.Models.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,8 @@ namespace Convience.Service.SRM
         public SrmMaterial[] GetMaterial();
         public int GetQotStatus(SrmQotH qotH);
         public string GetProcessByNum(int num);
+        //public string SendAll(int rfqid, int vendorid);
+        public int GetVendorId(JObject qot);
     }
     public class SrmQotService : ISrmQotService
     {
@@ -439,6 +442,9 @@ namespace Convience.Service.SRM
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
+            #region getvendorid 20211101
+            int venderid = GetVendorId(query);
+            #endregion
             //int venderid = query.vendor;
             var result = (from r in _context.SrmRfqHs
                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
@@ -458,10 +464,11 @@ namespace Convience.Service.SRM
                               VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
                               VVendor = vendor.SapVendor,
-
+                              VVendorId = vendor.VendorId
 
                           })
-                        .Where(p => p.VVendor == query.vendor)
+                        //.Where(p => p.VVendor == query.vendor)
+                        .Where(p => p.VVendorId == venderid)
                             //.Where(p => p.VStatus == 7) //0827
                             //.Where()
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
@@ -742,6 +749,19 @@ namespace Convience.Service.SRM
 
         //    return qotinfo;
         //}
+      public int GetVendorId(QueryQotList query) 
+      {
+            var vendorid = 0;
+            var vendor = (from v in _context.SrmVendors
+                          where (v.SapVendor == query.vendor || v.SrmVendor1 == query.vendor)
+                          select new
+                          {
+                              VendorId = v.VendorId,
+                          });
+            vendorid = vendor.Select(r => r.VendorId).First();
+            return vendorid;
+
+        }
         public int GetQotId(QueryQot query) 
         {
             var qotid = 0;
@@ -1266,5 +1286,202 @@ namespace Convience.Service.SRM
 
             return processname;
         }
+        #region  檢核rfq、vendor所有初始的qot是否填寫完畢
+        public IQueryable GetQotDataByRfqandVendor(int rfqid, int vendorid)
+        {
+            var qotlist = (from r in _context.SrmRfqHs
+                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId                         
+                           select new
+                           {                            
+                               RfqNum = r.RfqNum,
+                               QotId = q.QotId,
+                               QotNum = q.QotNum,                                                       
+                               RfqId = r.RfqId,
+                               VendorId = q.VendorId,
+                               mEmptyFlag = q.MEmptyFlag,
+                               pEmptyFlag = q.PEmptyFlag,
+                               sEmptyFlag = q.SEmptyFlag,
+                               oPEmptyFlag = q.OEmptyFlag,
+                               Status = q.Status
+                           });
+            
+            qotlist = qotlist
+            .Where(p => p.RfqId == rfqid)
+            .Where(p => p.VendorId == vendorid)
+            .Where(p => p.Status == 1)  
+            .OrderBy(p => p.QotId);
+            foreach (var qot in qotlist)
+            {
+                //"X"表不回填
+                if (qot.mEmptyFlag != "X") 
+                { } 
+            }
+
+            return qotlist;
+        }
+        public bool CheckMaterialInfo(int qotid)
+        {
+            bool materialOK = true;
+            var Query = (from m in _context.SrmQotMaterial
+                         where m.QotId.Equals(qotid)                       
+                         select m).ToList();
+            if (Query.Count() == 0) 
+            {
+                materialOK = false;
+            }
+            return materialOK;
+        }
+        public bool CheckProcessInfo(int qotid)
+        {
+            bool processOK = true;
+            var Query = (from m in _context.SrmQotProcesses
+                         where m.QotId.Equals(qotid)
+                         select m).ToList();
+            if (Query.Count() == 0)
+            {
+                processOK = false;
+            }
+            return processOK;
+        }
+        public bool CheckOtherInfo(int qotid)
+        {
+            bool otherOK = true;
+            var Query = (from m in _context.SrmQotOthers
+                         where m.QotId.Equals(qotid)
+                         select m).ToList();
+            if (Query.Count() == 0)
+            {
+                otherOK = false;
+            }
+            return otherOK;
+        }
+        public bool CheckSurfaceInfo(int qotid)
+        {
+            bool surfaceOK = true;
+            var Query = (from m in _context.SrmQotSurfaces
+                         where m.QotId.Equals(qotid)
+                         select m).ToList();
+            if (Query.Count() == 0)
+            {
+                surfaceOK = false;
+            }
+            return surfaceOK;
+        }
+        #endregion
+        public int GetVendorId(JObject qot) 
+        {
+            string name = qot["q"]["vendorId"].ToString();
+            int vendorid = 0;
+            var qotquery = (from v in _context.SrmVendors where v.SrmVendor1 == name
+                       select new
+                       {
+                           VendorId = v.VendorId,
+                           SrmVendor = v.VendorName
+                       });
+
+            vendorid = qotquery.Select(r => r.VendorId).First();
+            return vendorid;
+        }
+        #region 是否可整批送出
+        /*public string SendAll(int rfqid, int vendorid) 
+        {
+            string msg = string.Empty;
+            DateTime dtDate;
+            bool materialOK = true;
+            bool processOK = true;
+            bool surfaceOK = true;
+            bool otherOK = true;
+            int qotid = 0;
+            //先找出該rfq vendor 的 初始qot
+            //檢查必填資料  LEAD_TIME EXPIRATION_DATE
+            //檢核line
+            var qotlist = (from r in _context.SrmRfqHs
+                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                           select new
+                           {
+                               RfqNum = r.RfqNum,
+                               QotId = q.QotId,
+                               QotNum = q.QotNum,
+                               RfqId = r.RfqId,
+                               VendorId = q.VendorId,
+                               mEmptyFlag = q.MEmptyFlag,
+                               pEmptyFlag = q.PEmptyFlag,
+                               sEmptyFlag = q.SEmptyFlag,
+                               oEmptyFlag = q.OEmptyFlag,
+                               Status = q.Status,
+                               LeadTime = q.LeadTime,
+                               ExpirationDate= q.ExpirationDate
+                           });
+
+            qotlist = qotlist
+            .Where(p => p.RfqId == rfqid)
+            .Where(p => p.VendorId == vendorid)
+            .Where(p => p.Status == 1)
+            .OrderBy(p => p.QotId);
+            var list = qotlist.Select(s => new { mEmptyFlag = s.mEmptyFlag, pEmptyFlag = s.pEmptyFlag, sEmptyFlag = s.sEmptyFlag, oEmptyFlag = s.oEmptyFlag
+            ,LeadTime = s.LeadTime,
+                ExpirationDate = s.ExpirationDate,
+                QotId = s.QotId,
+                QotNum = s.QotNum
+            }).ToList();
+            foreach (var qot in list)
+            {
+                qotid = qot.QotId;
+                //???leadtime格式
+                //if (!string.IsNullOrWhiteSpace(qot.LeadTime)) 
+                //{
+                //    msg += $"{qot.QotNum}計劃交貨時間未輸入"; 
+                //}
+                if (qot.ExpirationDate == null)
+                {
+                    msg += $"{qot.QotNum}有效期限未輸入";
+                }
+
+                if (DateTime.TryParse(qot.ExpirationDate.ToString(), out dtDate))
+                {
+                    msg += $" {qot.QotNum}:有效期限輸入錯誤";
+                }              
+                //"X"表不回填
+                if (qot.mEmptyFlag != "X")
+                {
+                    materialOK = CheckMaterialInfo(qotid);
+                    if (!materialOK)
+                    {
+                        msg += $" {qot.QotNum}:材料明細未輸入";
+                    }
+                }
+                //"X"表不回填
+                if (qot.pEmptyFlag != "X")
+                {
+                    processOK = CheckProcessInfo(qot.QotId);
+                    if (!processOK)
+                    {
+                        msg += $" {qot.QotNum}:加工明細未輸入";
+                    }
+                }
+                //"X"表不回填
+                if (qot.sEmptyFlag != "X")
+                {
+                    surfaceOK = CheckSurfaceInfo(qot.QotId);
+                    if (!surfaceOK)
+                    {
+                        msg += $" {qot.QotNum}:表面處理明細未輸入";
+                    }
+                }
+                //"X"表不回填
+                if (qot.oEmptyFlag != "X")
+                {
+                    otherOK = CheckOtherInfo(qot.QotId);
+                    if (!otherOK)
+                    {
+                        msg += $" {qot.QotNum}:其他費用明細未輸入";
+                    }
+                }
+            }            
+            return msg;
+        }*/
+        #endregion
     }
 }

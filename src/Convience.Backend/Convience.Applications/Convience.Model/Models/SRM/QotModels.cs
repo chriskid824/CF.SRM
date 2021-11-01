@@ -168,6 +168,7 @@ namespace Convience.Model.Models.SRM
         public string VEndBy { get; set; }
         public virtual ICollection<ViewQotListL> SrmQotHs { get; set; }
         public string VVendor { get; set; }
+        public int VVendorId { get; set; }
     }
     public class ViewQotListL : SrmQotH
     {
