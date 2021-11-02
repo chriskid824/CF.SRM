@@ -20,6 +20,7 @@ namespace Convience.Model.Models.SRM
         public DateTime? replyDeliveryDate_s { get; set; }
         public int status { get; set; }
         public string host { get; set; }
+        public int dataStatus { get; set; }
         public System.Security.Claims.ClaimsPrincipal user { get; set; }
     }
 
@@ -67,6 +68,7 @@ namespace Convience.Model.Models.SRM
         public string StatusDesc { get; set; }
         public string SapVendor { get; set; }
         public int? Org { get; set; }
+        public string Number { get { return this.PoNum + "-" + this.PoLId.ToString(); } }
     }
     public class ViewSrmPoH : SrmPoH
     {

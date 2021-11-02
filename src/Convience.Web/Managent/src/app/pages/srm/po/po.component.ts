@@ -256,7 +256,8 @@ export class PoComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       PO_NUM: [null],
       STATUS: [1],
-      BUYER:[null]
+      BUYER:[null],
+      DATASTATUS:[0]
     });
   }
   start(e){
@@ -310,6 +311,7 @@ export class PoComponent implements OnInit {
       poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
       buyer: this.searchForm.value["BUYER"] == null ? "" : this.searchForm.value["BUYER"],
+      dataStatus:this.searchForm.value["DATASTATUS"] == null ? "0" : this.searchForm.value["DATASTATUS"],
       page: this.page,
       size: this.size
     }
@@ -322,6 +324,7 @@ export class PoComponent implements OnInit {
         poNum: "",
         status: "0",
         buyer: "",
+        dataStatus:"0",
         page: this.page,
         size: this.size
       }

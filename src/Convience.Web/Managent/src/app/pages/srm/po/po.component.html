@@ -22,6 +22,16 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
+          <nz-form-label [nzFor]="'DATASTATUS'">檔案狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'DATASTATUS'" ngModel="0" style="width: 100px;">
+              <nz-option nzValue="0" nzLabel="全部"></nz-option>
+              <nz-option nzValue="1" nzLabel="已完成"></nz-option>
+              <nz-option nzValue="2" nzLabel="未完成"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
           <nz-form-label [nzFor]="'BUYER'">採購人員</nz-form-label>
           <nz-form-control>
             <input nz-input placeholder="採購人員" [formControlName]="'BUYER'" [attr.id]="'BUYER'"

@@ -50,6 +50,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             //var aaa = query.Property("poNum");
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
+            q.dataStatus = query["dataStatus"] == null ? 0 : (int)query["dataStatus"];
             q.buyer = query["buyer"].ToString();
             q.user = User;
             var aaa = _srmPoService.GetAll(q);
@@ -75,6 +76,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.poNum = query["poNum"] == null ? null : query["poNum"].ToString();
             q.poLId = query["poLId"] == null ? 0 : (int)query["poLId"];
             q.status = query["status"] == null ? 0 : (int)query["status"];
+            q.dataStatus = query["dataStatus"] == null ? 0 : (int)query["dataStatus"];
             q.replyDeliveryDate_s = (query["replyDeliveryDate_s"] == null || !query["replyDeliveryDate_s"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_s"]);
             q.replyDeliveryDate_e = (query["replyDeliveryDate_e"] == null || !query["replyDeliveryDate_e"].HasValues) ? null : Convert.ToDateTime(query["replyDeliveryDate_e"]);
             q.user = User;

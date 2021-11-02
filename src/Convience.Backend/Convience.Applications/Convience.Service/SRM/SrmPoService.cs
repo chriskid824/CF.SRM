@@ -109,6 +109,15 @@ namespace Convience.Service.SRM
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+           // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
+
+            var numberList =
+    from c in _context.ViewSrmFileRecords
+    where !(from o in _context.ViewSrmFileRecords
+            where o.RecordLId ==null
+            select o.Number )
+           .Contains(c.Number)
+    select c.Number;
             result.ForEach(p =>
             {
                 p.SrmPoLs = (from l in _context.SrmPoLs
@@ -138,9 +147,28 @@ namespace Convience.Service.SRM
                                  StatusDesc = status.StatusDesc,
                                  Matnr = matnr.SapMatnr,
                                  Org = p.Org
-                             }).Where(l => l.PoId == p.PoId).ToList();
+                             }).Where(l => l.PoId == p.PoId)
+                             //.AndIfCondition(query.isNeedData, p => _context.ViewSrmFileRecords)
+                             .ToList();
+                if (query.dataStatus == 2)
+                {
+                    p.SrmPoLs = (from c in p.SrmPoLs
+                                                          where !(from o in numberList
+                                                                  select o)
+                                                                 .Contains(c.PoNum + '-' + c.PoLId)
+                                                          select c).ToList();
+                }
+                else if (query.dataStatus == 1)
+                {
+                    p.SrmPoLs = (from c in p.SrmPoLs
+                                                          where (from o in numberList
+                                                                  select o)
+                                                                 .Contains(c.Number)
+                                                          select c).ToList();
+                }
+
             });
-            return result.ToList();
+            return result.Where(p=>p.SrmPoLs.Count()>0).ToList();
         }
 
         public IEnumerable<SrmPoH> GetMatnrById(int id)
