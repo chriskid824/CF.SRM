@@ -467,10 +467,10 @@ namespace Convience.Service.SRM
             foreach (IRow row in sheet)
             {
                 if (rowIndex ==0) { rowIndex++; continue; }
-                if (row.GetCell(dtHeader["料號"]) != null)
+                if (row.GetCell(dtHeader["數量"]) != null)
                 {
-                    row.GetCell(dtHeader["料號"]).SetCellType(CellType.String);
-                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["料號"]).StringCellValue)) { break; }
+                    row.GetCell(dtHeader["數量"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["數量"]).StringCellValue)) { break; }
                 }
                 else {
                     break;
@@ -553,7 +553,9 @@ namespace Convience.Service.SRM
                 if (row.GetCell(dtHeader["供應商編號"]) != null)
                 {
                     row.GetCell(dtHeader["供應商編號"]).SetCellType(CellType.String);
-                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商編號"]).StringCellValue)) { break; }
+                    row.GetCell(dtHeader["供應商名稱"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商編號"]).StringCellValue)&& string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商名稱"]).StringCellValue)) 
+                    { break; }
                 }
                 else
                 {
