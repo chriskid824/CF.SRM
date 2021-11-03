@@ -4,8 +4,8 @@
         <form nz-form [nzLayout]="'inline'" [formGroup]="uploadForm">
           <nz-form-item>
             <nz-form-label nzRequired >下載格式</nz-form-label>
-            <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="download"></i>下載格式</button>
-          </nz-form-item>
+            <button *canOperate="'RFQ_ACTION'" nz-button (click)="download()"><i nz-icon nzType="download"></i>下載格式</button>
+        </nz-form-item>
           <nz-form-item>
             <nz-form-label nzRequired >上傳文件</nz-form-label>
             <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="20480" nzLimit="1">
