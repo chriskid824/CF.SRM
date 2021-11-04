@@ -16,6 +16,9 @@ export class SrmFileService {
   GetFileList(query) {
     return this.httpClient.post(`${this.uriConstant.SrmFile}/GetFileList`,query);
   }
+  GetAnnList() {
+    return this.httpClient.get(`${this.uriConstant.SrmFile}/GetAnnList`);
+  }
   GetDeliveryL(query) {
     return this.httpClient.post(`${this.uriConstant.SrmFile}/GetDeliveryL`,query);
   }

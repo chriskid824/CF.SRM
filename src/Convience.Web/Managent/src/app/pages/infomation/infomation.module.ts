@@ -7,16 +7,19 @@ import { AppCommonModule } from '../app-common/app-common.module';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
-
-
+import { AnnouncementComponent } from './announcement/announcement.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
     DashboardComponent,
+    AnnouncementComponent
   ],
   imports: [
     CommonModule,
     AppCommonModule,
+    MatTabsModule,
     RouterModule.forChild([
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', component: DashboardComponent, canActivate: [LoginGuard] }
@@ -25,7 +28,8 @@ import { NzStatisticModule } from 'ng-zorro-antd/statistic';
     // NGZorro组件
     NzStatisticModule,
     NzCardModule,
-    NzGridModule
+    NzGridModule,
+    ScrollingModule
   ]
 })
 export class InfomationModule { }

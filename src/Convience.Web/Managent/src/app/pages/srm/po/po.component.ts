@@ -11,6 +11,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { EditButtonComponent } from './button-cell-renderer.component';
 import { FileModalComponent } from '../file-modal/file-modal.component';
+import { ActivatedRoute } from '@angular/router';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -42,7 +43,7 @@ export class PoComponent implements OnInit {
   isVisible=false;
   fileRecord: ViewSrmFileUploadRecordH = {recordHId:1,templateId:1100,srmFileuploadRecordL:[{recordLId:1,recordHId:1,filename:"test1",filetypename:"SIP"},{recordLId:2,recordHId:1,filename:"test2",filetypename:"SOP"},{recordLId:3,recordHId:1,filename:"test3",filetypename:"第三方檢驗文件"}]};
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService
-    ,private _modalService: NzModalService, private dialog: MatDialog) {
+    ,private _modalService: NzModalService, private dialog: MatDialog,private route: ActivatedRoute) {
       this.frameworkComponents = {
         buttonRenderer: EditButtonComponent,
       }
@@ -254,7 +255,7 @@ export class PoComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      PO_NUM: [null],
+      PO_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
       BUYER:[null],
       DATASTATUS:[0]
@@ -285,7 +286,8 @@ export class PoComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.getPoList(null);
+    this.refresh();
+    //this.getPoList(null);
     // this._srmPoService.GetPo(null)
     //   .subscribe((data) => {
     //     this.rowData = data;

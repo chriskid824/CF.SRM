@@ -2,7 +2,9 @@ import { Component, OnInit, AfterViewInit, AfterViewChecked, ApplicationRef } fr
 import { Chart, registerShape } from '@antv/g2';
 import { DashboardService } from 'src/app/business/dashboard.service';
 import { UriConfig } from 'src/app/configs/uri-config';
-
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { AnnouncementType, Main_Announcement } from '../announcement/announcement.model';
+import { SrmFileService } from 'src/app/business/srm/srm-file.service';
 const signalR = require("@microsoft/signalr");
 
 @Component({
@@ -62,14 +64,41 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   lohSize = 0;
   pohSize = 0;
 
-
+  logonid: string = sessionStorage.getItem('logonid')!;
+  password: string = sessionStorage.getItem('password')!;
+  isRemember = "";
+  username = "";
+  isFail: boolean = false;
+  tab = "home";
+  warnMessage: string = '工號或密碼錯誤';
+  tabName = "";
+  BPM = "";
+  announcementTypes: any;
 
   constructor(
     private _uriConstant: UriConfig,
     private _dashboardService: DashboardService,
-    private appref: ApplicationRef) {
+    private appref: ApplicationRef,
+    private _srmFileService: SrmFileService,) {
+      // this.announcementTypes = [
+      //   new AnnouncementType('black', '採購單', 'mdi-account-box-multiple', null),
+      //   new AnnouncementType('red', '出貨單', 'mdi-finance', []),
+      //   new AnnouncementType('blue', '詢價單', 'mdi-desktop-classic', []),
+      //   new AnnouncementType('green', '報價單', 'mdi-library', []),
+      //   new AnnouncementType('lightgreen', '供應商', 'mdi-mother-heart', []),
+      //   new AnnouncementType('orange', '料號', 'mdi-google-cloud', [])
+      // ]
   }
-  ngOnInit(){}
+
+
+
+  ngOnInit(){
+    this._srmFileService.GetAnnList()
+    .subscribe(result => {
+      this.announcementTypes=result;
+      console.info(this.announcementTypes);
+    });
+  }
   ngAfterViewInit(){}
   // ngOnInit() {
   //   const connection = new signalR.HubConnectionBuilder()

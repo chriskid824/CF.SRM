@@ -147,5 +147,15 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             return Ok();
         }
+
+        [HttpGet("GetAnnList")]
+        public IActionResult GetAnnList()
+        {
+            QueryFile q = new QueryFile();
+            q.user = User;
+            var aaa = _srmFileService.GetAnnList(q);
+
+            return Ok(aaa);
+        }
     }
 }

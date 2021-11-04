@@ -45,6 +45,15 @@ namespace Convience.Model.Models.SRM
         public string Name { get; set; }
         public string Status { get; set; }
     }
+
+    public class AnnouncementType
+    {
+        public string Stylecolor { get; set; }
+        public string TxtTypeName { get; set; }
+        public string Icon { get; set; }
+        public string Router { get; set; }
+        public List<string> NumberList { get; set; }
+    }
     //public class FileUploadViewModel: ViewSrmFileRecord
     //{
     //    public IEnumerable<IFormFile> Files { get; set; }

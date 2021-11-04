@@ -38,6 +38,7 @@ namespace Convience.Service.SRM
         public Task<string> UploadAsync(FileUploadViewModel viewModel);
         public Task<Stream> DownloadAsync(NzFileViewModel viewModel);
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
+        public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
     }
 
     public class SrmFileService : ISrmFileService
@@ -51,11 +52,12 @@ namespace Convience.Service.SRM
         private IMapper _mapper;
         private readonly IFileStore _fileStore;
         private readonly appSettings _appSettingsService;
+        private readonly ISrmPoService _srmPoService;
 
         public SrmFileService(
             //IMapper mapper,
             IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper, IFileStore fileStore
-            , IOptions<appSettings> appSettingsOption)
+            , IOptions<appSettings> appSettingsOption, ISrmPoService srmPoService)
         {
             _mapper = mapper;
             _srmPohRepository = srmPohRepository;
@@ -63,6 +65,7 @@ namespace Convience.Service.SRM
             _context = context;
             _fileStore = fileStore;
             _appSettingsService = appSettingsOption.Value;
+            _srmPoService = srmPoService;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
@@ -354,6 +357,86 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return await _fileStore.TryDeleteFileAsync(path);
 
+        }
+        public IEnumerable<AnnouncementType> GetAnnList(QueryFile query)
+        {
+            List<AnnouncementType> result = new List<AnnouncementType>();
+
+            result.Add(GetPoAnn(query));
+            result.Add(GetDeliveryAnn(query));
+            result.Add(GetAnn3(query));
+            result.Add(GetAnn4(query));
+            result.Add(GetAnn5(query));
+            result.Add(GetAnn6(query));
+
+            return result;
+        }
+        public AnnouncementType GetPoAnn(QueryFile query) {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "black",
+                TxtTypeName = "採購單",
+                Icon = "mdi-account-box-multiple",
+                Router="po",
+            };
+            QueryPoList q = new QueryPoList();
+            //var aaa = query.Property("poNum");
+            q.dataStatus = 2;
+            q.user = query.user;
+            var aaa = _srmPoService.GetAll(q);
+            ann.NumberList = aaa.Select(p => p.PoNum).ToList();
+            return ann;
+        }
+        public AnnouncementType GetDeliveryAnn(QueryFile query)
+        {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "red",
+                TxtTypeName = "出貨單",
+                Icon = "mdi-finance",
+                Router = "delivery",
+            };
+            return ann;
+        }
+        public AnnouncementType GetAnn3(QueryFile query)
+        {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "blue",
+                TxtTypeName = "詢價單",
+                Icon = "mdi-desktop-classic",
+            };
+            return ann;
+        }
+        public AnnouncementType GetAnn4(QueryFile query)
+        {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "green",
+                TxtTypeName = "報價單",
+                Icon = "mdi-library",
+            };
+            return ann;
+        }
+        public AnnouncementType GetAnn5(QueryFile query)
+        {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "lightgreen",
+                TxtTypeName = "供應商",
+                Icon = "mdi-mother-heart",
+            };
+            return ann;
+        }
+        public AnnouncementType GetAnn6(QueryFile query)
+        {
+            AnnouncementType ann = new AnnouncementType()
+            {
+                Stylecolor = "orange",
+                TxtTypeName = "料號",
+                Icon = "mdi-google-cloud",
+            };
+            return ann;
         }
     }
 }

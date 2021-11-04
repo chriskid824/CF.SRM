@@ -1,6 +1,18 @@
-<nz-card>
-  <h1>歡迎登入SRM系統</h1>
-</nz-card>
+
+      <div class="announcediv">
+        <div class="row" >
+          <app-announcement style="min-height:300px" *ngFor="let announcementType of announcementTypes" class="col-md-4" [announcementType]="announcementType"></app-announcement>
+          <!-- <app-announcement class="col-md-4" [announcementType]="announcementTypes[1]"></app-announcement>
+          <app-announcement class="col-md-4" [announcementType]="announcementTypes[2]"></app-announcement> -->
+        </div>
+        <!-- <div class="row" style="min-height:300px">
+          <app-announcement class="col-md-4" [announcementType]="announcementTypes[3]"></app-announcement>
+          <app-announcement class="col-md-4" [announcementType]="announcementTypes[4]"></app-announcement>
+          <app-announcement class="col-md-4" [announcementType]="announcementTypes[5]"></app-announcement>
+        </div> -->
+      </div>
+
+
 
 <!-- <nz-row [nzGutter]="10">
     <nz-col [nzSpan]="6">

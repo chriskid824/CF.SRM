@@ -108,6 +108,7 @@ import { FileTemplateComponent } from './file-template/file-template.component';
       { path: "rfq-manage", component: RfqManageComponent, canActivate: [LoginGuard] },
       { path: "rfq-batch-upload", component: RfqBatchUploadComponent, canActivate: [LoginGuard] },
        { path: "po", component: PoComponent , canActivate: [LoginGuard]},
+       { path: "po/:number", component: PoComponent , canActivate: [LoginGuard]},
        { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
        { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
        { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
