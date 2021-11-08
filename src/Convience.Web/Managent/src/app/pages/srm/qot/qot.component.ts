@@ -172,7 +172,7 @@ export class QotComponent implements OnInit {
 
     });
     this.info2 = this._formBuilder.group({});
-    
+
     /* */
     var qot = {
       q: null
@@ -194,11 +194,24 @@ export class QotComponent implements OnInit {
     this.search();
     //this.gridOptions.columnDefs = this.columnDefsmaterial;
     // this.canModify = this.H.status == 1;
+
+    if (this.info3.value["expiringdate"] != null) {
+      var expiringdate = new Date(this.info3.value["expiringdate"]);
+      qot.q.deadLine = expiringdate.getFullYear() + '-' + (expiringdate.getMonth() + 1) + '-' + expiringdate.getDate();
+    } else {
+      qot.q.deadLine = null;
+    }
+    qot.q.leadtime = this.info3.value["leadtime"];
     this.info3 = this._formBuilder.group({
       leadtime: [null],
       expiringdate: [null]
     });
-    this.info3.setValue({ leadtime: this.Q.leadtime??"",expiringdate: this.Q.expiringdate??""});
+    this.info3.setValue({ leadtime: this.Q.leadtime ?? "", expiringdate: this.Q.expiringdate ?? "" });
+    /*this.info3 = this._formBuilder.group({
+      leadtime: [null],
+      expiringdate: [null]
+    });
+    this.info3.setValue({ leadtime: this.Q.leadtime??"",expiringdate: this.Q.expiringdate??""});*/
 
   }
 
@@ -658,9 +671,10 @@ export class QotComponent implements OnInit {
     qot.q.PEmptyFlag = ($('#chkreject_process-input').prop("checked")) ? "X" : "";
     qot.q.SEmptyFlag = ($('#chkreject_surface-input').prop("checked")) ? "X" : "";
     qot.q.OEmptyFlag = ($('#chkreject_other-input').prop("checked")) ? "X" : "";
-    
-    
-    console.log('expiringdate' + this.info3.get('expiringdate').value);
+
+
+    //console.log('expiringdate' + this.info3.get('expiringdate').value);
+
     if (this.info3.value["expiringdate"] != null) {
       var ExpirationDate = new Date(this.info3.value["expiringdate"]);
       //qot.q.expiringdate = expiringdate.getFullYear() + '-' + (expiringdate.getMonth() + 1) + '-' + expiringdate.getDate();
@@ -844,7 +858,7 @@ export class QotComponent implements OnInit {
 
 
   init() {
-
+    //this.info3.setValue({ leadtime: null, expiringdate: null });
     //alert(this.radioValue)
     //alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa='+ 'init')
     this._srmQotService.GetQotData(this.id, this.rfqid, this.vendorid).subscribe(result => {
@@ -962,6 +976,8 @@ export class QotComponent implements OnInit {
       alert( this.IfCheck_O)*/
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
+
+      this.info3.setValue({ leadtime: this.qotv.q[this.matnrIndex].leadtime, expiringdate: this.qotv.q[this.matnrIndex].expiringdate });
     });
     //console.log('----------------------------init-----------------------------')
     console.info(this.qot);
@@ -1043,7 +1059,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
       }
-      ,   
+      ,
       {
         headerName: "材料成本價",
         field: "mCostPrice",
@@ -1051,7 +1067,7 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-      } ,
+      },
       {
         headerName: "備註",
         field: "note",
@@ -1061,7 +1077,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
       }
-      
+
     ]
     this.defaultColDef = {
       filter: "agTextColumnFilter",
@@ -1355,12 +1371,8 @@ export class QotComponent implements OnInit {
     var qot = this.getqot();
     console.log('---------------------------------------------------')
     console.log(qot.q)
-    if ((qot.q.LeadTime == null) ||(qot.q.LeadTime == "")) { alert("計劃交貨時間未輸入"); return; }
-    if ((qot.q.ExpirationDate == null)||(qot.q.ExpirationDate =="NaN-NaN-NaN")){ alert("有效期限未選擇"); return; }
-
-    //if (this.Q.leadtime == "") { alert("計劃交貨時間未選擇"); return; }
-    //if (this.Q.expiringdate == "") { alert("有效期限未選擇"); return; }
-    
+    if ((qot.q.LeadTime == null) || (qot.q.LeadTime == "")) { alert("計劃交貨時間未輸入"); return; }
+    if ((qot.q.ExpirationDate == null) || (qot.q.ExpirationDate == "NaN-NaN-NaN")) { alert("有效期限未選擇"); return; }
 
     if (((qot.material.length) == 0) && (!$('#chkreject_material-input').prop("checked"))) {
       alert('材料至少需一筆或請勾選材料不回填!'); return;
@@ -1521,6 +1533,27 @@ export class QotComponent implements OnInit {
       this.ProcessList = result;
     });
   }*/
+  //檢查所有內容
+  SendQotAll() {
+    //rfqid、供應商. var qot = this.getqot();
+    var qot = this.getqot();
+    console.log('---------------------------------------------------')
+    console.log(qot.q)
+
+    //????
+    this._srmQotService.SendAllQot(qot).subscribe(result => {
+      alert('送出成功');
+      //window.close();
+      this._layout.navigateTo('qot');
+      this._router.navigate(['srm/qotlist']);
+    });
+  }
+
+  checkSendQotAll() {
+    if (confirm("請確認所有報價單皆已輸入完畢並儲存或拒絕報價!確認後單據將整批送出!")) {
+      this.SendQotAll();
+    }
+  }
 
 
 }
