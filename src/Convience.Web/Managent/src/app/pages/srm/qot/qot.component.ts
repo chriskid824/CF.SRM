@@ -1536,7 +1536,7 @@ export class QotComponent implements OnInit {
   //檢查所有內容
   SendQotAll() {
     //rfqid、供應商. var qot = this.getqot();
-    var qot = this.getqot();
+    /*var qot = this.getqot();
     console.log('---------------------------------------------------')
     console.log(qot.q)
 
@@ -1546,7 +1546,7 @@ export class QotComponent implements OnInit {
       //window.close();
       this._layout.navigateTo('qot');
       this._router.navigate(['srm/qotlist']);
-    });
+    });*/
   }
 
   checkSendQotAll() {
