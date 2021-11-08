@@ -145,7 +145,7 @@ namespace Convience.Service.SRM
 
             SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
-            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg == data.Ekorg).FirstOrDefault();
+            SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg == data.Ekorg && p.SrmVendor1 != data.SrmVendor1).FirstOrDefault();
 
 
             if (vendorname!=null)

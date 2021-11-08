@@ -69,6 +69,7 @@ export class SupplierCComponent implements OnInit {
         if (this.searchForm.valid)
         {        
           this._srmSrmService.AddSupplier(supplier).subscribe(result => {
+            console.log(result);
             this._messageService.success("SRM供應商："+result['srmVendor1']+"，存檔成功！");
           });
         }

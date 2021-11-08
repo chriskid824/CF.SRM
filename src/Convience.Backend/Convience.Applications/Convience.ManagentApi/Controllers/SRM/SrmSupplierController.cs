@@ -71,9 +71,8 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult AddSupplier(ViewSrmSupplier data)
         {
             try
-            {
-                _srmSupplierService.AddVendor(data);
-                return Ok();
+            {                
+                return Ok(_srmSupplierService.AddVendor(data));
             }
             catch (Exception ex)
             {
