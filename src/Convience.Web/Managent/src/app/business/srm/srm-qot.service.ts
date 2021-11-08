@@ -41,4 +41,7 @@ export class SrmQotService {
   GetProcessByNum(processnum) {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetProcessByNum`, processnum);
   }
+  SendAllQot(qot){
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/SendAllQot`, qot);
+  }
 }

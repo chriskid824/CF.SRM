@@ -47,5 +47,10 @@ namespace Convience.Entity.Entity.SRM
         public string ekgryid { get; set; }
         public string poNum { get; set; }
         public int vendorid { get; set; }
+        public int? vstatus { get; set; }
+        public string StatusDesc { get; set; }
+        public string txtSN { get; set; }
+        public string CreateByName { get; set; }
+
     }
  }

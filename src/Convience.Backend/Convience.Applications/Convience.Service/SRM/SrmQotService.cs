@@ -613,7 +613,9 @@ namespace Convience.Service.SRM
                                sEmptyFlag = q.SEmptyFlag,
                                oPEmptyFlag = q.OEmptyFlag,
                                Description = m.Description,
-                               Qty = rm.Qty
+                               Qty = rm.Qty,
+                               Expiringdate = q.ExpirationDate,
+                               Leadtime = q.LeadTime
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t

@@ -167,29 +167,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
-        [HttpPost("Send")]
-        //[Permission("rfq")]//???
-        public IActionResult Send(JObject qot)
-        {
-            SrmQotH q = qot["q"].ToObject<SrmQotH>();
-            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
-            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
-            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
-            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
-            DateTime now = DateTime.Now;
-            q.LastUpdateDate = now;
-            _srmQotService.Save(q, m, s, p, o);
-            SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
-            _srmQotService.UpdateQotStatus(((int)Status.確認), qu);
-            //確認所有qot
-            bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
-            //更新rfq
-            if (IfUpdateRfq) 
-            {
-                _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
-            }
-            return Ok();
-        }
+        
 
         
         [HttpPost("GetRowNum")]
@@ -218,7 +196,50 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             return Ok(_srmQotService.GetProcessByNum(num));
         }
-
-        
+        [HttpPost("Send")]
+        //[Permission("rfq")]//???
+        public IActionResult Send(JObject qot)
+        {
+            SrmQotH q = qot["q"].ToObject<SrmQotH>();
+            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+            DateTime now = DateTime.Now;
+            q.LastUpdateDate = now;
+            _srmQotService.Save(q, m, s, p, o);
+            SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
+            _srmQotService.UpdateQotStatus(((int)Status.確認), qu);
+            //確認所有qot
+            bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
+            //更新rfq
+            if (IfUpdateRfq)
+            {
+                _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
+            }
+            return Ok();
+        }
+        /*[HttpPost("SendAllQot")]
+        //[Permission("rfq")]//???
+        public string SendAllQot(JObject qot)
+        {
+            //int vendorid = _srmQotService.GetVendorId(qot);
+            //string msg = _srmQotService.SendAll(int.Parse(qot["q"]["RfqId"].ToString()), int.Parse(qot["q"]["vendorId"].ToString()));
+            //無錯誤訊息則變更狀態:初始 -> 
+            if (string.IsNullOrWhiteSpace(msg)) 
+            {
+                //SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
+                //string aa = qot["q"][""].ToString()
+                //_srmQotService.UpdateQotStatus(((int)Status.確認), qu);
+                ////確認所有qot
+                //bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
+                ////更新rfq
+                //if (IfUpdateRfq)
+                //{
+                //    _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
+                //}
+            }
+            return msg;
+        }*/
     }
 }
