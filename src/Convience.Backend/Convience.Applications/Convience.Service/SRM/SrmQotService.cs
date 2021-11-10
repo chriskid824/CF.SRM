@@ -33,8 +33,8 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewQotListH> GetQotList();
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query);
         //public IEnumerable<ViewQot> GetDataBQotId(int QotId);
-        public IQueryable GetQotData(int QotId,int vendorid,int qotid);
-        public IQueryable GetMatnrData(int rfqid,int vendorid);
+        public IQueryable GetQotData(int QotId, int vendorid, int qotid);
+        public IQueryable GetMatnrData(int rfqid, int vendorid);
         //public ViewQotResult GetDetail(SrmQotH[] query);
         public ViewQotResult GetDetail(QueryQot query);
         public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers);
@@ -73,8 +73,8 @@ namespace Convience.Service.SRM
 
             //using (SRMContext db = new SRMContext())
             //{
-                _context.SrmQotHs.AddRange(qoths);
-                _context.SaveChanges();
+            _context.SrmQotHs.AddRange(qoths);
+            _context.SaveChanges();
             //}
 
             //db.SrmQotHs.AddRange(qoths);
@@ -159,18 +159,18 @@ namespace Convience.Service.SRM
             }
         }
         #region 檢核所有qot
-        public bool CheckAllQot(SrmQotH qotH) 
+        public bool CheckAllQot(SrmQotH qotH)
         {
             //只要有一張qot為初始狀態，rfq就不更新
             bool IfChangeRfq = true; //預設變更
-            SrmQotH[] qs = _context.SrmQotHs.AsQueryable().Where(p =>p.RfqId == qotH.RfqId).ToArray();          
+            SrmQotH[] qs = _context.SrmQotHs.AsQueryable().Where(p => p.RfqId == qotH.RfqId).ToArray();
             foreach (var q in qs)
             {
-                if (q.Status ==1) 
+                if (q.Status == 1)
                 {
                     IfChangeRfq = false;
                     return IfChangeRfq;
-                }           
+                }
             }
             //檢核該rfq的所有qot loop 檢核
             return IfChangeRfq;
@@ -219,7 +219,7 @@ namespace Convience.Service.SRM
             var qotQurty = _context.SrmQotHs.AsQueryable()
                 .AndIfHaveValue(query.rfqId, r => r.RfqId == query.rfqId)
                 .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
-                .AndIfHaveValue(query.vendorId, r=>r.VendorId == query.vendorId)
+                .AndIfHaveValue(query.vendorId, r => r.VendorId == query.vendorId)
                 .OrderBy(r => r.MatnrId);
             return qotQurty.ToArray();
             //}
@@ -242,14 +242,14 @@ namespace Convience.Service.SRM
             //{
             var qot = _context.SrmQotHs
 .Where(p => p.QotId == query.qotId).ToList().First();
-           
+
             if (query.matnrId != null)
             {
                 qot = _context.SrmQotHs
               .AndIfHaveValue(query.matnrId, r => r.MatnrId == query.matnrId)
               .Where(p => p.RfqId == query.rfqId && p.VendorId == query.vendorId).ToList().First();
             }
-            
+
             return qot;
             //}
         }
@@ -320,7 +320,7 @@ namespace Convience.Service.SRM
                               VVendor = vendor.VendorName
 
                           })
-                          .Where(p => p.VStatus ==7)
+                          .Where(p => p.VStatus == 7)
                           .Distinct()
                           .ToList();
 
@@ -345,7 +345,7 @@ namespace Convience.Service.SRM
                                   QLastUpdateBy = q.LastUpdateBy,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QStatusDesc = status.StatusDesc
-                              }).Where(p => p.Status !=5)
+                              }).Where(p => p.Status != 5)
                               .Where(l => l.RfqId == p.RfqId)
                               .ToList();
             });
@@ -504,15 +504,15 @@ namespace Convience.Service.SRM
                               })
                               //.ToList();
                               //.Where(p => p.QVendorId.Value == query.vendor)
-                     
+
                               .Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
                               .Where(l => l.QRfqId.Value == p.VRfqId)
-                          
+
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
                               .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status) //0827
-                              .ToList();            
+                              .ToList();
             });
-            return result.Where(p => p.SrmQotHs.Count > 0).ToList(); 
+            return result.Where(p => p.SrmQotHs.Count > 0).ToList();
         }
 
         /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
@@ -554,7 +554,7 @@ namespace Convience.Service.SRM
             int vendor = query.vendor;
             return result.Where(p => p.VENDOR_ID == vendor).ToList();
         }*/
-        public IQueryable GetMatnrData(int rfqid, int vendorid) 
+        public IQueryable GetMatnrData(int rfqid, int vendorid)
         {
             var qotlist = (from q in _context.SrmQotHs
                            join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
@@ -574,10 +574,10 @@ namespace Convience.Service.SRM
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
-            qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid ).OrderBy(p => p.QotId);
+            qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid).OrderBy(p => p.QotId);
             return qotlist;
         }
-        public IQueryable GetQotData(int rfqid,int vendorid,int qotid)
+        public IQueryable GetQotData(int rfqid, int vendorid, int qotid)
         {
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
@@ -588,11 +588,11 @@ namespace Convience.Service.SRM
 
 
                            //where e.OwnerID == user.UID
-                           select new 
+                           select new
                            {
-                              
+
                                CreateBy = u1.Name,//q.CreateBy,
-                               CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),                             
+                               CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
                                Status = s.StatusDesc,
                                RfqNum = r.RfqNum,
                                QotId = q.QotId,
@@ -751,8 +751,8 @@ namespace Convience.Service.SRM
 
         //    return qotinfo;
         //}
-      public int GetVendorId(QueryQotList query) 
-      {
+        public int GetVendorId(QueryQotList query)
+        {
             var vendorid = 0;
             var vendor = (from v in _context.SrmVendors
                           where (v.SapVendor == query.vendor || v.SrmVendor1 == query.vendor)
@@ -764,21 +764,21 @@ namespace Convience.Service.SRM
             return vendorid;
 
         }
-        public int GetQotId(QueryQot query) 
+        public int GetQotId(QueryQot query)
         {
             var qotid = 0;
             var qot = (from r in _context.SrmRfqHs
-                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
-                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
-                           select new
-                           {
+                       join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                       join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
+                       select new
+                       {
 
-                             QotId = q.QotId,
-                             RfqId = r.RfqId,
-                             VendorId = q.VendorId,
-                             MatnrId = q.MatnrId
+                           QotId = q.QotId,
+                           RfqId = r.RfqId,
+                           VendorId = q.VendorId,
+                           MatnrId = q.MatnrId
 
-                           });
+                       });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
@@ -849,8 +849,9 @@ namespace Convience.Service.SRM
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
                                    //SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
-                                   QotId = process.QotId
-                                   
+                                   QotId = process.QotId,
+                                   PCostsum = process.PCostsum
+
                                })
                                .Where(p => p.QotId == qotid)
                                .ToArray();
@@ -872,7 +873,8 @@ namespace Convience.Service.SRM
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
                                    //SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
-                                   QotId = surface.QotId
+                                   QotId = surface.QotId,
+                                   SCostsum = surface.SCostsum
                                })
                                .Where(p => p.QotId == qotid)
                                .ToArray();
@@ -931,7 +933,7 @@ namespace Convience.Service.SRM
                                     Weight = material.Weight,
                                     Note = material.Note,
                                     VendorId = vendor.VendorId,
-                                    VendorName = vendor.VendorName,                                   
+                                    VendorName = vendor.VendorName,
                                 })
                                 .Where(p => p.QotId == query.qotId)
                                 .ToArray();
@@ -1020,7 +1022,7 @@ namespace Convience.Service.SRM
                 query.matnrId = qotH.MatnrId;
                 qotid = GetQotId(query);
             }
-           
+
             //0825
             using (var db = new SRMContext())
             {
@@ -1052,8 +1054,8 @@ namespace Convience.Service.SRM
             //try
             //{
             //var oldQotHs = _context.SrmQotHs.Where(r => r.QotId == qotH.QotId);
-            
-            
+
+
             //foreach (var oldQotH in oldQotHs)
             //{
             //    oldQotH.QotId = qotH.QotId;
@@ -1063,7 +1065,7 @@ namespace Convience.Service.SRM
             //    qotH.VendorId = oldQotH.VendorId;
             //    qotH.Status = oldQotH.Status;
             //}
-            
+
             //初始才能修改
 
             if (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始))
@@ -1071,7 +1073,7 @@ namespace Convience.Service.SRM
                 throw new Exception("非初始無法修改");
             }
             //_context.SrmQotHs.Update(qotH);
-            
+
             #region material
             foreach (var srmQotMaterial in qotMaterials)
             {
@@ -1214,7 +1216,7 @@ namespace Convience.Service.SRM
         //        return rfq;
         //    }
         //}
-        public void InsertRejectReason( SrmQotUpdateMaterial qotH) 
+        public void InsertRejectReason(SrmQotUpdateMaterial qotH)
         {
 
             DateTime now = DateTime.Now;
@@ -1237,7 +1239,7 @@ namespace Convience.Service.SRM
                 //return result;
             }
         }
-        public int GetQotStatus(SrmQotH qotH) 
+        public int GetQotStatus(SrmQotH qotH)
         {
             var qotstatus = 0;
             var qot = _context.SrmQotHs.Where(p => p.QotId == qotH.QotId).ToList();
@@ -1245,28 +1247,28 @@ namespace Convience.Service.SRM
             //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)
             //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
             qotstatus = qot.Select(r => r.Status).First().Value;
-            
+
             return qotstatus;
         }
         #region
-        public int GetRowNum(SrmQotH qotH) 
+        public int GetRowNum(SrmQotH qotH)
         {
             int qotstatus = GetQotStatus(qotH);
             int index = -1;
             SrmQotH[] qs = _context.SrmQotHs.AsQueryable()
                 .Where(p => p.RfqId == qotH.RfqId)
-                .Where(p =>p.VendorId == qotH.VendorId)
+                .Where(p => p.VendorId == qotH.VendorId)
                 //.Where(p =>p.Status == qotstatus)
-                .OrderBy(p =>p.QotId).ToArray();
+                .OrderBy(p => p.QotId).ToArray();
             foreach (var q in qs)
             {
                 index++;
                 if (q.QotId == qotH.QotId)
                 {
-                    
+
                     return index;
                 }
-                
+
             }
             //檢核該rfq的所有qot loop 檢核
             return index;
@@ -1283,7 +1285,7 @@ namespace Convience.Service.SRM
         public string GetProcessByNum(int num)
         {
             string processname = string.Empty;
-            var p =  _context.SrmProcesss.Where(p =>p.ProcessNum == num).ToList();
+            var p = _context.SrmProcesss.Where(p => p.ProcessNum == num).ToList();
             processname = p.Select(r => r.Process).First();
 
             return processname;
@@ -1293,12 +1295,12 @@ namespace Convience.Service.SRM
         {
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
-                           join v in _context.SrmVendors on q.VendorId equals v.VendorId                         
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId
                            select new
-                           {                            
+                           {
                                RfqNum = r.RfqNum,
                                QotId = q.QotId,
-                               QotNum = q.QotNum,                                                       
+                               QotNum = q.QotNum,
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
                                mEmptyFlag = q.MEmptyFlag,
@@ -1307,17 +1309,17 @@ namespace Convience.Service.SRM
                                oPEmptyFlag = q.OEmptyFlag,
                                Status = q.Status
                            });
-            
+
             qotlist = qotlist
             .Where(p => p.RfqId == rfqid)
             .Where(p => p.VendorId == vendorid)
-            .Where(p => p.Status == 1)  
+            .Where(p => p.Status == 1)
             .OrderBy(p => p.QotId);
             foreach (var qot in qotlist)
             {
                 //"X"表不回填
-                if (qot.mEmptyFlag != "X") 
-                { } 
+                if (qot.mEmptyFlag != "X")
+                { }
             }
 
             return qotlist;
@@ -1326,9 +1328,9 @@ namespace Convience.Service.SRM
         {
             bool materialOK = true;
             var Query = (from m in _context.SrmQotMaterial
-                         where m.QotId.Equals(qotid)                       
+                         where m.QotId.Equals(qotid)
                          select m).ToList();
-            if (Query.Count() == 0) 
+            if (Query.Count() == 0)
             {
                 materialOK = false;
             }
@@ -1371,16 +1373,17 @@ namespace Convience.Service.SRM
             return surfaceOK;
         }
         #endregion
-        public int GetVendorId(JObject qot) 
+        public int GetVendorId(JObject qot)
         {
             string name = qot["q"]["vendorId"].ToString();
             int vendorid = 0;
-            var qotquery = (from v in _context.SrmVendors where v.SrmVendor1 == name
-                       select new
-                       {
-                           VendorId = v.VendorId,
-                           SrmVendor = v.VendorName
-                       });
+            var qotquery = (from v in _context.SrmVendors
+                            where v.SrmVendor1 == name
+                            select new
+                            {
+                                VendorId = v.VendorId,
+                                SrmVendor = v.VendorName
+                            });
 
             vendorid = qotquery.Select(r => r.VendorId).First();
             return vendorid;
