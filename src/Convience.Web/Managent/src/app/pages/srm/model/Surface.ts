@@ -4,4 +4,5 @@ export class Surface {
   times?: number;
   price?: GLfloat;
   note?: string;
+  surface_costsum?: GLfloat;
 }

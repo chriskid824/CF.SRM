@@ -5,4 +5,5 @@ export class Process {
   price ?: GLfloat;
   machine?: string;
   note?: string;
+  process_costsum?: GLfloat;
 }

@@ -16,5 +16,7 @@ namespace Convience.Entity.Entity.SRM
         public decimal? PPrice { get; set; }
         public string PMachine { get; set; }
         public string PNote { get; set; }
+        public decimal? PCostsum { get; set; }
+        
     }
 }

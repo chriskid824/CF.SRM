@@ -826,6 +826,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(18)
                     .HasColumnName("P_PROCESS_NUM");
 
+                entity.Property(e => e.PCostsum).HasColumnName("P_COSTSUM");
+
                 entity.Property(e => e.QotId).HasColumnName("QOT_ID");
             });
 
@@ -844,6 +846,10 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.SPrice)
                     .HasColumnType("money")
                     .HasColumnName("S_PRICE");
+
+                entity.Property(e => e.SCostsum)
+                   .HasColumnType("money")
+                   .HasColumnName("S_COSTSUM");               
 
                 entity.Property(e => e.SProcess)
                     .HasMaxLength(18)

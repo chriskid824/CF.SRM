@@ -157,6 +157,8 @@
                 nzType="arrow-left"></i>返回</button>
             <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()" disabled="{{canModify==false}}"><i
                 nz-icon nzType="arrow-right"></i>送出</button>
+            <!--<button id="btnSendAllQot" nz-button class="mr-10" (click)="checkSendQotAll()"
+              disabled="{{canModify==false}}"><i nz-icon nzType="arrow-right"></i>全部送出</button>-->
             <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
       id="btnBackQot">返回</button> <button id="btnSendQot" style="margin-left:380px;">送出</button>-->
           </div>
@@ -208,15 +210,16 @@
                 <div>
                   <form nz-form [nzLayout]="'inline'" [formGroup]="info3">
                     <nz-form-item>
-                      <nz-form-label [nzFor]="'leadtime'">計劃交貨時間</nz-form-label>
+                      <nz-form-label [nzFor]="'leadtime'">計劃交貨時間<br>日曆天</nz-form-label>
                       <nz-form-control>
-                        <input  required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間" formControlName="leadtime" autocomplete="off"  />
+                        <input required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間"
+                          formControlName="leadtime" autocomplete="off" />
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
                       <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
                       <nz-form-control>
-                        <nz-date-picker required  style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
+                        <nz-date-picker required style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
                           formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
                       </nz-form-control>
                     </nz-form-item>
@@ -226,6 +229,14 @@
                     <label>{{H.viewstatus}}</label>
                   </nz-form-control>
                 </nz-form-item>-->
+
+                    <nz-form-item style="margin-left: 160px;">
+                      <nz-form-label [nzFor]="'totalAmount'">總金額</nz-form-label>
+                      <nz-form-control>
+                        <input value="{{sumMap.get('total')}}" required disabled="true" nz-input placeholder="總金額"
+                          formControlName="totalAmount" autocomplete="off" />
+                      </nz-form-control>
+                    </nz-form-item>
                   </form>
                 </div>
               </div>
@@ -239,6 +250,7 @@
           <!--<mat-tab label="材料明細">-->
           <div>
             <h4>A.材料</h4>
+
             <button id="btnaddm" nz-button class="mr-10" (click)="addMaterial(addMaterialTitleTp,MaterialContentTp)"
               disabled="{{canModifymaterial==false}}"><i nz-icon nzType="plus"></i>新增材料費用</button>
             <button id="btndeletem" nz-button class="mr-10" (click)="deleteMaterial()"
@@ -246,6 +258,9 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_material" (change)="checkCheckBoxvalue_M($event)"
               disabled="{{canModify==false}}" [checked]="IfCheck_M">不回填</mat-checkbox>
+
+
+
             <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Material"
@@ -253,6 +268,9 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+            <label style="margin-left: 600px;">材料小計</label>
+            <input value="{{sumMap.get('material')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+              formControlName="materialcost" autocomplete="off" />
           </div>
         </nz-card>
         <!--</mat-tab>-->
@@ -275,6 +293,11 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+
+            <label style="margin-left: 600px;">加工小計</label>
+            <input value="{{sumMap.get('process')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+              formControlName="processcost" autocomplete="off" />
+
           </div>
           <!--</mat-tab>-->
         </nz-card>
@@ -297,6 +320,11 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+
+
+            <label style="margin-left: 600px;">表面處理小計</label>
+            <input value="{{sumMap.get('surface')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+              formControlName="surfacecost" autocomplete="off" />
           </div>
           <!--  </mat-tab>-->
         </nz-card>
@@ -319,6 +347,12 @@
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
+
+
+            <label style="margin-left: 600px;">其他費用小計</label>
+            <input value="{{sumMap.get('other')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+              formControlName="othercost" autocomplete="off" />
+
           </div>
         </nz-card>
         <!--  </mat-tab>-->
@@ -565,7 +599,7 @@
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_hourErrorTpl">
             <input [attr.id]="'edit_process_hour'" formControlName="process_hour" nz-input placeholder="工時(時)"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="process_hour" />
             <ng-template #process_hourErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
@@ -581,7 +615,7 @@
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costErrorTpl">
             <input [attr.id]="'edit_process_cost'" formControlName="process_cost" nz-input placeholder="單價(時)"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="process_cost" />
             <ng-template #process_costErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
@@ -590,6 +624,25 @@
           </nz-form-control>
         </td>
       </tr>
+      <!--add 20211109-->
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_costsum'">加工成本價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costsumErrorTpl">
+            <input readonly="readonly" [attr.id]="'edit_process_costsum'" formControlName="process_costsum" nz-input
+              placeholder="加工成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+              [ngModel]="process_cost*process_hour" />
+            <ng-template #process_costsumErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+
+          </nz-form-control>
+        </td>
+      </tr>
+
       <tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_process_machine'">機台</nz-form-label>
@@ -661,7 +714,7 @@
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costErrorTpl">
             <input [attr.id]="'edit_surface_cost'" formControlName="surface_cost" nz-input placeholder="單價(時)"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="surface_cost" />
 
             <ng-template #surface_costErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
@@ -673,18 +726,41 @@
       </tr>
       <tr>
         <td>
-          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_times'">次數</nz-form-label>
+          <nz-form-label nzRequired [nzSm]="24" [nzXs]="24" [nzFor]="'surface_times'">次數</nz-form-label>
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_timesErrorTpl">
             <input [attr.id]="'edit_surface_times'" formControlName="surface_times" nz-input placeholder="次數"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+              autocomplete="off" (ngModelChange)="checktype($event)" [(ngModel)]="surface_times" />
             <ng-template #surface_timesErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
               <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
             </ng-template>
           </nz-form-control>
         </td>
       </tr>
+
+      <!--add 20211109-->
+
+      <tr>
+        <td>
+          <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'edit_surface_costsum'">表面處理成本價</nz-form-label>
+        </td>
+        <td>
+          <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costsumErrorTpl">
+            <input readonly="readonly" [attr.id]="'edit_surface_costsum'" formControlName="surface_costsum" nz-input
+              placeholder="表面處理成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+              [ngModel]="surface_cost*surface_times" />
+            <ng-template #surface_costsumErrorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+            </ng-template>
+
+          </nz-form-control>
+        </td>
+      </tr>
+
+
       <tr>
         <td>
           <nz-form-label [nzSm]="24" [nzXs]="24" [nzFor]="'surface_note'">備註</nz-form-label>

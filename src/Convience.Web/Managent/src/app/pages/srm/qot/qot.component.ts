@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit, TemplateRef } from '@angular/core';
 import { GridOptions } from 'ag-grid-community';
 import { Role } from 'src/app/pages/system-manage/model/role';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -116,6 +116,12 @@ export class QotComponent implements OnInit {
   public gridOptions: GridOptions;
   ProcessList;
   MaterialList;
+  materialcost;
+  processcost;
+  surfacecost;
+  othercost;
+  aggFuncs;
+  sumMap = new Map<string, number>();
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -137,18 +143,12 @@ export class QotComponent implements OnInit {
     this.rowData_Process = [];
     this.rowData_Surface = [];
     this.rowData_Other = [];
-    /**********/
-    /*material*/
   }
 
-
-
-  //this.rowData_MATNR = [];
   ngOnInit(): void {
     this.initProcess();
     this.initMaterial();
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
-    //alert(this.qotId)
     this.matnrIndex = 0;
 
     this.activatedRoute.queryParams
@@ -156,13 +156,7 @@ export class QotComponent implements OnInit {
         //console.log(params); // { orderby: "price" }
         this.id = params.id;
         this.vendorid = params.vendorid;
-        this.rfqid = params.rfqid;
-        //alert(this.vendorid)
-        //alert(this.rfqid)
-        //console.log(this.vendorid);
-        //console.log(this.rfqid);
-        //console.log(this.id); // price
-        //alert('qqqqqqqqqqqqqqqqqqqotid='+this.id)
+        this.rfqid = params.rfqid;       
       }
       );
     this.matnrList = this._formBuilder.group({
@@ -173,7 +167,6 @@ export class QotComponent implements OnInit {
     });
     this.info2 = this._formBuilder.group({});
 
-    /* */
     var qot = {
       q: null
     }
@@ -188,7 +181,6 @@ export class QotComponent implements OnInit {
       this.matnrIndex = result;
     });
 
-    /* */
     this.init();
     this.initGrid();
     this.search();
@@ -207,12 +199,6 @@ export class QotComponent implements OnInit {
       expiringdate: [null]
     });
     this.info3.setValue({ leadtime: this.Q.leadtime ?? "", expiringdate: this.Q.expiringdate ?? "" });
-    /*this.info3 = this._formBuilder.group({
-      leadtime: [null],
-      expiringdate: [null]
-    });
-    this.info3.setValue({ leadtime: this.Q.leadtime??"",expiringdate: this.Q.expiringdate??""});*/
-
   }
 
 
@@ -242,9 +228,6 @@ export class QotComponent implements OnInit {
     { field: '機台', resizable: true },
     { field: '備註', resizable: true }
   ];
-
-
-
 
   rowDataprocess = [
     { 序號: '01', 工序代碼: '0101', '工時(時)': '5', '單價(時)': '20', 機台: 'machine', 備註: 'A' },
@@ -277,7 +260,6 @@ export class QotComponent implements OnInit {
 
   }
   //tplModal: NzModalRef;
-
   data: QotH[] = [];
   editedRole: Role = new Role();
   data1: Material[] = [];
@@ -286,10 +268,6 @@ export class QotComponent implements OnInit {
   size: number = 10;
   total: number = 0;
   searchString = null;
-
-  submitEdi() {
-
-  }
 
   onGridReady(params) {
     function myRowClickedHandler(event) {
@@ -309,28 +287,22 @@ export class QotComponent implements OnInit {
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi_Surface = params.api;
     this.columnApi_Surface = params.columnApi;
-
-    //this.gridApi_Surface.sizeColumnsToFit();
   }
 
   onGridReady_Process(params) {
     function myRowClickedHandler(event) {
-      //console.log('The row was clicked');
     }
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi_Process = params.api;
     this.columnApi_Process = params.columnApi;
-    //console.log(params.api);
-    //this.gridApi_Process.sizeColumnsToFit();
   }
   onGridReady_Other(params) {
     function myRowClickedHandler(event) {
-      //console.log('The row was clicked');
+
     }
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi_Other = params.api;
     this.columnApi_Other = params.columnApi;
-    //this.gridApi_Other.sizeColumnsToFit();
   }
   deleteMaterial() {
     let selectedNodes = this.gridApi.getSelectedNodes();
@@ -408,7 +380,7 @@ export class QotComponent implements OnInit {
   }
 
 
-  /**/
+
   add(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -420,7 +392,6 @@ export class QotComponent implements OnInit {
   }
   //addRole(title: TemplateRef<{}>, content: TemplateRef<{}>){}
   submitProcessList() {
-    /**/
     for (const i in this.editForm_Process.controls) {
       this.editForm_Process.controls[i].markAsDirty();
       this.editForm_Process.controls[i].updateValueAndValidity();
@@ -435,6 +406,7 @@ export class QotComponent implements OnInit {
       this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
       this.editedProcess.note = this.editForm_Process.value['process_remark'];
       this.editedProcess.machine = this.editForm_Process.value['process_machine'];
+      this.editedProcess.process_costsum = this.editForm_Process.value['process_costsum'];
       console.info(this.editForm_Process.value);
 
       /*寫入grid */
@@ -444,22 +416,25 @@ export class QotComponent implements OnInit {
         "pHours": this.editedProcess.p_hour,
         "pPrice": this.editedProcess.price,
         "pMachine": this.editedProcess.machine,
-        "pNote": this.editedProcess.note
+        "pNote": this.editedProcess.note,
+        "pCostsum": this.editedProcess.process_costsum,
       });
-      //alert('aaaaa+ '+ this.rowData_Process.value)
+      console.log('------1109-------');
+      console.info(this.gridApi_Process.value)
+      //alert('aaaaa+ ' + this.rowData_Process.pCostsum)
       //console.log(this.gridApi);
-      //console.log('-------------');
-      //console.log(this.gridApi_Process);
+
+      console.log(this.gridApi_Process);
       this.gridApi_Process.setRowData(this.rowData_Process);
       this.tplModal.close();
+      this.GetSumData();
 
     }
     console.log('--------------------------2-------------------------')
     console.log(this._storageService)
   }
-  /**/
+
   submitMaterialList() {
-    /**/
     for (const i in this.editForm_Material.controls) {
       this.editForm_Material.controls[i].markAsDirty();
       this.editForm_Material.controls[i].updateValueAndValidity();
@@ -495,14 +470,12 @@ export class QotComponent implements OnInit {
       //console.log('rowData_Material='+this.rowData_Material);
 
       this.gridApi.setRowData(this.rowData_Material);
+      console.log('5959595959595959')
+      console.log(this.gridApi)
       this.tplModal.close();
+      this.GetSumData();
     }
   }
-  /**/
-
-
-
-
   refresh() {
     this._roleService.getRoles(this.searchString, this.page, this.size)
       .subscribe((result: any) => { this.data = result['data']; this.total = result['count']; });
@@ -530,7 +503,6 @@ export class QotComponent implements OnInit {
 
       //material_totalcost: [this.editedMatetial.totalcost, [Validators.required]],
       material_note: [this.editedMatetial.note,]
-      //menus: [[]]
     });
     this.tplModal = this._modalService.create({
       nzTitle: title,
@@ -564,6 +536,7 @@ export class QotComponent implements OnInit {
 
       this.gridApi_Other.setRowData(this.rowData_Other);
       this.tplModal.close();
+      this.GetSumData();
     }
   }
 
@@ -579,16 +552,20 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
+      this.editedSurface.surface_costsum = this.editForm_Surface.value['surface_costsum'];
+
 
       this.rowData_Surface.push({
         "sProcess": this.editedSurface.process,
         "sTimes": this.editedSurface.times,
         "sPrice": this.editedSurface.price,
-        "sNote": this.editedSurface.note
+        "sNote": this.editedSurface.note,
+        "sCostsum": this.editedSurface.surface_costsum
       });
 
       this.gridApi_Surface.setRowData(this.rowData_Surface);
       this.tplModal.close();
+      this.GetSumData();
     }
   }
   checktype(number: number) {
@@ -606,6 +583,7 @@ export class QotComponent implements OnInit {
       //surface_name: [this.editedSurface.process,],
       surface_times: [this.editedSurface.times, [Validators.pattern(SrmModule.number)]],
       surface_cost: [this.editedSurface.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      surface_costsum: [this.editedSurface.surface_costsum, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //surface_cost: [this.editedSurface.price,],
       surface_note: [this.editedSurface.note]
     });
@@ -642,6 +620,7 @@ export class QotComponent implements OnInit {
       //process_cost: [this.editedProcess.price,],
       process_cost: [this.editedProcess.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       process_hour: [this.editedProcess.p_hour, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      process_costsum: [this.editedProcess.process_costsum, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //process_hour: [this.editedProcess.p_hour,],
       process_machine: [this.editedProcess.machine,],
       process_remark: [this.editedProcess.note],
@@ -858,24 +837,12 @@ export class QotComponent implements OnInit {
 
 
   init() {
-    //this.info3.setValue({ leadtime: null, expiringdate: null });
-    //alert(this.radioValue)
-    //alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa='+ 'init')
     this._srmQotService.GetQotData(this.id, this.rfqid, this.vendorid).subscribe(result => {
       //console.log(result);
       this.qotv = result;
-      //console.info("resultttttttt="+this.qotv);
-      //console.log(this.qotv.m);
-      //console.log(this.qotv);
-      //console.log(this.qotv.q);
-      //console.log(this.qotv.q[0]);
-      //console.log('test');
-      //console.log(this.qotv.q[0].createBy);
       this.matnrs = [];
       this.qotv.m.forEach(row => this.matnrs.push({ label: row.matnr, value: row.matnrId }));//???
-      //console.log(this.matnrs);
       this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });//???
-      //console.log(this.matnrs[0].value);
       this.nodes = [];
       //this.nodes = [{ title: this.qotv.q[0].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
       this.nodes = [{ title: this.qotv.q[this.matnrIndex].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
@@ -969,11 +936,7 @@ export class QotComponent implements OnInit {
           this.IfCheck_O = false;
           this.canModifyother = true;
         }
-      }
-      /*alert( this.IfCheck_M)
-      alert( this.IfCheck_P)
-      alert( this.IfCheck_S)
-      alert( this.IfCheck_O)*/
+      } 
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
 
@@ -993,6 +956,7 @@ export class QotComponent implements OnInit {
       this.rowData_Process = result["process"];
       this.rowData_Other = result["other"];
       this.rowData_Surface = result["surface"];
+      this.GetSumData();
     });
     //console.log("init!!!!!!!!!!!!!!!")
     //console.log(this.rowData_Material)
@@ -1067,6 +1031,7 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
+        aggFunc: myCustomSumFunction_M
       },
       {
         headerName: "備註",
@@ -1077,8 +1042,49 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
       }
-
     ]
+    function myCustomSumFunction_M(values) {
+      var sum = 0;
+      values.forEach(function (value) { sum += Number(value); });
+      var aa = sum;
+      console.log('myCustomSumFunction_M');
+      //console.log(this.materialcost);
+      //this.materialcost = aa;
+      return sum;
+    }
+    function myCustomSumFunction_P(values) {
+      var sum = 0;
+      values.forEach(function (value) { sum += Number(value); });
+      var aa = sum;
+      //this.materialcost = aa;
+      return sum;
+    }
+
+    function myCustomSumFunction_S(values) {
+      var sum = 0;
+      values.forEach(function (value) { sum += Number(value); });
+      var aa = sum;
+      //this.materialcost = aa;
+      return sum;
+    }
+
+    function myCustomSumFunction_O(values) {
+      var sum = 0;
+      values.forEach(function (value) { sum += Number(value); });
+      var aa = sum;
+      //alert(aa);
+      //this.materialcost = aa;
+      return sum;
+    }
+    //20211109
+    function abValueGetter(params) {
+      //if(!params.value) return 'ERROR';
+      return params.data.pHours * params.data.pPrice;
+    }
+    function surfaceValueGetter(params) {
+      return params.data.sPrice * params.data.sTimes;
+    }
+
     this.defaultColDef = {
       filter: "agTextColumnFilter",
       allowedAggFuncs: ['sum', 'min', 'max'],
@@ -1102,7 +1108,7 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
-        valueFormatter: 'switch(value){case 1 : return "粗銑"; case 2 : return "精修"; case 3 : return "去毛邊"; case 4 : return "陽極/EP"; case 5 : return "全檢"; default : return value;}'
+        valueFormatter: 'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
         //valueFormatter:test
       },
       {
@@ -1120,6 +1126,15 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
+      },
+      {
+        headerName: "加工成本",
+        field: "pCostsum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+        aggFunc: myCustomSumFunction_P
       },
       {
         headerName: "機台",
@@ -1151,7 +1166,7 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
-        valueFormatter: 'switch(value){case 1 : return "粗銑"; case 2 : return "精修"; case 3 : return "去毛邊"; case 4 : return "陽極/EP"; case 5 : return "全檢"; default : return value;}'
+        valueFormatter: 'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
       },
       {
         headerName: "單價(時)",
@@ -1168,6 +1183,16 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
+      },
+      {
+        headerName: "表面處理成本",
+        field: "sCostsum",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+        editable: this.canModify,
+        aggFunc: myCustomSumFunction_S
+        //valueGetter: surfaceValueGetter,
       },
       {
         headerName: "備註",
@@ -1206,6 +1231,7 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
+        aggFunc: myCustomSumFunction_O
       },
       {
         headerName: "備註",
@@ -1219,23 +1245,15 @@ export class QotComponent implements OnInit {
     /**********/
   }
   changedMatnr(value) {
-    //alert('changedMatnr')
-    //console.log('-----------changedMatnr-------------');
-    //console.log(value);
     this.matnrList.setValue({ selectedMatnr: value.keys[0] });
     //if (value.node.origin.index != null) {
     this.matnrIndex = value.node.origin.index;
     //}
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    //console.log(this.matnrIndex);
-    //alert(this.matnrIndex)
     console.log(this.qotv.q)
-    //alert( this.qotv.q[this.matnrIndex].qotNum)
     this.search();
   }
 
   search() {
-    //alert('-------search-------')
     this.radioValue = this.matnrList.get('selectedMatnr').value;
     //alert(this.radioValue)
     this.rowData_matnr = [];
@@ -1243,10 +1261,6 @@ export class QotComponent implements OnInit {
     this.rowData_Process = [];
     this.rowData_Surface = [];
     this.rowData_Other = [];
-    //alert('ppppppppp')
-    //alert(this.radioValue)
-    //alert(this.id)
-    //alert(this.radioValue)
     if (!(this.id) || !(this.radioValue)) {
       return;
     }
@@ -1257,28 +1271,22 @@ export class QotComponent implements OnInit {
       vendorid: this.vendorid,
       rfqid: this.rfqid
     };
-    //alert('---------matnrId----------------');
-    //alert(this.radioValue);
-    //alert(query)
     this.IfCheck_M = false;
     this.IfCheck_P = false;
     this.IfCheck_S = false;
     this.IfCheck_O = false;
     this._srmQotService.GetQotDetail(query).subscribe(result => {
-      //alert('GetQotDetail')
       this.rowData_matnr = [result["matnr"]];
       this.rowData_Material = result["material"];
       this.rowData_Process = result["process"];
       this.rowData_Surface = result["surface"];
       this.rowData_Other = result["other"];
+      this.GetSumData();
       console.log('---------search---------');
       console.log(result);
       console.log([result["qot"]]);
       console.log([result["qot"]][0].status);
-
-      //alert([result["qot"]][0].mEmptyFlag);
-      //alert([result["qot"]][0].SEmptyFlag);
-
+      
       if ([result["qot"]][0].status == "1") {
         this.canModify = true;
         this.canModifymaterial = true;
@@ -1361,6 +1369,14 @@ export class QotComponent implements OnInit {
     });
   }
 
+  GetSumData() {
+    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => sum + current.mCostPrice, 0));
+    this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
+    this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
+    this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
+    this.sumMap.set("total", this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other"));
+  }
+
   BackQot() {
     window.open('../srm/qotlist');
   }
@@ -1372,6 +1388,12 @@ export class QotComponent implements OnInit {
     console.log('---------------------------------------------------')
     console.log(qot.q)
     if ((qot.q.LeadTime == null) || (qot.q.LeadTime == "")) { alert("計劃交貨時間未輸入"); return; }
+
+    if (isNaN(qot.q.LeadTime)) {
+      alert("計劃交貨時間格式錯誤，請輸入數值格式");
+      return;
+    }
+
     if ((qot.q.ExpirationDate == null) || (qot.q.ExpirationDate == "NaN-NaN-NaN")) { alert("有效期限未選擇"); return; }
 
     if (((qot.material.length) == 0) && (!$('#chkreject_material-input').prop("checked"))) {
@@ -1434,10 +1456,10 @@ export class QotComponent implements OnInit {
         alert("工序未填");
         return;
       }
-      /*if (!qot.surface[i].sTimes) {
+      if (!qot.surface[i].sTimes) {
         alert("工序" + qot.surface[i].sProcess + "次數未填");
         return;
-      }*/
+      }
       if (isNaN(qot.surface[i].sTimes)) {
         alert("工序" + qot.surface[i].sProcess + "次數格式錯誤");
         return;
@@ -1526,6 +1548,7 @@ export class QotComponent implements OnInit {
       this.MaterialList = result;
     });
   }
+
   /*GetProcess(data) {
     this._srmQotService.GetProcessByNum(data).subscribe(result => {
       console.log('----process----');
@@ -1554,9 +1577,16 @@ export class QotComponent implements OnInit {
       this.SendQotAll();
     }
   }
-
-
 }
+
+function GetProcessByNum(data) {
+  this._srmQotService.GetProcessByNum(data).subscribe(result => {
+    console.log('----process----');
+    console.log(result);
+    return result;
+  });
+}
+
 function dateFormatter(data) {
   if (data.value == null) return "";
   var date = new Date(data.value);

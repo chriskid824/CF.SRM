@@ -15,5 +15,6 @@ namespace Convience.Entity.Entity.SRM
         public double? STimes { get; set; }
         public decimal? SPrice { get; set; }
         public string SNote { get; set; }
+        public decimal? SCostsum { get; set; }
     }
 }
