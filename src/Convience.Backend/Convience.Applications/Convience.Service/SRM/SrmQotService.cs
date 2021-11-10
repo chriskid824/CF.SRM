@@ -463,7 +463,7 @@ namespace Convience.Service.SRM
                               VLastUpdateDate = r.LastUpdateDate,
                               VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
-                              VVendor = vendor.SapVendor,
+                              VVendor = (!string.IsNullOrWhiteSpace(vendor.SapVendor))? vendor.SapVendor:vendor.SrmVendor1,
                               VVendorId = vendor.VendorId
 
                           })
@@ -499,7 +499,7 @@ namespace Convience.Service.SRM
                                   QLastUpdateBy = u2.Name,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
-                                  QVendor = v.SapVendor,
+                                  QVendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
                                   QStatusDesc = status.StatusDesc
                               })
                               //.ToList();
