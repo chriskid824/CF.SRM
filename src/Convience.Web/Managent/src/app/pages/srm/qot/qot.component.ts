@@ -124,6 +124,10 @@ export class QotComponent implements OnInit {
   sumMap = new Map<string, number>();
   leadtime;
   expiringdate;
+  m_cost;
+  s_cost;
+  p_cost;
+  o_cost;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -158,7 +162,7 @@ export class QotComponent implements OnInit {
         //console.log(params); // { orderby: "price" }
         this.id = params.id;
         this.vendorid = params.vendorid;
-        this.rfqid = params.rfqid;       
+        this.rfqid = params.rfqid;
       }
       );
     this.matnrList = this._formBuilder.group({
@@ -493,7 +497,7 @@ export class QotComponent implements OnInit {
       //material_name: [this.editedMatetial.name, [Validators.required, Validators.maxLength(15)]],
       //0824 送出才檢核
       material_name: [this.editedMatetial.name, [Validators.required]],
-      material_cost: [this.editedMatetial.cost, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      material_cost: [this.editedMatetial.cost, [Validators.required]],
       //material_name: [this.editedMatetial.name,],
       material_price: [this.editedMatetial.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //material_cost: [this.editedMatetial.cost,],
@@ -571,12 +575,42 @@ export class QotComponent implements OnInit {
     }
   }
   checktype(number: number) {
+    //alert('20211110');
     /*if (isNaN(number)) {
       alert("欄位格式錯誤");
       return;
     }*/
   }
+  getcostvalue_m(cost) {
+    cost = Math.round(cost * 100) / 100;
+    //alert(cost)
+    this.m_cost = cost;
+    //alert(cost)
+    return cost;
+  }
+  getcostvalue_s(cost) {
+    cost =  this.GetRoundValue(cost)
+    this.s_cost = cost;
+    return cost;
+  }
 
+  getcostvalue_o(cost) {
+    cost =  this.GetRoundValue(cost)
+    this.o_cost = cost;
+    return cost;
+  }
+
+  getcostvalue_p(cost) {
+    cost =  this.GetRoundValue(cost)
+    this.p_cost = cost;
+    return cost;
+  }
+
+  GetRoundValue(cost)
+  {
+    cost = Math.round(cost) ;
+    return cost;
+  }
   addSurface(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editedSurface = new Surface();
     this.editForm_Surface = this._formBuilder.group({
@@ -585,7 +619,7 @@ export class QotComponent implements OnInit {
       //surface_name: [this.editedSurface.process,],
       surface_times: [this.editedSurface.times, [Validators.pattern(SrmModule.number)]],
       surface_cost: [this.editedSurface.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
-      surface_costsum: [this.editedSurface.surface_costsum, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      surface_costsum: [this.editedSurface.surface_costsum, [Validators.required]],
       //surface_cost: [this.editedSurface.price,],
       surface_note: [this.editedSurface.note]
     });
@@ -603,7 +637,7 @@ export class QotComponent implements OnInit {
       other_item: [this.editedOther.item, [Validators.required]],
       //other_item: [this.editedOther.item,],
       other_desc: [this.editedOther.description],
-      other_price: [this.editedOther.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      other_price: [this.editedOther.price, [Validators.required]],
       //other_price: [this.editedOther.price,],
       other_note: [this.editedOther.note,]
     });
@@ -622,7 +656,7 @@ export class QotComponent implements OnInit {
       //process_cost: [this.editedProcess.price,],
       process_cost: [this.editedProcess.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       process_hour: [this.editedProcess.p_hour, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
-      process_costsum: [this.editedProcess.process_costsum, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
+      process_costsum: [this.editedProcess.process_costsum, [Validators.required]],
       //process_hour: [this.editedProcess.p_hour,],
       process_machine: [this.editedProcess.machine,],
       process_remark: [this.editedProcess.note],
@@ -938,7 +972,7 @@ export class QotComponent implements OnInit {
           this.IfCheck_O = false;
           this.canModifyother = true;
         }
-      } 
+      }
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
       //alert(111111)
@@ -1036,7 +1070,8 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        aggFunc: myCustomSumFunction_M
+        aggFunc: myCustomSumFunction_M,
+        valueFormatter:decimalPlaces_material,
       },
       {
         headerName: "備註",
@@ -1139,7 +1174,8 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        aggFunc: myCustomSumFunction_P
+        aggFunc: myCustomSumFunction_P,
+        valueFormatter:decimalPlaces
       },
       {
         headerName: "機台",
@@ -1196,7 +1232,8 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        aggFunc: myCustomSumFunction_S
+        aggFunc: myCustomSumFunction_S ,
+        valueFormatter:decimalPlaces
         //valueGetter: surfaceValueGetter,
       },
       {
@@ -1236,7 +1273,8 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        aggFunc: myCustomSumFunction_O
+        aggFunc: myCustomSumFunction_O,
+        valueFormatter:decimalPlaces
       },
       {
         headerName: "備註",
@@ -1291,7 +1329,7 @@ export class QotComponent implements OnInit {
       console.log(result);
       console.log([result["qot"]]);
       console.log([result["qot"]][0].status);
-      
+
       if ([result["qot"]][0].status == "1") {
         this.canModify = true;
         this.canModifymaterial = true;
@@ -1381,11 +1419,16 @@ export class QotComponent implements OnInit {
   }
 
   GetSumData() {
-    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => sum + current.mCostPrice, 0));
-    this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
-    this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
-    this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
+    //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => sum + current.mCostPrice, 0));
+    //his.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
+    //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
+    //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
+    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + current.mCostPrice * 100) / 100, 0));
+    this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => Math.round(sum + current.pCostsum ), 0));
+    this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) =>  Math.round(sum + current.sCostsum ), 0));
+    this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => Math.round(sum + current.oPrice ), 0));
     this.sumMap.set("total", this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other"));
+    
   }
 
   BackQot() {
@@ -1603,11 +1646,20 @@ function dateFormatter(data) {
   var date = new Date(data.value);
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
+
 function test(data) {
   if (data.value == null) return "";
-  //alert(data.value)
   if (data.value == "1") { return "aa" }
-
-  //this.TaxcodeList.find(r => r.taxcode == this.editForm.get('taxcode').value)?.taxcodeName;
-
 }
+
+function decimalPlaces_material(data) {
+  if (data.value == null) return "";
+  var materialcost = Math.round(data.value * 100) / 100;
+  return materialcost;
+}
+function decimalPlaces(data) {
+  if (data.value == null) return "";
+  var cost = Math.round(data.value);
+  return cost;
+}
+

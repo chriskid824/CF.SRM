@@ -503,12 +503,12 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
-            <input readonly="readonly" [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input
-              placeholder="材料成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+            <input value="{{m_cost}}" readonly="readonly" [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input
+              placeholder="材料成本價" autocomplete="off" (ngModelChange)="getcostvalue_m($event)"
               [ngModel]="material_weight*material_price" />
             <ng-template #material_costErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+              <!--<ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>-->
             </ng-template>
 
           </nz-form-control>
@@ -631,12 +631,11 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costsumErrorTpl">
-            <input readonly="readonly" [attr.id]="'edit_process_costsum'" formControlName="process_costsum" nz-input
-              placeholder="加工成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+            <input value="{{p_cost}}" readonly="readonly" [attr.id]="'edit_process_costsum'" formControlName="process_costsum" nz-input
+              placeholder="加工成本價" autocomplete="off"  (ngModelChange)="getcostvalue_p($event)"
               [ngModel]="process_cost*process_hour" />
             <ng-template #process_costsumErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
             </ng-template>
 
           </nz-form-control>
@@ -748,12 +747,12 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costsumErrorTpl">
-            <input readonly="readonly" [attr.id]="'edit_surface_costsum'" formControlName="surface_costsum" nz-input
-              placeholder="表面處理成本價" autocomplete="off" (ngModelChange)="checktype($event)"
+            <input value="{{s_cost}}" readonly="readonly" [attr.id]="'edit_surface_costsum'" formControlName="surface_costsum" nz-input
+              placeholder="表面處理成本價" autocomplete="off" (ngModelChange)="getcostvalue_s($event)"
               [ngModel]="surface_cost*surface_times" />
             <ng-template #surface_costsumErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+              
             </ng-template>
 
           </nz-form-control>
@@ -816,11 +815,11 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_priceErrorTpl">
-            <input [attr.id]="'edit_other_price'" formControlName="other_price" nz-input placeholder="單價"
-              autocomplete="off" (ngModelChange)="checktype($event)" />
+            <input value ="{{o_cost}}" [attr.id]="'edit_other_price'" formControlName="other_price" nz-input placeholder="單價"
+              autocomplete="off" (ngModelChange)="getcostvalue_o($event)" />
             <ng-template #other_priceErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              <ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>
+  
             </ng-template>
           </nz-form-control>
         </td>
