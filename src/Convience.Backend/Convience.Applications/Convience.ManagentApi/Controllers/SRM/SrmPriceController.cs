@@ -414,8 +414,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["MIN_QTY"] = info.MinQty;
                 dr["TAXCODE"] = info.Taxcode;
                 dr["UNIT"] = info.Unit;
-                dr["EFFECTIVE_DATE"] = info.EffectiveDate;
-                dr["EXPIRATION_DATE"] = info.ExpirationDate;
+                dr["EFFECTIVE_DATE"] = info.EffectiveDate.Value.ToString("yyyy/MM/dd");
+                dr["EXPIRATION_DATE"] = info.ExpirationDate.Value.ToString("yyyy/MM/dd");
                 dr["Sortl"] = info.Sortl;
                 InfoRecord.Rows.Add(dr);
             }
