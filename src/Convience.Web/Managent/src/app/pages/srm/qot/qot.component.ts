@@ -412,7 +412,7 @@ export class QotComponent implements OnInit {
       this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
       this.editedProcess.note = this.editForm_Process.value['process_remark'];
       this.editedProcess.machine = this.editForm_Process.value['process_machine'];
-      this.editedProcess.process_costsum = this.editForm_Process.value['process_costsum'];
+      this.editedProcess.process_costsum = Math.round(this.editForm_Process.value['process_costsum'] ) ;//this.editForm_Process.value['process_costsum'];
       console.info(this.editForm_Process.value);
 
       /*寫入grid */
@@ -449,7 +449,7 @@ export class QotComponent implements OnInit {
     if (this.editForm_Material.valid) {
       this.editedMatetial.name = this.editForm_Material.value['material_name'];
       this.editedMatetial.price = this.editForm_Material.value['material_price'];
-      this.editedMatetial.cost = this.editForm_Material.value['material_cost'];
+      this.editedMatetial.cost = Math.round(this.editForm_Material.value['material_cost'] * 100) / 100;//this.editForm_Material.value['material_cost'];
       this.editedMatetial.length = this.editForm_Material.value['material_length'];
       this.editedMatetial.width = this.editForm_Material.value['material_width'];
       this.editedMatetial.height = this.editForm_Material.value['material_height'];
@@ -525,7 +525,7 @@ export class QotComponent implements OnInit {
     //alert(this.editForm_Other.valid)
     if (this.editForm_Other.valid) {
       this.editedOther.item = this.editForm_Other.value['other_item'];
-      this.editedOther.price = this.editForm_Other.value['other_price'];
+      this.editedOther.price = Math.round(this.editForm_Other.value['other_price']);//this.editForm_Other.value['other_price']
       this.editedOther.note = this.editForm_Other.value['other_note'];
       this.editedOther.description = this.editForm_Other.value['other_desc'];
 
@@ -558,7 +558,7 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
-      this.editedSurface.surface_costsum = this.editForm_Surface.value['surface_costsum'];
+      this.editedSurface.surface_costsum = Math.round(this.editForm_Surface.value['surface_costsum']);//this.editForm_Surface.value['surface_costsum'];
 
 
       this.rowData_Surface.push({
