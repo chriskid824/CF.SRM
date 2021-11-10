@@ -153,8 +153,14 @@ namespace Convience.Service.SRM
                 return false;
             }
 
-
-            vendor.SrmVendor1 = data.SrmVendor1;
+            if (string.IsNullOrWhiteSpace(data.SapVendor))
+            {
+                vendor.SrmVendor1 = data.SrmVendor1;
+            }
+            else
+            {
+                vendor.SrmVendor1 = data.SapVendor;
+            }
             vendor.SapVendor = data.SapVendor;
             vendor.VendorName = data.VendorName;
             vendor.Org = data.Org;
