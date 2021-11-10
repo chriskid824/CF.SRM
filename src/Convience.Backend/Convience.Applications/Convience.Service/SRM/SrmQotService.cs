@@ -566,7 +566,7 @@ namespace Convience.Service.SRM
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
                                RfqNum = r.RfqNum,
-                               Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1 + "(" + s.StatusDesc + ")",
+                               Matnr = ((!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1) + "(" + s.StatusDesc + ")",
                                MatnrId = q.MatnrId,
                                QotNum = q.QotNum,
                                Status = s.StatusDesc
