@@ -213,13 +213,13 @@
                       <nz-form-label [nzFor]="'leadtime'">計劃交貨時間<br>日曆天</nz-form-label>
                       <nz-form-control>
                         <input required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間"
-                          formControlName="leadtime" autocomplete="off" />
+                          formControlName="leadtime" autocomplete="off" value="{{leadtime}}"/>
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
                       <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
                       <nz-form-control>
-                        <nz-date-picker required style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
+                        <nz-date-picker  [(ngModel)] ="expiringdate"  required style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
                           formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
                       </nz-form-control>
                     </nz-form-item>

@@ -122,6 +122,8 @@ export class QotComponent implements OnInit {
   othercost;
   aggFuncs;
   sumMap = new Map<string, number>();
+  leadtime;
+  expiringdate;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -939,7 +941,10 @@ export class QotComponent implements OnInit {
       } 
       // { title: department.name, key: department.id, icon: 'appstore', children: [] };
       //this.radioValue = this.matnrs[0].value;
-
+      //alert(111111)
+      //alert(this.qotv.q[this.matnrIndex].leadtime)
+      //this.leadtime = this.qotv.q[this.matnrIndex].leadtime;
+      this.expiringdate = this.qotv.q[this.matnrIndex].expiringdate;
       this.info3.setValue({ leadtime: this.qotv.q[this.matnrIndex].leadtime, expiringdate: this.qotv.q[this.matnrIndex].expiringdate });
     });
     //console.log('----------------------------init-----------------------------')
@@ -1365,7 +1370,13 @@ export class QotComponent implements OnInit {
         }
         //alert(this.IfCheck_O)
       }
-
+      /*20211110 */
+      console.log('----------------------------------------------------')
+      console.log([result["qot"]][0])
+      //alert( [result["qot"]][0].leadTime)
+      //alert( [result["qot"]][0].expirationDate)
+      this.leadtime = [result["qot"]][0].leadTime;
+      this.expiringdate = [result["qot"]][0].expirationDate;
     });
   }
 
