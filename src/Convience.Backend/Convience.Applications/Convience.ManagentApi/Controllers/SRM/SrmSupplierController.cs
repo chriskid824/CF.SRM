@@ -58,8 +58,14 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("UpdateSupplier")]
         public IActionResult UpdateDeliveryL(ViewSrmSupplier dls)
         {
-            if (_srmSupplierService.UpdateSupplier(dls)) return Ok();
-            return BadRequest("供應商名稱已重複使用");
+            try
+            {
+                return Ok(_srmSupplierService.UpdateSupplier(dls));
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
         }
         [HttpPost("Checkdata")]
         public IActionResult Checkdata(ViewSrmSupplier data)

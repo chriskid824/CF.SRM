@@ -146,11 +146,16 @@ namespace Convience.Service.SRM
             SrmVendor vendor = _context.SrmVendors.Where(p => p.SrmVendor1 == data.SrmVendor1).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
             SrmVendor vendorname = _context.SrmVendors.Where(p => p.VendorName == data.VendorName && p.Ekorg == data.Ekorg && p.SrmVendor1 != data.SrmVendor1).FirstOrDefault();
+            SrmVendor sapvendor = _context.SrmVendors.Where(p => p.SapVendor == data.SapVendor && p.SrmVendor1 != data.SrmVendor1).FirstOrDefault();
 
 
             if (vendorname!=null)
             {
-                return false;
+                throw new Exception("供應商名稱已存在，請重新輸入");
+            }
+            if (sapvendor != null)
+            {
+                throw new Exception("SAP供應商代碼已存在，請重新輸入");
             }
 
             if (string.IsNullOrWhiteSpace(data.SapVendor))

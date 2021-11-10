@@ -148,9 +148,9 @@ namespace Convience.Service.SRM
         {
             SrmMatnr material = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             //SrmStatus status = _context.SrmStatuses.Where(p => p.StatusDesc == data.StatusDesc).FirstOrDefault();
-            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Description != data.Description).FirstOrDefault();
+            SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.SrmMatnr1 != data.SrmMatnr1).FirstOrDefault();
             SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
-            SrmMatnr sapnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr && p.SapMatnr != data.SapMatnr).FirstOrDefault();
+            SrmMatnr sapnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr && p.SrmMatnr1 != data.SrmMatnr1).FirstOrDefault();
 
             if (description != null)
             {
