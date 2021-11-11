@@ -273,13 +273,22 @@ export class PriceComponent implements OnInit {
         width: "150px",
       },
       {
-        headerName: "工件重量(KG)",
+        headerName: "工件重量",
         field: "weight",
         enableRowGroup: true,
         cellClass: "show-cell",
         headerClass: "rfq",
         width: "150px",
-      }, {
+      },
+      {
+        headerName: "重量單位",
+        field: "gewei",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        headerClass: "rfq",
+        width: "150px",
+      },
+      {
         headerName: "機種名稱",
         field: "machineName",
         enableRowGroup: true,

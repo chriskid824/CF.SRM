@@ -368,6 +368,13 @@ export class RfqComponent implements OnInit {
         width: "150px",
       },
       {
+        headerName: "重量單位",
+        field: "gewei",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        width: "150px",
+      },
+      {
         headerName: "狀態",
         field: "viewstatus",
         enableRowGroup: true,

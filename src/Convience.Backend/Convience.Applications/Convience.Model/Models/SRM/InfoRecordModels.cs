@@ -87,6 +87,7 @@ namespace Convience.Model.Models.SRM
         public string material { get; set; }
         public string volume { get; set; }
         public string weight { get; set; }
+        public string gewei { get; set; }
         public string machineName { get; set; }
         public string qotId { get; set; }
         public string qotNum { get; set; }
