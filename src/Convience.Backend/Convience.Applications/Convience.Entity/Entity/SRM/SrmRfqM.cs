@@ -19,6 +19,7 @@ namespace Convience.Entity.Entity.SRM
         public string Height { get; set; }
         public string Density { get; set; }
         public double? Weight { get; set; }
+        public string Gewei { get; set; }
         public string MachineName { get; set; }
         public double? Qty { get; set; }
         public string Note { get; set; }

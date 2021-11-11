@@ -131,6 +131,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 temp[0].bn_num = rfqM.Bn_num;
                 temp[0].volume = $"{rfqM.Length}*{rfqM.Width}*{rfqM.Height}";
                 temp[0].weight = rfqM.Weight.HasValue? rfqM.Weight.Value.ToString():"";
+                temp[0].gewei = rfqM.Gewei;
                 temp[0].machineName = rfqM.MachineName;
                 temp[0].qotNum = qot.QotNum;
                 temp[0].qotId = qot.QotId.ToString();
@@ -340,6 +341,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("Length");
             InfoRecord.Columns.Add("Width");
             InfoRecord.Columns.Add("Weight");
+            InfoRecord.Columns.Add("Gewei");
             InfoRecord.Columns.Add("VendorName");
             InfoRecord.Columns.Add("ATotal");
             InfoRecord.Columns.Add("BTotal");
@@ -388,6 +390,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["Length"] = rfqM.Length;
                 dr["Width"] = rfqM.Width;
                 dr["Weight"] = rfqM.Weight;
+                dr["Gewei"] = rfqM.Gewei;
                 dr["VendorName"] = info.VendorName;
                 dr["ATotal"] = info.Atotal;
                 dr["BTotal"] = info.Btotal;

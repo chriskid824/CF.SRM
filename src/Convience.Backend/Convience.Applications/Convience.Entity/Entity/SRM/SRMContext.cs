@@ -243,6 +243,10 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
 
+                entity.Property(e => e.Gewei)
+                    .HasMaxLength(8)
+                    .HasColumnName("GEWEI");
+
                 entity.Property(e => e.Height)
                     .HasMaxLength(10)
                     .IsUnicode(false)
