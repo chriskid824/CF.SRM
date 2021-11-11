@@ -438,10 +438,11 @@ namespace Convience.Service.SRM
             });
             return result;
         }
-
+       
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
+      
             #region getvendorid 20211101
             int venderid = GetVendorId(query);
             #endregion
@@ -449,9 +450,11 @@ namespace Convience.Service.SRM
             var result = (from r in _context.SrmRfqHs
                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on r.Status equals status.Status
-                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
-                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
-                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
+                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId                         
+                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName into u1g
+                          from u1 in u1g.DefaultIfEmpty()
+                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName into u2g
+                          from u2 in u2g.DefaultIfEmpty()
                           select new ViewQotListH
                           {
                               VRfqId = r.RfqId,
@@ -459,9 +462,9 @@ namespace Convience.Service.SRM
                               VStatus = r.Status,
                               VStatusDesc = status.StatusDesc,
                               VCreateDate = r.CreateDate,
-                              VCreateBy = u1.Name,
+                              VCreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : r.CreateBy,
                               VLastUpdateDate = r.LastUpdateDate,
-                              VLastUpdateBy = u2.Name,
+                              VLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name))? u2.Name:r.LastUpdateBy,
                               VEndDate = r.EndDate,
                               VVendor = (!string.IsNullOrWhiteSpace(vendor.SapVendor))? vendor.SapVendor:vendor.SrmVendor1,
                               VVendorId = vendor.VendorId
@@ -476,7 +479,7 @@ namespace Convience.Service.SRM
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
                         .Distinct()
                         .ToList();
-
+           
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
@@ -485,8 +488,10 @@ namespace Convience.Service.SRM
                               join status in _context.SrmStatuses on q.Status equals status.Status
                               join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                               join v in _context.SrmVendors on q.VendorId equals v.VendorId
-                              join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
-                              join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
+                              join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
+                              from u1 in u1g.DefaultIfEmpty()
+                              join u2 in _context.AspNetUsers on q.LastUpdateBy equals u2.UserName into u2g
+                              from u2 in u2g.DefaultIfEmpty()
                               select new ViewQotListL
                               {
                                   QRfqId = q.RfqId,
@@ -494,9 +499,9 @@ namespace Convience.Service.SRM
                                   QQotId = q.QotId,
                                   QQotNum = q.QotNum,
                                   QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
-                                  QCreateBy = u1.Name,
+                                  QCreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : q.CreateBy,
                                   QCreateDate = q.CreateDate,
-                                  QLastUpdateBy = u2.Name,
+                                  QLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name)) ? u2.Name : q.LastUpdateBy,
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
                                   QVendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
@@ -584,14 +589,14 @@ namespace Convience.Service.SRM
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                            join s in _context.SrmStatuses on q.Status equals s.Status
-                           join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName
+                           join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
+                           from u1 in u1g.DefaultIfEmpty()
 
-
-                           //where e.OwnerID == user.UID
+                               //where e.OwnerID == user.UID
                            select new
                            {
 
-                               CreateBy = u1.Name,//q.CreateBy,
+                               CreateBy = (!string.IsNullOrWhiteSpace(u1.Name))? u1.Name:q.CreateBy,//q.CreateBy,
                                CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
                                Status = s.StatusDesc,
                                RfqNum = r.RfqNum,
@@ -1488,5 +1493,6 @@ namespace Convience.Service.SRM
             return msg;
         }*/
         #endregion
+      
     }
 }
