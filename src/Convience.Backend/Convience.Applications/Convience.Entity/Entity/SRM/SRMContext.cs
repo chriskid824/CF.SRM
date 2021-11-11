@@ -52,7 +52,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmFunctionList> SrmFunctionLists { get; set; }
         public virtual DbSet<ViewSrmFileRecord> ViewSrmFileRecords { get; set; }
         public virtual DbSet<ViewSrmFileTemplate> ViewSrmFileTemplates { get; set; }
-
+        public virtual DbSet<SrmDisscutionC> SrmDisscutionCs { get; set; }
+        public virtual DbSet<SrmDisscutionH> SrmDisscutionHs { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1554,6 +1555,76 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Url).HasColumnName("URL");
 
                 entity.Property(e => e.Werks).HasColumnName("WERKS");
+            });
+
+            modelBuilder.Entity<SrmDisscutionC>(entity =>
+            {
+                entity.HasKey(e => new { e.DisscustionId, e.DisscustionIdC });
+
+                entity.ToTable("SRM_DISSCUTION_C");
+
+                entity.Property(e => e.DisscustionId).HasColumnName("DISSCUSTION_ID");
+
+                entity.Property(e => e.DisscustionIdC).HasColumnName("DISSCUSTION_ID_C");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.DisscustionContent).HasColumnName("DISSCUSTION_CONTENT");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.HasOne(d => d.Disscustion)
+                    .WithMany(p => p.SrmDisscutionCs)
+                    .HasForeignKey(d => d.DisscustionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SRM_DISSCUTION_C_SRM_DISSCUTION_H");
+            });
+
+            modelBuilder.Entity<SrmDisscutionH>(entity =>
+            {
+                entity.HasKey(e => e.DisscustionId);
+
+                entity.ToTable("SRM_DISSCUTION_H");
+
+                entity.Property(e => e.DisscustionId).HasColumnName("DISSCUSTION_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.Number)
+                    .HasMaxLength(20)
+                    .HasColumnName("NUMBER");
+
+                entity.Property(e => e.TemplateType).HasColumnName("TEMPLATE_TYPE");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(50)
+                    .HasColumnName("TITLE");
             });
             OnModelCreatingPartial(modelBuilder);
         }
