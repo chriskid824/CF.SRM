@@ -356,7 +356,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("LastDate");
             InfoRecord.Columns.Add("BargainingRate");
             InfoRecord.Columns.Add("LastBargainingRate");
-            InfoRecord.Columns.Add("ExpirationDate");
             InfoRecord.Columns.Add("InfoId");
             //InfoRecord.Columns.Add("Img1");
             //InfoRecord.Columns.Add("Img2");
