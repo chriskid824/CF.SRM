@@ -7,14 +7,14 @@ using System.Collections.Generic;
 namespace Convience.Entity.Entity.SRM
 {
     [Entity(DbContextType = typeof(SRMContext))]
-    public partial class SrmDisscutionH
+    public partial class SrmDisscussionH
     {
-        public SrmDisscutionH()
+        public SrmDisscussionH()
         {
-            SrmDisscutionCs = new HashSet<SrmDisscutionC>();
+            SrmDisscussionCs = new HashSet<SrmDisscussionC>();
         }
 
-        public int DisscustionId { get; set; }
+        public int DisscussionId { get; set; }
         public int? TemplateType { get; set; }
         public string Number { get; set; }
         public string Title { get; set; }
@@ -23,6 +23,6 @@ namespace Convience.Entity.Entity.SRM
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
 
-        public virtual ICollection<SrmDisscutionC> SrmDisscutionCs { get; set; }
+        public virtual ICollection<SrmDisscussionC> SrmDisscussionCs { get; set; }
     }
 }

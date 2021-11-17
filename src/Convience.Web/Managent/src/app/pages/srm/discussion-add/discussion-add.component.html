@@ -1,0 +1,45 @@
+<nz-card>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="2">主題編號</nz-form-label>
+        <nz-form-control [nzSpan]="22">
+          <!-- <labe formControlName="id"></label> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">單據類型</nz-form-label>
+      <nz-form-control [nzSpan]="8">
+        <nz-select nzAllowClear nzPlaceHolder="請選擇" (ngModelChange)="functionChanged($event)"  [(ngModel)]="selectedFunctionId">
+          <nz-option *ngFor="let function of functions" [nzValue]="function.id" [nzLabel]="function.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="4">單據編號</nz-form-label>
+        <nz-form-control [nzSpan]="8">
+          <nz-select nzAllowClear nzPlaceHolder="請選擇" [(ngModel)]="selectedNumber">
+            <nz-option *ngFor="let number of numbers" [nzValue]="number.id" [nzLabel]="number.name"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="2">標題</nz-form-label>
+        <nz-form-control [nzSpan]="22">
+          <input [attr.id]="'edit_title'" nz-input placeholder="標題" [(ngModel)]="title"
+          autocomplete="off" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="24">
+      <ckeditor [editor]="Editor" [(ngModel)]="editorData"></ckeditor>
+      <button nz-button (click)="save()">發送</button>
+    </div>
+  </div>
+</nz-card>

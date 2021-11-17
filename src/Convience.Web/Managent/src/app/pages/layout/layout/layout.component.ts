@@ -134,6 +134,12 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'filetemplate', routerLink: '/srm/file-t', iconType: 'fund-view', firstBreadcrumb: '檔案上傳', lastBreadcrumb: '模板設定', name: '模板設定', },
       ]
+    },
+    {
+      canOperate: 'diss-list', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '主題討論',
+      children: [
+        { canOperate: 'diss-list', routerLink: '/srm/diss-list', iconType: 'fund-view', firstBreadcrumb: '主題討論', lastBreadcrumb: '主題討論', name: '主題討論', },
+      ]
     }
   ];
 

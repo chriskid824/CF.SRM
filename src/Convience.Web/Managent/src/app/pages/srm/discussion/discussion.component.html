@@ -1,0 +1,125 @@
+<nz-card>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="2">主題編號</nz-form-label>
+        <nz-form-control [nzSpan]="22">
+          <nz-form-label nzNoColon>{{listOfData.disscussionId}}</nz-form-label>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="4">單據類型</nz-form-label>
+      <nz-form-control [nzSpan]="8">
+        <nz-form-label nzNoColon>{{listOfData.functionName}}</nz-form-label>
+        <!-- <nz-select nzAllowClear nzPlaceHolder="請選擇" (ngModelChange)="functionChanged($event)"  [(ngModel)]="listOfData.templateType">
+          <nz-option *ngFor="let function of functions" [nzValue]="function.id" [nzLabel]="function.name"></nz-option>
+        </nz-select> -->
+      </nz-form-control>
+    </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="4">單據編號</nz-form-label>
+        <nz-form-control [nzSpan]="8">
+          <nz-form-label nzNoColon>{{listOfData.number}}</nz-form-label>
+          <!-- <nz-select nzAllowClear nzPlaceHolder="請選擇" [(ngModel)]="listOfData.number">
+            <nz-option *ngFor="let number of numbers" [nzValue]="number.id" [nzLabel]="number.name"></nz-option>
+          </nz-select> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="2">標題</nz-form-label>
+        <nz-form-control [nzSpan]="22">
+          <nz-form-label nzNoColon>{{listOfData.title}}</nz-form-label>
+          <!-- <input [attr.id]="'edit_title'" nz-input placeholder="標題" [(ngModel)]="listOfData.title"
+          autocomplete="off" /> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  </nz-card>
+  <nz-card>
+  <nz-list nzItemLayout="vertical">
+    <nz-list-item *ngFor="let content of listOfData.viewSrmDisscussionCs">
+      <nz-list-item-meta>
+        <!-- <nz-list-item-meta-avatar [nzSrc]="item.avatar"></nz-list-item-meta-avatar> -->
+        <nz-list-item-meta-title>
+          {{ content.userName }}
+        </nz-list-item-meta-title>
+        <nz-list-item-meta-description>
+
+        </nz-list-item-meta-description>
+      </nz-list-item-meta>
+      <div nz-col [nzSpan]="23" nzOffset="1" *ngIf="!content.active">作者已刪除</div>
+      <div nz-col [nzSpan]="23" nzOffset="1" [innerHTML]="content.disscustionContent" *ngIf="!content.isEdit&&content.active"></div>
+      <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="content.disscustionContent" [config]="editorConfig" *ngIf="content.isEdit&&content.active"></angular-editor>
+      <ul nz-list-item-actions *ngIf="!content.isEdit&&content.active">
+        <nz-list-item-action>
+          <i nz-icon nzType="edit" style="margin-right: 8px;" ></i>
+          <button nz-button nzType="text" (click)="onEditClick(content)">edit</button>
+        </nz-list-item-action>
+        <nz-list-item-action>
+          <i nz-icon nzType="delete" style="margin-right: 8px;"></i>
+          <!-- <button nz-button nzType="text" (click)="onDeleteClick(content)">delete</button> -->
+          <button
+          nz-popconfirm
+          nzPopconfirmTitle="確定要刪除內容嗎?"
+          (nzOnConfirm)="onDeleteClick(content)"
+          (nzOnCancel)="cancel()"
+          nzPopconfirmPlacement="top"
+          nz-button
+          nzType="text"
+        >
+          delete
+        </button>
+        </nz-list-item-action>
+      </ul>
+      <ul nz-list-item-actions *ngIf="content.isEdit&&content.active">
+        <nz-list-item-action *ngIf="content.isEdit">
+          <i nz-icon nzType="save" style="margin-right: 8px;"></i>
+          <button nz-button nzType="text" (click)="onSaveClick(content)">save</button>
+        </nz-list-item-action>
+      </ul>
+      <nz-list-item-extra>
+        {{content.createDate | date: "yyyy-MM-dd hh:mm:ss"}}
+      </nz-list-item-extra>
+    </nz-list-item>
+  </nz-list>
+</nz-card>
+
+  <!-- <nz-card *ngFor="let content of listOfData.viewSrmDisscussionCs">
+    <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="4">編號</nz-form-label>
+        <nz-form-control [nzSpan]="8">
+          <nz-form-label nzNoColon>{{content.disscussionIdC}}</nz-form-label>
+        </nz-form-control>
+      </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="4">作者</nz-form-label>
+          <nz-form-control [nzSpan]="8">
+            <nz-form-label nzNoColon>{{content.userName}} {{content.createDate | date: "yyyy-MM-dd hh:mm:ss"}}</nz-form-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="23" nzOffset="1" [innerHTML]="content.disscustionContent">
+
+        </div>
+    </div>
+  </nz-card> -->
+  <nz-card>
+    <div nz-col [nzSpan]="24">
+      <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="editorData" [config]="editorConfig"></angular-editor>
+      <!-- <ckeditor [editor]="Editor" [(ngModel)]="editorData" [config]="editorConfig"></ckeditor> -->
+      <button nz-button (click)="save()">發送</button>
+    </div>
+  </nz-card>
+
+

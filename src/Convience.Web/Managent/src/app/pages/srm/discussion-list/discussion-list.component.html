@@ -1,0 +1,89 @@
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label [nzFor]="'id'">單號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="單號" [formControlName]="'id'" [attr.id]="'id'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <!-- <nz-form-item>
+          <nz-form-label [nzFor]="'I_EKORG'">採購組織</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'I_EKORG'" style="width: 100px;">
+              <nz-option nzValue="1100" nzLabel="廠工事業處"></nz-option>
+              <nz-option nzValue="1200" nzLabel="機械事業處"></nz-option>
+              <nz-option nzValue="3100" nzLabel="精密事業處"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+        <!-- <nz-form-item>
+          <nz-form-label [nzFor]="'Date'">建立日期</nz-form-label>
+          <nz-form-control>
+          <nz-range-picker [formControlName]="'Date'" (ngModelChange)="onChange($event)" [nzPlaceHolder]=""></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary">搜索</button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+              (click)="resetSearchForm()">
+        重置
+      </button>-->
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+
+    </nz-card>
+
+  <nz-card>
+    <div>
+      <button nz-button class="mr-10" (click)="NewTitle()"
+          *canOperate="'adddisscussionbtn'"><i nz-icon nzType="plus"></i>新增主題</button>
+      <!-- <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button> -->
+  </div>
+  <div style="margin-top: 10px;">
+    <nz-list nzItemLayout="horizontal" [nzLoading]="false">
+      <nz-list-item *ngFor="let item of listOfData">
+        <nz-list-item-meta
+          nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+          nzDescription="{{item.userName}}"
+        >
+          <nz-list-item-meta-title>
+            <a href="/srm/diss/{{item.disscussionId}}">{{ item.title }}</a>
+          </nz-list-item-meta-title>
+        </nz-list-item-meta>
+        {{ item.createDate | date: "yyyy-MM-dd hh:mm:ss"}}
+      </nz-list-item>
+      <nz-list-empty *ngIf="listOfData.length === 0"></nz-list-empty>
+    </nz-list>
+
+
+    <!-- <nz-table #sortTable [nzData]="listOfData" nzSize="middle" nzShowPagination="true"
+    nzBordered="true" [nzScroll]="{ x: '180px' }">
+      <thead>
+        <tr>
+          <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+            {{ column.title }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of sortTable.data">
+          <td style="width: 50px;">{{ data.functionName }}</td>
+          <td style="width: 100px;">{{ data.number }}</td>
+
+          <td><a href='/srm/diss/{{data.disscussionId}}'>{{ data.title }}</a></td>
+          <td>{{ data.userName }}</td>
+          <td>{{ data.createDate | date: "yyyy-MM-dd hh:mm:ss"}}</td>
+        </tr>
+      </tbody>
+    </nz-table> -->
+  </div>
+  <div class="mt-10">
+    <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                   nzShowQuickJumper (nzPageIndexChange)="pageChange()">
+    </nz-pagination>
+  </div>
+  </nz-card>

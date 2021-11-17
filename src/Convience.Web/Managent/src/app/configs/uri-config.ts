@@ -103,4 +103,5 @@ export class UriConfig {
     get SrmEqp(): string { return `${this._apiUri}/SrmEqp` };
 
     get SrmFile(): string { return `${this._apiUri}/SrmFile` };
+    get SrmDisscussion(): string { return `${this._apiUri}/SrmDisscussion` };
 }

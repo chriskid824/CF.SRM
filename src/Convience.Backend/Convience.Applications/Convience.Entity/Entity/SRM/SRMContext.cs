@@ -52,16 +52,16 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmFunctionList> SrmFunctionLists { get; set; }
         public virtual DbSet<ViewSrmFileRecord> ViewSrmFileRecords { get; set; }
         public virtual DbSet<ViewSrmFileTemplate> ViewSrmFileTemplates { get; set; }
-        public virtual DbSet<SrmDisscutionC> SrmDisscutionCs { get; set; }
-        public virtual DbSet<SrmDisscutionH> SrmDisscutionHs { get; set; }
+        public virtual DbSet<SrmDisscussionC> SrmDisscussionCs { get; set; }
+        public virtual DbSet<SrmDisscussionH> SrmDisscussionHs { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-
                 optionsBuilder.UseSqlServer("Data Source=10.1.1.181;Initial Catalog=SRM;User ID=sa;Password=Chen@full");
+                //optionsBuilder.UseSqlServer("Data Source=10.88.2.181;Initial Catalog=SRM;User ID=sa;Password=Chen@full");
             }
         }
 
@@ -1556,16 +1556,20 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Werks).HasColumnName("WERKS");
             });
-
-            modelBuilder.Entity<SrmDisscutionC>(entity =>
+            modelBuilder.Entity<SrmDisscussionC>(entity =>
             {
-                entity.HasKey(e => new { e.DisscustionId, e.DisscustionIdC });
+                entity.HasKey(e => new { e.DisscussionId, e.DisscussionIdC })
+                    .HasName("PK_SRM_DISSCUTION_C");
 
-                entity.ToTable("SRM_DISSCUTION_C");
+                entity.ToTable("SRM_DISSCUSSION_C");
 
-                entity.Property(e => e.DisscustionId).HasColumnName("DISSCUSTION_ID");
+                entity.Property(e => e.DisscussionId).HasColumnName("DISSCUSSION_ID");
 
-                entity.Property(e => e.DisscustionIdC).HasColumnName("DISSCUSTION_ID_C");
+                entity.Property(e => e.DisscussionIdC).HasColumnName("DISSCUSSION_ID_C");
+
+                entity.Property(e => e.Active)
+                    .HasColumnName("ACTIVE")
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.CreateBy)
                     .HasMaxLength(8)
@@ -1584,21 +1588,16 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.LastUpdateDate)
                     .HasColumnType("datetime")
                     .HasColumnName("LAST_UPDATE_DATE");
-
-                entity.HasOne(d => d.Disscustion)
-                    .WithMany(p => p.SrmDisscutionCs)
-                    .HasForeignKey(d => d.DisscustionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SRM_DISSCUTION_C_SRM_DISSCUTION_H");
             });
 
-            modelBuilder.Entity<SrmDisscutionH>(entity =>
+            modelBuilder.Entity<SrmDisscussionH>(entity =>
             {
-                entity.HasKey(e => e.DisscustionId);
+                entity.HasKey(e => e.DisscussionId)
+                    .HasName("PK_SRM_DISSCUTION_H");
 
-                entity.ToTable("SRM_DISSCUTION_H");
+                entity.ToTable("SRM_DISSCUSSION_H");
 
-                entity.Property(e => e.DisscustionId).HasColumnName("DISSCUSTION_ID");
+                entity.Property(e => e.DisscussionId).HasColumnName("DISSCUSSION_ID");
 
                 entity.Property(e => e.CreateBy)
                     .HasMaxLength(8)
@@ -1626,6 +1625,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(50)
                     .HasColumnName("TITLE");
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

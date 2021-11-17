@@ -64,6 +64,13 @@ import { FileModalFiletypeComponent } from './file-modal-filetype/file-modal-fil
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { FileTemplateComponent } from './file-template/file-template.component';
+import { DiscussionComponent } from './discussion/discussion.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { DiscussionListComponent } from './discussion-list/discussion-list.component';
+import { DiscussionAddComponent } from './discussion-add/discussion-add.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -98,6 +105,9 @@ import { FileTemplateComponent } from './file-template/file-template.component';
     FileModalComponent,
     FileModalFiletypeComponent,
     FileTemplateComponent,
+    DiscussionComponent,
+    DiscussionListComponent,
+    DiscussionAddComponent,
   ],
   imports: [
     CommonModule,
@@ -131,6 +141,9 @@ import { FileTemplateComponent } from './file-template/file-template.component';
         { path: "supplier-batch-upload", component: SupplierBatchUploadComponent, canActivate: [LoginGuard]},
         { path: "material-batch-upload", component: MaterialBatchUploadComponent, canActivate: [LoginGuard]},
         { path: "file-t", component: FileTemplateComponent, canActivate: [LoginGuard]},
+        { path: "diss/:discussionId", component: DiscussionComponent, canActivate: [LoginGuard]},
+        { path: "diss-list", component: DiscussionListComponent, canActivate: [LoginGuard]},
+        { path: "diss-add", component: DiscussionAddComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
@@ -161,6 +174,10 @@ import { FileTemplateComponent } from './file-template/file-template.component';
     NzUploadModule,
     NzGridModule,
     NzDividerModule,
+    CKEditorModule,
+    AngularEditorModule,
+    NzListModule,
+    NzPopconfirmModule
   ]
 })
 export class SrmModule {

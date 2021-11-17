@@ -8,4 +8,10 @@ namespace Convience.Model.Models
 
         public int Count { get; set; }
     }
+    public class PageResultModel<T> where T : class
+    {
+        public T Data { get; set; }
+
+        public int Count { get; set; }
+    }
 }
