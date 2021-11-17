@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UriConfig } from 'src/app/configs/uri-config';
-import { Observable } from 'dist/manage/tinymce/tinymce';
-import { map, filter, switchMap } from 'rxjs/operators';
+// import { Observable } from 'dist/manage/tinymce/tinymce';
+// import { map, filter, switchMap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
