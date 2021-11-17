@@ -57,7 +57,7 @@
       <div nz-col [nzSpan]="23" nzOffset="1" *ngIf="!content.active">作者已刪除</div>
       <div nz-col [nzSpan]="23" nzOffset="1" [innerHTML]="content.disscustionContent" *ngIf="!content.isEdit&&content.active"></div>
       <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="content.disscustionContent" [config]="editorConfig" *ngIf="content.isEdit&&content.active"></angular-editor>
-      <ul nz-list-item-actions *ngIf="!content.isEdit&&content.active">
+      <ul nz-list-item-actions *ngIf="!content.isEdit&&content.active&&content.createBy==username">
         <nz-list-item-action>
           <i nz-icon nzType="edit" style="margin-right: 8px;" ></i>
           <button nz-button nzType="text" (click)="onEditClick(content)">edit</button>
@@ -78,10 +78,12 @@
         </button>
         </nz-list-item-action>
       </ul>
-      <ul nz-list-item-actions *ngIf="content.isEdit&&content.active">
+      <ul nz-list-item-actions *ngIf="content.isEdit&&content.active&&content.createBy==username">
         <nz-list-item-action *ngIf="content.isEdit">
           <i nz-icon nzType="save" style="margin-right: 8px;"></i>
           <button nz-button nzType="text" (click)="onSaveClick(content)">save</button>
+          <i nz-icon nzType="cancel" style="margin-right: 8px;"></i>
+          <button nz-button nzType="text" (click)="onCancelClick(content)">cancel</button>
         </nz-list-item-action>
       </ul>
       <nz-list-item-extra>

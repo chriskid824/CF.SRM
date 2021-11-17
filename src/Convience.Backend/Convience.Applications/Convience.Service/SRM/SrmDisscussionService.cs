@@ -132,7 +132,8 @@ namespace Convience.Service.SRM
                     FunctionName = func.FunctionName,
                     UserName = user.Name,
                 })
-                .AndIfCondition(!roleids.Contains("1"), p => p.CreateBy == query.user.GetUserName())
+                .AndIfCondition(query.user.GetIsVendor(), p => p.CreateBy == query.user.GetUserName())
+                //.AndIfCondition(!roleids.Contains("1"), p => p.CreateBy == query.user.GetUserName())
                 .AndIfHaveValue(query.id, p => p.Number.Contains(query.id.ToString()))
                 .ToList();
             var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);

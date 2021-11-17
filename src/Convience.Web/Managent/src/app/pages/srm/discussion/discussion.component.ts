@@ -3,6 +3,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SrmDisscussionService } from 'src/app/business/srm/srm-disscussion.service';
 import { ActivatedRoute } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { StorageService } from '../../../services/storage.service';
 @Component({
   selector: 'app-discussion',
   templateUrl: './discussion.component.html',
@@ -18,6 +19,7 @@ export class DiscussionComponent implements OnInit {
   page: number = 1;
   size: number = 6;
   total: number;
+  username:string;
   editorConfig: AngularEditorConfig = {
     editable: true,
       spellcheck: true,
@@ -64,10 +66,11 @@ export class DiscussionComponent implements OnInit {
       ['fontSize']
     ]
 };
-  constructor(private _srmDisscussionService: SrmDisscussionService,private route: ActivatedRoute) { }
+  constructor(private _srmDisscussionService: SrmDisscussionService,private route: ActivatedRoute,private _storageService: StorageService, ) { }
 
   ngOnInit(): void {
     this.discussionId=this.route.snapshot.paramMap.get('discussionId');
+    this.username=this._storageService.userName;
     this.refresh();
   }
   refresh()
@@ -151,4 +154,7 @@ export class DiscussionComponent implements OnInit {
     });
   }
   cancel(){}
+  onCancelClick(data){
+    this.refresh();
+  }
 }

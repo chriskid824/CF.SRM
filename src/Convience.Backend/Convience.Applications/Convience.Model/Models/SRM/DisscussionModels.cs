@@ -30,6 +30,7 @@ namespace Convience.Model.Models.SRM
         public string content { get; set; }
         public string FunctionName { get; set; }
         public string UserName { get; set; }
+        public int? Werks { get; set; }
         public virtual ICollection<ViewSrmDisscussionC> ViewSrmDisscussionCs { get; set; }
     }
     public class ViewSrmDisscussionC : SrmDisscussionC
