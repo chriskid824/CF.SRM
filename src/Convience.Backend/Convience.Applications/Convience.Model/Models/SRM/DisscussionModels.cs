@@ -31,6 +31,9 @@ namespace Convience.Model.Models.SRM
         public string FunctionName { get; set; }
         public string UserName { get; set; }
         public int? Werks { get; set; }
+        public int? Ekorg { get; set; }
+        public DateTime? LastCreateDateC { get; set; }
+        public int ContentCount { get; set; }
         public virtual ICollection<ViewSrmDisscussionC> ViewSrmDisscussionCs { get; set; }
     }
     public class ViewSrmDisscussionC : SrmDisscussionC

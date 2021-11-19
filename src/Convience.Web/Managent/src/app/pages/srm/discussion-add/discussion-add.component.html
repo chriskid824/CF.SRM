@@ -22,7 +22,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="4">單據編號</nz-form-label>
         <nz-form-control [nzSpan]="8">
-          <nz-select nzAllowClear nzPlaceHolder="請選擇" [(ngModel)]="selectedNumber">
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="請選擇" [(ngModel)]="selectedNumber">
             <nz-option *ngFor="let number of numbers" [nzValue]="number.id" [nzLabel]="number.name"></nz-option>
           </nz-select>
         </nz-form-control>

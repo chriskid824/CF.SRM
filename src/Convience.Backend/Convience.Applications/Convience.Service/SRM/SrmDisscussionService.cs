@@ -114,12 +114,14 @@ namespace Convience.Service.SRM
         {
             int skip = (page - 1) * size;
             List<string> roleids = query.user.GetUserRoleIds().Split(',').ToList();
-
+            List<string> werksList = query.user.GetUserWerks().Split(',').ToList();
             List<ViewSrmDisscussionH> result = 
                 (from dissh in _context.SrmDisscussionHs
                 join func in _context.SrmFunctionLists on dissh.TemplateType equals func.FunctionId
                 join user in _context.AspNetUsers on dissh.CreateBy equals user.UserName
-                select new ViewSrmDisscussionH
+                join vendor in _context.SrmVendors on user.UserName equals vendor.SapVendor 
+                into groupjoin from vendor in groupjoin.DefaultIfEmpty()
+                 select new ViewSrmDisscussionH
                 {
                     DisscussionId = dissh.DisscussionId,
                     TemplateType = dissh.TemplateType,
@@ -131,12 +133,19 @@ namespace Convience.Service.SRM
                     LastUpdateBy = dissh.LastUpdateBy,
                     FunctionName = func.FunctionName,
                     UserName = user.Name,
+                    Ekorg=vendor.Ekorg
                 })
+                .AndIfCondition(!query.user.GetIsVendor(), p => werksList.Contains(p.Ekorg.ToString()) || p.CreateBy == query.user.GetUserName())
                 .AndIfCondition(query.user.GetIsVendor(), p => p.CreateBy == query.user.GetUserName())
                 //.AndIfCondition(!roleids.Contains("1"), p => p.CreateBy == query.user.GetUserName())
                 .AndIfHaveValue(query.id, p => p.Number.Contains(query.id.ToString()))
                 .ToList();
             var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);
+            foreach (var item in r)
+            {
+                item.LastCreateDateC = _context.SrmDisscussionCs.Where(p => p.DisscussionId == item.DisscussionId).Max(p => p.CreateDate);
+                item.ContentCount = _context.SrmDisscussionCs.Where(p => p.DisscussionId == item.DisscussionId).Count();
+            }
             return new PagingResultModel<ViewSrmDisscussionH>
             {
                 Data = r,
@@ -165,7 +174,7 @@ namespace Convience.Service.SRM
                      FunctionName = func.FunctionName,
                      UserName = user.Name,
                  })
-                .AndIfCondition(!roleids.Contains("1"), p => p.CreateBy == query.user.GetUserName())
+                //.AndIfCondition(!roleids.Contains("1"), p => p.CreateBy == query.user.GetUserName())
                 .AndIfHaveValue(query.id, p => p.DisscussionId == query.id)
                 .FirstOrDefault();
             result.ViewSrmDisscussionCs =

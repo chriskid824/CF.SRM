@@ -53,8 +53,24 @@
           <nz-list-item-meta-title>
             <a href="/srm/diss/{{item.disscussionId}}">{{ item.title }}</a>
           </nz-list-item-meta-title>
+          <nz-list-item-meta-description>
+            <ul nz-list-item-actions style="margin-left: 0px;">
+              <nz-list-item-action>
+                <i nz-icon nzType="message" style="margin-right: 8px;"></i>
+                {{item.contentCount}}
+              </nz-list-item-action>
+              <nz-list-item-action>
+                <i nz-icon nzType="edit" style="margin-right: 8px;"></i>
+                {{item.userName}}
+              </nz-list-item-action>
+            </ul>
+          </nz-list-item-meta-description>
         </nz-list-item-meta>
-        {{ item.createDate | date: "yyyy-MM-dd hh:mm:ss"}}
+
+        <div>
+          <i nz-icon [nzType]="'message'" style="margin-right: 8px; " *ngIf='item.lastCreateDateC!=null'></i>{{ item.lastCreateDateC | date: "yyyy-MM-dd hh:mm:ss"}}
+          <i nz-icon [nzType]="'edit'" style="margin-right: 8px; "></i>{{ item.createDate | date: "yyyy-MM-dd hh:mm:ss"}}
+        </div>
       </nz-list-item>
       <nz-list-empty *ngIf="listOfData.length === 0"></nz-list-empty>
     </nz-list>

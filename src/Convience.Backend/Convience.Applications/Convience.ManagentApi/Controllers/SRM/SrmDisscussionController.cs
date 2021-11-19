@@ -32,12 +32,14 @@ namespace Convience.ManagentApi.Controllers.SRM
     {
         private readonly ISrmDisscussionService _srmDisscussionService;
         private readonly ISrmPoService _srmPoService;
+        private readonly ISrmDeliveryService _srmDeliveryService;
         private readonly IUserService _userService;
 
-        public SrmDisscussionController(ISrmDisscussionService srmDisscussionService, ISrmPoService srmPoService, IUserService userService)
+        public SrmDisscussionController(ISrmDisscussionService srmDisscussionService, ISrmPoService srmPoService, ISrmDeliveryService srmDeliveryService, IUserService userService)
         {
             _srmDisscussionService = srmDisscussionService;
             _srmPoService = srmPoService;
+            _srmDeliveryService = srmDeliveryService;
             _userService = userService;
         }
 
@@ -114,14 +116,19 @@ namespace Convience.ManagentApi.Controllers.SRM
 
             switch (id)
             {
-                //case 7:
-                //    break;
-                //case 8:
-                //    break;
-                default:
+                case 7:
                     QueryPoList queryPo = new QueryPoList();
                     queryPo.user = User;
                     selects = _srmPoService.GetAll(queryPo).Select(p => new ViewSelects() { id = p.PoNum, name = p.PoNum }).ToList();
+                    break;
+                case 8:
+                    QueryPoList q = new QueryPoList();
+                    //var aaa = query.Property("poNum");
+                    q.user = User;
+                    selects = _srmDeliveryService.GetDelivery(q).Select(p => new ViewSelects() { id = p.DeliveryNum, name = p.DeliveryNum }).ToList();
+                    break;
+                default:
+
                     break;
             }
 

@@ -136,9 +136,9 @@ export class LayoutComponent implements OnInit {
       ]
     },
     {
-      canOperate: 'diss-list', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '主題討論',
+      canOperate: 'diss-list', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '訊息交換區',
       children: [
-        { canOperate: 'diss-list', routerLink: '/srm/diss-list', iconType: 'fund-view', firstBreadcrumb: '主題討論', lastBreadcrumb: '主題討論', name: '主題討論', },
+        { canOperate: 'diss-list', routerLink: '/srm/diss-list', iconType: 'fund-view', firstBreadcrumb: '訊息交換區', lastBreadcrumb: '訊息交換', name: '訊息交換', },
       ]
     }
   ];

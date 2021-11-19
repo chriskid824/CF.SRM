@@ -153,6 +153,9 @@ export class DiscussionComponent implements OnInit {
       //this.numbers=result;
     });
   }
+  onReplyClick(data) {
+    this.editorData='<Div style="background-color:lightgray">'+data.disscustionContent+'</div><hr><br>';
+  }
   cancel(){}
   onCancelClick(data){
     this.refresh();
