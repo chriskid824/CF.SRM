@@ -8,16 +8,16 @@ namespace Convience.Model.Validators.SystemManage
     {
         public UserViewModelValidator()
         {
-            RuleFor(viewmodel => viewmodel.UserName).MaximumLength(15).WithMessage("用户名过长！");
+            RuleFor(viewmodel => viewmodel.UserName).MaximumLength(15).WithMessage("用戶名過長！");
             RuleFor(viewmodel => viewmodel.UserName).NotEmpty().NotNull()
-                .WithMessage("用户名不能为空！");
+                .WithMessage("用戶名不能為空！");
 
-            RuleFor(viewmodel => viewmodel.Name).MaximumLength(10).WithMessage("人名过长！");
+            RuleFor(viewmodel => viewmodel.Name).MaximumLength(30).WithMessage("人名過長！");
             RuleFor(viewmodel => viewmodel.Name).NotEmpty().NotNull()
-                .WithMessage("人名不能为空！");
+                .WithMessage("人名不能為空！");
 
-            RuleFor(viewmodel => viewmodel.PhoneNumber).MaximumLength(11).WithMessage("电话号码过长！");
-            RuleFor(viewmodel => viewmodel.Avatar).MaximumLength(5).WithMessage("头像内容过长！");
+            RuleFor(viewmodel => viewmodel.PhoneNumber).MaximumLength(11).WithMessage("電話號碼過長！");
+            RuleFor(viewmodel => viewmodel.Avatar).MaximumLength(5).WithMessage("頭像内容過長！");
         }
     }
 }
