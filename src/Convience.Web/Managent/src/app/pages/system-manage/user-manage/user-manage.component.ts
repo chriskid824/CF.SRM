@@ -113,7 +113,7 @@ export class UserManageComponent implements OnInit {
         avatar: [user['avatar']],
         sapId: [user['sapId']],
         userName: [user['userName'], [Validators.required, Validators.maxLength(15)]],
-        name: [user['name'], [Validators.required, Validators.maxLength(10)]],
+        name: [user['name'], [Validators.required, Validators.maxLength(30)]],
         phoneNumber: [user['phoneNumber'], [Validators.pattern(/^0\d{9}$/)]],
         email: [user['email'], [Validators.email]],
         roleIds: [user['roleIds'].split(',')],
