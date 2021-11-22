@@ -86,7 +86,7 @@ export class UserManageComponent implements OnInit {
       avatar: [''],
       sapId: [''],
       userName: ['', [Validators.required, Validators.maxLength(15)]],
-      name: ['', [Validators.required, Validators.maxLength(10)]],
+      name: ['', [Validators.required, Validators.maxLength(30)]],
       phoneNumber: ['', [Validators.pattern(/^0\d{9}$/)]],
       email: ['', [Validators.email]],
       roleIds: [[]],
