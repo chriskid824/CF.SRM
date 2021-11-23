@@ -102,11 +102,13 @@ namespace Convience.Model.Models.SRM
         public string mNote { get; set; }
         public string pMachine { get; set; }
         public string pProcessNum { get; set; }
+        public string pProcessName { get; set; }
         public string pHours { get; set; }
         public string pPrice { get; set; }
         public string pSubTotal { get; set; }
         public string pNote { get; set; }
         public string sProcess { get; set; }
+        public string sProcessName { get; set; }
         public string sTimes { get; set; }
         public string sPrice { get; set; }
         public string sSubTotal { get; set; }

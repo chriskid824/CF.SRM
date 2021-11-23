@@ -53,24 +53,30 @@ namespace Convience.Service.SRM
                              on process.QotId equals qot.QotId
                              join vendor in _context.SrmVendors
                              on qot.VendorId equals vendor.VendorId
+                             join processMain in _context.SrmProcesss
+                             on process.PProcessNum equals processMain.ProcessNum.ToString()
                              where qotIds.Contains(process.QotId.Value)
                              select new viewSrmQotProcess(process)
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = process.PPrice.GetValueOrDefault() * (decimal)process.PHours.GetValueOrDefault()
+                                 SubTotal = process.PPrice.GetValueOrDefault() * (decimal)process.PHours.GetValueOrDefault(),
+                                 ProcessName = processMain.Process
                              }).ToArray();
             price.surface = (from surface in _context.SrmQotSurfaces
                              join qot in _context.SrmQotHs
              on surface.QotId equals qot.QotId
                              join vendor in _context.SrmVendors
                              on qot.VendorId equals vendor.VendorId
+                             join processMain in _context.SrmProcesss
+                             on surface.SProcess equals processMain.ProcessNum.ToString()
                              where qotIds.Contains(surface.QotId.Value)
                              select new viewSrmQotSurface(surface)
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
-                                 SubTotal = surface.SPrice.GetValueOrDefault() * (decimal)surface.STimes.GetValueOrDefault()
+                                 SubTotal = surface.SPrice.GetValueOrDefault() * (decimal)surface.STimes.GetValueOrDefault(),
+                                 ProcessName = processMain.Process
                              }).ToArray();
             price.other = (from other in _context.SrmQotOthers
                            join qot in _context.SrmQotHs

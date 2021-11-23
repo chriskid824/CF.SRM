@@ -392,7 +392,7 @@ export class PriceComponent implements OnInit {
         width: "150px",
       }, {
         headerName: "工序",
-        field: "pProcessNum",
+        field: "pProcessName",
         enableRowGroup: true,
         cellClass: "show-cell",
         headerClass: "process",
@@ -427,7 +427,7 @@ export class PriceComponent implements OnInit {
         width: "150px",
       }, {
         headerName: "工序",
-        field: "sProcess",
+        field: "sProcessName",
         enableRowGroup: true,
         cellClass: "show-cell",
         headerClass: "surface",
@@ -984,7 +984,7 @@ export class PriceComponent implements OnInit {
       },
       {
         headerName: "工序",
-        field: "pProcessNum",
+        field: "processName",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "240px",
@@ -1029,7 +1029,7 @@ export class PriceComponent implements OnInit {
       },
       {
         headerName: "工序",
-        field: "sProcess",
+        field: "processName",
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "240px",
@@ -1196,6 +1196,9 @@ export class PriceComponent implements OnInit {
     this.gridApi_summary = params.api;
     this.columnApi_summary = params.columnApi;
     this.gridApi_summary.forEachLeafNode((node) => {
+      console.log(1112);
+      console.log(this.caseId);
+      console.log(node.data.canEdit);
       if (node.data.canEdit) {
         this.canEdit = true;
       }

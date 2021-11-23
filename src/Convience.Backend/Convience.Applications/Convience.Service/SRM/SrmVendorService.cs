@@ -48,7 +48,7 @@ namespace Convience.Service.SRM
         {
             int skip = (vendorQuery.Page-1) * vendorQuery.Size;
             var resultQuery = _srmVendorRepository.Get()
-                .AndIfHaveValue(vendorQuery.Vendor, r => r.SrmVendor1.Contains(vendorQuery.Vendor))
+                .AndIfHaveValue(vendorQuery.Vendor, r => r.SrmVendor1.Contains(vendorQuery.Vendor) || r.VendorName.Contains(vendorQuery.Vendor))
                 .AndIfHaveValue(vendorQuery.VendorEquals,r=>r.SrmVendor1.Equals(vendorQuery.VendorEquals))
                 .AndIfHaveValue(vendorQuery.withoutStatus, r => !vendorQuery.withoutStatus.Contains(r.Status.Value))
                 .Where(r => vendorQuery.Werks.Contains(r.Ekorg.Value));

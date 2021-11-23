@@ -56,6 +56,7 @@ namespace Convience.Model.Models.SRM
         public int VendorId { get; set; }
         public string VendorName { get; set; }
         public decimal SubTotal { get; set; }
+        public string ProcessName { get; set; }
     }
     public class viewSrmQotSurface : SrmQotSurface
     {
@@ -68,6 +69,7 @@ namespace Convience.Model.Models.SRM
         public int VendorId { get; set; }
         public string VendorName { get; set; }
         public decimal SubTotal { get; set; }
+        public string ProcessName { get; set; }
     }
     public class viewSrmQotOther : SrmQotOther
     {

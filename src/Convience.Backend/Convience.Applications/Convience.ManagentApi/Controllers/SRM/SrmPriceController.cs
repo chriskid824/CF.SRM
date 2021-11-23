@@ -151,6 +151,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     temp[item.i].pMachine = item.value.PMachine;
                     temp[item.i].pProcessNum = item.value.PProcessNum?.ToString() ?? "";
+                    temp[item.i].pProcessName = item.value.ProcessName;
                     temp[item.i].pHours = item.value.PHours?.ToString() ?? "";
                     temp[item.i].pPrice = item.value.PPrice?.NormalizeTwoDigits() ?? "";
                     temp[item.i].pSubTotal = item.value.SubTotal.NormalizeTwoDigits();
@@ -160,6 +161,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 foreach (var item in surface.Select((value, i) => new { i, value }))
                 {
                     temp[item.i].sProcess = item.value.SProcess;
+                    temp[item.i].sProcessName = item.value.ProcessName;
                     temp[item.i].sTimes = item.value.STimes?.ToString() ?? "";
                     temp[item.i].sPrice = item.value.SPrice?.NormalizeTwoDigits() ?? "";
                     temp[item.i].sSubTotal = item.value.SubTotal.NormalizeTwoDigits();
