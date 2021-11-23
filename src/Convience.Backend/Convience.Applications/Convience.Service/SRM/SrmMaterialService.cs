@@ -317,7 +317,7 @@ namespace Convience.Service.SRM
                 no = data.SrmMatnr1;
                 if (data.SrmMatnr1.Substring(0, 1) == "Z" || data.SrmMatnr1.Substring(0, 1) == "F" ||
                     data.SrmMatnr1.Substring(0, 1) == "T" || data.SrmMatnr1.Substring(0, 1) == "C" ||
-                    data.SrmMatnr1.Substring(0, 1) == "K")
+                    data.SrmMatnr1.Substring(0, 1) == "K" || data.SrmMatnr1.Substring(0, 1) == "M")
                 {
                     sapno = data.SrmMatnr1;
                 }
