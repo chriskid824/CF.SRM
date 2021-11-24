@@ -62,7 +62,7 @@ const customLanguagePack = {
   bootstrap: [AppComponent],
   /** 配置 ng-zorro-antd 国际化（文案 及 日期） **/
   providers: [
-    { provide: NZ_I18N, useValue: zh_CN },
+    { provide: NZ_I18N, useValue: zh_TW },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true },
