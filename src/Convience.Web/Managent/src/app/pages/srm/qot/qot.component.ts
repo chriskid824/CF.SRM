@@ -1423,7 +1423,7 @@ export class QotComponent implements OnInit {
     //his.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
     //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
     //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
-    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + current.mCostPrice * 100) / 100, 0));
+    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + (current.mCostPrice * 100) / 100), 0));
     this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => Math.round(sum + current.pCostsum ), 0));
     this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) =>  Math.round(sum + current.sCostsum ), 0));
     this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => Math.round(sum + current.oPrice ), 0));
