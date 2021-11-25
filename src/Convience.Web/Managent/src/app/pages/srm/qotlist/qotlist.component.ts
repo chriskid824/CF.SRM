@@ -65,7 +65,7 @@ export class QotlistComponent implements OnInit {
       {  headerName:'建立日期',field: 'VCreateDate', resizable: true,valueFormatter:dateFormatter },
       {  headerName:'建立人員',field: 'VCreateBy', resizable: true},
       {  headerName:'最後異動日期',field: 'VLastUpdateDate', resizable: true,valueFormatter:dateFormatter },
-      {  headerName:'最後異動人員',field: 'VLastUpdateBy', resizable: true },
+      //{  headerName:'最後異動人員',field: 'VLastUpdateBy', resizable: true },
 
     ];
     this.detailCellRendererParams = {
