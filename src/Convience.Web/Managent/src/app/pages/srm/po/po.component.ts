@@ -268,7 +268,9 @@ export class PoComponent implements OnInit {
       number:e.rowData.PoNum.toString()+'-'+ e.rowData.PoLId.toString(),
       werks:e.rowData.Org,
       type:2,
-      deadline:e.rowData.ReplyDeliveryDate}
+      deadline:e.rowData.ReplyDeliveryDate,
+      isUplaod:true,
+    }
     this.filemodal.upload(data);
     //this.isVisible=true;
   }
@@ -335,6 +337,19 @@ export class PoComponent implements OnInit {
       .subscribe((result) => {
         this.rowData = result;
       });
+  }
+  getContextMenuItems(params) {
+    var result = [
+      {
+        name: '新增主題回復',
+        action: function () {
+          window.location.href="/srm/diss-add";
+          //window.alert('Alerting about ' + params.value);
+        },
+        cssClasses: ['redFont', 'bold'],
+      },
+    ];
+    return result;
   }
 }
 function dateFormatter(data) {

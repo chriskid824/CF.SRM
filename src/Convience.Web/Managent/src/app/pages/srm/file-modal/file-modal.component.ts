@@ -17,7 +17,7 @@ import{Router} from '@angular/router'
   styleUrls: ['./file-modal.component.less']
 })
 export class FileModalComponent implements OnInit {
-
+  isUpload:boolean=true;
   folderForm: FormGroup = new FormGroup({});
 
   fileInfoList: FileInfo[] = [];
@@ -102,6 +102,7 @@ export class FileModalComponent implements OnInit {
     });
 }
   upload(data) {
+    this.isUpload=data.isUpload;
     this._srmFileService.GetFileList(data).subscribe((result: any) => {
       this.fileRecordList=result;
       if(result!=null&&result.length>0)

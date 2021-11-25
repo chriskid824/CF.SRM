@@ -3,7 +3,7 @@
   <nz-form-control [nzSpan]="14">
     <nz-upload [nzDownload]="download" [nzFileList]="inputFile.fileList" [nzBeforeUpload]="beforeUpload" nzLimit="1" nzMultiple="false"
     [nzRemove]="delete">
-      <button nz-button><i nz-icon nzType="upload"></i>選擇上傳文件</button>
+      <button nz-button *ngIf="isUpload"><i nz-icon nzType="upload"></i>選擇上傳文件</button>
     </nz-upload>
   </nz-form-control>
 </nz-form-item>

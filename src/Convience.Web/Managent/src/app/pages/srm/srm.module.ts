@@ -144,6 +144,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
         { path: "diss/:discussionId", component: DiscussionComponent, canActivate: [LoginGuard]},
         { path: "diss-list", component: DiscussionListComponent, canActivate: [LoginGuard]},
         { path: "diss-add", component: DiscussionAddComponent, canActivate: [LoginGuard]},
+        { path: "diss-add/:functionId/:number", component: DiscussionAddComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),

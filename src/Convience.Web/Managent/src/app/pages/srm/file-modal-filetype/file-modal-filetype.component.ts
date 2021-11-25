@@ -14,12 +14,15 @@ export class FileModalFiletypeComponent implements OnInit {
   @Output()
   buttonClicked:EventEmitter<FileEmit>=new EventEmitter<FileEmit>();
     @Input() inputFile: ViewSrmFileRecord;
+    @Input() isUpload: boolean;
   constructor(    private _fileService: FileService,
                   private _srmFileService: SrmFileService,
                   private _modalService: NzModalService,
                   private _messageService: NzMessageService,) { }
   currentDirectory: string = '/';
+  enable=false;
   ngOnInit(): void {
+    console.info(this.isUpload);
     console.info(this.inputFile);
     this.currentDirectory=this.inputFile.werks.toString()+'/'+this.inputFile.number+'/'+ (this.inputFile.type==1? "廠內" : "廠外");
    // this.refresh();
