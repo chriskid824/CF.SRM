@@ -238,7 +238,7 @@ export class RfqComponent implements OnInit {
     params.api.addEventListener('rowClicked', myRowClickedHandler);
     this.gridApi = params.api;
     this.columnApi = params.columnApi;
-    this.gridApi.sizeColumnsToFit();
+    //this.gridApi.sizeColumnsToFit();
   }
 
 

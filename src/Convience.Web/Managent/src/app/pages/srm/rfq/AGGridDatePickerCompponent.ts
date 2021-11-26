@@ -17,7 +17,7 @@ export class AgGridDatePickerComponent_RFQ implements ICellEditorAngularComp {
   public selectedDate: any;
   disabledDate= (current: Date): boolean =>
   // Can not select days before today and today
-  differenceInCalendarDays(current, new Date(this.params.data.DeliveryDate)) < -7;
+  differenceInCalendarDays(current, new Date(this.params.data.date)) < -7;
   agInit(params: any): void {
     this.params = params;
   }
@@ -31,6 +31,7 @@ export class AgGridDatePickerComponent_RFQ implements ICellEditorAngularComp {
   }
 
   onChange(date: Date) {
+    //console.log(this.params);
     this.selectedDate = date;//{ date: { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDay() } };
     this.params.api.stopEditing();
   }

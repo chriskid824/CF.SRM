@@ -456,8 +456,8 @@ namespace Convience.Service.SRM
                 dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
             }
             dt.Columns.Add("IsExists");
-            string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量" };
-            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY" };
+            string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","期望日期" };
+            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY", "EstDeliveryDate" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers) {
                 if (!dt.Columns.Contains(header))
@@ -503,13 +503,27 @@ namespace Convience.Service.SRM
                     }
                 }
                 if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) {
-                    throw new Exception($"料號:{dataRow["數量"].ToString()}未填");
+                    throw new Exception($"料號:{dataRow["料號"].ToString()}數量未填");
+                }
+                if (string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
+                {
+                    throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期未填");
                 }
                 double qty = 0;
+                DateTime estDeliveryDate = new DateTime();
                 if (!double.TryParse(dataRow["數量"].ToString(),out qty)||qty<=0)
                 {
-                    throw new Exception($"料號:{dataRow["數量"].ToString()}格式錯誤");
+                    throw new Exception($"料號:{dataRow["料號"].ToString()}數量格式錯誤");
                 }
+                if (!DateTime.TryParse(dataRow["期望日期"].ToString(), out estDeliveryDate))
+                {
+                    double d = 0;
+                    if (!double.TryParse(dataRow["期望日期"].ToString(), out d)) {
+                        throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期格式錯誤");
+                    }
+                    estDeliveryDate = DateTime.FromOADate(Convert.ToDouble(dataRow["期望日期"].ToString()));
+                }
+                dataRow["期望日期"] = estDeliveryDate.ToString("yyyy/MM/dd");
                 //dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && user.Werks.Contains(r.Werks.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 dt.Rows.Add(dataRow);
                 rowIndex++;
