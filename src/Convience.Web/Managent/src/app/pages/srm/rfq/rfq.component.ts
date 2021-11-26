@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl} from '@angular/forms';
 import * as $ from 'jquery';
 import { of } from 'rxjs';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { AgGridDatePickerComponent_RFQ } from './AGGridDatePickerCompponent';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SrmRfqService } from '../../../business/srm/srm-rfq.service';
 import { DatePipe } from '@angular/common'
@@ -410,6 +411,15 @@ export class RfqComponent implements OnInit {
         enableRowGroup: true,
         cellClass: "show-cell",
         width: "150px",
+      },
+      {
+        headerName: '期望日期',
+        field: 'estDeliveryDate',
+        editable: this.canModify,
+        valueFormatter: dateFormatter,
+        stopEditingWhenCellsLoseFocus: false,
+        cellEditorFramework: AgGridDatePickerComponent_RFQ,
+        width: "200px",
       }
     ]
   }
@@ -566,6 +576,7 @@ export class RfqComponent implements OnInit {
   }
 
   save() {
+    this.gridApi.stopEditing()
     var rfq = this.getrfq();
     this._srmRfqService.SAVE(rfq).subscribe(result => {
       console.log(result);
@@ -577,6 +588,7 @@ export class RfqComponent implements OnInit {
   }
 
   start() {
+    this.gridApi.stopEditing()
     var rfq = this.getrfq();
     if (rfq.h.SOURCER == null) { alert("詢價人員未選擇"); return; }
     if (rfq.h.deadLine == null) { alert("截止日期未選擇"); return; }
@@ -588,6 +600,10 @@ export class RfqComponent implements OnInit {
       }
       if (isNaN(rfq.m[i].qty)) {
         alert("料號" + rfq.m[i].srmMatnr1 + "數量格式錯誤");
+        return;
+      }
+      if (!rfq.m[i].estDeliveryDate) {
+        alert("料號" + rfq.m[i].srmMatnr1 + "期望日期未填");
         return;
       }
       //if (!rfq.m[i].machineName) {
@@ -630,4 +646,10 @@ export class RfqComponent implements OnInit {
       this._router.navigate(['srm/rfq-manage']);
     });
   }
+}
+function dateFormatter(data) {
+  console.log(data.value == null);
+  if (data.value == null) return "";
+  var date = new Date(data.value);
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }

@@ -41,6 +41,7 @@ namespace Convience.Entity.Entity.SRM
         public string PEmptyFlag { get; set; }
         public string SEmptyFlag { get; set; }
         public string OEmptyFlag { get; set; }
-        public DateTime? ExpirationDate { get; set; }  
+        public DateTime? ExpirationDate { get; set; }
+        public DateTime? EstDeliveryDate { get; set; }
     }
 }

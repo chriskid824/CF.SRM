@@ -86,7 +86,8 @@ namespace Convience.Service.SRM
                             Description = a.Description,
                             Bn_num = a.Bn_num,
                             Major_diameter = a.Major_diameter,
-                            Minor_diameter = a.Minor_diameter
+                            Minor_diameter = a.Minor_diameter,
+                            EstDeliveryDate = a.EstDeliveryDate
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }

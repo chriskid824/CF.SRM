@@ -71,12 +71,14 @@ import { DiscussionAddComponent } from './discussion-add/discussion-add.componen
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent';
 @NgModule({
   declarations: [
     RfqComponent,
     RfqManageComponent,
     PoComponent,
     AgGridDatePickerComponent,
+    AgGridDatePickerComponent_RFQ,
     QotComponent,
     PriceWorkComponent,
     PriceComponent,

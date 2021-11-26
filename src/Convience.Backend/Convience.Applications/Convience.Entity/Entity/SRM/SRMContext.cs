@@ -308,6 +308,11 @@ namespace Convience.Entity.Entity.SRM
                     .IsUnicode(false)
                     .HasColumnName("WIDTH")
                     .HasComment("寬");
+
+                entity.Property(e => e.EstDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EstDeliveryDate")
+                    .HasComment("期望日期");
             });
 
             modelBuilder.Entity<SrmRfqV>(entity =>
@@ -519,6 +524,10 @@ namespace Convience.Entity.Entity.SRM
                  .HasColumnName("EXPIRATION_DATE")
                  .HasComment("有效期限");
 
+                entity.Property(e => e.EstDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EstDeliveryDate")
+                    .HasComment("期望日期");
             });
 
             modelBuilder.Entity<SrmEkgry>(entity =>

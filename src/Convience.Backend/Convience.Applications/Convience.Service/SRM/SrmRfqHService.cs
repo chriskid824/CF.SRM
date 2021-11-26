@@ -97,6 +97,9 @@ namespace Convience.Service.SRM
                     {
                         throw new Exception($"料號{rfqM.Material}，數量應大於0");
                     }
+                    if (rfqM.EstDeliveryDate.HasValue) {
+                        rfqM.EstDeliveryDate = rfqM.EstDeliveryDate.Value.Date;
+                    }
                     rfqM.RfqId = rfqH.RfqId;
                 }
                 foreach (var rfqV in rfqVs)
@@ -120,6 +123,10 @@ namespace Convience.Service.SRM
                     if (rfqM.Qty.HasValue && rfqM.Qty.Value <= 0)
                     {
                         throw new Exception($"料號{rfqM.Material}，數量應大於0");
+                    }
+                    if (rfqM.EstDeliveryDate.HasValue)
+                    {
+                        rfqM.EstDeliveryDate = rfqM.EstDeliveryDate.Value.Date;
                     }
                     rfqM.RfqId = rfqH.RfqId;
                     if (rfqM.RfqMId == 0)
