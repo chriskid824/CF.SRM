@@ -186,7 +186,6 @@ namespace Convience.ManagentApi.Controllers.SRM
                             qot.CreateBy = h.LastUpdateBy;
                             qot.LastUpdateDate = now;
                             qot.LastUpdateBy = h.LastUpdateBy;
-                            qot.EstDeliveryDate = matnr.EstDeliveryDate;
                             qots.Add(qot);
                         }
                     }

@@ -523,11 +523,6 @@ namespace Convience.Entity.Entity.SRM
                  .HasColumnType("datetime")
                  .HasColumnName("EXPIRATION_DATE")
                  .HasComment("有效期限");
-
-                entity.Property(e => e.EstDeliveryDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("EstDeliveryDate")
-                    .HasComment("期望日期");
             });
 
             modelBuilder.Entity<SrmEkgry>(entity =>
