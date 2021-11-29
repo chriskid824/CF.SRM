@@ -317,8 +317,7 @@ namespace Convience.Service.SRM
                               VLastUpdateDate = r.LastUpdateDate,
                               VLastUpdateBy = r.LastUpdateBy,
                               VEndDate = r.EndDate,
-                              VVendor = vendor.VendorName
-
+                              VVendor = vendor.VendorName,
                           })
                           .Where(p => p.VStatus == 7)
                           .Distinct()
@@ -467,8 +466,9 @@ namespace Convience.Service.SRM
                               VLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name))? u2.Name:r.LastUpdateBy,
                               VEndDate = r.EndDate,
                               VVendor = (!string.IsNullOrWhiteSpace(vendor.SapVendor))? vendor.SapVendor:vendor.SrmVendor1,
-                              VVendorId = vendor.VendorId
-
+                              VVendorId = vendor.VendorId,
+                              Werks = r.Werks,
+                              VDeadline = r.Deadline
                           })
                         //.Where(p => p.VVendor == query.vendor)
                         .Where(p => p.VVendorId == venderid)

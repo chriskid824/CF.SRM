@@ -1,6 +1,6 @@
 //import { Component, OnInit } from '@angular/core';
 import { GridOptions } from 'ag-grid-community';
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy,ViewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -8,7 +8,8 @@ import { SrmQotService } from 'src/app/business/srm/srm-qot.service';
 import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutComponent } from '../../layout/layout/layout.component';
-
+import { FileModalComponent } from '../file-modal/file-modal.component';
+import { NzUploadBtnComponent } from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-qotlist',
@@ -17,6 +18,8 @@ import { LayoutComponent } from '../../layout/layout/layout.component';
 })
 
 export class QotlistComponent implements OnInit {
+  @ViewChild('filemodal')
+  filemodal: FileModalComponent;
   qotid;
   rowDataQot;
   columnDefs;
@@ -39,8 +42,8 @@ export class QotlistComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private http: HttpClient,
-    private _srmQotService: SrmQotService, 
-    private _storageService: StorageService,    
+    private _srmQotService: SrmQotService,
+    private _storageService: StorageService,
     private activatedRoute: ActivatedRoute,
     private _layout: LayoutComponent,
     private _router: Router,
@@ -57,14 +60,43 @@ export class QotlistComponent implements OnInit {
       { field: '最後異動日期', resizable: true},
       { field: '最後異動人員', resizable: true },*/
       //{  headerName: "Row",valueGetter: "node.rowIndex + 1"},
-      //{  headerName:'序號',field: 'VRfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},    
-      {  headerName:'序號',valueGetter: "node.rowIndex + 1", resizable: true,cellRenderer: 'agGroupCellRenderer',},    
+      //{  headerName:'序號',field: 'VRfqId', resizable: true,cellRenderer: 'agGroupCellRenderer',},
+      {  headerName:'序號',valueGetter: "node.rowIndex + 1", resizable: true,cellRenderer: 'agGroupCellRenderer',},
       //{  headerName:'狀態',field: 'VStatus', valueFormatter:'switch(value){case 1 : return "初始"; case 3 : return "接收"; case 5 : return "確認";case 7 : return "啟動"; case 18 : return "完成";default : return "未知";}'},
       {  headerName:'狀態',field: 'VStatusDesc'},
       {  headerName:'詢價單號',field: 'VRfqNum', resizable: true},
       {  headerName:'建立日期',field: 'VCreateDate', resizable: true,valueFormatter:dateFormatter },
       {  headerName:'建立人員',field: 'VCreateBy', resizable: true},
       {  headerName:'最後異動日期',field: 'VLastUpdateDate', resizable: true,valueFormatter:dateFormatter },
+      { headerName: '操作', field: 'fieldName',
+      cellRenderer : function(params){
+        var eDiv = document.createElement('div');
+          eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+          var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+          eButton.addEventListener('click', function() {
+            const data={
+              functionId:3,
+              number:params.data.VRfqNum.toString(),
+              werks:params.data.Werks,
+              type:2,
+              deadline:params.data.VDeadline,
+              isUpload:false,
+            }
+            params.ondblclick(data);
+            //this.filemodal.upload(data);
+           //alert( params.data.QVendorId)
+           //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
+           //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
+           //this._layout.navigateTo('qot'); //???進不去
+           //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
+          });
+          return eDiv;
+          },
+          cellRendererParams: {
+            ondblclick:this.upload.bind(this),
+            label: '',
+          },
+      },
       //{  headerName:'最後異動人員',field: 'VLastUpdateBy', resizable: true },
 
     ];
@@ -84,7 +116,7 @@ export class QotlistComponent implements OnInit {
           cellRenderer : function(params){
             var eDiv = document.createElement('div');
               eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檢視</button></span>';
-              var eButton = eDiv.querySelectorAll('.btn-simple')[0];  
+              var eButton = eDiv.querySelectorAll('.btn-simple')[0];
               eButton.addEventListener('click', function() {
                //alert( params.data.QVendorId)
                //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
@@ -131,6 +163,10 @@ export class QotlistComponent implements OnInit {
     });
     this.refresh();
   }
+  upload(data)
+  {
+    this.filemodal.upload(data);
+  }
   searchQOT() {
     this.refresh();
     //依搜尋條件查詢???
@@ -156,7 +192,7 @@ export class QotlistComponent implements OnInit {
   /*open(id) {
     window.open('../srm/qot?id=' + id);
   }*/
-  //???供應商登入用VENDERCODE 
+  //???供應商登入用VENDERCODE
   getVendorId()
   {
 
@@ -168,7 +204,7 @@ export class QotlistComponent implements OnInit {
         RFQ_NUM: "",
         MATNR: "",
         STATUS: "",
-        VENDOR:"", 
+        VENDOR:"",
         page: this.page,
         size: this.size
       }
@@ -224,7 +260,7 @@ export class QotlistComponent implements OnInit {
     { 序號: '4',  詢價單號: 'RFQ0000001', 建立日期: '2021/07/14', 建立人員: 'D', 最後異動日期: '2021/07/14', 最後異動人員: 'D', 狀態: '啟動' ,
     detail:[{報價單號:'1',狀態:'1',料號:'1',建立日期:'1',建立人員:'1',最後異動日期:'1',最後異動人員:'1'}]},
   ];
- 
+
 
   private selectedRows = [];
 

@@ -33,12 +33,11 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmFileUploadTemplate> GetTemplateList(QueryFile query);
         public IEnumerable<ViewSrmFileRecordResult> GetFileListByNumer(QueryFile query);
         public bool UpdateTemplate(SrmFileUploadTemplate data);
-        public bool DeleteDeliveryL(ViewSrmDeliveryL data);
-        public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist);
         public Task<string> UploadAsync(FileUploadViewModel viewModel);
         public Task<Stream> DownloadAsync(NzFileViewModel viewModel);
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
+        public string UpdateNumber(string number, string guid);
     }
 
     public class SrmFileService : ISrmFileService
@@ -132,68 +131,6 @@ namespace Convience.Service.SRM
             _context.SrmFileUploadTemplates.Update(data);
             _context.SaveChanges();
             return true;
-        }
-        public bool DeleteDeliveryL(ViewSrmDeliveryL data)
-        {
-            SrmDeliveryL dl = _context.SrmDeliveryLs.Find(data.DeliveryLId);
-            if (dl != null)
-            {
-                _context.SrmDeliveryLs.Remove(dl);
-                SrmPoL pol = _context.SrmPoLs.Find(data.PoId, data.PoLId);
-                pol.Status = 14;
-                _context.SrmPoLs.Update(pol);
-                SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
-                poh.Status = 14;
-                _context.SrmPoHs.Update(poh);
-                _context.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-        public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist)
-        {
-            #region 1.修改status
-            ViewSrmDeliveryL dl = datalist.FirstOrDefault();
-            #region 1.1 dh
-            SrmDeliveryH dh = _context.SrmDeliveryHs.Find(dl.DeliveryId);
-            dh.Status = 12;
-            _context.SrmDeliveryHs.Update(dh);
-            #endregion
-            #region 1.2 pol
-            datalist.ForEach(m =>
-                {
-                    SrmPoL pl = _context.SrmPoLs.Find(m.PoId, m.PoLId);
-                    pl.Status = 12;
-                    _context.SrmPoLs.Update(pl);
-                });
-            #endregion
-            _context.SaveChanges();
-            #region poh
-            List<int?> poidList = datalist.Select(p => p.PoId).ToList();
-            poidList.ForEach(m =>
-            {
-                if (_context.SrmPoLs.Any(p => p.PoId == m && p.Status != 12))
-                { }
-                else
-                {
-                    SrmPoH ph = _context.SrmPoHs.Find(m);
-                    ph.Status = 12;
-                    _context.SrmPoHs.Update(ph);
-                }
-            });
-            _context.SaveChanges();
-            #endregion
-            #endregion
-            //2.rfc
-
-
-            return null;
-        }
-        public bool CheckAllDelivery(int poid, int polid)
-        {
-            float deliveryQty = _context.SrmDeliveryLs.Where(p => p.PoId == poid && p.PoLId == polid).Sum(p => p.DeliveryQty).Value;
-            float Qty = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.Qty).FirstOrDefault().Value;
-            return deliveryQty == Qty;
         }
         public IEnumerable<ViewSrmFileRecordResult> GetFileListByNumer(QueryFile query)
         {
@@ -437,6 +374,29 @@ namespace Convience.Service.SRM
                 Icon = "mdi-google-cloud",
             };
             return ann;
+        }
+        public string UpdateNumber(string number, string guid)
+        {
+            if(number==guid) return string.Empty;
+            List<SrmFileuploadRecordH> hList = _context.SrmFileuploadRecordHs.Where(p => p.Number == guid).ToList();
+            if (hList.Count <= 0) { return "不存在該guid"; }
+            hList.ForEach(p => {
+                string werks = _context.SrmFileUploadTemplates.Where(t => t.TemplateId == p.TemplateId).FirstOrDefault().Werks.ToString();
+                string srcFolderPath =  werks + '/' + guid;
+                srcFolderPath = _fileStore.GetPhysicalPath(srcFolderPath);
+                string destFolderPath = werks + '/' + number;
+                destFolderPath= _fileStore.GetPhysicalPath(destFolderPath);
+                if (System.IO.Directory.Exists(srcFolderPath))
+                {
+                    System.IO.Directory.Move(srcFolderPath, destFolderPath);
+                }
+                p.Number = number;
+                List<SrmFileuploadRecordL> lList = _context.SrmFileuploadRecordLs.Where(l => l.RecordHId == p.RecordHId).ToList();
+                lList.ForEach(l => { l.Url=l.Url.Replace(guid, number); });
+            });
+
+            _context.SaveChanges();
+            return string.Empty;
         }
     }
 }

@@ -127,7 +127,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpGet]
-        [Permission("fileGet")]
+        //[Permission("fileGet")]
         [LogFilter("内容管理", "文件管理", "下载文件")]
         public async Task<IActionResult> DownloadFile([FromQuery] Model.Models.SRM.NzFileViewModel viewModel)
         {
@@ -136,7 +136,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpDelete]
-        [Permission("fileDelete")]
+        //[Permission("fileDelete")]
         [LogFilter("内容管理", "文件管理", "删除文件")]
         public async Task<IActionResult> DeleteFile([FromQuery] NzFileViewModel viewModel)
         {

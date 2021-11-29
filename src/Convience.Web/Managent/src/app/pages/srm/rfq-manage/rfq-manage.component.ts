@@ -5,15 +5,12 @@ import { Rfq } from '../model/rfq';
 import { StorageService } from '../../../services/storage.service';
 import { Router } from '@angular/router';
 import { LayoutComponent } from '../../layout/layout/layout.component';
-import { FileModalComponent } from '../file-modal/file-modal.component';
 @Component({
   selector: 'app-rfq-manage',
   templateUrl: './rfq-manage.component.html',
   styleUrls: ['./rfq-manage.component.less']
 })
 export class RfqManageComponent implements OnInit {
-  @ViewChild('filemodal')
-   filemodal: FileModalComponent;
   searchForm: FormGroup = new FormGroup({});
   data;
   status;
@@ -131,18 +128,6 @@ export class RfqManageComponent implements OnInit {
   openPrice(id) {
     this._layout.navigateTo('price');
     this._router.navigate(['srm/price', { id: id  }]);
-    //window.open('../srm/rfq?id=' + id);
-  }
-  openFile(rowData) {
-    const data={
-      functionId:3,
-      number:rowData.rfqNum.toString(),
-      werks:rowData.werks,
-      type:2,
-      deadline:rowData.deadline,
-      isUpload:true,
-    }
-    this.filemodal.upload(data);
     //window.open('../srm/rfq?id=' + id);
   }
   addRfq() {

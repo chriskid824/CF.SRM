@@ -31,7 +31,7 @@ namespace Convience.Service.SRM
     public interface ISrmRfqHService
     {
         public void Save(SrmRfqH rfqH);
-        public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
+        public string Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs);
         public ViewSrmRfqH GetDataByRfqId(int RfqId);
         public void End(QueryRfqList q);
         public PagingResultModel<ViewSrmRfqH> GetRfqList(QueryRfqList q, int page, int size);
@@ -75,7 +75,7 @@ namespace Convience.Service.SRM
             //}
         }
 
-        public void Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs)
+        public string Save(SrmRfqH rfqH, SrmRfqM[] rfqMs, SrmRfqV[] rfqVs)
         {
             //using (var db = new SRMContext())
             //{
@@ -168,6 +168,7 @@ namespace Convience.Service.SRM
                 }
             }
             _context.SaveChanges();
+            return rfqH.RfqNum;
             //    db.Database.CommitTransaction();
             //}
             //catch (Exception ex)

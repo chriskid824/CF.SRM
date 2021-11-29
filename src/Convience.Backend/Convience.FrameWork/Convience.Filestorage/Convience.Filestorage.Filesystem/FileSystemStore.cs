@@ -242,7 +242,7 @@ namespace Convience.Filestorage.Filesystem
         /// <param name="path">The relative path within the file store.</param>
         /// <returns></returns>
         /// <remarks>The resulting physical path is verified to be inside designated root file system path.</remarks>
-        private string GetPhysicalPath(string path)
+        public string GetPhysicalPath(string path)
         {
             path = this.NormalizePath(path);
 

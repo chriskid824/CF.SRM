@@ -21,7 +21,7 @@
         <nz-select [formControlName]="'qotstatus'"  style="width: 100px;" ngModel="1">
           <nz-option nzValue="0" nzLabel="全部"></nz-option>
           <nz-option nzValue="1" nzLabel="初始"></nz-option><!--初始、儲存-->
-          <!--<nz-option nzValue="20" nzLabel="已回覆"></nz-option>-->       
+          <!--<nz-option nzValue="20" nzLabel="已回覆"></nz-option>-->
           <nz-option nzValue="5" nzLabel="確認"></nz-option><!--確認表示該詢價單所有報價單皆回覆-->
           <nz-option nzValue="6" nzLabel="拒絕"></nz-option>
           <!--<nz-option nzValue="17" nzLabel="失效"></nz-option>--><!--失效表詢價結束，無法查到..-->
@@ -52,7 +52,7 @@
                  [defaultColDef]="defaultColDef"
                  [pagination]="true"
                  [paginationPageSize]="15"
-           
+
                 >
 </ag-grid-angular>
 <div class="mt-10">
@@ -60,6 +60,7 @@
                  nzShowQuickJumper (nzPageIndexChange)="pageChange()">
   </nz-pagination>
 </div>
+<app-file-modal #filemodal></app-file-modal>
 </nz-card>
 <!--<mat-tab-group style="font-family:微軟正黑體;">
 

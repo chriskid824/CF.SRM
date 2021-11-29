@@ -207,5 +207,9 @@ namespace Convience.Filestorage.MongoDB
             var fileEntity = await _mongoRepository.GetAsync(filter);
             return fileEntity.FirstOrDefault();
         }
+        public string GetPhysicalPath(string path)
+        {
+            return path;
+        }
     }
 }

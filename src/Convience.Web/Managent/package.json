@@ -42,6 +42,7 @@
     "angularx-qrcode": "^11.0.0",
     "bootstrap": "^5.1.0",
     "file-saver": "^2.0.5",
+    "guid-typescript": "^1.0.9",
     "jquery": "^3.6.0",
     "jquery-datepicker": "^1.12.3",
     "jsplumb": "^2.15.5",

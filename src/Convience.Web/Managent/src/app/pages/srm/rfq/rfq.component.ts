@@ -11,7 +11,8 @@ import { StorageService } from '../../../services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutComponent } from '../../layout/layout/layout.component';
 import { SrmPriceService } from '../../../business/srm/srm-price.service';
-
+import { FileModalComponent } from '../file-modal/file-modal.component';
+import { Guid } from 'guid-typescript';
 @Component({
   selector: 'app-rfq',
   encapsulation: ViewEncapsulation.None,
@@ -19,6 +20,8 @@ import { SrmPriceService } from '../../../business/srm/srm-price.service';
   styleUrls: ['./rfq.component.less'],
 })
 export class RfqComponent implements OnInit {
+  @ViewChild('filemodal')
+  filemodal: FileModalComponent;
   H;
   canModify;
   canCxl;
@@ -55,7 +58,7 @@ export class RfqComponent implements OnInit {
   matnrListForm: FormGroup = new FormGroup({});
   vendorListForm: FormGroup = new FormGroup({});
   sourcerListForm: FormGroup = new FormGroup({});
-
+guid:string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -73,7 +76,7 @@ export class RfqComponent implements OnInit {
     }
     //this.activatedRoute.queryParams.subscribe(params => {
     this.activatedRoute.params.subscribe(params => {
-      this.H.rfqId = params['id']; 
+      this.H.rfqId = params['id'];
       console.log(params['id']);
       console.log("RFQID:" + this.H.rfqId); // Print the parameter to the console.
     });
@@ -549,7 +552,7 @@ export class RfqComponent implements OnInit {
 
   getrfq() {
     var rfq = {
-      h: null, m: null, v: null
+      h: null, m: null, v: null,guid:null
     }
     var date = new Date();
     this.H.SOURCER = this.formDetail.value["sourcer"];
@@ -572,6 +575,7 @@ export class RfqComponent implements OnInit {
     //this.rowData_VENDOR.forEach(row => rfq.v.push(row));
     this.gridApi.forEachNode(node => rfq.m.push(node.data));
     this.gridApi_VENDOR.forEachNode(node => rfq.v.push(node.data));
+    rfq.guid=this.guid;
     return rfq;
   }
 
@@ -645,6 +649,39 @@ export class RfqComponent implements OnInit {
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
     });
+  }
+  openFile() {
+    if(this.H.rfqNum==undefined)
+    {
+      const data={
+        functionId:3,
+        number:this.guid==undefined?Guid.create().toString():this.guid,
+        werks:this.werks,
+        type:2,
+        //deadline:this.H.deadline,
+        isUpload:true,
+      }
+      this.guid=data.number;
+      this.filemodal.upload(data);
+    }
+else
+{
+  const data={
+    functionId:3,
+    number:this.H.rfqNum,
+    werks:this.werks,
+    type:2,
+    //deadline:this.H.deadline,
+    isUpload:true,
+  }
+  this.guid=data.number;
+  this.filemodal.upload(data);
+}
+
+
+    //console.info(this.H.deadline);
+
+    //window.open('../srm/rfq?id=' + id);
   }
 }
 function dateFormatter(data) {

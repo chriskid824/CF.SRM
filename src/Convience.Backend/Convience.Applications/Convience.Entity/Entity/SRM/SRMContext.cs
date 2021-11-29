@@ -1401,7 +1401,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("LAST_UPDATE_DATE");
 
                 entity.Property(e => e.Number)
-                    .HasMaxLength(10)
+                    .HasMaxLength(36)
                     .HasColumnName("NUMBER");
 
                 entity.Property(e => e.TemplateId).HasColumnName("TEMPLATE_ID");

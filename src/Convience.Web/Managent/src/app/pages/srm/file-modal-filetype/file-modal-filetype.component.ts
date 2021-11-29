@@ -20,7 +20,11 @@ export class FileModalFiletypeComponent implements OnInit {
                   private _modalService: NzModalService,
                   private _messageService: NzMessageService,) { }
   currentDirectory: string = '/';
-  enable=false;
+  showUploadList = {
+    showDownloadIcon: true,
+   showRemoveIcon: false,
+   };
+
   ngOnInit(): void {
     console.info(this.isUpload);
     console.info(this.inputFile);

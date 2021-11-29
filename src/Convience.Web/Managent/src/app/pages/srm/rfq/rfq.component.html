@@ -115,6 +115,12 @@
                            [defaultColDef]="defaultColDef"
                            [rowSelection]="rowSelection"></ag-grid-angular>
         </mat-tab>
+        <mat-tab label="檔案明細">
+          <h1>
+            <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="openFile()"><i nz-icon nzType="plus"></i>上傳檔案</button>
+          </h1>
+          <app-file-modal #filemodal></app-file-modal>
+        </mat-tab>
       </mat-tab-group>
     </nz-card>
   </div>

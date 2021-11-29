@@ -28,6 +28,7 @@ namespace Convience.Filestorage.Abstraction
         Task<Stream> GetFileStreamAsync(IFileStoreEntry fileStoreEntry);
 
         Task<string> CreateFileFromStreamAsync(string path, Stream inputStream, bool overwrite = false);
+        string GetPhysicalPath(string path);
     }
 
     public static class IFileStoreExtensions

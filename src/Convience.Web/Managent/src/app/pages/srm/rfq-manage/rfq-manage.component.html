@@ -58,7 +58,6 @@
               <th nzAlign="center" nzWidth="20px">建立人員</th>
               <th nzAlign="center" nzWidth="20px">建立日期</th>
               <th nzAlign="center" nzWidth="20px">狀態</th>
-              <th nzAlign="center" nzWidth="20px" nzRight>檔案</th>
               <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
               <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
             </tr>
@@ -71,13 +70,6 @@
               <td nzAlign="center">{{ data.c_by }}</td>
               <td nzAlign="center">{{ data.c_date }}</td>
               <td nzAlign="center">{{ data.viewstatus }}</td>
-              <td>
-                <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
-                (click)="openFile(data)" class="mr-10"
-                data-toggle="tooltip" title="價格資訊">
-          <i nz-icon
-             nzType="send"></i>
-        </button></td>
               <td *ngIf="status==5" nzAlign="center" nzRight>
                 <button *canOperate="'price'" nz-button nzType="default" nzShape="circle"
                         (click)="openPrice(data.rfqId)" class="mr-10"
@@ -95,7 +87,6 @@
                        nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
         </nz-pagination>
       </div>
-      <app-file-modal #filemodal></app-file-modal>
     </nz-card>
 
   </div>

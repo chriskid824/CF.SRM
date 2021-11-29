@@ -43,6 +43,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmSupplierService _srmSupplierService;
         private readonly appSettings _appSettingsService;
         private readonly ISrmMaterialService _srmMaterialService;
+        private readonly ISrmFileService _srmFileService;
 
         public SrmRfqController(ISrmMatnrService srmMatnrService,
             ISrmVendorService srmVendorService,
@@ -53,7 +54,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             IUserService userService,
             ISrmSupplierService srmSupplierService,
             IOptions<appSettings> appSettingsOption,
-            ISrmMaterialService srmMaterialService
+            ISrmMaterialService srmMaterialService,
+            ISrmFileService srmFileService
             )
         {
             _srmMatnrService = srmMatnrService;
@@ -66,6 +68,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmSupplierService = srmSupplierService;
             _appSettingsService = appSettingsOption.Value;
             _srmMaterialService = srmMaterialService;
+            _srmFileService = srmFileService;
         }
 
         [HttpPost("GetMatnr")]
@@ -92,6 +95,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                 SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
                 SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
                 SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
+                string guid = null;
+                if (rfq.Property("guid") != null)
+                {
+                    guid = rfq["guid"].ToString();
+                }
                 DateTime now = DateTime.Now;
                 UserClaims user = User.GetUserClaims();
                 if (user.UserName != h.Sourcer)
@@ -101,7 +109,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                 h.LastUpdateBy = user.UserName;
                 h.LastUpdateDate = now;
                 h.Werks = user.Werks[0];
-                _srmRfqHService.Save(h, ms, vs);
+                string rfqNum= _srmRfqHService.Save(h, ms, vs);
+                if (!string.IsNullOrEmpty(rfqNum)&& !string .IsNullOrEmpty(guid))
+                {
+                    string result = _srmFileService.UpdateNumber(rfqNum, guid);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        return this.BadRequestResult(result);
+                    }    
+                }
                 return Ok();
             }
             catch (Exception ex) {

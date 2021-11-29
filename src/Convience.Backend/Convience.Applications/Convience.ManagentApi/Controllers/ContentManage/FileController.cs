@@ -24,7 +24,7 @@ namespace Convience.ManagentApi.Controllers.ContentManage
         }
 
         [HttpPost]
-        [Permission("fileAdd")]
+        //[Permission("fileAdd")]
         public async Task<IActionResult> UploadFile([FromForm] FileUploadViewModel fileUploadModel)
         {
             var result = await _fileManageService.UploadAsync(fileUploadModel);
@@ -36,7 +36,7 @@ namespace Convience.ManagentApi.Controllers.ContentManage
         }
 
         [HttpGet("list")]
-        [Permission("fileList")]
+        //[Permission("fileList")]
         public async Task<IActionResult> GetContent([FromQuery] FileQueryModel query)
         {
             var result = await _fileManageService.GetContentsAsync(query);
@@ -44,7 +44,7 @@ namespace Convience.ManagentApi.Controllers.ContentManage
         }
 
         [HttpDelete]
-        [Permission("fileDelete")]
+        //[Permission("fileDelete")]
         [LogFilter("内容管理", "文件管理", "删除文件")]
         public async Task<IActionResult> DeleteFile([FromQuery] FileViewModel viewModel)
         {
@@ -57,7 +57,7 @@ namespace Convience.ManagentApi.Controllers.ContentManage
         }
 
         [HttpGet]
-        [Permission("fileGet")]
+        //[Permission("fileGet")]
         [LogFilter("内容管理", "文件管理", "下载文件")]
         public async Task<IActionResult> DownloadFile([FromQuery] FileViewModel viewModel)
         {
