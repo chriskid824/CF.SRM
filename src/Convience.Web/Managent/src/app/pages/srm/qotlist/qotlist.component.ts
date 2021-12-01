@@ -78,7 +78,7 @@ export class QotlistComponent implements OnInit {
               functionId:3,
               number:params.data.VRfqNum.toString(),
               werks:params.data.Werks,
-              type:2,
+              type:1,
               deadline:params.data.VDeadline,
               isUpload:false,
             }

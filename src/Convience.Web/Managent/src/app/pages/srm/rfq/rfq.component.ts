@@ -657,7 +657,7 @@ guid:string;
         functionId:3,
         number:this.guid==undefined?Guid.create().toString():this.guid,
         werks:this.werks,
-        type:2,
+        type:1,
         //deadline:this.H.deadline,
         isUpload:true,
       }
@@ -670,11 +670,12 @@ else
     functionId:3,
     number:this.H.rfqNum,
     werks:this.werks,
-    type:2,
+    type:1,
     //deadline:this.H.deadline,
     isUpload:true,
   }
   this.guid=data.number;
+  console.info(data);
   this.filemodal.upload(data);
 }
 

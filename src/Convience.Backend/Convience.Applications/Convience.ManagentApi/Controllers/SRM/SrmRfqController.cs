@@ -95,11 +95,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 SrmRfqH h = rfq["h"].ToObject<SrmRfqH>();
                 SrmRfqM[] ms = rfq["m"].ToObject<SrmRfqM[]>();
                 SrmRfqV[] vs = rfq["v"].ToObject<SrmRfqV[]>();
-                string guid = null;
-                if (rfq.Property("guid") != null)
-                {
-                    guid = rfq["guid"].ToString();
-                }
+
                 DateTime now = DateTime.Now;
                 UserClaims user = User.GetUserClaims();
                 if (user.UserName != h.Sourcer)
@@ -110,13 +106,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                 h.LastUpdateDate = now;
                 h.Werks = user.Werks[0];
                 string rfqNum= _srmRfqHService.Save(h, ms, vs);
-                if (!string.IsNullOrEmpty(rfqNum)&& !string .IsNullOrEmpty(guid))
+                string result = updateFileNumber(rfqNum, rfq);
+                if (!string.IsNullOrEmpty(result))
                 {
-                    string result = _srmFileService.UpdateNumber(rfqNum, guid);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        return this.BadRequestResult(result);
-                    }    
+                    return this.BadRequestResult(result);
                 }
                 return Ok();
             }
@@ -185,8 +178,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                     h.LastUpdateBy = user.UserName;
                     h.LastUpdateDate = DateTime.Now;
-                    h.Werks = user.Werks[0];
-                    _srmRfqHService.Save(h, matnrs, vendors);
+                    h.Werks = user.Werks[0];                    
+                    string rfqNum = _srmRfqHService.Save(h, matnrs, vendors);
+                    string result = updateFileNumber(rfqNum, rfq);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        return this.BadRequestResult(result);
+                    }
                     _srmRfqHService.UpdateStatus((int)Status.啟動, h);
                     List<SrmQotH> qots = new List<SrmQotH>();
                     foreach (var matnr in matnrs)
@@ -609,6 +607,23 @@ namespace Convience.ManagentApi.Controllers.SRM
             catch (Exception ex) {
                 return this.BadRequestResult(ex.Message);
             }
-        }        
+        }
+        private string updateFileNumber(string rfqNum, JObject rfq)
+        {
+            string guid = null;
+            if (rfq.Property("guid") != null)
+            {
+                guid = rfq["guid"].ToString();
+                if (!string.IsNullOrEmpty(rfqNum) && !string.IsNullOrEmpty(guid))
+                {
+                    string result = _srmFileService.UpdateNumber(rfqNum, guid);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        return result;
+                    }
+                }
+            }
+            return string.Empty;
+        }
     }
 }
