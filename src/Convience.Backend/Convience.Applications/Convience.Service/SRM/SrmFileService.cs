@@ -38,6 +38,7 @@ namespace Convience.Service.SRM
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
         public string UpdateNumber(string number, string guid);
+        public bool HasTemplate(int werks, int functionId,int type);
     }
 
     public class SrmFileService : ISrmFileService
@@ -52,11 +53,13 @@ namespace Convience.Service.SRM
         private readonly IFileStore _fileStore;
         private readonly appSettings _appSettingsService;
         private readonly ISrmPoService _srmPoService;
+        private readonly ISrmQotService _srmQotService;
+        private readonly ISrmRfqHService _srmRfqHService;
 
         public SrmFileService(
             //IMapper mapper,
             IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper, IFileStore fileStore
-            , IOptions<appSettings> appSettingsOption, ISrmPoService srmPoService)
+            , IOptions<appSettings> appSettingsOption, ISrmPoService srmPoService, ISrmQotService srmQotService, ISrmRfqHService srmRfqHService)
         {
             _mapper = mapper;
             _srmPohRepository = srmPohRepository;
@@ -65,6 +68,8 @@ namespace Convience.Service.SRM
             _fileStore = fileStore;
             _appSettingsService = appSettingsOption.Value;
             _srmPoService = srmPoService;
+            _srmQotService = srmQotService;
+            _srmRfqHService = srmRfqHService;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
@@ -301,10 +306,15 @@ namespace Convience.Service.SRM
 
             result.Add(GetPoAnn(query));
             result.Add(GetDeliveryAnn(query));
-            result.Add(GetAnn3(query));
+            if (!query.user.GetIsVendor())
+            {
+                result.Add(GetAnn3(query));
+            }
             result.Add(GetAnn4(query));
-            result.Add(GetAnn5(query));
-            result.Add(GetAnn6(query));
+
+
+            //result.Add(GetAnn5(query));
+            //result.Add(GetAnn6(query));
 
             return result;
         }
@@ -318,10 +328,11 @@ namespace Convience.Service.SRM
             };
             QueryPoList q = new QueryPoList();
             //var aaa = query.Property("poNum");
-            q.dataStatus = 2;
+            //q.dataStatus = 2;
             q.user = query.user;
-            var aaa = _srmPoService.GetAll(q);
-            ann.NumberList = aaa.Select(p => p.PoNum).ToList();
+            List<int> statusarr = new List<int>() { 11,21 };
+            var aaa = _srmPoService.GetAll(q).Where(p=> statusarr.Contains(p.Status.Value)).OrderBy(p=>p.CreateDate);
+            ann.NumberList = aaa.Select(p => new AnnouncementDetail() { id=p.PoId.ToString(),number=p.PoNum,status=p.Status.Value} ).ToList();
             return ann;
         }
         public AnnouncementType GetDeliveryAnn(QueryFile query)
@@ -342,7 +353,17 @@ namespace Convience.Service.SRM
                 Stylecolor = "blue",
                 TxtTypeName = "詢價單",
                 Icon = "mdi-desktop-classic",
+                Router = "rfq",
             };
+            QueryRfqList q = new QueryRfqList();
+            UserClaims user = query.user.GetUserClaims();
+            q.werks = user.Werks;
+            int page = 1;
+            int size = 50;
+            List<int> statusarr = new List<int>() { 18, 19, 20 };
+            var aaa = _srmRfqHService.GetRfqList(q, page, size).Data.Where(p=> !statusarr.Contains(p.Status.Value));
+            ann.NumberList = aaa.Select(p => new AnnouncementDetail() { id = p.RfqId.ToString(), number = p.RfqNum, status = p.Status.Value }).ToList();
+            //new AnnouncementDetail() { id = p.PoId.ToString(), number = p.PoNum, status = p.Status.Value, statusDesc = p.StatusDesc }
             return ann;
         }
         public AnnouncementType GetAnn4(QueryFile query)
@@ -352,8 +373,37 @@ namespace Convience.Service.SRM
                 Stylecolor = "green",
                 TxtTypeName = "報價單",
                 Icon = "mdi-library",
+                Router = "qotlist",
             };
+
+
+            //qot.matnr = query.user.GetUserWerks();
+
+
+            if (query.user.GetIsVendor())
+            {
+                QueryQotList qot = new QueryQotList();
+                qot.status = 1;//(int)query["status"];
+                qot.vendor = query.user.GetUserName();
+                var result = _srmQotService.GetQotList(qot).Where(p=> p.SrmQotHs!=null&&p.SrmQotHs.Count!=0).OrderBy(p => p.VDeadline).ToList();
+                if (result != null)
+                {
+                    ann.NumberList = result.Select(p => new AnnouncementDetail() { id = p.VRfqId.ToString(), number = p.VRfqNum, status = p.VStatus.Value }).ToList();
+                }
+            }
+            else
+            {
+                QueryQotList qot = new QueryQotList();
+                qot.status = 1;//(int)query["status"];
+                var result = _srmQotService.GetQotListByAdmin(qot).Where(p => p.SrmQotHs != null && p.SrmQotHs.Count != 0).OrderBy(p=>p.VDeadline).ToList();
+                if (result != null)
+                {
+                    ann.NumberList = result.Select(p => new AnnouncementDetail() { id = p.VRfqId.ToString(), number = p.VRfqNum, status = p.VStatus.Value }).ToList();
+                }
+                //ann.NumberList = result.Select(p => p).ToList();
+            }
             return ann;
+
         }
         public AnnouncementType GetAnn5(QueryFile query)
         {
@@ -397,6 +447,10 @@ namespace Convience.Service.SRM
 
             _context.SaveChanges();
             return string.Empty;
+        }
+        public bool HasTemplate(int werks, int functionId, int type)
+        {
+            return _context.SrmFileUploadTemplates.Any(p => p.Werks == werks && p.TemplateType == functionId && p.Type == type);
         }
     }
 }

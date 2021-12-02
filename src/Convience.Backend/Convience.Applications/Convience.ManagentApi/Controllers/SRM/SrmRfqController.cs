@@ -611,16 +611,24 @@ namespace Convience.ManagentApi.Controllers.SRM
         private string updateFileNumber(string rfqNum, JObject rfq)
         {
             string guid = null;
+            //有guid才替換
             if (rfq.Property("guid") != null)
             {
                 guid = rfq["guid"].ToString();
+                //有guid跟rfqnum才替換
                 if (!string.IsNullOrEmpty(rfqNum) && !string.IsNullOrEmpty(guid))
                 {
-                    string result = _srmFileService.UpdateNumber(rfqNum, guid);
-                    if (!string.IsNullOrEmpty(result))
+                    //有樣板才替換(user的werks跟functionid跟場內場外
+                    UserClaims user = User.GetUserClaims();
+                    if (_srmFileService.HasTemplate(user.Werks[0], 3,1))
                     {
-                        return result;
+                        string result = _srmFileService.UpdateNumber(rfqNum, guid);
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            return result;
+                        }
                     }
+
                 }
             }
             return string.Empty;

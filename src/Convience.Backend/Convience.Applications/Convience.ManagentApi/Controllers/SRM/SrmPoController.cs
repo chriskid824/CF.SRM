@@ -48,6 +48,11 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             QueryPoList q = new QueryPoList();
             //var aaa = query.Property("poNum");
+            if (query.Property("poId")!=null)
+            {
+                q.poId = (int)query["poId"];
+            }
+
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
             q.dataStatus = query["dataStatus"] == null ? 0 : (int)query["dataStatus"];

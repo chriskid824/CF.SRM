@@ -117,6 +117,7 @@ namespace Convience.Model.Models.SRM
     }
     public class QueryQotList
     {
+        public int? rfqId { get; set; }
         public string rfqno { get; set; }
         public int status { get; set; }
         public string matnr { get; set; }

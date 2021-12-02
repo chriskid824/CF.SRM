@@ -207,7 +207,7 @@ namespace Convience.Service.SRM
         public ViewSrmRfqH[] GetRfqList(QueryRfqList q)
         {
             var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
-        .AndIfHaveValue(q.status, r => r.Status.Equals(q.status));
+        .AndIfCondition(q.status!=0, r => r.Status.Equals(q.status));
 
             rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
 

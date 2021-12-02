@@ -5,7 +5,8 @@ import { MatPaginator } from '@angular/material/paginator'
 import { TestBed } from '@angular/core/testing';
 import { DataSource } from '@angular/cdk/collections';
 import { AnnouncementType,Main_Announcement } from './announcement.model';
-
+import { Router } from '@angular/router';
+import { LayoutComponent } from '../../layout/layout/layout.component';
 @Component({
   selector: 'app-announcement',
   templateUrl: './announcement.component.html',
@@ -33,7 +34,7 @@ export class AnnouncementComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   columndefs: any[] = ['StartDateTime', 'txtTypeName', 'txtSubject', 'txtSN', 'txtUser', 'txtExt'];
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,private _layout: LayoutComponent,private _router: Router) {
     let data = {
       route: 'api/EIP/GetAnnList',
       data: { logonid: sessionStorage.getItem('logonid_o') }
@@ -51,6 +52,12 @@ export class AnnouncementComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     //   this.paginator._intl.itemsPerPageLabel = "每頁筆數";
     // this.DataSource.paginator = this.paginator;
+  }
+  openLink(router,id) {
+    window.open('srm/'+router+';id='+id, '_blank')
+    // this._layout.navigateTo(router);
+    // this._router.navigate(['srm/'+router, { id: id }]);
+    //window.open('../srm/rfq?id=' + id);
   }
   public openDialog(title: string, content: string, type: string, viewStart: string, fileInfo: string, txtSN: string, txtUser: string, txtExt: string) {
 

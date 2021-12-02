@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,10 +53,38 @@ namespace Convience.Model.Models.SRM
         public string TxtTypeName { get; set; }
         public string Icon { get; set; }
         public string Router { get; set; }
-        public List<string> NumberList { get; set; }
+        public List<AnnouncementDetail> NumberList = new List<AnnouncementDetail>();
     }
-    //public class FileUploadViewModel: ViewSrmFileRecord
-    //{
-    //    public IEnumerable<IFormFile> Files { get; set; }
-    //}
-}
+    public class AnnouncementDetail
+    {
+        public string id { get; set; }
+        public string number { get; set; }
+        public int status { get; set; }
+        public string viewstatus
+        {
+            get { return ((Status)status).ToString(); }
+        }
+        public string color { get { 
+            switch(this.status)
+                {
+                    case 6:
+                        return "magenta";
+                    case 17:
+                        return "magenta";
+                    case 19:
+                        return "magenta";
+                    case 20:
+                        return "magenta";
+                    case 18:
+                        return "green";
+                    default:
+                        return "blue";
+                }
+           } 
+        }
+    }
+        //public class FileUploadViewModel: ViewSrmFileRecord
+        //{
+        //    public IEnumerable<IFormFile> Files { get; set; }
+        //}
+    }

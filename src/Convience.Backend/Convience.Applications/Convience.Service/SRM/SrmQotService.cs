@@ -348,7 +348,7 @@ namespace Convience.Service.SRM
                               .Where(l => l.RfqId == p.RfqId)
                               .ToList();
             });
-            return result;
+            return result.Where(p => p.SrmQotHs.Count > 0).ToList();
 
         }
         //原本的
@@ -397,6 +397,7 @@ namespace Convience.Service.SRM
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
                             //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
+                            .AndIfHaveValue(query.rfqId, p => p.VRfqId == query.rfqId)
                         .Distinct()
                         .ToList();
 
@@ -430,12 +431,11 @@ namespace Convience.Service.SRM
 
                               //.Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
                               .Where(l => l.QRfqId.Value == p.VRfqId)
-
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
-                              //.AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
                               .ToList();
             });
-            return result;
+            return result.Where(p=>p.SrmQotHs.Count>0).ToList();
         }
        
 
@@ -477,6 +477,7 @@ namespace Convience.Service.SRM
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
                             //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
+                            .AndIfHaveValue(query.rfqId, m => m.VRfqId == query.rfqId)
                         .Distinct()
                         .ToList();
            

@@ -20,7 +20,7 @@ import { NzUploadBtnComponent } from 'ng-zorro-antd/upload';
 export class QotlistComponent implements OnInit {
   @ViewChild('filemodal')
   filemodal: FileModalComponent;
-  qotid;
+  rfqId;
   rowDataQot;
   columnDefs;
   //rowData: [];
@@ -49,8 +49,7 @@ export class QotlistComponent implements OnInit {
     private _router: Router,
   )
   {
-    //this.activatedRoute.params.subscribe((params) => this.qotid = params['id']);
-
+    this.activatedRoute.params.subscribe((params) => this.rfqId = params['id']);
     this.columnDefs = [
      /* { field:'序號', resizable: true,cellRenderer: 'agGroupCellRenderer',},
       { field: '詢價單號', resizable: true},
@@ -174,7 +173,7 @@ export class QotlistComponent implements OnInit {
   }
   refresh() {
     var query = {
-
+      rfqId:this.rfqId,
       RFQ_NUM: this.form_searchQot.value["rfqno"] == null ? "" : this.form_searchQot.value["rfqno"],
       MATNR: this.form_searchQot.value["qotmatnr"] == null ? "" : this.form_searchQot.value["qotmatnr"],
       STATUS: this.form_searchQot.value["qotstatus"] == null ? "0" : this.form_searchQot.value["qotstatus"],

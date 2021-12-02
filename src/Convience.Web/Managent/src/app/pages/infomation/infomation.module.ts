@@ -10,7 +10,7 @@ import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { AnnouncementComponent } from './announcement/announcement.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import {ScrollingModule} from '@angular/cdk/scrolling';
-
+import { NzTagModule } from 'ng-zorro-antd/tag';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -29,7 +29,8 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     NzStatisticModule,
     NzCardModule,
     NzGridModule,
-    ScrollingModule
+    ScrollingModule,
+    NzTagModule
   ]
 })
 export class InfomationModule { }

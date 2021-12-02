@@ -11,6 +11,7 @@ namespace Convience.Model.Models.SRM
 {
     public class QueryPoList
     {
+        public int? poId { get; set; }
         public string buyer { get; set; }
         public int deliveryLId { get; set; }
         public string deliveryNum { get; set; }

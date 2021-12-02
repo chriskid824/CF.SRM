@@ -41,9 +41,14 @@ export class PoComponent implements OnInit {
   size: number = 2;
   total: number;
   isVisible=false;
+  searchId;
   fileRecord: ViewSrmFileUploadRecordH = {recordHId:1,templateId:1100,srmFileuploadRecordL:[{recordLId:1,recordHId:1,filename:"test1",filetypename:"SIP"},{recordLId:2,recordHId:1,filename:"test2",filetypename:"SOP"},{recordLId:3,recordHId:1,filename:"test3",filetypename:"第三方檢驗文件"}]};
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService
     ,private _modalService: NzModalService, private dialog: MatDialog,private route: ActivatedRoute) {
+      this.route.params.subscribe(params => {
+        this.searchId = params['id'];
+        console.log(params['id']);
+      });
       this.frameworkComponents = {
         buttonRenderer: EditButtonComponent,
       }
@@ -312,6 +317,7 @@ export class PoComponent implements OnInit {
   }
   refresh() {
     var query = {
+      poId:this.searchId,
       poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
       buyer: this.searchForm.value["BUYER"] == null ? "" : this.searchForm.value["BUYER"],

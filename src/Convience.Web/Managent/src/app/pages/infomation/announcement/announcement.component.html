@@ -1,13 +1,24 @@
 <div class="{{getClass()}}">
   <h2><i class="mdi {{announcementType.icon}} fontclass">{{announcementType.txtTypeName}}</i></h2>
   <cdk-virtual-scroll-viewport itemSize="73" style="height:280px">
-  <ul *ngFor="let main of announcementType.numberList">
+  <ul *ngFor="let detail of announcementType.numberList">
     <!-- <ul *ngFor="let main of announcementType.numberList | slice:0:5; let i=index"> -->
     <li>
       <p>
+
         <!-- <a href="#" (click)="open(main)" title="{{main}}">{{main}}</a> -->
-        <a [routerLink]="['/srm/'+announcementType.router, main]" routerLinkActive="active" target="_blank">{{main}}</a>
+        <a href="javascript:void(0);" (click)="openLink(announcementType.router,detail.id)" >{{detail.number}}</a>
+        <nz-tag [nzColor]="detail.color" style="position:absolute;right:0px;">{{detail.viewstatus}}</nz-tag>
+        <!-- [routerLink]="['/srm/'+announcementType.router, main]" routerLinkActive="active"  target="_blank"-->
       </p>
+      <!-- <div nz-row>
+        <div nz-col nzSpan="18">
+          <a href="javascript:void(0);" (click)="openLink(announcementType.router,detail)" >{{detail.number}}</a>
+        </div>
+        <div nz-col nzSpan="6">
+          <nz-tag [nzColor]="'magenta'" style="right: 0px;" [nzAlign]="end">magenta</nz-tag>
+        </div>
+      </div> -->
     </li>
   </ul>
 </cdk-virtual-scroll-viewport>

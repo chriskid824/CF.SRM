@@ -27,7 +27,8 @@ namespace Convience.Model.Models.SRM
         失效 = 17,
         完成 = 18,
         刪除 = 19,
-        作廢 = 20
+        作廢 = 20,
+        待接收 = 21
     }
 
     public class appSettings
