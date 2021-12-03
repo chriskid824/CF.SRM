@@ -31,15 +31,16 @@ namespace Convience.Service.SRM
     {
         private readonly IRepository<SrmRfqM> _srmRfqMRepository;
         private readonly IRepository<SrmMatnr> _srmSrmMatnrRepository;
-
+        private readonly SRMContext _context;
         public SrmRfqMService(
             //IMapper mapper,
-            IRepository<SrmRfqM> srmRfqMRepository, IRepository<SrmMatnr> srmSrmMatnrRepository)
+            IRepository<SrmRfqM> srmRfqMRepository, IRepository<SrmMatnr> srmSrmMatnrRepository, SRMContext dbContext)
         //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
         {
             //_mapper = mapper;
             _srmRfqMRepository = srmRfqMRepository;
             _srmSrmMatnrRepository = srmSrmMatnrRepository;
+            _context = dbContext;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
         public void Save(SrmRfqM rfqM, SRMContext db)
@@ -61,6 +62,9 @@ namespace Convience.Service.SRM
             var query = from a in _srmRfqMRepository.Get(false)
                         join b in _srmSrmMatnrRepository.Get(false)
                             on a.MatnrId equals b.MatnrId
+                        join c in _context.SrmMeasureUnits on a.Unit.HasValue ? a.Unit.Value : 0 equals c.MeasureId
+                        into gj
+                        from x in gj.DefaultIfEmpty()
                         where a.RfqId == RfqId
                         select new
                         {
@@ -87,7 +91,9 @@ namespace Convience.Service.SRM
                             Bn_num = a.Bn_num,
                             Major_diameter = a.Major_diameter,
                             Minor_diameter = a.Minor_diameter,
-                            EstDeliveryDate = a.EstDeliveryDate
+                            EstDeliveryDate = a.EstDeliveryDate,
+                            unit = a.Unit,
+                            MeasureDesc = x.MeasureDesc
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }
@@ -95,6 +101,9 @@ namespace Convience.Service.SRM
             var query = from a in _srmRfqMRepository.Get(false)
                         join b in _srmSrmMatnrRepository.Get(false)
                             on a.MatnrId equals b.MatnrId
+                        join c in _context.SrmMeasureUnits on a.Unit.HasValue?a.Unit.Value:0 equals c.MeasureId
+                        into gj
+                        from x in gj.DefaultIfEmpty()
                         where a.RfqId == rfq.RfqId && a.MatnrId == rfq.MatnrId
                         select new ViewSrmRfqM
                         {
@@ -119,7 +128,9 @@ namespace Convience.Service.SRM
                             Description = a.Description,
                             Major_diameter = a.Major_diameter,
                             Minor_diameter = a.Minor_diameter,
-                            Bn_num = a.Bn_num
+                            Bn_num = a.Bn_num,
+                            Unit = a.Unit,
+                            MeasureDesc = x.MeasureDesc
                         };
             return query.FirstOrDefault();
         }

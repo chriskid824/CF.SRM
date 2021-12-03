@@ -53,13 +53,13 @@
               密度:{{matnrIndex==null?"": rfq.m[matnrIndex].density}}
             </div>
             <div class="col-3">
-              機種名稱:{{matnrIndex==null?"": rfq.m[matnrIndex].machineName}}
-            </div>
-            <div class="col-3">
               詢價數量:{{matnrIndex==null?"": rfq.m[matnrIndex].qty}}
             </div>
             <div class="col-3">
-              物料內文:{{matnrIndex==null?"": rfq.m[matnrIndex].description}}
+              計量單位:{{matnrIndex==null?"": rfq.m[matnrIndex].measureDesc}}
+            </div>
+            <div class="col-3">
+              機種名稱:{{matnrIndex==null?"": rfq.m[matnrIndex].machineName}}
             </div>
             <div class="col-3">
               圓內徑:{{matnrIndex==null?"": rfq.m[matnrIndex].minor_diameter}}
@@ -69,6 +69,9 @@
             </div>
             <div class="col-3">
               評估案號:{{matnrIndex==null?"": rfq.m[matnrIndex].bn_num}}
+            </div>
+            <div class="col-12">
+              物料內文:{{matnrIndex==null?"": rfq.m[matnrIndex].description}}
             </div>
           </div>
         </nz-form-item>

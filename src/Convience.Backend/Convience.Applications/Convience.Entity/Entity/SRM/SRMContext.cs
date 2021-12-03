@@ -54,7 +54,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<ViewSrmFileTemplate> ViewSrmFileTemplates { get; set; }
         public virtual DbSet<SrmDisscussionC> SrmDisscussionCs { get; set; }
         public virtual DbSet<SrmDisscussionH> SrmDisscussionHs { get; set; }
-
+        public virtual DbSet<SrmMeasureUnit> SrmMeasureUnits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1628,6 +1628,21 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("TITLE");
+            });
+
+            modelBuilder.Entity<SrmMeasureUnit>(entity =>
+            {
+                entity.HasKey(e => e.MeasureId);
+
+                entity.ToTable("SRM_MEASURE_UNIT");
+
+                entity.Property(e => e.MeasureId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("MEASURE_ID");
+
+                entity.Property(e => e.MeasureDesc)
+                    .HasMaxLength(3)
+                    .HasColumnName("MEASURE_DESC");
             });
 
             OnModelCreatingPartial(modelBuilder);

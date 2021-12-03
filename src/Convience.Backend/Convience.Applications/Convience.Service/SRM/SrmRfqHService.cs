@@ -457,8 +457,8 @@ namespace Convience.Service.SRM
                 dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
             }
             dt.Columns.Add("IsExists");
-            string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","期望日期" };
-            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY", "EstDeliveryDate" };
+            string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","期望日期","計量單位" };
+            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY", "EstDeliveryDate", "Unit" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers) {
                 if (!dt.Columns.Contains(header))
@@ -503,9 +503,20 @@ namespace Convience.Service.SRM
                         throw new Exception($"料號:{dataRow["料號"].ToString()}已失效");
                     }
                 }
-                if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) {
+                if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) 
+                {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}數量未填");
                 }
+                if (string.IsNullOrWhiteSpace(dataRow["計量單位"].ToString())) 
+                { 
+                    throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位未填");
+                }
+                var measureUnit = _context.SrmMeasureUnits.Where(r => r.MeasureDesc.Equals(dataRow["計量單位"].ToString())).ToList();
+                if (measureUnit.Count()==0) 
+                {
+                    throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位不存在");
+                }
+                dataRow["計量單位"] = measureUnit[0].MeasureId;
                 if (string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
                 {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期未填");

@@ -43,6 +43,8 @@ export class RfqM {
   minor_diameter?: string;
   major_diameter?: string;
   bn_num?: string;
+  unit?: number;
+  measureDesc?: string;
 }
 
 export class RfqV {

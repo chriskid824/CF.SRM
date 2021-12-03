@@ -13,6 +13,7 @@ import { LayoutComponent } from '../../layout/layout/layout.component';
 import { SrmPriceService } from '../../../business/srm/srm-price.service';
 import { FileModalComponent } from '../file-modal/file-modal.component';
 import { Guid } from 'guid-typescript';
+import { SrmMeasureService } from '../../../business/srm/srm-measure.service';
 @Component({
   selector: 'app-rfq',
   encapsulation: ViewEncapsulation.None,
@@ -51,6 +52,8 @@ export class RfqComponent implements OnInit {
   SourcerList;
   radioValue;
 
+  measureUnitMappings = {};
+
   rowSelection = "multiple";
   tplModal: NzModalRef;
   searchForm: FormGroup = new FormGroup({});
@@ -70,7 +73,8 @@ guid:string;
     private _srmPriceService: SrmPriceService,
     public datepipe: DatePipe,
     private _router: Router,
-    private _layout: LayoutComponent  ) {
+    private _layout: LayoutComponent,
+    private _srmMeasureService: SrmMeasureService) {
     console.log(_storageService.costNo);
     this.H = {
     }
@@ -286,23 +290,29 @@ guid:string;
       this.H.sourcerName = this._storageService.Name;
       this.H.sourcer = this._storageService.userName;
     }
-    this.initMatnrList();
-    this.H.LASTUPDATEBY = this._storageService.userName;
-    console.log(this.name);
-    console.log("werks:" + this.werks);
-    $($('.listbox')[1]).hide();
-    //this.onRefreshMatnr();
-    this.searchForm = this._formBuilder.group({
-      matnr: [null],
-      vendor: [null],
-      sourcer: [null]
+    this._srmMeasureService.GetMeasureUnit().subscribe(result => {
+      this.measureUnitMappings = result;
+      console.log(result);
+      console.log(this.measureUnitMappings);
+      console.log("measure");
+      this.initMatnrList();
     });
-    this.formDetail = this._formBuilder.group({
-      sourcer: [null],
-      sourcerName: [null],
-      deadline: [null]
-    });
-    this.formDetail.setValue({ sourcer: this.H.sourcer??"",sourcerName: this.H.sourcerName??"", deadline: null });
+      this.H.LASTUPDATEBY = this._storageService.userName;
+      console.log(this.name);
+      console.log("werks:" + this.werks);
+      $($('.listbox')[1]).hide();
+      //this.onRefreshMatnr();
+      this.searchForm = this._formBuilder.group({
+        matnr: [null],
+        vendor: [null],
+        sourcer: [null]
+      });
+      this.formDetail = this._formBuilder.group({
+        sourcer: [null],
+        sourcerName: [null],
+        deadline: [null]
+      });
+      this.formDetail.setValue({ sourcer: this.H.sourcer ?? "", sourcerName: this.H.sourcerName ?? "", deadline: null });
   }
 
 
@@ -392,6 +402,26 @@ guid:string;
         cellClass: "show-cell",
         editable: this.canModify,
         width: "150px",
+      },
+      {
+        headerName: "計量單位",
+        field: "unit",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: this.canModify,
+        width: "150px",
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: {
+          values: extractValues(this.measureUnitMappings)
+        },
+        // convert code to value
+        valueFormatter: params => {
+          return lookupValue(this.measureUnitMappings, params.value);
+        },
+        // convert value to code
+        valueParser: params => {
+          return lookupKey(this.measureUnitMappings, params.newValue);
+        }
       },
       {
         headerName: "機種",
@@ -606,6 +636,10 @@ guid:string;
         alert("料號" + rfq.m[i].srmMatnr1 + "數量格式錯誤");
         return;
       }
+      if (!rfq.m[i].unit) {
+        alert("料號" + rfq.m[i].srmMatnr1 + "計量單位未填");
+        return;
+      }
       if (!rfq.m[i].estDeliveryDate) {
         alert("料號" + rfq.m[i].srmMatnr1 + "期望日期未填");
         return;
@@ -690,4 +724,23 @@ function dateFormatter(data) {
   if (data.value == null) return "";
   var date = new Date(data.value);
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+function extractValues(mappings) {
+  console.log(Object.keys(mappings));
+  return Object.keys(mappings);
+}
+function lookupValue(mappings, key) {
+  return mappings[key];
+}
+
+function lookupKey(mappings, name) {
+  var keys = Object.keys(mappings);
+
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+
+    if (mappings[key] === name) {
+      return key;
+    }
+  }
 }

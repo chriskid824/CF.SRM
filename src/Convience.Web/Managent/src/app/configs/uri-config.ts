@@ -104,4 +104,6 @@ export class UriConfig {
 
     get SrmFile(): string { return `${this._apiUri}/SrmFile` };
     get SrmDisscussion(): string { return `${this._apiUri}/SrmDisscussion` };
+
+    get SrmMeasureUnit(): string { return `${this._apiUri}/SrmMeasureUnit` };
 }

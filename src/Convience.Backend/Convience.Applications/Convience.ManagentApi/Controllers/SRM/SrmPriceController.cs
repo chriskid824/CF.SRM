@@ -379,6 +379,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("EFFECTIVE_DATE");
             InfoRecord.Columns.Add("EXPIRATION_DATE");
             InfoRecord.Columns.Add("Sortl");
+            InfoRecord.Columns.Add("MeasureUnit");
+            InfoRecord.Columns.Add("MeasureDesc");
 
             foreach (var info in infos)
             {
@@ -421,6 +423,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["EFFECTIVE_DATE"] = info.EffectiveDate.Value.ToString("yyyy/MM/dd");
                 dr["EXPIRATION_DATE"] = info.ExpirationDate.Value.ToString("yyyy/MM/dd");
                 dr["Sortl"] = info.Sortl;
+                dr["MeasureUnit"] = rfqM.Unit;
+                dr["MeasureDesc"] = rfqM.MeasureDesc;
                 InfoRecord.Rows.Add(dr);
             }
             ds.Tables.Add(InfoRecord);
@@ -430,7 +434,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private void UpdateCF(ViewSrmRfqH rfqH, ViewSrmInfoRecord[] infos,int caseId) {
             BasicHttpBinding binding = new BasicHttpBinding();
 
-            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
+            EndpointAddress address = new EndpointAddress("http://10.1.1.180/CF.BPM.Service/BPMAPI.asmx");
 
             BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
 
@@ -453,7 +457,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             BasicHttpBinding binding = new BasicHttpBinding();
 
-            EndpointAddress address = new EndpointAddress("http://10.1.1.181/CF.BPM.Service/BPMAPI.asmx");
+            EndpointAddress address = new EndpointAddress("http://10.1.1.180/CF.BPM.Service/BPMAPI.asmx");
 
             BPMAPISoapClient client = new BPMAPISoapClient(binding, address);
 
@@ -467,7 +471,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 throw new Exception(result.Message);
             }
-
 
 
             JObject param = new JObject();

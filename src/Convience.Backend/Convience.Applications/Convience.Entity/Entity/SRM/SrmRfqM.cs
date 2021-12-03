@@ -22,6 +22,7 @@ namespace Convience.Entity.Entity.SRM
         public string Gewei { get; set; }
         public string MachineName { get; set; }
         public double? Qty { get; set; }
+        public int? Unit { get; set; }
         public string Note { get; set; }
         public string Bn_num { get; set; }
         public string Major_diameter { get; set; }
