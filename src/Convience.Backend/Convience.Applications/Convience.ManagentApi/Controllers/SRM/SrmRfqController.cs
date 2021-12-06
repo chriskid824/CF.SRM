@@ -535,7 +535,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 m[i] = JsonConvert.DeserializeObject<SrmRfqM>(JsonConvert.SerializeObject(temp_matnr));
                                 m[i].Qty = Convert.ToDouble(data_m.Rows[i]["Qty"].ToString());
                                 m[i].EstDeliveryDate = Convert.ToDateTime(data_m.Rows[i]["EstDeliveryDate"].ToString()).Date;
-                                m[i].Unit = Convert.ToInt32(data_m.Rows[i]["Unit"].ToString());
+                                //m[i].Unit = Convert.ToInt32(data_m.Rows[i]["Unit"].ToString());
                                 //m[i].MatnrId = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(),Werks=user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0].MatnrId;
                             }
                         }

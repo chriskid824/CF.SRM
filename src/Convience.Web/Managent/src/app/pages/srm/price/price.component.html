@@ -100,6 +100,7 @@
                                    [undoRedoCellEditingLimit]="5"
                                    [detailRowAutoHeight]="true"
                                    (gridReady)="onGridReady_summary($event)"
+                                   (rowDataChanged)="onRowDataChanged($event)"
                                    class="ag-theme-alpine"
                                    [defaultColDef]="defaultColDef"
                                    [rowSelection]="rowSelection"

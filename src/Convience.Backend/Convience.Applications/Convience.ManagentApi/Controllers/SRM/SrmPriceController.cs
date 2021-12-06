@@ -41,6 +41,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmVendorService _srmVendorService;
         private readonly ISrmMatnrService _srmMatnrService;
         private readonly ISrmInfoRecordService _srmInfoRecordService;
+        private readonly ISrmHistoryPriceService _srmHistoryPriceService;
 
         public SrmPriceController(ISrmPriceService srmPriceService
             , ISrmQotService srmQotService
@@ -48,7 +49,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             , ISrmRfqMService srmRfqMService
             , ISrmVendorService srmVendorService
             , ISrmMatnrService srmMatnrService
-            ,ISrmInfoRecordService srmInfoRecordService
+            , ISrmInfoRecordService srmInfoRecordService
+            , ISrmHistoryPriceService srmHistoryPriceService
             )
         {
             _srmQotService = srmQotService;
@@ -58,6 +60,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmVendorService = srmVendorService;
             _srmMatnrService = srmMatnrService;
             _srmInfoRecordService = srmInfoRecordService;
+            _srmHistoryPriceService = srmHistoryPriceService;
         }
         [HttpPost("GetQotDetail")]
         [Permission("price")]
@@ -381,7 +384,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("Sortl");
             InfoRecord.Columns.Add("MeasureUnit");
             InfoRecord.Columns.Add("MeasureDesc");
-
+ 
             foreach (var info in infos)
             {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
@@ -425,6 +428,12 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["Sortl"] = info.Sortl;
                 dr["MeasureUnit"] = rfqM.Unit;
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
+                var LastPrice = _srmHistoryPriceService.GetHistoryPrice(new SrmHistoryPrice() { Matnr = info.matnrObject.SapMatnr, Essay = rfqM.Description }).HistoryPrice;
+                if (LastPrice.HasValue)
+                {
+                    dr["LastPrice"] = LastPrice.Value;
+                    dr["LastBargainingRate"] = Math.Round((decimal)((1 - (info.Price / LastPrice.Value)) * 100), 2, MidpointRounding.AwayFromZero).ToString() + "%";
+                }
                 InfoRecord.Rows.Add(dr);
             }
             ds.Tables.Add(InfoRecord);

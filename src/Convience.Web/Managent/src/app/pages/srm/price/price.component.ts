@@ -36,6 +36,7 @@ export class PriceComponent implements OnInit {
   ProcessList;
   SurfaceList;
   OtherList;
+  inited = false;
 
   TaxcodeList;
   //taxcode: FormControl;
@@ -685,6 +686,19 @@ export class PriceComponent implements OnInit {
     this.initEkgry();
   }
 
+  initSummary() {
+    this.gridApi_summary.forEachLeafNode((node) => {
+      console.log(this.caseId);
+      console.log(node.data.canEdit);
+      if (node.data.canEdit) {
+        this.canEdit = true;
+        console.log(this.canEdit);
+      }
+      if (node.data.caseId == this.caseId && this.caseId) {
+        node.setSelected(true);
+      }
+    });
+  }
   add(e) {
     //this.temppriceTotal = e.rowData.price ? e.rowData.price:"";
     //this.tempunit = e.rowData.unit ? e.rowData.unit:"";
@@ -1195,18 +1209,14 @@ export class PriceComponent implements OnInit {
   onGridReady_summary(params) {
     this.gridApi_summary = params.api;
     this.columnApi_summary = params.columnApi;
-    this.gridApi_summary.forEachLeafNode((node) => {
-      console.log(1112);
-      console.log(this.caseId);
-      console.log(node.data.canEdit);
-      if (node.data.canEdit) {
-        this.canEdit = true;
-      }
-      if (node.data.caseId == this.caseId && this.caseId) {
-        node.setSelected(true);
-      }
-    });
   }
+  onRowDataChanged(params) {
+    if (!this.inited) {
+      this.initSummary();
+      this.inited = true;
+    }
+  }
+
   start() {
     //this.gridApi_inforecord.stopEditing();
     //var selectedRows = this.gridApi_inforecord.getSelectedRows();

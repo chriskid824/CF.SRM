@@ -502,21 +502,21 @@ namespace Convience.Service.SRM
                     {
                         throw new Exception($"料號:{dataRow["料號"].ToString()}已失效");
                     }
+                    if (string.IsNullOrWhiteSpace(dataRow["計量單位"].ToString()))
+                    {
+                        throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位未填");
+                    }
+                    var measureUnit = _context.SrmMeasureUnits.Where(r => r.MeasureDesc.Equals(dataRow["計量單位"].ToString())).ToList();
+                    if (measureUnit.Count() == 0)
+                    {
+                        throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位不存在");
+                    }
+                    dataRow["計量單位"] = measureUnit[0].MeasureId;
                 }
                 if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) 
                 {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}數量未填");
                 }
-                if (string.IsNullOrWhiteSpace(dataRow["計量單位"].ToString())) 
-                { 
-                    throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位未填");
-                }
-                var measureUnit = _context.SrmMeasureUnits.Where(r => r.MeasureDesc.Equals(dataRow["計量單位"].ToString())).ToList();
-                if (measureUnit.Count()==0) 
-                {
-                    throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位不存在");
-                }
-                dataRow["計量單位"] = measureUnit[0].MeasureId;
                 if (string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
                 {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期未填");
