@@ -1,4 +1,4 @@
-<body style="color: black; width: 1200px;">
+<body style="color: black; ">
   <div>
     <!--<div id="_header" class="parent"
       style="height: 60px; width: 1000px; background-color: #45a1ec; border-radius: 5px;">
@@ -59,7 +59,7 @@
                       <td class="content2" id="tdstatus">狀態</td>
                       <td class="content2" id="tdrfqnum">詢價單號</td>
                       <td class="content2" id="tdqotnum">報價單號</td>
-                      <td class="content2" id="tdmatnr">料號</td>
+
 
                     </tr>
                     <tr id="rowtype2">
@@ -85,13 +85,78 @@
                         <label class="content2" type="text" id="qotnum" name="qotnum" disabled
                           value="">{{matnrIndex==null?"": qotv.q[matnrIndex].qotNum}}</label>
                       </td>
+
+
+
+
+                    </tr>
+                  </table>
+                  <br>
+                  <table style=" text-align: left;">
+                    <tr>
+                      <td class="content2" id="tdmatnr">料號</td>
+                      <td class="content2" id="tdmatnrname">物料內文</td>
+                      <td class="content2" id="tdmaterial">材料規格</td>
+                      <td class="content2" id="tdsize">成品尺寸</td>
+                      <td class="content2" id="tdweight">工件重量(KG)</td>
+
+                    </tr>
+                    <tr id="rowtype2">
                       <td class="content2">
                         <label class="content2" type="text" id="matnr" name="matnr" disabled
                           value="">{{matnrIndex==null?"": qotv.q[matnrIndex].matnr}}</label>
                       </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="matnrname" name="matnrname" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].description}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="material" name="material" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].material}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="size" name="size" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].size}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="weight" name="weight" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].weight}}</label>
+                      </td>
 
 
+                    </tr>
+                  </table>
 
+                  <br>
+                  <table style=" text-align: left;">
+                    <tr>
+                      <td class="content2" id="tdestdeliverydate">期望日期</td>
+                      <td class="content2" id="tdunit">數量單位</td>
+                      <td class="content2" id="tdpurposeprice">目標價</td>
+                      <td class="content2" id="tdmachinename">機種名稱</td>
+                      <td class="content2" id="tdamount">數量</td>
+                    </tr>
+                    <tr id="rowtype2">
+                      <td class="content2">
+                        <label class="content2" type="text" id="matnrname" name="matnrname" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].estDeliveryDate}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="unit" name="unit" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].unit}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="purposeprice" name="purposeprice" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].purposeprice}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="machinename" name="machinename" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].machineName}}</label>
+                      </td>
+                      <td class="content2">
+                        <label class="content2" type="text" id="amount" name="amount" disabled
+                          value="">{{matnrIndex==null?"":qotv.q[matnrIndex].qty}}</label>
+                      </td>
                     </tr>
                   </table>
                 </div>
@@ -99,7 +164,7 @@
             </nz-form-item>
           </nz-card>
         </form>
-        <form nz-form [formGroup]="info2">
+        <!--<form nz-form [formGroup]="info2">
           <nz-card [nzSize]="'middle'" id="info2">
             <nz-form-item>
               <div>
@@ -145,12 +210,12 @@
               </div>
             </nz-form-item>
           </nz-card>
-        </form>
+        </form>-->
 
         <nz-card [nzSize]="'small'" id="btnBar">
           <div>
             <button id="btnRejectQot" nz-button class="mr-10" (click)="Reject(addRejectTitleTp,RejectContentTp)"
-              disabled="{{canModify==false}}"><i nz-icon nzType="default"></i>拒絕報價</button>
+              disabled="{{canModify==false}}"><i nz-icon nzType="close-circle"></i>拒絕報價</button>
             <button id=" btnSaveQot" nz-button class="mr-10" (click)="Save()" disabled="{{canModify==false}}"><i nz-icon
                 nzType="save"></i>儲存</button>
             <button id="btnBackQot" nz-button class="mr-10" (click)="BackQot()"><i nz-icon
@@ -213,14 +278,15 @@
                       <nz-form-label [nzFor]="'leadtime'">計劃交貨時間<br>日曆天</nz-form-label>
                       <nz-form-control>
                         <input required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間"
-                          formControlName="leadtime" autocomplete="off" value="{{leadtime}}"/>
+                          formControlName="leadtime" autocomplete="off" value="{{leadtime}}" />
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
                       <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
                       <nz-form-control>
-                        <nz-date-picker  [(ngModel)] ="expiringdate"  required style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
-                          formControlName="expiringdate" disabled="{{canModify==false}}"></nz-date-picker>
+                        <nz-date-picker [(ngModel)]="expiringdate" required style="width: 160px;" nzPlaceHolder="有效期限"
+                          name="expiringdate" formControlName="expiringdate" disabled="{{canModify==false}}">
+                        </nz-date-picker>
                       </nz-form-control>
                     </nz-form-item>
                     <!--<nz-form-item>
@@ -230,7 +296,7 @@
                   </nz-form-control>
                 </nz-form-item>-->
 
-                    <nz-form-item style="margin-left: 160px;">
+                    <nz-form-item>
                       <nz-form-label [nzFor]="'totalAmount'">總金額</nz-form-label>
                       <nz-form-control>
                         <input value="{{sumMap.get('total')}}" required disabled="true" nz-input placeholder="總金額"
@@ -261,15 +327,15 @@
 
 
 
-            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 700px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Material"
               (gridReady)="onGridReady($event)" [enableCharts]="true" [enableRangeSelection]="true"
               [masterDetail]="true" [undoRedoCellEditing]="true" [undoRedoCellEditingLimit]="5"
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
-            <label style="margin-left: 600px;">材料小計</label>
-            <input value="{{sumMap.get('material')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+            <label style="margin-left: 500px;">材料小計</label>
+            <input value="{{sumMap.get('material')}}" style="width: 200px; margin-left: 500px;" disabled="true" nz-input
               formControlName="materialcost" autocomplete="off" />
           </div>
         </nz-card>
@@ -286,7 +352,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_process" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_P($event)" [checked]="IfCheck_P">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 700px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_PROCESS" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Process"
               (gridReady)="onGridReady_Process($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -294,8 +360,8 @@
               [detailRowAutoHeight]="true" class="ag-theme-alpine" [defaultColDef]="defaultColDef"
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
 
-            <label style="margin-left: 600px;">加工小計</label>
-            <input value="{{sumMap.get('process')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+            <label style="margin-left: 500px;">加工小計</label>
+            <input value="{{sumMap.get('process')}}" style="width: 200px; margin-left: 500px;" disabled="true" nz-input
               formControlName="processcost" autocomplete="off" />
 
           </div>
@@ -313,7 +379,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_surface" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_S($event)" [checked]="IfCheck_S">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width:900px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width:700px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_SURFACE" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Surface"
               (gridReady)="onGridReady_Surface($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -322,8 +388,8 @@
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
 
 
-            <label style="margin-left: 600px;">表面處理小計</label>
-            <input value="{{sumMap.get('surface')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+            <label style="margin-left: 500px;">表面處理小計</label>
+            <input value="{{sumMap.get('surface')}}" style="width: 200px; margin-left: 500px;" disabled="true" nz-input
               formControlName="surfacecost" autocomplete="off" />
           </div>
           <!--  </mat-tab>-->
@@ -340,7 +406,7 @@
             <!--<section class="example-section">-->
             <mat-checkbox class="example-margin" id="chkreject_other" disabled="{{canModify==false}}"
               (change)="checkCheckBoxvalue_O($event)" [checked]="IfCheck_O">不回填</mat-checkbox>
-            <ag-grid-angular #agGrid style="width: 900px; height: 200px;border:solid" id="myGrid"
+            <ag-grid-angular #agGrid style="width: 700px; height: 200px;border:solid" id="myGrid"
               [columnDefs]="columnDefs_OTHER" [suppressDragLeaveHidesColumns]="true"
               [suppressMakeColumnVisibleAfterUnGroup]="true" [rowData]="rowData_Other"
               (gridReady)="onGridReady_Other($event)" [enableCharts]="true" [enableRangeSelection]="true"
@@ -349,12 +415,26 @@
               [rowSelection]="rowSelection" [stopEditingWhenCellsLoseFocus]="true"></ag-grid-angular>
 
 
-            <label style="margin-left: 600px;">其他費用小計</label>
-            <input value="{{sumMap.get('other')}}" style="width: 200px; margin-left: 700px;" disabled="true" nz-input
+            <label style="margin-left: 500px;">其他費用小計</label>
+            <input value="{{sumMap.get('other')}}" style="width: 200px; margin-left: 500px;" disabled="true" nz-input
               formControlName="othercost" autocomplete="off" />
 
           </div>
         </nz-card>
+        <form nz-form [formGroup]="info4">
+          <nz-card>
+            <nz-form-item>
+              <nz-form-label [nzFor]="'note'">備註</nz-form-label>
+              <nz-form-control>
+                <textarea value="{{note}}" [attr.id]="'note'" formControlName="note" nz-input placeholder="備註" rows="2"
+                  ng-disabled="all"></textarea>
+
+                <!--<input required disabled="{{canModify==false}}" nz-input placeholder="備註" formControlName="note"
+                autocomplete="off" value="{{note}}" />-->
+              </nz-form-control>
+            </nz-form-item>
+          </nz-card>
+        </form>
         <!--  </mat-tab>-->
         <!--</mat-tab-group>-->
         <!-- </div>-->
@@ -503,9 +583,9 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="material_costErrorTpl">
-            <input value="{{m_cost}}" readonly="readonly" [attr.id]="'add_material_cost'" formControlName="material_cost" nz-input
-              placeholder="材料成本價" autocomplete="off" (ngModelChange)="getcostvalue_m($event)"
-              [ngModel]="material_weight*material_price" />
+            <input value="{{m_cost}}" readonly="readonly" [attr.id]="'add_material_cost'"
+              formControlName="material_cost" nz-input placeholder="材料成本價" autocomplete="off"
+              (ngModelChange)="getcostvalue_m($event)" [ngModel]="material_weight*material_price" />
             <ng-template #material_costErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
               <!--<ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>-->
@@ -631,9 +711,9 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="process_costsumErrorTpl">
-            <input value="{{p_cost}}" readonly="readonly" [attr.id]="'edit_process_costsum'" formControlName="process_costsum" nz-input
-              placeholder="加工成本價" autocomplete="off"  (ngModelChange)="getcostvalue_p($event)"
-              [ngModel]="process_cost*process_hour" />
+            <input value="{{p_cost}}" readonly="readonly" [attr.id]="'edit_process_costsum'"
+              formControlName="process_costsum" nz-input placeholder="加工成本價" autocomplete="off"
+              (ngModelChange)="getcostvalue_p($event)" [ngModel]="process_cost*process_hour" />
             <ng-template #process_costsumErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
             </ng-template>
@@ -694,7 +774,7 @@
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_nameErrorTpl">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="工序" formControlName="surface_name" style="width: 94px">
-              <nz-option *ngFor="let option of ProcessList" [nzLabel]="option.process" [nzValue]="option.processNum"
+              <nz-option *ngFor="let option of SurfaceList" [nzLabel]="option.surfaceDesc" [nzValue]="option.surfaceId"
                 (ngModelChange)="checktype($event)"></nz-option>
             </nz-select>
             <ng-template #surface_nameErrorTpl let-control>
@@ -747,12 +827,12 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="surface_costsumErrorTpl">
-            <input value="{{s_cost}}" readonly="readonly" [attr.id]="'edit_surface_costsum'" formControlName="surface_costsum" nz-input
-              placeholder="表面處理成本價" autocomplete="off" (ngModelChange)="getcostvalue_s($event)"
-              [ngModel]="surface_cost*surface_times" />
+            <input value="{{s_cost}}" readonly="readonly" [attr.id]="'edit_surface_costsum'"
+              formControlName="surface_costsum" nz-input placeholder="表面處理成本價" autocomplete="off"
+              (ngModelChange)="getcostvalue_s($event)" [ngModel]="surface_cost*surface_times" />
             <ng-template #surface_costsumErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-              
+
             </ng-template>
 
           </nz-form-control>
@@ -815,11 +895,11 @@
         </td>
         <td>
           <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="other_priceErrorTpl">
-            <input value ="{{o_cost}}" [attr.id]="'edit_other_price'" formControlName="other_price" nz-input placeholder="單價"
-              autocomplete="off" (ngModelChange)="getcostvalue_o($event)" />
+            <input value="{{o_cost}}" [attr.id]="'edit_other_price'" formControlName="other_price" nz-input
+              placeholder="單價" autocomplete="off" (ngModelChange)="getcostvalue_o($event)" />
             <ng-template #other_priceErrorTpl let-control>
               <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-  
+
             </ng-template>
           </nz-form-control>
         </td>
