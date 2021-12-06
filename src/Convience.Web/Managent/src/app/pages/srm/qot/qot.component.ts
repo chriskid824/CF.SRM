@@ -46,6 +46,7 @@ export class QotComponent implements OnInit {
   //departmentNode: NzTreeNodeOptions[] = [];
   selectedMatnr;
   matnrList: FormGroup = new FormGroup({});
+  info4: FormGroup = new FormGroup({});
   info3: FormGroup = new FormGroup({});
   info2: FormGroup = new FormGroup({});
   info1: FormGroup = new FormGroup({});
@@ -115,6 +116,7 @@ export class QotComponent implements OnInit {
   nodes: NzTreeNodeOptions[] = [];
   public gridOptions: GridOptions;
   ProcessList;
+  SurfaceList;//20211206
   MaterialList;
   materialcost;
   processcost;
@@ -128,6 +130,9 @@ export class QotComponent implements OnInit {
   s_cost;
   p_cost;
   o_cost;
+  note;//報價備註
+  purposeprice;
+  unit;
   //editForm: FormGroup = new FormGroup({});
   constructor(private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
@@ -153,10 +158,16 @@ export class QotComponent implements OnInit {
 
   ngOnInit(): void {
     this.initProcess();
+    this.initSurface();
     this.initMaterial();
     //this.activatedRoute.params.subscribe((params) => this.qotId = params['id']);
     this.matnrIndex = 0;
+    /* 20211203*/
+    this.info4 = this._formBuilder.group({
+      Note: [{ value: null, disabled: false }],
+    });
 
+    /* 20211203*/
     this.activatedRoute.queryParams
       .subscribe(params => {
         //console.log(params); // { orderby: "price" }
@@ -186,7 +197,7 @@ export class QotComponent implements OnInit {
       console.log(result);
       this.matnrIndex = result;
     });
-
+    //alert(this.matnrIndex)
     this.init();
     this.initGrid();
     this.search();
@@ -204,7 +215,13 @@ export class QotComponent implements OnInit {
       leadtime: [null],
       expiringdate: [null]
     });
+
+    qot.q.note = this.info4.value["note"];
+    this.info4 = this._formBuilder.group({
+      note: [null],
+    });
     this.info3.setValue({ leadtime: this.Q.leadtime ?? "", expiringdate: this.Q.expiringdate ?? "" });
+    this.info4.setValue({ note: this.Q.note ?? "" });
   }
 
 
@@ -412,7 +429,7 @@ export class QotComponent implements OnInit {
       this.editedProcess.p_hour = this.editForm_Process.value['process_hour'];
       this.editedProcess.note = this.editForm_Process.value['process_remark'];
       this.editedProcess.machine = this.editForm_Process.value['process_machine'];
-      this.editedProcess.process_costsum = Math.round(this.editForm_Process.value['process_costsum'] ) ;//this.editForm_Process.value['process_costsum'];
+      this.editedProcess.process_costsum = Math.round(this.editForm_Process.value['process_costsum'] * 100) / 100;// Math.round(this.editForm_Process.value['process_costsum']);//this.editForm_Process.value['process_costsum'];
       console.info(this.editForm_Process.value);
 
       /*寫入grid */
@@ -425,13 +442,16 @@ export class QotComponent implements OnInit {
         "pNote": this.editedProcess.note,
         "pCostsum": this.editedProcess.process_costsum,
       });
+      console.log(this.rowData_Process);
       console.log('------1109-------');
-      console.info(this.gridApi_Process.value)
+
       //alert('aaaaa+ ' + this.rowData_Process.pCostsum)
       //console.log(this.gridApi);
 
       console.log(this.gridApi_Process);
+      console.info('---123---');
       this.gridApi_Process.setRowData(this.rowData_Process);
+      console.info(this.gridApi_Process.value);
       this.tplModal.close();
       this.GetSumData();
 
@@ -525,7 +545,7 @@ export class QotComponent implements OnInit {
     //alert(this.editForm_Other.valid)
     if (this.editForm_Other.valid) {
       this.editedOther.item = this.editForm_Other.value['other_item'];
-      this.editedOther.price = Math.round(this.editForm_Other.value['other_price']);//this.editForm_Other.value['other_price']
+      this.editedOther.price = Math.round(this.editForm_Other.value['other_price'] * 100) / 100; //Math.round(this.editForm_Other.value['other_price']);//this.editForm_Other.value['other_price']
       this.editedOther.note = this.editForm_Other.value['other_note'];
       this.editedOther.description = this.editForm_Other.value['other_desc'];
 
@@ -558,7 +578,7 @@ export class QotComponent implements OnInit {
       this.editedSurface.price = this.editForm_Surface.value['surface_cost'];
       this.editedSurface.note = this.editForm_Surface.value['surface_note'];
       this.editedSurface.times = this.editForm_Surface.value['surface_times'];
-      this.editedSurface.surface_costsum = Math.round(this.editForm_Surface.value['surface_costsum']);//this.editForm_Surface.value['surface_costsum'];
+      this.editedSurface.surface_costsum = Math.round(this.editForm_Surface.value['surface_costsum'] * 100) / 100;// Math.round(this.editForm_Surface.value['surface_costsum']);//this.editForm_Surface.value['surface_costsum'];
 
 
       this.rowData_Surface.push({
@@ -589,28 +609,28 @@ export class QotComponent implements OnInit {
     return cost;
   }
   getcostvalue_s(cost) {
-    cost =  this.GetRoundValue(cost)
+    cost = Math.round(cost * 100) / 100;
     this.s_cost = cost;
     return cost;
   }
 
   getcostvalue_o(cost) {
-    cost =  this.GetRoundValue(cost)
+    cost = Math.round(cost * 100) / 100;
     this.o_cost = cost;
     return cost;
   }
 
   getcostvalue_p(cost) {
-    cost =  this.GetRoundValue(cost)
+    cost = Math.round(cost * 100) / 100;
     this.p_cost = cost;
     return cost;
   }
 
-  GetRoundValue(cost)
-  {
-    cost = Math.round(cost) ;
+  /*GetRoundValue(cost) {
+   
+    cost = Math.round(cost);
     return cost;
-  }
+  }*/
   addSurface(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.editedSurface = new Surface();
     this.editForm_Surface = this._formBuilder.group({
@@ -637,7 +657,7 @@ export class QotComponent implements OnInit {
       other_item: [this.editedOther.item, [Validators.required]],
       //other_item: [this.editedOther.item,],
       other_desc: [this.editedOther.description],
-      other_price: [this.editedOther.price, [Validators.required]],
+      other_price: [this.editedOther.price, [Validators.required], Validators.pattern(SrmModule.decimalTwoDigits)],
       //other_price: [this.editedOther.price,],
       other_note: [this.editedOther.note,]
     });
@@ -704,6 +724,15 @@ export class QotComponent implements OnInit {
     } else {
       qot.q.LeadTime = null;
     }
+    /*20211203*/
+    if (this.info4.value["note"] != null) {
+      var note = this.info4.value["note"];
+      qot.q.Note = note;
+    } else {
+      qot.q.Note = null;
+    }
+    /*20211203*/
+
     console.log("!!!!!!!!!!!!!!!!!!!!");
     console.log(qot.q)
     //alert(qot.q.OEmptyFlag)
@@ -745,8 +774,9 @@ export class QotComponent implements OnInit {
     this._srmQotService.Save(qot).subscribe(result => {
       //console.log(result);
       alert('保存成功');
-      this._layout.navigateTo('qotlist');
-      this._router.navigate(['srm/qotlist']);
+      //20211203 停留
+      //this._layout.navigateTo('qotlist');
+      //this._router.navigate(['srm/qotlist']);
     });
   }
   /*RejectQot(){  
@@ -804,8 +834,9 @@ export class QotComponent implements OnInit {
     this._srmQotService.Reject(qot).subscribe(result => {
       //console.log(result);
       alert('拒絕報價成功');
-      this._layout.navigateTo('qotlist');
-      this._router.navigate(['srm/qotlist']);
+      //this._layout.navigateTo('qotlist');
+      //this._router.navigate(['srm/qotlist']);
+      window.history.go(-1); //20211203
 
     });
     this.tplModal.close();
@@ -873,9 +904,23 @@ export class QotComponent implements OnInit {
 
 
   init() {
+    /* 20211203*/
+    this.info4 = this._formBuilder.group({
+      Note: [{ value: null, disabled: false }],
+    });
+
+    /* 20211203*/
+
     this._srmQotService.GetQotData(this.id, this.rfqid, this.vendorid).subscribe(result => {
-      //console.log(result);
+    
+      console.log(result);
+
       this.qotv = result;
+
+      console.log('----qotv----');
+      console.log(this.qotv.m)
+      console.log(this.qotv.q)
+
       this.matnrs = [];
       this.qotv.m.forEach(row => this.matnrs.push({ label: row.matnr, value: row.matnrId }));//???
       this.matnrList.setValue({ selectedMatnr: this.matnrs[0].value });//???
@@ -884,7 +929,7 @@ export class QotComponent implements OnInit {
       this.nodes = [{ title: this.qotv.q[this.matnrIndex].rfqNum, key: null, icon: 'global', expanded: true, children: [] }];;
 
       this.qotv.m.forEach((row, index) => this.nodes[0].children.push({ title: row.matnr, key: row.matnrId.toString(), icon: 'appstore', children: [], index: index }))
-
+      //alert('aaa')
       //alert('status')
       //alert(this.qotv.q[this.matnrIndex].status)
 
@@ -897,7 +942,19 @@ export class QotComponent implements OnInit {
       console.log('----*****----')
       console.log(this.qotv.q[this.matnrIndex])
 
+      /* 20211203*/
+      this.note = result["Note"];
+      this.purposeprice = result["Note"];//??
+      this.unit = result["Note"];
+      /* 20211203*/
+
+
       if (this.qotv.q[this.matnrIndex].status != "初始") {
+
+        this.info4 = this._formBuilder.group({
+          Note: [{ value: this.note, disabled: true }],
+        });
+
         this.canModify = false;
         this.canModifymaterial = false;
         this.canModifyprocess = false;
@@ -929,9 +986,15 @@ export class QotComponent implements OnInit {
         else {
           this.IfCheck_O = false;
         }
-
+        this.note = this.qotv.q[this.matnrIndex].Note;
       }
       else {
+
+        this.info4 = this._formBuilder.group({
+          Note: [{ value: this.note, disabled: false }],
+
+
+        });
         this.canModify = true;
         this.canModifymaterial = true;
         this.canModifyprocess = true;
@@ -979,7 +1042,9 @@ export class QotComponent implements OnInit {
       //alert(this.qotv.q[this.matnrIndex].leadtime)
       //this.leadtime = this.qotv.q[this.matnrIndex].leadtime;
       this.expiringdate = this.qotv.q[this.matnrIndex].expiringdate;
+      this.note = this.qotv.q[this.matnrIndex].note;
       this.info3.setValue({ leadtime: this.qotv.q[this.matnrIndex].leadtime, expiringdate: this.qotv.q[this.matnrIndex].expiringdate });
+      this.info4.setValue({ note: this.qotv.q[this.matnrIndex].note });
     });
     //console.log('----------------------------init-----------------------------')
     console.info(this.qot);
@@ -1071,7 +1136,8 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
         aggFunc: myCustomSumFunction_M,
-        valueFormatter:decimalPlaces_material,
+        //valueFormatter: decimalPlaces_material,
+        valueFormatter: decimalPlaces,
       },
       {
         headerName: "備註",
@@ -1148,7 +1214,7 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
-        valueFormatter: 'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
+        valueFormatter: (params) => this.GetProcess(params),//'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
         //valueFormatter:test
       },
       {
@@ -1175,7 +1241,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
         aggFunc: myCustomSumFunction_P,
-        valueFormatter:decimalPlaces
+        valueFormatter: decimalPlaces
       },
       {
         headerName: "機台",
@@ -1207,7 +1273,8 @@ export class QotComponent implements OnInit {
         headerCheckboxSelection: true,
         checkboxSelection: true,
         editable: this.canModify,
-        valueFormatter: 'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
+        valueFormatter: (params) => this.GetProcess_Surface(params),//'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
+        //valueFormatter: 'switch(value){case "1" : return "粗銑"; case "2" : return "精修"; case "3" : return "去毛邊"; case "4" : return "陽極/EP"; case "5" : return "全檢"; default : return value;}'
       },
       {
         headerName: "單價(時)",
@@ -1232,8 +1299,8 @@ export class QotComponent implements OnInit {
         cellClass: "show-cell",
         width: "150px",
         editable: this.canModify,
-        aggFunc: myCustomSumFunction_S ,
-        valueFormatter:decimalPlaces
+        aggFunc: myCustomSumFunction_S,
+        valueFormatter: decimalPlaces
         //valueGetter: surfaceValueGetter,
       },
       {
@@ -1274,7 +1341,7 @@ export class QotComponent implements OnInit {
         width: "150px",
         editable: this.canModify,
         aggFunc: myCustomSumFunction_O,
-        valueFormatter:decimalPlaces
+        valueFormatter: decimalPlaces
       },
       {
         headerName: "備註",
@@ -1318,6 +1385,9 @@ export class QotComponent implements OnInit {
     this.IfCheck_P = false;
     this.IfCheck_S = false;
     this.IfCheck_O = false;
+
+
+
     this._srmQotService.GetQotDetail(query).subscribe(result => {
       this.rowData_matnr = [result["matnr"]];
       this.rowData_Material = result["material"];
@@ -1330,7 +1400,13 @@ export class QotComponent implements OnInit {
       console.log([result["qot"]]);
       console.log([result["qot"]][0].status);
 
+      this.note = [result["qot"]][0].Note;
       if ([result["qot"]][0].status == "1") {
+
+        this.info4 = this._formBuilder.group({
+          Note: [{ value: this.note, disabled: false }],
+        });
+
         this.canModify = true;
         this.canModifymaterial = true;
         this.canModifyprocess = true;
@@ -1374,6 +1450,11 @@ export class QotComponent implements OnInit {
         }
       }
       else {
+
+        this.info4 = this._formBuilder.group({
+          Note: [{ value: this.note, disabled: true }],
+        });
+
         this.canModify = false;
         this.canModifymaterial = false;
         this.canModifyprocess = false;
@@ -1415,24 +1496,33 @@ export class QotComponent implements OnInit {
       //alert( [result["qot"]][0].expirationDate)
       this.leadtime = [result["qot"]][0].leadTime;
       this.expiringdate = [result["qot"]][0].expirationDate;
+      this.note = [result["qot"]][0].note;
     });
   }
 
   GetSumData() {
-    //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => sum + current.mCostPrice, 0));
-    //his.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
-    //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
-    //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
-    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + (current.mCostPrice * 100) / 100), 0));
-    this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => Math.round(sum + current.pCostsum ), 0));
-    this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) =>  Math.round(sum + current.sCostsum ), 0));
-    this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => Math.round(sum + current.oPrice ), 0));
+    this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => sum + current.mCostPrice, 0));
+    this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
+    this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
+    this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
+    //#region 
+    //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + (current.mCostPrice * 100) / 100), 0));
+    //this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => Math.round(sum + current.pCostsum), 0));
+    //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => Math.round(sum + current.sCostsum), 0));
+    //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => Math.round(sum + current.oPrice), 0));
+
+    //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => (Math.round(sum + ((current.mCostPrice * 100) / 100))), 0));
+    //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(((sum + current.mCostPrice) * 100 / 100)), 0));
+    //this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => (Math.round(sum + (current.pCostsum * 100) / 100)), 0));
+    //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => (Math.round(sum + (current.sCostsum * 100) / 100)), 0));
+    //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => (Math.round(sum + (current.oPrice * 100) / 100)), 0));
+    //#endregion
     this.sumMap.set("total", this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other"));
-    
+
   }
 
   BackQot() {
-    window.open('../srm/qotlist');
+    window.open('../srm/qotlist', "_self");
   }
   SendQot() {
 
@@ -1547,8 +1637,9 @@ export class QotComponent implements OnInit {
     this._srmQotService.Send(qot).subscribe(result => {
       alert('送出成功');
       //window.close();
-      this._layout.navigateTo('qot');
-      this._router.navigate(['srm/qotlist']);
+      //this._layout.navigateTo('qot');
+      //this._router.navigate(['srm/qotlist']);
+      window.history.go(-1); //20211203
     });
   }
   checkCheckBoxvalue_M(event) {
@@ -1602,14 +1693,17 @@ export class QotComponent implements OnInit {
       this.MaterialList = result;
     });
   }
-
-  /*GetProcess(data) {
-    this._srmQotService.GetProcessByNum(data).subscribe(result => {
-      console.log('----process----');
+  /*20211206*/
+  initSurface() {
+    this._srmQotService.GetSurface().subscribe(result => {
+      console.log('----Surface----');
       console.log(result);
-      this.ProcessList = result;
+      this.SurfaceList = result;
     });
-  }*/
+  }
+  /*20211206*/
+
+
   //檢查所有內容
   SendQotAll() {
     //rfqid、供應商. var qot = this.getqot();
@@ -1631,11 +1725,32 @@ export class QotComponent implements OnInit {
       this.SendQotAll();
     }
   }
+  GetProcess_Surface(data) {
+    var list = this.SurfaceList;
+    console.log(data);
+    var process_s = list.filter(
+      processt => processt.surfaceId == data.data.sProcess);
+    if (process_s.length > 0) {
+      return process_s[0].surfaceDesc;
+    }
+    return (data.data.sProcess);
+  }
+  GetProcess(data) {
+    var list = this.ProcessList;
+    console.log(data);
+    var process_p = list.filter(
+      processt => processt.processNum == data.data.pProcessNum);
+    if (process_p.length > 0) {
+      return process_p[0].process;
+    }
+    return (data.data.pProcessNum);
+  }
 }
 
 function GetProcessByNum(data) {
+  console.log('----process----');
   this._srmQotService.GetProcessByNum(data).subscribe(result => {
-    console.log('----process----');
+
     console.log(result);
     return result;
   });
@@ -1652,14 +1767,15 @@ function test(data) {
   if (data.value == "1") { return "aa" }
 }
 
-function decimalPlaces_material(data) {
+/*function decimalPlaces_material(data) {
   if (data.value == null) return "";
   var materialcost = Math.round(data.value * 100) / 100;
   return materialcost;
-}
+}*/
 function decimalPlaces(data) {
   if (data.value == null) return "";
-  var cost = Math.round(data.value);
+  //var cost = Math.round(data.value);
+  var cost = Math.round(data.value * 100) / 100;
   return cost;
 }
 
