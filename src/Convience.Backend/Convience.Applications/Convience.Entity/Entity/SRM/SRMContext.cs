@@ -56,6 +56,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmDisscussionH> SrmDisscussionHs { get; set; }
         public virtual DbSet<SrmMeasureUnit> SrmMeasureUnits { get; set; }
         public virtual DbSet<SrmSurface> SrmSurfaces { get; set; }
+        public virtual DbSet<SrmHistoryPrice> SrmHistoryPrices { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1671,6 +1672,84 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("SURFACE_DESC")
                     .HasComment("表面處理");
+            });
+
+            modelBuilder.Entity<SrmHistoryPrice>(entity =>
+            {
+                entity.HasKey(e => e.HistoryId);
+
+                entity.ToTable("SRM_HISTORY_PRICE");
+
+                entity.Property(e => e.HistoryId)
+                    .HasColumnName("HISTORY_ID")
+                    .HasComment("歷史價序號");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(3)
+                    .HasColumnName("CURRENCY")
+                    .HasComment("幣別");
+
+                entity.Property(e => e.Ekgry)
+                    .HasMaxLength(3)
+                    .HasColumnName("EKGRY")
+                    .HasComment("採購群組");
+
+                entity.Property(e => e.Essay)
+                    .HasMaxLength(40)
+                    .HasColumnName("ESSAY")
+                    .HasComment("短文");
+
+                entity.Property(e => e.HistoryPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("HISTORY_PRICE")
+                    .HasComment("歷史價格");
+
+                entity.Property(e => e.Inforecord)
+                    .HasMaxLength(10)
+                    .HasColumnName("INFORECORD")
+                    .HasComment("資訊紀錄");
+
+                entity.Property(e => e.Matnr)
+                    .HasMaxLength(18)
+                    .HasColumnName("MATNR")
+                    .HasComment("料號");
+
+                entity.Property(e => e.OrderDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ORDER_DATE")
+                    .HasComment("文件日期");
+
+                entity.Property(e => e.OrderQty)
+                    .HasColumnName("ORDER_QTY")
+                    .HasComment("採單數量");
+
+                entity.Property(e => e.OrderUnit)
+                    .HasMaxLength(3)
+                    .HasColumnName("ORDER_UNIT")
+                    .HasComment("採單單位");
+
+                entity.Property(e => e.PriceUnit)
+                    .HasColumnName("PRICE_UNIT")
+                    .HasComment("價格單位");
+
+                entity.Property(e => e.TargetPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("TARGET_PRICE")
+                    .HasComment("目標價");
+
+                entity.Property(e => e.UnpaidPrice)
+                    .HasColumnType("money")
+                    .HasColumnName("UNPAID_PRICE")
+                    .HasComment("未交總金額");
+
+                entity.Property(e => e.UnpaidQty)
+                    .HasColumnName("UNPAID_QTY")
+                    .HasComment("未交數量");
+
+                entity.Property(e => e.Vendor)
+                    .HasMaxLength(8)
+                    .HasColumnName("VENDOR")
+                    .HasComment("供應商");
             });
 
             OnModelCreatingPartial(modelBuilder);
