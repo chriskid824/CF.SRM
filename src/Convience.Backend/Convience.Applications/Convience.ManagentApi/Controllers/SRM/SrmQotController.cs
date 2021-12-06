@@ -190,6 +190,11 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             return Ok(_srmQotService.GetProcess());
         }
+        [HttpPost("GetSurface")]
+        public IActionResult GetSurface()
+        {
+            return Ok(_srmQotService.GetSurface());
+        }
         [HttpPost("GetMaterial")]
         public IActionResult GetMaterial()
         {
