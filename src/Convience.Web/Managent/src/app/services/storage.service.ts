@@ -67,6 +67,13 @@ export class StorageService {
   set werks(value) {
     localStorage.setItem("werks", value);
   }
+  get vendorId() {
+    return localStorage.getItem("vendorId");
+  }
+  set vendorId(value) {
+    localStorage.setItem("vendorId", value);
+  }
+
 
   hasUserToken(): boolean {
     return this.userToken != null;

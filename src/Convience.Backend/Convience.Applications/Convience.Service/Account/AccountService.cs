@@ -77,18 +77,20 @@ namespace Convience.Service.Account
                     //var rolenames = _srmContext.AspNetRoles.Where(p => (',' + roleIds + ',').IndexOf(',' + p.Id.ToString() + ',') > -1).Select(p => p.Name).ToList();
                     string rolenames = string.Join(',', _srmContext.AspNetRoles.Where(p => roleidarr.Contains(p.Id.ToString())).Select(p => p.Name));
                     int[] werks = GetWerks(rolenames);
-
+                    string isVendor = CheckIsVendor(user.SapId);
+                    string vendorId = isVendor == "1" ? user.SapId : string.Empty;
                     var pairs = new List<(string, string)>
                     {
                         (CustomClaimTypes.UserName,user.UserName),
                         (CustomClaimTypes.UserRoleIds,roleIds),
                         (CustomClaimTypes.Name,user.Name),
                         (CustomClaimTypes.Werks,string.Join(',',werks)),
-                        (CustomClaimTypes.IsVendor,CheckIsVendor(user.UserName))
+                        (CustomClaimTypes.VendorId,vendorId),
+                        (CustomClaimTypes.IsVendor,isVendor)
                     };
 
                     return new ValidateCredentialsResultModel(_jwtFactory.GenerateJwtToken(pairs),
- user.Name, user.Avatar, roleIds, user.CostNo, werks);
+ user.Name, user.Avatar, roleIds, user.CostNo, werks, vendorId);
 
                 }
             }

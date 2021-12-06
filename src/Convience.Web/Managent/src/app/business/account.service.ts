@@ -37,4 +37,5 @@ export interface LoginResult {
   routes: string;
   costNo: string;
   werks: string;
+  vendorId: string;
 }

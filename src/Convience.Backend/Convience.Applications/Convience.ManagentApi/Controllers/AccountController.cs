@@ -78,7 +78,8 @@ namespace Convience.ManagentApi.Controllers
                 irs.Item1,
                 irs.Item2,
                 validateResult.CostNo,
-                validateResult.Werks));
+                validateResult.Werks,
+                validateResult.VendorId));
         }
 
         [HttpPost("password")]
