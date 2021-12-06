@@ -35,6 +35,9 @@ export class SrmQotService {
   GetProcess() {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetProcess`, null);
   }
+  GetSurface() {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/GetSurface`, null);
+  }
   GetMaterial() {
     return this.httpClient.post(`${this.uriConstant.SrmQot}/GetMaterial`, null);
   }
