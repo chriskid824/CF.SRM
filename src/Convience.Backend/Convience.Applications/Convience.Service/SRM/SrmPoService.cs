@@ -105,7 +105,7 @@ namespace Convience.Service.SRM
                               //SrmPoLs = poh.SrmPoLs,
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
-                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                           .AndIfHaveValue(query.poId,p=>p.PoId==query.poId)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
@@ -209,7 +209,7 @@ namespace Convience.Service.SRM
                               Org = h.Org
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
-                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
@@ -315,7 +315,7 @@ namespace Convience.Service.SRM
                               CreateDate = h.CreateDate,
                           })
               .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
-              .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+              .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                   .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
     //.AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
     //.AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)

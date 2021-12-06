@@ -384,7 +384,7 @@ namespace Convience.Service.SRM
             {
                 QueryQotList qot = new QueryQotList();
                 qot.status = 1;//(int)query["status"];
-                qot.vendor = query.user.GetUserName();
+                qot.vendor = query.user.GetVendorId();
                 var result = _srmQotService.GetQotList(qot).Where(p=> p.SrmQotHs!=null&&p.SrmQotHs.Count!=0).OrderBy(p => p.VDeadline).ToList();
                 if (result != null)
                 {

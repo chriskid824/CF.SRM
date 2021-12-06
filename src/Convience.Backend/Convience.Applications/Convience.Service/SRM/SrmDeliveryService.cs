@@ -143,7 +143,7 @@ namespace Convience.Service.SRM
                                    })
                                    .Where(l => l.DeliveryId == p.DeliveryId)
                                    .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
-                                   .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetUserName())
+                                   .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                                    .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), l => l.PoNum.IndexOf(query.poNum) > -1).ToList()
                                    .AndIfCondition(query.deliveryLId != 0, l => l.DeliveryLId == query.deliveryLId)
                                    .ToList();
