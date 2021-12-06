@@ -55,6 +55,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmDisscussionC> SrmDisscussionCs { get; set; }
         public virtual DbSet<SrmDisscussionH> SrmDisscussionHs { get; set; }
         public virtual DbSet<SrmMeasureUnit> SrmMeasureUnits { get; set; }
+        public virtual DbSet<SrmSurface> SrmSurfaces { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1649,6 +1650,27 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.MeasureDesc)
                     .HasMaxLength(3)
                     .HasColumnName("MEASURE_DESC");
+            });
+
+            modelBuilder.Entity<SrmSurface>(entity =>
+            {
+                entity.HasKey(e => e.SurfaceId);
+
+                entity.ToTable("SRM_SURFACE");
+
+                entity.Property(e => e.SurfaceId)
+                    .HasColumnName("SURFACE_ID")
+                    .HasComment("表面處理代碼");
+
+                entity.Property(e => e.Staus)
+                    .HasColumnName("STAUS")
+                    .HasComment("狀態");
+
+                entity.Property(e => e.SurfaceDesc)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("SURFACE_DESC")
+                    .HasComment("表面處理");
             });
 
             OnModelCreatingPartial(modelBuilder);

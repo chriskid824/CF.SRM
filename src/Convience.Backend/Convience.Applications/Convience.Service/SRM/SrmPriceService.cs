@@ -68,15 +68,15 @@ namespace Convience.Service.SRM
              on surface.QotId equals qot.QotId
                              join vendor in _context.SrmVendors
                              on qot.VendorId equals vendor.VendorId
-                             join processMain in _context.SrmProcesss
-                             on surface.SProcess equals processMain.ProcessNum.ToString()
+                             join processMain in _context.SrmSurfaces
+                             on surface.SProcess equals processMain.SurfaceId.ToString()
                              where qotIds.Contains(surface.QotId.Value)
                              select new viewSrmQotSurface(surface)
                              {
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
                                  SubTotal = surface.SPrice.GetValueOrDefault() * (decimal)surface.STimes.GetValueOrDefault(),
-                                 ProcessName = processMain.Process
+                                 ProcessName = processMain.SurfaceDesc
                              }).ToArray();
             price.other = (from other in _context.SrmQotOthers
                            join qot in _context.SrmQotHs

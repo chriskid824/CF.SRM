@@ -76,7 +76,7 @@
             <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteMatnr()"><i nz-icon nzType="delete"></i>刪除料號</button>
           </h1>
           <ag-grid-angular #agGrid
-                           style="width: 93%; height: 250px;border:solid"
+                           style="height: 250px;border:solid"
                            id="myGrid"
                            [columnDefs]="columnDefs"
                            [suppressDragLeaveHidesColumns]="true"
@@ -99,7 +99,7 @@
             <button *canOperate="'RFQ_CREATE'" nz-button style="margin-left: 20px" disabled="{{canModify==false}}" (click)="deleteVendor()"><i nz-icon nzType="delete"></i>刪除供應商</button>
           </h1>
           <ag-grid-angular #agGrid
-                           style="width: 93%; height: 250px; border: solid"
+                           style="height: 250px; border: solid"
                            id="myGrid_VENDOR"
                            [columnDefs]="columnDefs_VENDOR"
                            [suppressDragLeaveHidesColumns]="true"
