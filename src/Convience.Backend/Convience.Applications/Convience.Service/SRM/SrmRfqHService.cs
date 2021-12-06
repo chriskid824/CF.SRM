@@ -457,8 +457,9 @@ namespace Convience.Service.SRM
                 dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
             }
             dt.Columns.Add("IsExists");
+            dt.Columns.Add("Unit");
             string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","期望日期","計量單位" };
-            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY", "EstDeliveryDate", "Unit" };
+            string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY", "EstDeliveryDate", "UnitDesc" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers) {
                 if (!dt.Columns.Contains(header))
@@ -511,7 +512,7 @@ namespace Convience.Service.SRM
                     {
                         throw new Exception($"計量單位:{dataRow["料號"].ToString()}計量單位不存在");
                     }
-                    dataRow["計量單位"] = measureUnit[0].MeasureId;
+                    dataRow["Unit"] = measureUnit[0].MeasureId;
                 }
                 if (string.IsNullOrWhiteSpace(dataRow["數量"].ToString())) 
                 {
