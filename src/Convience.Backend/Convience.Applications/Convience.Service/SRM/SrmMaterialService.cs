@@ -35,6 +35,7 @@ namespace Convience.Service.SRM
         public SrmEkgry GetEkgrp(SrmEkgry data);
         public PagingResultModel<SrmMaterialGroup> GetGroupList(QueryMaterial query);
         public PagingResultModel<SrmWeightUnit> GetUnitList(QueryMaterial query);
+        public PagingResultModel<SrmMeasureUnit> GetMeasureList(QueryMaterial query);
         public bool DeleteList(ViewSrmMatnr1 data);
     }
     public class SrmMaterialService : ISrmMaterialService
@@ -56,7 +57,8 @@ namespace Convience.Service.SRM
 
             var resultQuery = (from matnr in _context.SrmMatnrs
                                join status in _context.SrmStatuses on matnr.Status equals status.Status
-                               join ekgry in _context.SrmEkgries on matnr.Ekgrp equals ekgry.Ekgry
+                               join ekgry in _context.SrmEkgries on matnr.Ekgrp equals ekgry.Ekgry 
+                               join unit in _context.SrmMeasureUnits on matnr.Unit equals unit.MeasureId
                                select new ViewSrmMatnr1
                                {
                                    MatnrId = matnr.MatnrId,
@@ -74,6 +76,7 @@ namespace Convience.Service.SRM
                                    Note = matnr.Note,
                                    StatusDesc = status.StatusDesc,
                                    Gewei = matnr.Gewei,
+                                   UnitDesc = unit.MeasureDesc,
                                    Ekgrp = ekgry.Ekgry + ekgry.EkgryDesc,
                                    Bn_num = matnr.Bn_num,
                                    Major_diameter = matnr.Major_diameter,
@@ -94,6 +97,7 @@ namespace Convience.Service.SRM
         {
             var material = (from matnr in _context.SrmMatnrs
                             join status in _context.SrmStatuses on matnr.Status equals status.Status
+                            join unit in _context.SrmMeasureUnits on matnr.Unit equals unit.MeasureId
                             select new ViewSrmMatnr1
                             {
                                 SrmMatnr1 = matnr.SrmMatnr1,
@@ -110,6 +114,7 @@ namespace Convience.Service.SRM
                                 Note = matnr.Note,
                                 StatusDesc = status.StatusDesc,
                                 Gewei = matnr.Gewei,
+                                UnitDesc = unit.MeasureDesc,
                                 Ekgrp = matnr.Ekgrp,
                                 Bn_num = matnr.Bn_num,
                                 Major_diameter= matnr.Major_diameter,
@@ -138,6 +143,7 @@ namespace Convience.Service.SRM
                 Note = material.Note,
                 StatusDesc = material.StatusDesc,
                 Gewei = material.Gewei,
+                UnitDesc = material.UnitDesc,
                 Ekgrp = material.Ekgrp,
                 Bn_num = material.Bn_num,
                 Major_diameter = material.Major_diameter,
@@ -152,6 +158,8 @@ namespace Convience.Service.SRM
             SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
             SrmMatnr sapnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr && p.SrmMatnr1 != data.SrmMatnr1).FirstOrDefault();
 
+            SrmMeasureUnit Unit = _context.SrmMeasureUnits.Where(p => p.MeasureDesc == data.UnitDesc).FirstOrDefault();
+
             if (description != null)
             {
                 throw new Exception("物料內文重複，請重新輸入");
@@ -159,6 +167,10 @@ namespace Convience.Service.SRM
             if (ekgrp == null)
             {
                 throw new Exception("採購群組有誤，請重新輸入");
+            }
+            if (Unit == null)
+            {
+                throw new Exception("計量單位有誤，請重新輸入");
             }
             if (sapnr != null)
             {
@@ -188,6 +200,7 @@ namespace Convience.Service.SRM
             material.LastUpdateDate = DateTime.Now;
             material.LastUpdateBy = data.User;
             material.Gewei = data.Gewei;
+            material.Unit = Unit.MeasureId;
             material.Ekgrp = data.Ekgrp;
             material.Bn_num = data.Bn_num;
             material.Major_diameter = data.Major_diameter;
@@ -236,6 +249,7 @@ namespace Convience.Service.SRM
             SrmMatnr srmmatnr = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == data.SrmMatnr1).FirstOrDefault();
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks == data.Werks).FirstOrDefault();
             SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
+            SrmMeasureUnit Unit = _context.SrmMeasureUnits.Where(p => p.MeasureDesc == data.UnitDesc).FirstOrDefault();
 
             if (srmmatnr != null)
             {
@@ -248,6 +262,10 @@ namespace Convience.Service.SRM
             if (ekgrp == null)
             {
                 throw new Exception("採購群組有誤，請重新輸入");
+            }
+            if (Unit == null)
+            {
+                throw new Exception("計量單位有誤，請重新輸入");
             }
 
 
@@ -290,6 +308,10 @@ namespace Convience.Service.SRM
             if (string.IsNullOrWhiteSpace(data.Gewei))
             {
                 throw new Exception("重量單位，必填");
+            }
+            if (string.IsNullOrWhiteSpace(data.UnitDesc))
+            {
+                throw new Exception("計量單位，必填");
             }
             if (string.IsNullOrWhiteSpace(data.Material))
             {
@@ -346,6 +368,7 @@ namespace Convience.Service.SRM
                 Note = data.Note,
                 Bn_num = data.Bn_num,
                 Gewei = data.Gewei,
+                Unit = Unit.MeasureId,
                 Ekgrp = data.Ekgrp,
                 Major_diameter=data.Major_diameter,
                 Minor_diameter=data.Minor_diameter,
@@ -408,6 +431,20 @@ namespace Convience.Service.SRM
             return new PagingResultModel<SrmWeightUnit>
             {
                 Data = JsonConvert.DeserializeObject<SrmWeightUnit[]>(JsonConvert.SerializeObject(materials)),
+                Count = resultQuery.Count()
+            };
+        }
+        public PagingResultModel<SrmMeasureUnit> GetMeasureList(QueryMaterial query)
+        {
+            int skip = (query.Page - 1) * query.Size;
+            var resultQuery = (from material in _context.SrmMeasureUnits
+                               select material);
+            var measureUnits = resultQuery.Skip(skip).Take(query.Size).ToArray();
+
+
+            return new PagingResultModel<SrmMeasureUnit>
+            {
+                Data = JsonConvert.DeserializeObject<SrmMeasureUnit[]>(JsonConvert.SerializeObject(measureUnits)),
                 Count = resultQuery.Count()
             };
         }

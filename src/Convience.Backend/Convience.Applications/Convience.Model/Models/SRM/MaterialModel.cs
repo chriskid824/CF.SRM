@@ -14,6 +14,7 @@ namespace Convience.Model.Models.SRM
     public class ViewSrmMatnr1 : SrmMatnr
     {
         public string StatusDesc { get; set; }
+        public string UnitDesc { get; set; }
         public string User { get; set; }
     }
     public record QueryMaterial : PageQueryModel

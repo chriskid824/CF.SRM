@@ -22,6 +22,7 @@ export class MaterialCComponent implements OnInit {
   werks = [];
   grouplist= [];
   unitlist= [];
+  measurelist = [];
   inputdata = [];
   arrayBuffer:any;
   file:File;
@@ -53,6 +54,7 @@ export class MaterialCComponent implements OnInit {
       note: [null],
       ekgrp: [null,[Validators.required]],
       gewei: [null,[Validators.required]],
+      measure: [null,[Validators.required]],
       bn_num: [null],
       major_diameter: [null],
       minor_diameter: [null],
@@ -79,6 +81,10 @@ export class MaterialCComponent implements OnInit {
     this._srmMaterialService.GetUnitList(querylist).subscribe(result => {
       //console.log(result);
       this.unitlist = result["data"];
+    });
+    this._srmMaterialService.GetMeasureList(querylist).subscribe(result => {
+      //console.log(result);
+      this.measurelist = result["data"];
     });
 
     this._srmMaterialService.GetEkgrp(query).subscribe(result => {
@@ -107,6 +113,7 @@ export class MaterialCComponent implements OnInit {
         user : this._storageService.userName,     
         werks : this.searchForm.value['werks'],
         gewei : this.searchForm.value['gewei'],
+        unit : this.searchForm.value['measure'],
         ekgrp : this.searchForm.value['ekgrp'],
         bn_num : this.searchForm.value['bn_num'],
         minor_diameter : this.searchForm.value['minor_diameter'],

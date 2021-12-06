@@ -109,6 +109,7 @@ export class MaterialComponent implements OnInit {
         density: [result['density']],
         weight: [result['weight']],
         gewei: [result['gewei']],
+        unitDesc: [result['unitDesc']],
         ekgrp: [result['ekgrp']],
         bnnum: [result['bn_num']],
         major_diameter: [result['major_diameter']],
@@ -173,6 +174,7 @@ export class MaterialComponent implements OnInit {
       material.note = this.editForm.value['note'];
       material.user = this._storageService.userName;
       material.gewei = this.editForm.value['gewei'];
+      material.unitDesc = this.editForm.value['unitDesc'];
       material.ekgrp = this.editForm.value['ekgrp'];
       material.bn_num = this.editForm.value['bnnum'];
       material.minor_diameter = this.editForm.value['minor_diameter'];
@@ -204,6 +206,7 @@ export class MaterialComponent implements OnInit {
     }
     //console.log(query);
     this._srmMaterialService.GetMaterialList(query).subscribe(result => {
+      console.log(this.data);
       this.data = result["data"];
       this.total = result["count"];
     });

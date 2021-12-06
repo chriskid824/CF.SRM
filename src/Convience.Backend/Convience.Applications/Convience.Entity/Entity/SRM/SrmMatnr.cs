@@ -1,9 +1,7 @@
-﻿using Convience.Entity.Data;
-using Convience.EntityFrameWork.Infrastructure;
-
+﻿using Convience.EntityFrameWork.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+
 #nullable disable
 
 namespace Convience.Entity.Entity.SRM
@@ -35,6 +33,6 @@ namespace Convience.Entity.Entity.SRM
         public string Bn_num { get; set; }
         public string Major_diameter { get; set; }
         public string Minor_diameter { get; set; }
-        public int? UNIT { get; set; }
+        public int? Unit { get; set; }
     }
 }

@@ -100,6 +100,11 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             return Ok(_srmMaterialService.GetUnitList(data));
         }
+        [HttpPost("GetMeasureList")]
+        public IActionResult GetMeasureList(QueryMaterial data)
+        {
+            return Ok(_srmMaterialService.GetMeasureList(data));
+        }
         private string Convert_DataRowToJson(DataRow datarow)
         {
             var dict = new Dictionary<string, object>();
@@ -124,8 +129,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 path = _srmSupplierService.Upload(fileUploadModel);
 
-                string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量" };
-                string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY" };
+                string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","計量單位" };
+                string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY","UnitDesc"};
                 string checkname = "物料內文";
                 DataTable data_m = new Utility().ReadExcel(path, 0, headers, cols, checkname);
                 //DataTable data_v = _srmRfqHService.ReadExcel_Vendor(path, user);
@@ -138,7 +143,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     try
                     {
-                        SrmRfqV[] m = JsonConvert.DeserializeObject<SrmRfqV[]>(JsonConvert.SerializeObject(data_m));
+                        //SrmRfqV[] m = JsonConvert.DeserializeObject<SrmRfqV[]>(JsonConvert.SerializeObject(data_m));
                         for (int i = 0; i < data_m.Rows.Count; i++)
                         {
                             DataRow dr_m = data_m.Rows[i];
