@@ -187,7 +187,12 @@ export class PoComponent implements OnInit {
             valueFormatter:dateFormatter,
             stopEditingWhenCellsLoseFocus:false,
             // valueFormatter: this.expiryDateFormatter,
-            cellEditorFramework: AgGridDatePickerComponent
+            cellEditorFramework: AgGridDatePickerComponent,
+            cellClassRules: {
+              //'rag-green': 'x == null',
+              'rag-lime': 'x == null',
+              //'rag-red': 'x == 21',
+            },
           },
           {
             headerName:'狀態',

@@ -408,7 +408,6 @@ guid:string;
         field: "unit",
         enableRowGroup: true,
         cellClass: "show-cell",
-        editable: this.canModify,
         width: "150px",
         cellEditor: 'agSelectCellEditor',
         cellEditorParams: {

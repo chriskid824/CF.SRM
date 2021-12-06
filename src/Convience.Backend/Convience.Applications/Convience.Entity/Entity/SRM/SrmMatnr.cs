@@ -35,5 +35,6 @@ namespace Convience.Entity.Entity.SRM
         public string Bn_num { get; set; }
         public string Major_diameter { get; set; }
         public string Minor_diameter { get; set; }
+        public int? UNIT { get; set; }
     }
 }

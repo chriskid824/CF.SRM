@@ -96,6 +96,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("UpdateReplyDeliveryDate")]
         public IActionResult UpdateReplyDeliveryDate(JObject rfq)
         {
+            if (rfq.Property("ReplyDeliveryDate") == null) return Ok();
             SrmPoL data = rfq.ToObject<SrmPoL>();
             _srmDeliveryService.UpdateReplyDeliveryDate(data);
             if (_srmPoService.CheckAllReply(data.PoId))

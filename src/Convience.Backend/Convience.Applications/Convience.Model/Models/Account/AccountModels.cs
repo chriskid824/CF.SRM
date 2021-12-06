@@ -11,7 +11,8 @@
         string Identification,
         string Routes,
         string CostNo,
-        int[] Werks);
+        int[] Werks,
+        string VendorId);
 
     public record LoginViewModel(
         string UserName,
@@ -25,5 +26,6 @@
         string Avatar,
         string RoleIds,
         string CostNo,
-        int[] Werks);
+        int[] Werks,
+        string VendorId);
 }
