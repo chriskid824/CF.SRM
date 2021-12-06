@@ -119,7 +119,7 @@ export class QotlistComponent implements OnInit {
               eButton.addEventListener('click', function() {
                //alert( params.data.QVendorId)
                //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
-               window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
+               window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId,"_self");
                //this._layout.navigateTo('qot'); //???進不去
                //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
               });
