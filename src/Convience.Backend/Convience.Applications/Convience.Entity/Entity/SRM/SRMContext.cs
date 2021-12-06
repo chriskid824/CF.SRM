@@ -157,10 +157,6 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Width)
                     .HasColumnName("WIDTH")
                     .HasComment("寬");
-
-                entity.Property(e => e.Unit)
-                .HasColumnName("UNIT")
-                .HasComment("數量單位");
             });
 
             modelBuilder.Entity<SrmRfqH>(entity =>
