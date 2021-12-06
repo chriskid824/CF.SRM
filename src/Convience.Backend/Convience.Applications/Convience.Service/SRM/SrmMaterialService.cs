@@ -172,7 +172,7 @@ namespace Convience.Service.SRM
             {
                 throw new Exception("計量單位有誤，請重新輸入");
             }
-            if (sapnr != null)
+            if (sapnr != null && !string.IsNullOrWhiteSpace(data.SapMatnr))
             {
                 throw new Exception("SAP料號已存在，請重新輸入");
             }

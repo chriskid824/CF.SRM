@@ -153,7 +153,7 @@ namespace Convience.Service.SRM
             {
                 throw new Exception("供應商名稱已存在，請重新輸入");
             }
-            if (sapvendor != null)
+            if (sapvendor != null && !string.IsNullOrWhiteSpace(data.SapVendor))
             {
                 throw new Exception("SAP供應商代碼已存在，請重新輸入");
             }
