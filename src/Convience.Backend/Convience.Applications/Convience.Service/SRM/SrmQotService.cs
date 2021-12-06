@@ -53,6 +53,9 @@ namespace Convience.Service.SRM
         public string GetProcessByNum(int num);
         //public string SendAll(int rfqid, int vendorid);
         public int GetVendorId(JObject qot);
+
+        public string GetSapid(QueryQotList query);
+        public SrmSurface[] GetSurface();
     }
     public class SrmQotService : ISrmQotService
     {
@@ -441,9 +444,10 @@ namespace Convience.Service.SRM
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
-      
+
+            string vendorname = GetSapid(query);//20211203
             #region getvendorid 20211101
-            int venderid = GetVendorId(query);
+            int venderid = GetVendorId(vendorname);
             #endregion
             //int venderid = query.vendor;
             var result = (from r in _context.SrmRfqHs
@@ -583,17 +587,38 @@ namespace Convience.Service.SRM
             qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid).OrderBy(p => p.QotId);
             return qotlist;
         }
+        public decimal GetHistoryPrice(int qotid) 
+        {
+            decimal historyprice = 0;
+            var history = (from q in _context.SrmQotHs 
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                           join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                           join h in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)? v.SapVendor:v.SrmVendor1), Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)? m.SapMatnr:m.SrmMatnr1) } equals new { Vendor = h.Vendor, Matnr = h.Matnr }
+                           where (q.QotId == qotid)
+                          select new
+                          {
+                              historyprice = h.TargetPrice,
+                          });
+            if (history.Count()>0)
+            {
+                historyprice = history.Select(r => r.historyprice.Value).First();
+            }
+            return historyprice;
+        }
         public IQueryable GetQotData(int rfqid, int vendorid, int qotid)
         {
+            decimal historyprice = GetHistoryPrice(qotid);
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
-                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
+                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }                         
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                           join mu in _context.SrmMeasureUnits on rm.Unit equals mu.MeasureId into mug
+                           from mu in mug.DefaultIfEmpty()
                            join s in _context.SrmStatuses on q.Status equals s.Status
                            join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
                            from u1 in u1g.DefaultIfEmpty()
 
-                               //where e.OwnerID == user.UID
+                               //where e.OwnerID == user.UID 
                            select new
                            {
 
@@ -621,7 +646,11 @@ namespace Convience.Service.SRM
                                Description = m.Description,
                                Qty = rm.Qty,
                                Expiringdate = q.ExpirationDate,
-                               Leadtime = q.LeadTime
+                               Leadtime = q.LeadTime,
+                               estDeliveryDate = rm.EstDeliveryDate,
+                               Note = q.Note,
+                               Unit = mu.MeasureDesc,//20211203
+                               Purposeprice = historyprice
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
@@ -757,11 +786,25 @@ namespace Convience.Service.SRM
 
         //    return qotinfo;
         //}
-        public int GetVendorId(QueryQotList query)
+        #region 丟user取sapid
+        public string GetSapid(QueryQotList query)
+        {
+            string vendorid = string.Empty;
+            var vendor = (from u in _context.AspNetUsers
+                          where (u.UserName == query.vendor)
+                          select new
+                          {
+                              SapId = u.SapId
+                          });
+            vendorid = vendor.Select(r => r.SapId).First();
+            return vendorid;
+        }
+        #endregion
+        public int GetVendorId(string vendorname)
         {
             var vendorid = 0;
             var vendor = (from v in _context.SrmVendors
-                          where (v.SapVendor == query.vendor || v.SrmVendor1 == query.vendor)
+                          where (v.SapVendor == vendorname || v.SrmVendor1 == vendorname)
                           select new
                           {
                               VendorId = v.VendorId,
@@ -1042,6 +1085,7 @@ namespace Convience.Service.SRM
                 qot.OEmptyFlag = qotH.OEmptyFlag;
                 qot.LeadTime = qotH.LeadTime;
                 qot.ExpirationDate = qotH.ExpirationDate;
+                qot.Note = qotH.Note;
                 db.Entry(qot).Property(p => p.LastUpdateBy).IsModified = true;
                 db.Entry(qot).Property(p => p.LastUpdateDate).IsModified = true;
                 db.Entry(qot).Property(p => p.MEmptyFlag).IsModified = true;
@@ -1050,6 +1094,7 @@ namespace Convience.Service.SRM
                 db.Entry(qot).Property(p => p.OEmptyFlag).IsModified = true;
                 db.Entry(qot).Property(p => p.LeadTime).IsModified = true;
                 db.Entry(qot).Property(p => p.ExpirationDate).IsModified = true;
+                db.Entry(qot).Property(p => p.Note).IsModified = true;
 
                 var result = db.SaveChanges();
                 //return result;
@@ -1284,6 +1329,11 @@ namespace Convience.Service.SRM
         {
             return _context.SrmProcesss.ToArray();
         }
+        public SrmSurface[] GetSurface()
+        {
+            return _context.SrmSurfaces.ToArray();
+        }
+
         public SrmMaterial[] GetMaterial()
         {
             return _context.SrmMaterials.ToArray();
