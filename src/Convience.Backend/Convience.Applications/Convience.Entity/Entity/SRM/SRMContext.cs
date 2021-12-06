@@ -294,6 +294,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("RFQ_ID")
                     .HasComment("詢價單識別碼");
 
+                entity.Property(e => e.Unit).HasColumnName("UNIT");
+
                 entity.Property(e => e.Version)
                     .HasMaxLength(3)
                     .HasColumnName("VERSION")
