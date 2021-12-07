@@ -2,14 +2,14 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { SrmMaterialTrendService } from '../../../business/srm/srm-materialTrend.service';
+import { SrmConfigService } from '../../../business/srm/srm-config.service';
 
 @Component({
-  selector: 'app-material-manage',
-  templateUrl: './material-manage.component.html',
-  styleUrls: ['./material-manage.component.less']
+  selector: 'app-process-manage',
+  templateUrl: './process-manage.component.html',
+  styleUrls: ['./process-manage.component.less']
 })
-export class MaterialManageComponent implements OnInit {
+export class ProcessManageComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   addForm: FormGroup = new FormGroup({});
   tplModal: NzModalRef;
@@ -17,32 +17,31 @@ export class MaterialManageComponent implements OnInit {
   page: number = 1;
   size: number = 6;
   total: number;
-  _material;
-
-  constructor(private _srmMaterialTrendService: SrmMaterialTrendService,
+  _process;
+  constructor(private _srmConfigService: SrmConfigService,
     private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
-    private _messageService: NzMessageService,  ) { }
+    private _messageService: NzMessageService,) { }
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      material: [null]
+      process: [null]
     });
     this.initaddForm();
-    if (sessionStorage.getItem("material-manage")) {
-      var query = JSON.parse(sessionStorage.getItem("material-manage"));
-      this._material = query.material;
+    if (sessionStorage.getItem("process-manage")) {
+      var query = JSON.parse(sessionStorage.getItem("process-manage"));
+      this._process = query.process;
       this.page = query.page;
       this.size = query.size;
       this.searchForm.patchValue({
-        material: this._material.Material,
+        process: this._process.Process,
       });
       this.refresh();
     }
   }
   initaddForm() {
     this.addForm = this._formBuilder.group({
-      material: [null, [Validators.required]]
+      process: [null, [Validators.required]]
     });
   }
   open(title: TemplateRef<{}>, content: TemplateRef<{}>) {
@@ -63,20 +62,20 @@ export class MaterialManageComponent implements OnInit {
     this.refresh();
   }
   submitSearch() {
-    this._material = {
-      Material: this.searchForm.get('material').value,
+    this._process = {
+      Process: this.searchForm.get('process').value,
     }
     this.page = 1;
     this.refresh();
   }
   refresh() {
     var query = {
-      material: this._material,
+      process: this._process,
       page: this.page,
       size: this.size
     }
-    sessionStorage.setItem("material-manage", JSON.stringify(query));
-    this._srmMaterialTrendService.GetMaterialList(query).subscribe(result => {
+    sessionStorage.setItem("process-manage", JSON.stringify(query));
+    this._srmConfigService.GetProcessList(query).subscribe(result => {
       console.log(result);
       this.data = result["data"];
       this.total = result["count"];
@@ -88,10 +87,10 @@ export class MaterialManageComponent implements OnInit {
       this.addForm.controls[i].updateValueAndValidity();
     }
     if (this.addForm.valid) {
-      var material = {
-        Material: this.addForm.get("material")?.value
+      var process = {
+        Process: this.addForm.get("process")?.value
       };
-      this._srmMaterialTrendService.AddMaterial(material).subscribe(result => {
+      this._srmConfigService.AddProcess(process).subscribe(result => {
         this._messageService.success("保存成功！");
         this.tplModal.close();
       });
