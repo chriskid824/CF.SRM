@@ -1653,7 +1653,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("MEASURE_ID");
 
                 entity.Property(e => e.MeasureDesc)
-                    .HasMaxLength(3)
+                    .HasMaxLength(10)
                     .HasColumnName("MEASURE_DESC");
             });
 

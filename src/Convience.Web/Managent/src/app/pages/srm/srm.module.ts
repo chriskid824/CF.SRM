@@ -72,6 +72,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent';
+import { ProcessManageComponent } from './process-manage/process-manage.component';
+import { SurfaceManageComponent } from './surface-manage/surface-manage.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -110,6 +112,8 @@ import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent'
     DiscussionComponent,
     DiscussionListComponent,
     DiscussionAddComponent,
+    ProcessManageComponent,
+    SurfaceManageComponent,
   ],
   imports: [
     CommonModule,
@@ -148,6 +152,8 @@ import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent'
         { path: "diss-add", component: DiscussionAddComponent, canActivate: [LoginGuard]},
         { path: "diss-add/:functionId/:number", component: DiscussionAddComponent, canActivate: [LoginGuard]},
         //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
+        { path: "process-manage", component: ProcessManageComponent, canActivate: [LoginGuard] },
+        { path: "surface-manage", component: SurfaceManageComponent, canActivate: [LoginGuard] },
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,

@@ -106,4 +106,6 @@ export class UriConfig {
     get SrmDisscussion(): string { return `${this._apiUri}/SrmDisscussion` };
 
     get SrmMeasureUnit(): string { return `${this._apiUri}/SrmMeasureUnit` };
+
+    get SrmConfig(): string { return `${this._apiUri}/SrmConfig` };
 }

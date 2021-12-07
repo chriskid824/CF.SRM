@@ -72,7 +72,6 @@ export class LayoutComponent implements OnInit {
         { canOperate: 'price', routerLink: '/srm/price-work', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '價格資訊', name: '價格資訊', },
         { canOperate: 'price-manage', routerLink: '/srm/price-manage', iconType: 'fund-view', firstBreadcrumb: '詢價', lastBreadcrumb: '資訊記錄查詢', name: '資訊記錄查詢', },
         { canOperate: 'material-trend', routerLink: '/srm/material-trend', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料趨勢圖', name: '原物料趨勢圖', },
-        { canOperate: 'material-manage', routerLink: '/srm/material-manage', iconType: 'fund-view', firstBreadcrumb: '原物料', lastBreadcrumb: '原物料管理', name: '原物料管理', },
       ]
     },
     {
@@ -140,6 +139,13 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'diss-list', routerLink: '/srm/diss-list', iconType: 'fund-view', firstBreadcrumb: '訊息交換區', lastBreadcrumb: '訊息交換', name: '訊息交換', },
       ]
+    },
+    {
+      canOperate: 'config', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '設定檔管理',
+      children: [
+        { canOperate: 'material-manage', routerLink: '/srm/material-manage', iconType: 'fund-view', firstBreadcrumb: '設定檔管理', lastBreadcrumb: '原物料管理', name: '原物料管理', },
+        { canOperate: 'process-manage', routerLink: '/srm/process-manage', iconType: 'fund-view', firstBreadcrumb: '設定檔管理', lastBreadcrumb: '加工工序管理', name: '加工工序管理', },
+        { canOperate: 'surface-manage', routerLink: '/srm/surface-manage', iconType: 'fund-view', firstBreadcrumb: '設定檔管理', lastBreadcrumb: '表面處理管理', name: '表面處理管理', },      ]
     }
   ];
 

@@ -2,14 +2,14 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { SrmMaterialTrendService } from '../../../business/srm/srm-materialTrend.service';
+import { SrmConfigService } from '../../../business/srm/srm-config.service';
 
 @Component({
-  selector: 'app-material-manage',
-  templateUrl: './material-manage.component.html',
-  styleUrls: ['./material-manage.component.less']
+  selector: 'app-surface-manage',
+  templateUrl: './surface-manage.component.html',
+  styleUrls: ['./surface-manage.component.less']
 })
-export class MaterialManageComponent implements OnInit {
+export class SurfaceManageComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   addForm: FormGroup = new FormGroup({});
   tplModal: NzModalRef;
@@ -17,32 +17,31 @@ export class MaterialManageComponent implements OnInit {
   page: number = 1;
   size: number = 6;
   total: number;
-  _material;
-
-  constructor(private _srmMaterialTrendService: SrmMaterialTrendService,
+  _surface;
+  constructor(private _srmConfigService: SrmConfigService,
     private _formBuilder: FormBuilder,
     private _modalService: NzModalService,
-    private _messageService: NzMessageService,  ) { }
+    private _messageService: NzMessageService,) { }
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      material: [null]
+      surface: [null]
     });
     this.initaddForm();
-    if (sessionStorage.getItem("material-manage")) {
-      var query = JSON.parse(sessionStorage.getItem("material-manage"));
-      this._material = query.material;
+    if (sessionStorage.getItem("surface-manage")) {
+      var query = JSON.parse(sessionStorage.getItem("surface-manage"));
+      this._surface = query.surface;
       this.page = query.page;
       this.size = query.size;
       this.searchForm.patchValue({
-        material: this._material.Material,
+        surface: this._surface.SurfaceDesc,
       });
       this.refresh();
     }
   }
   initaddForm() {
     this.addForm = this._formBuilder.group({
-      material: [null, [Validators.required]]
+      surface: [null, [Validators.required]]
     });
   }
   open(title: TemplateRef<{}>, content: TemplateRef<{}>) {
@@ -63,20 +62,20 @@ export class MaterialManageComponent implements OnInit {
     this.refresh();
   }
   submitSearch() {
-    this._material = {
-      Material: this.searchForm.get('material').value,
+    this._surface = {
+      SurfaceDesc: this.searchForm.get('surface').value,
     }
     this.page = 1;
     this.refresh();
   }
   refresh() {
     var query = {
-      material: this._material,
+      surface: this._surface,
       page: this.page,
       size: this.size
     }
-    sessionStorage.setItem("material-manage", JSON.stringify(query));
-    this._srmMaterialTrendService.GetMaterialList(query).subscribe(result => {
+    sessionStorage.setItem("surface-manage", JSON.stringify(query));
+    this._srmConfigService.GetSurfaceList(query).subscribe(result => {
       console.log(result);
       this.data = result["data"];
       this.total = result["count"];
@@ -88,10 +87,10 @@ export class MaterialManageComponent implements OnInit {
       this.addForm.controls[i].updateValueAndValidity();
     }
     if (this.addForm.valid) {
-      var material = {
-        Material: this.addForm.get("material")?.value
+      var surface = {
+        SurfaceDesc: this.addForm.get("surface")?.value
       };
-      this._srmMaterialTrendService.AddMaterial(material).subscribe(result => {
+      this._srmConfigService.AddSurface(surface).subscribe(result => {
         this._messageService.success("保存成功！");
         this.tplModal.close();
       });
