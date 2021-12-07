@@ -127,7 +127,7 @@ namespace Convience.Service.Account
         {
             //if (Int32.TryParse(id, out int numValue))
             // {
-            return _srmContext.SrmVendors.Any(p => p.SapVendor == id) ? "1" : "0";
+            return _srmContext.SrmVendors.Any(p => p.SapVendor == id &&p.SapVendor!=null) ? "1" : "0";
             //}
             //return "0";
         }
