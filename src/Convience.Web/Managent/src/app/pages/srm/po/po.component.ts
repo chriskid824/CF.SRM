@@ -51,6 +51,7 @@ export class PoComponent implements OnInit {
   fileList:any[] = [];
   uploading: boolean = false;
   formData:FormData;
+  poData:any;
   showUploadList = {
     showDownloadIcon: true,
    showRemoveIcon: false,
@@ -319,20 +320,35 @@ export class PoComponent implements OnInit {
   }
   openFileModal(e){
     console.info(e);
+    this.poData=e.data;
     const formData = new FormData();
     formData.append("number",e.data.PoNum);
     this._fileService.get(1, 200, '/PoFiles/'+e.data.PoNum).subscribe((result: any) => {
 
       //result[0].showDownload=true;
       console.info(result);
+      if(result.length>0)
+    {
+      var fileList: NzUploadFile[] = [
+        {
+          uid: e.data.PoNum,
+          name: result[0].name,
+          status: 'done',
+          //response: 'Server Error 500', // custom error message to show
+          //url: '/PoFiles/'+e.data.PoNum
+        },
+      ]
       //var file=[{name:result[0].name}];
       // var file:File=new File(){};
       // file.name=result.fileName;
       // file.showDownload=true;
       //console.info(file);
-      this.fileList = result;
+      this.fileList = fileList;
+    }
+
     });
     this.formData=formData;
+    console.info(this.formData);
     this.isVisible=true;
   }
   expiryDateFormatter(params) {
@@ -367,16 +383,18 @@ export class PoComponent implements OnInit {
   }
 
   handleCancel(): void {
+    console.info(this.poData);
     this.modalclose();
   }
-  download(fileInfo: FileInfo) {
-    // this._fileService.download(fileInfo.fileName, fileInfo.directory).subscribe((result: any) => {
-    //   const a = document.createElement('a');
-    //   const blob = new Blob([result], { 'type': "application/octet-stream" });
-    //   a.href = URL.createObjectURL(blob);
-    //   a.download = fileInfo.fileName;
-    //   a.click();
-    // });
+  download= (file: NzUploadFile): void => {
+    console.info(file);
+     this._srmFileService.downloadPoFile(file.uid,file.name).subscribe((result: any) => {
+       const a = document.createElement('a');
+       const blob = new Blob([result], { 'type': "application/octet-stream" });
+       a.href = URL.createObjectURL(blob);
+       a.download = file.name;
+       a.click();
+     });
   }
   beforeUpload = (singleFile: File, fileList: File[]): boolean => {
     this.fileList = fileList;

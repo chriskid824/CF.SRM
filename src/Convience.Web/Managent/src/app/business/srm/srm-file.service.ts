@@ -39,6 +39,10 @@ export class SrmFileService {
     let uri = `${this.uriConstant.SrmFile}?uid=${uid}&&Name=${Name}`;
     return this.httpClient.get(uri, { responseType: "blob", });
   }
+  downloadPoFile(uid,Name) {
+    let uri = `${this.uriConstant.SrmFile}/DownloadPoFile?uid=${uid}&&Name=${Name}`;
+    return this.httpClient.get(uri, { responseType: "blob", });
+  }
   get(page, size, directory) {
     let uri = `${this.uriConstant.SrmFile}/list?page=${page}&&size=${size}&&directory=${directory}`;
     return this.httpClient.get(uri);

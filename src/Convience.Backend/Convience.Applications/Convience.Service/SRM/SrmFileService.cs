@@ -36,6 +36,7 @@ namespace Convience.Service.SRM
         public Task<string> UploadAsync(FileUploadViewModel viewModel);
         public Task<string> UploadPoAsync(FileUploadViewModel viewModel);
         public Task<Stream> DownloadAsync(NzFileViewModel viewModel);
+        public Task<Stream> DownloadPoFileAsync(NzFileViewModel viewModel);
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
         public string UpdateNumber(string number, string guid);
@@ -295,10 +296,16 @@ namespace Convience.Service.SRM
             {
                 var path = "PoFiles/" + viewModel.number;
                 ////判斷檔案路徑是否存在，不存在則建立資料夾
-                //if (!System.IO.Directory.Exists(path))
-                //{
-                //    System.IO.Directory.CreateDirectory(path);//不存在就建立目錄
-                //}
+                if (System.IO.Directory.Exists(_fileStore.GetPhysicalPath(path)))
+                {
+                    //System.IO.Directory.CreateDirectory(path);//不存在就建立目錄
+                    DirectoryInfo di = new DirectoryInfo(_fileStore.GetPhysicalPath(path));
+                    FileInfo[] files = di.GetFiles();
+                    foreach (FileInfo deletefile in files)
+                    {
+                        deletefile.Delete();
+                    }
+                }
                 path = path + '/' + file.FileName;
                 var info = await _fileStore.GetFileInfoAsync(path);
                 if (info != null)
@@ -320,6 +327,10 @@ namespace Convience.Service.SRM
         {
             SrmFileuploadRecordL rl= _context.SrmFileuploadRecordLs.Find(viewModel.Uid);
             return await _fileStore.GetFileStreamAsync(rl.Url);
+        }
+        public async Task<Stream> DownloadPoFileAsync(NzFileViewModel viewModel)
+        {
+            return await _fileStore.GetFileStreamAsync("/PoFiles/" + viewModel.Uid+"/"+ viewModel.Name);
         }
         public async Task<bool> DeleteFileAsync(NzFileViewModel viewModel)
         {

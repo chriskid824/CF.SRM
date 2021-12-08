@@ -154,7 +154,14 @@ namespace Convience.ManagentApi.Controllers.SRM
             var stream = await _srmFileService.DownloadAsync(viewModel);
             return File(stream, "application/octet-stream", viewModel.Name);
         }
-
+        [HttpGet("DownloadPoFile")]
+        //[Permission("fileGet")]
+        [LogFilter("内容管理", "文件管理", "下载文件")]
+        public async Task<IActionResult> DownloadPoFile([FromQuery] Model.Models.SRM.NzFileViewModel viewModel)
+        {
+            var stream = await _srmFileService.DownloadPoFileAsync(viewModel);
+            return File(stream, "application/octet-stream", viewModel.Name);
+        }
         [HttpDelete]
         //[Permission("fileDelete")]
         [LogFilter("内容管理", "文件管理", "删除文件")]
