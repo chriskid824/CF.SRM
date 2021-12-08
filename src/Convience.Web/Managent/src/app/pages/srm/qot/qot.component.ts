@@ -160,6 +160,7 @@ export class QotComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
     this.initProcess();
     this.initSurface();
     this.initMaterial();
@@ -215,10 +216,12 @@ export class QotComponent implements OnInit {
     }
     qot.q.leadtime = this.info3.value["leadtime"];
     this.info3 = this._formBuilder.group({
-      leadtime: [null],
-      expiringdate: [null]
+      leadtime: [{ value: null, disabled: false }],
+      expiringdate: [{ value: null, disabled: false }],
+      //leadtime: [null],
+      //expiringdate: [null]
     });
-
+  
     qot.q.note = this.info4.value["note"];
     this.info4 = this._formBuilder.group({
       note: [null],
@@ -949,15 +952,21 @@ export class QotComponent implements OnInit {
 
       /* 20211203*/
       this.note = result["Note"];
-      this.purposeprice = result["Note"];//??
-      this.unit = result["Note"];
+      //this.purposeprice = result["Note"];//??
+      //this.unit = result["unit"];
       /* 20211203*/
 
 
       if (this.qotv.q[this.matnrIndex].status != "初始") {
 
+        this.info3 = this._formBuilder.group({
+          leadtime: [{ value: this.qotv.q[this.matnrIndex].leadtime, disabled: true }],
+          //leadtime: [{disabled: true }],
+          expiringdate: [{ value: this.qotv.q[this.matnrIndex].expiringdate }],
+        });
+
         this.info4 = this._formBuilder.group({
-          Note: [{ value: this.note, disabled: true }],
+          note: [{ value: this.note, disabled: true }],
         });
 
         this.canModify = false;
@@ -965,7 +974,7 @@ export class QotComponent implements OnInit {
         this.canModifyprocess = false;
         this.canModifysurface = false;
         this.canModifyother = false;
-
+        //alert(this.canModify)
         if (this.qotv.q[this.matnrIndex].mEmptyFlag == "X") {
           this.IfCheck_M = true;
         }
@@ -995,8 +1004,14 @@ export class QotComponent implements OnInit {
       }
       else {
 
+        this.info3 = this._formBuilder.group({
+          leadtime: [{ value: this.qotv.q[this.matnrIndex].leadtime, disabled: false }],
+          //leadtime: [{disabled: true }],
+          expiringdate: [{ value: this.qotv.q[this.matnrIndex].expiringdate}],
+        });
+
         this.info4 = this._formBuilder.group({
-          Note: [{ value: this.note, disabled: false }],
+          note: [{ value: this.note, disabled: false }],
 
 
         });
@@ -1005,7 +1020,7 @@ export class QotComponent implements OnInit {
         this.canModifyprocess = true;
         this.canModifysurface = true;
         this.canModifyother = true;
-
+        //alert(this.canModify)
         if (this.qotv.q[this.matnrIndex].mEmptyFlag == "X") {
           this.IfCheck_M = true;
           this.canModifymaterial = false;
@@ -1411,6 +1426,11 @@ export class QotComponent implements OnInit {
         this.info4 = this._formBuilder.group({
           Note: [{ value: this.note, disabled: false }],
         });
+        this.info3 = this._formBuilder.group({
+          leadtime: [{ value: [result["qot"]][0].leadTime, disabled: false }],
+          //leadtime: [{disabled: true }],
+          expiringdate: [{ value: [result["qot"]][0].expirationDate, disabled: false }],
+        });
 
         this.canModify = true;
         this.canModifymaterial = true;
@@ -1455,7 +1475,11 @@ export class QotComponent implements OnInit {
         }
       }
       else {
-
+        this.info3 = this._formBuilder.group({
+          leadtime: [{ value: [result["qot"]][0].leadTime, disabled: true }],
+          //leadtime: [{disabled: true }],
+          expiringdate: [{ value: [result["qot"]][0].expirationDate, disabled: true }],
+        });
         this.info4 = this._formBuilder.group({
           Note: [{ value: this.note, disabled: true }],
         });
@@ -1751,13 +1775,13 @@ export class QotComponent implements OnInit {
     return (data.data.pProcessNum);
   }
   openFile() {
-    const data={
-      functionId:3,
-      number:this.qotv.m[0].rfqNum.toString(),
-      werks:this.qotv.m[0].werks,
-      type:1,
-      deadline:this.qotv.m[0].deadline,
-      isUpload:false,
+    const data = {
+      functionId: 3,
+      number: this.qotv.m[0].rfqNum.toString(),
+      werks: this.qotv.m[0].werks,
+      type: 1,
+      deadline: this.qotv.m[0].deadline,
+      isUpload: false,
     }
     this.filemodal.upload(data);
     //window.open('../srm/rfq?id=' + id);

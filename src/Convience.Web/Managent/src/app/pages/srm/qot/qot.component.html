@@ -222,9 +222,8 @@
                 nzType="arrow-left"></i>返回</button>
             <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()" disabled="{{canModify==false}}"><i
                 nz-icon nzType="arrow-right"></i>送出</button>
-                <button id="btnOpenFileRfq" nz-button class="mr-10" (click)="openFile()" style="position:absolute;
-                right:0px;"><i
-                  nz-icon nzType="copy"></i>查看附件</button>
+            <button id="btnOpenFileRfq" nz-button class="mr-10" (click)="openFile()" style="position:absolute;
+                right:0px;"><i nz-icon nzType="copy"></i>查看附件</button>
             <!--<button id="btnSendAllQot" nz-button class="mr-10" (click)="checkSendQotAll()"
               disabled="{{canModify==false}}"><i nz-icon nzType="arrow-right"></i>全部送出</button>-->
             <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
@@ -280,15 +279,19 @@
                     <nz-form-item>
                       <nz-form-label [nzFor]="'leadtime'">計劃交貨時間<br>日曆天</nz-form-label>
                       <nz-form-control>
-                        <input required disabled="{{canModify==false}}" nz-input placeholder="計劃交貨時間"
-                          formControlName="leadtime" autocomplete="off" value="{{leadtime}}" />
+                        <!--<input required disabled="true" nz-input placeholder="計劃交貨時間"
+                          formControlName="leadtime" autocomplete="off" value="{{leadtime}}" />-->
+
+                        <input value="{{leadtime}}" required nz-input placeholder="計劃交貨時間" formControlName="leadtime"
+                          autocomplete="off" />
+
                       </nz-form-control>
                     </nz-form-item>
                     <nz-form-item>
                       <nz-form-label [nzFor]="'expiringdate'">有效期限</nz-form-label>
                       <nz-form-control>
                         <nz-date-picker [(ngModel)]="expiringdate" required style="width: 160px;" nzPlaceHolder="有效期限"
-                          name="expiringdate" formControlName="expiringdate" disabled="{{canModify==false}}">
+                          formControlName="expiringdate" nzDisabled="{{canModify==false}}">
                         </nz-date-picker>
                       </nz-form-control>
                     </nz-form-item>
