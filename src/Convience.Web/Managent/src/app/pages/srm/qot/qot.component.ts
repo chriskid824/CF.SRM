@@ -845,6 +845,7 @@ export class QotComponent implements OnInit {
       //this._layout.navigateTo('qotlist');
       //this._router.navigate(['srm/qotlist']);
       window.history.go(-1); //20211203
+      location.reload();
 
     });
     this.tplModal.close();
@@ -1669,6 +1670,8 @@ export class QotComponent implements OnInit {
       //this._layout.navigateTo('qot');
       //this._router.navigate(['srm/qotlist']);
       window.history.go(-1); //20211203
+      location.reload();
+    
     });
   }
   checkCheckBoxvalue_M(event) {
