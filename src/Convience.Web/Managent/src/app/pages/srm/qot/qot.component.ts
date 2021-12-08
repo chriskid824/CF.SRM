@@ -345,6 +345,7 @@ export class QotComponent implements OnInit {
     }
     this.rowData_Material = temp;
     this.gridApi.setRowData(this.rowData_Material);
+    this.GetSumData();
     //console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
@@ -363,6 +364,7 @@ export class QotComponent implements OnInit {
     }
     this.rowData_Process = temp;
     this.gridApi_Process.setRowData(this.rowData_Process);
+    this.GetSumData();
     //console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
@@ -382,6 +384,7 @@ export class QotComponent implements OnInit {
     }
     this.rowData_Surface = temp;
     this.gridApi_Surface.setRowData(this.rowData_Surface);
+    this.GetSumData();
     //console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
@@ -401,11 +404,10 @@ export class QotComponent implements OnInit {
     }
     this.rowData_Other = temp;
     this.gridApi_Other.setRowData(this.rowData_Other);
+    this.GetSumData();
     //console.log(selectedRows);
     //this.gridApi.applyTransaction({ remove: selectedRows });
   }
-
-
 
   add(title: TemplateRef<{}>, content: TemplateRef<{}>) {
     this.tplModal = this._modalService.create({
@@ -660,7 +662,7 @@ export class QotComponent implements OnInit {
       other_item: [this.editedOther.item, [Validators.required]],
       //other_item: [this.editedOther.item,],
       other_desc: [this.editedOther.description],
-      other_price: [this.editedOther.price, [Validators.required], Validators.pattern(SrmModule.decimalTwoDigits)],
+      other_price: [this.editedOther.price, [Validators.required, Validators.pattern(SrmModule.decimalTwoDigits)]],
       //other_price: [this.editedOther.price,],
       other_note: [this.editedOther.note,]
     });
