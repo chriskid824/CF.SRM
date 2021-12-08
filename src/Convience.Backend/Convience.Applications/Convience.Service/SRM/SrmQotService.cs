@@ -603,7 +603,7 @@ namespace Convience.Service.SRM
                           });
             if (history.Count()>0)
             {
-                historyprice = history.Select(r => r.historyprice.Value).First();
+                historyprice = history.Select(r => (r.historyprice != null) ? r.historyprice.Value:0).First();
             }
             return historyprice;
         }
@@ -649,7 +649,7 @@ namespace Convience.Service.SRM
                                Qty = rm.Qty,
                                Expiringdate = q.ExpirationDate,
                                Leadtime = q.LeadTime,
-                               estDeliveryDate = rm.EstDeliveryDate,
+                               estDeliveryDate = DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd"),
                                Note = q.Note,
                                Unit = mu.MeasureDesc,//20211203
                                Purposeprice = historyprice
