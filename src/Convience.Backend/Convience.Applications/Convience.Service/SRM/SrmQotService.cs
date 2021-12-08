@@ -579,7 +579,9 @@ namespace Convience.Service.SRM
                                Matnr = ((!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1) + "(" + s.StatusDesc + ")",
                                MatnrId = q.MatnrId,
                                QotNum = q.QotNum,
-                               Status = s.StatusDesc
+                               Status = s.StatusDesc,
+                               Werks = r.Werks,
+                               Deadline = r.Deadline
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(query.matnr, p => p.MATNR == query.matnr)

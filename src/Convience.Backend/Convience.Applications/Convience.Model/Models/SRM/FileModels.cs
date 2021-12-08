@@ -36,7 +36,7 @@ namespace Convience.Model.Models.SRM
         public ViewSrmFileRecordResult file { get; set; }
         public string json { get; set; }
         public List<int> fileTypeList  { get; set; }
-
+        public string number { get; set; }
         // 上传文件
         public IEnumerable<IFormFile> Files { get; set; }
     }

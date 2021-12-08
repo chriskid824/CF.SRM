@@ -32,6 +32,9 @@ export class SrmFileService {
   Upload(po) {
     return this.httpClient.post(`${this.uriConstant.SrmFile}/UploadFile`,po);
   }
+  UploadPoFile(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmFile}/UploadPoFile`,po);
+  }
   download(uid,Name) {
     let uri = `${this.uriConstant.SrmFile}?uid=${uid}&&Name=${Name}`;
     return this.httpClient.get(uri, { responseType: "blob", });

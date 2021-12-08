@@ -12,6 +12,11 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { EditButtonComponent } from './button-cell-renderer.component';
 import { FileModalComponent } from '../file-modal/file-modal.component';
 import { ActivatedRoute } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { SrmFileService } from 'src/app/business/srm/srm-file.service';
+import { FileService } from 'src/app/business/file.service';
+import { FileInfo } from '../../content-manage/model/fileInfo';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -42,9 +47,21 @@ export class PoComponent implements OnInit {
   total: number;
   isVisible=false;
   searchId;
+  tplModal: NzModalRef;
+  fileList:any[] = [];
+  uploading: boolean = false;
+  formData:FormData;
+  showUploadList = {
+    showDownloadIcon: true,
+   showRemoveIcon: false,
+   };
   fileRecord: ViewSrmFileUploadRecordH = {recordHId:1,templateId:1100,srmFileuploadRecordL:[{recordLId:1,recordHId:1,filename:"test1",filetypename:"SIP"},{recordLId:2,recordHId:1,filename:"test2",filetypename:"SOP"},{recordLId:3,recordHId:1,filename:"test3",filetypename:"第三方檢驗文件"}]};
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService
-    ,private _modalService: NzModalService, private dialog: MatDialog,private route: ActivatedRoute) {
+    ,private _messageService: NzMessageService,
+    private _modalService: NzModalService,
+    private _srmFileService: SrmFileService,
+    private _fileService: FileService,
+    private dialog: MatDialog,private route: ActivatedRoute) {
       this.route.params.subscribe(params => {
         this.searchId = params['id'];
         console.log(params['id']);
@@ -111,26 +128,42 @@ export class PoComponent implements OnInit {
         if(params.data.Status==21)
         {
           var eDiv = document.createElement('div');
-          eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span>';
-          var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-
-          eButton.addEventListener('click', function() {
-            _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
-              alert('採購單號:'+params.data.PoNum+'已接收');
-              params.data.Status=11;
-              params.data.ReplyDate=new Date();
-              params.data.StatusDesc="待回覆";
-              params.data.SrmPoLs.forEach(element => {
-                element.Status=11;
-                element.StatusDesc="待回覆";
-                eDiv.innerHTML='';
+          if(params.data.hasFile)
+          {
+            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span><span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
+            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+            eButton.addEventListener('click', function() {
+              _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+                alert('採購單號:'+params.data.PoNum+'已接收');
+                params.data.Status=11;
+                params.data.ReplyDate=new Date();
+                params.data.StatusDesc="待回覆";
+                params.data.SrmPoLs.forEach(element => {
+                  element.Status=11;
+                  element.StatusDesc="待回覆";
+                  eDiv.innerHTML='';
+                });
+                params.api.refreshCells();
               });
-              params.api.refreshCells();
             });
+          }
+          else
+          {
+            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
+          }
+
+          var eButton_file = eDiv.querySelectorAll('.btn-simple2')[0];
+
+          eButton_file.addEventListener('click', function() {
+            params.ondblclick(params);
           });
           return eDiv;
           }
-        }
+        },
+        cellRendererParams: {
+          ondblclick:this.openFileModal.bind(this),
+          label: '',
+        },
       }
     ];
     this.defaultColDef = {
@@ -284,6 +317,24 @@ export class PoComponent implements OnInit {
     this.filemodal.upload(data);
     //this.isVisible=true;
   }
+  openFileModal(e){
+    console.info(e);
+    const formData = new FormData();
+    formData.append("number",e.data.PoNum);
+    this._fileService.get(1, 200, '/PoFiles/'+e.data.PoNum).subscribe((result: any) => {
+
+      //result[0].showDownload=true;
+      console.info(result);
+      //var file=[{name:result[0].name}];
+      // var file:File=new File(){};
+      // file.name=result.fileName;
+      // file.showDownload=true;
+      //console.info(file);
+      this.fileList = result;
+    });
+    this.formData=formData;
+    this.isVisible=true;
+  }
   expiryDateFormatter(params) {
     if (params.value) {
       return `${params.value.date.month - 1}/${params.value.date.year}`;
@@ -312,13 +363,69 @@ export class PoComponent implements OnInit {
     this.refresh();
   }
   handleOk(): void {
-    console.log('Button ok clicked!');
-    this.isVisible = false;
+    this.modalclose();
   }
 
   handleCancel(): void {
-    console.log('Button cancel clicked!');
-    this.isVisible = false;
+    this.modalclose();
+  }
+  download(fileInfo: FileInfo) {
+    // this._fileService.download(fileInfo.fileName, fileInfo.directory).subscribe((result: any) => {
+    //   const a = document.createElement('a');
+    //   const blob = new Blob([result], { 'type': "application/octet-stream" });
+    //   a.href = URL.createObjectURL(blob);
+    //   a.download = fileInfo.fileName;
+    //   a.click();
+    // });
+  }
+  beforeUpload = (singleFile: File, fileList: File[]): boolean => {
+    this.fileList = fileList;
+    this.formData.append('files',singleFile);
+    console.log(this.fileList);
+    return false;
+  };
+  handleUpload() {
+    this.uploading = true;
+    this._srmFileService.UploadPoFile(this.formData).subscribe(result => {
+          this.modalclose();
+          this._messageService.success("上載完畢！");
+          window.location.reload();
+        }, error => {
+          this.uploading = false;
+        });
+  }
+  modalclose()
+  {
+    this.fileList=[];
+    this.formData=new FormData;
+    this.uploading=false;
+    this.isVisible=false;
+  }
+
+  // download= (file: NzUploadFile): void => {
+  //   console.info(file);
+  //    this._srmFileService.download(file.uid,file.name).subscribe((result: any) => {
+  //      const a = document.createElement('a');
+  //      const blob = new Blob([result], { 'type': "application/octet-stream" });
+  //      a.href = URL.createObjectURL(blob);
+  //      a.download = file.name;
+  //      a.click();
+  //    });
+  // }
+
+  delete=(file: NzUploadFile):void=> {
+    this._modalService.confirm({
+      nzTitle: '是否刪除?',
+      nzContent: null,
+      nzOnOk: () => {
+          this._srmFileService.delete(file.uid).subscribe(result => {
+            this._messageService.success("刪除成功！");
+            this.fileList=[];
+            //this.refresh();
+          });
+
+      }
+    });
   }
   refresh() {
     var query = {
@@ -362,6 +469,7 @@ export class PoComponent implements OnInit {
     ];
     return result;
   }
+  submitEdit(){}
 }
 function dateFormatter(data) {
   if(data.value==null) return "";

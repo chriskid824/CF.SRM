@@ -18,7 +18,7 @@ export class QotH {
   createDate?: Date;
   createBy?: string;
   lastUpdateDate?: Date;
-  lastUpdateBy?: string; 
+  lastUpdateBy?: string;
   }
 
   export class QotV {
@@ -51,10 +51,11 @@ export class QotH {
     matnr?: string;
     rfqNum?: string;
     matnrId?: number;
+    deadline?:Date;
+    werks?:string;
   }
 
   export class reject {
     reason?: string;
   }
 
-  

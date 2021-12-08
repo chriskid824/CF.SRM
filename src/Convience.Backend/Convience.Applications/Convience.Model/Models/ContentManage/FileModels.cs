@@ -25,6 +25,7 @@ namespace Convience.Model.Models.ContentManage
         public DateTime CreateTime { get; set; }
 
         public bool IsDirectory { get; set; }
+        public string Name { get { return this.FileName; } }
     }
 
     public class FileUploadViewModel

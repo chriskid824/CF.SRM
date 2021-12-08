@@ -126,6 +126,26 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok();
         }
 
+        [HttpPost("UploadPoFile")]
+        public async Task<IActionResult> UploadPoFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
+        {
+            //fileUploadModel.file = JsonConvert.DeserializeObject<ViewSrmFileRecordResult>(fileUploadModel.json);
+            fileUploadModel.user = User.GetUserClaims();
+            try
+            {
+                var result = await _srmFileService.UploadPoAsync(fileUploadModel);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return this.BadRequestResult(result);
+                }
+
+            }
+            catch (Exception e)
+            { return this.BadRequestResult("上傳失敗"); }
+
+            return Ok();
+        }
+
         [HttpGet]
         //[Permission("fileGet")]
         [LogFilter("内容管理", "文件管理", "下载文件")]

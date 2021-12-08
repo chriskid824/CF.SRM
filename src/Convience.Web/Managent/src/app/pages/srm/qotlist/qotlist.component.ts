@@ -66,36 +66,30 @@ export class QotlistComponent implements OnInit {
       { headerName: '建立日期', field: 'VCreateDate', resizable: true, valueFormatter: dateFormatter },
       { headerName: '建立人員', field: 'VCreateBy', resizable: true },
       { headerName: '最後異動日期', field: 'VLastUpdateDate', resizable: true, valueFormatter: dateFormatter },
-      {
-        headerName: '操作', field: 'fieldName',
-        cellRenderer: function (params) {
-          var eDiv = document.createElement('div');
-          eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
-          var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-          eButton.addEventListener('click', function () {
-            const data = {
-              functionId: 3,
-              number: params.data.VRfqNum.toString(),
-              werks: params.data.Werks,
-              type: 1,
-              deadline: params.data.VDeadline,
-              isUpload: false,
-            }
-            params.ondblclick(data);
-            //this.filemodal.upload(data);
-            //alert( params.data.QVendorId)
-            //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
-            //window.open('../srm/qot?id=' + params.data.QQotId + '&rfqid=' + params.data.QRfqId+ '&vendorid=' + params.data.QVendorId);
-            //this._layout.navigateTo('qot'); //???進不去
-            //this._router.navigate(['srm/qot', { id: params.data.QQotId }]);
-          });
-          return eDiv;
-        },
-        cellRendererParams: {
-          ondblclick: this.upload.bind(this),
-          label: '',
-        },
-      },
+      // {
+      //   headerName: '操作', field: 'fieldName',
+      //   cellRenderer: function (params) {
+      //     var eDiv = document.createElement('div');
+      //     eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+      //     var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+      //     eButton.addEventListener('click', function () {
+      //       const data = {
+      //         functionId: 3,
+      //         number: params.data.VRfqNum.toString(),
+      //         werks: params.data.Werks,
+      //         type: 1,
+      //         deadline: params.data.VDeadline,
+      //         isUpload: false,
+      //       }
+      //       params.ondblclick(data);
+      //     });
+      //     return eDiv;
+      //   },
+      //   cellRendererParams: {
+      //     ondblclick: this.upload.bind(this),
+      //     label: '',
+      //   },
+      // },
       //{  headerName:'最後異動人員',field: 'VLastUpdateBy', resizable: true },
 
     ];

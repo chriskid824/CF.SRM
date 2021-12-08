@@ -5,11 +5,14 @@ using Convience.Entity.Entity;
 using Convience.Entity.Entity.Identity;
 using Convience.Entity.Entity.SRM;
 using Convience.EntityFrameWork.Repositories;
+using Convience.Filestorage.Abstraction;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
+using Convience.Model.Models.ContentManage;
 using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
+using Convience.Service.ContentManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,16 +50,19 @@ namespace Convience.Service.SRM
         private readonly IRepository<SrmPoH> _srmPohRepository;
 
         private readonly IRepository<SrmPoL> _srmPolRepository;
+        private readonly IFileManageService _fileService;
         private IMapper _mapper;
 
         public SrmPoService(
             //IMapper mapper,
+            IFileManageService fileService,
             IRepository<SrmPoH> srmPohRepository, IRepository<SrmPoL> srmPolRepository, SRMContext context, IMapper mapper)
         {
             _mapper = mapper;
             _srmPohRepository = srmPohRepository;
             _srmPolRepository = srmPolRepository;
             _context = context;
+            _fileService = fileService;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
@@ -110,10 +116,11 @@ namespace Convience.Service.SRM
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
-           // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
-
-            var numberList =
-    from c in _context.ViewSrmFileRecords
+            // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
+            FileQueryModel filequery = new FileQueryModel() { Directory= "PoFiles",Size=200,Page=1 };
+            var files = _fileService.GetContentsAsync(filequery);
+            List<string> fileDirList = files.Result.Select(p => p.Name).ToList();
+            var numberList = from c in _context.ViewSrmFileRecords
     where !(from o in _context.ViewSrmFileRecords
             where o.RecordLId ==null
             select o.Number )
@@ -121,6 +128,7 @@ namespace Convience.Service.SRM
     select c.Number;
             result.ForEach(p =>
             {
+                p.hasFile = fileDirList.Contains(p.PoNum);
                 p.SrmPoLs = (from l in _context.SrmPoLs
                              join h in _context.SrmPoHs on l.PoId equals h.PoId
                              join status in _context.SrmStatuses on l.Status equals status.Status

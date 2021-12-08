@@ -77,6 +77,7 @@ namespace Convience.Model.Models.SRM
         public string VendorName { get; set; }
         public string OrgName { get; set; }
         public string SapVendor { get; set; }
+        public bool hasFile { get; set; }
         new public virtual ICollection<ViewSrmPoL> SrmPoLs { get; set; }
     }
 

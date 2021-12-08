@@ -11,7 +11,7 @@
     <br>
 
     <!--<mat-form-field appearance="fill">
-      <mat-label>料號</mat-label> 
+      <mat-label>料號</mat-label>
       <mat-select>
         <mat-option *ngFor="let food of foods" [value]="food.value">
           {{food.viewValue}}
@@ -222,6 +222,9 @@
                 nzType="arrow-left"></i>返回</button>
             <button id="btnSendQot" nz-button class="mr-10" (click)="SendQot()" disabled="{{canModify==false}}"><i
                 nz-icon nzType="arrow-right"></i>送出</button>
+                <button id="btnOpenFileRfq" nz-button class="mr-10" (click)="openFile()" style="position:absolute;
+                right:0px;"><i
+                  nz-icon nzType="copy"></i>查看附件</button>
             <!--<button id="btnSendAllQot" nz-button class="mr-10" (click)="checkSendQotAll()"
               disabled="{{canModify==false}}"><i nz-icon nzType="arrow-right"></i>全部送出</button>-->
             <!--<button id="btnRejectQot">拒絕報價</button><button id=" btnSaveQot" style="margin-left:400px;">儲存</button> <button
@@ -252,7 +255,7 @@
                     </nz-form-control>
                   </td>
                   <td class="content2">
-                   
+
                     <nz-form-control>
                       <nz-date-picker style="width: 200px;" nzPlaceHolder="日期選擇" name="deadLine" [(ngModel)]="H.deadline" disabled="{{canModify==false}}"></nz-date-picker>
                       <nz-date-picker style="width: 160px;" nzPlaceHolder="有效期限" name="expiringdate"
@@ -979,3 +982,4 @@
     </table>
   </form>
 </ng-template>
+<app-file-modal #filemodal></app-file-modal>

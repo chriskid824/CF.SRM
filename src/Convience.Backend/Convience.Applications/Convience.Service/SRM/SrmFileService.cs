@@ -34,6 +34,7 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewSrmFileRecordResult> GetFileListByNumer(QueryFile query);
         public bool UpdateTemplate(SrmFileUploadTemplate data);
         public Task<string> UploadAsync(FileUploadViewModel viewModel);
+        public Task<string> UploadPoAsync(FileUploadViewModel viewModel);
         public Task<Stream> DownloadAsync(NzFileViewModel viewModel);
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
@@ -286,6 +287,35 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return string.Empty;
         }
+
+        public async Task<string> UploadPoAsync(FileUploadViewModel viewModel)
+        {
+
+            foreach (var file in viewModel.Files)
+            {
+                var path = "PoFiles/" + viewModel.number;
+                ////判斷檔案路徑是否存在，不存在則建立資料夾
+                //if (!System.IO.Directory.Exists(path))
+                //{
+                //    System.IO.Directory.CreateDirectory(path);//不存在就建立目錄
+                //}
+                path = path + '/' + file.FileName;
+                var info = await _fileStore.GetFileInfoAsync(path);
+                if (info != null)
+                {
+                    return "文件名冲突！";
+                }
+
+                var stream = file.OpenReadStream();
+                var result = await _fileStore.CreateFileFromStreamAsync(path, stream);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return "文件上传失败！";
+                }
+            }
+            return string.Empty;
+        }
+
         public async Task<Stream> DownloadAsync(NzFileViewModel viewModel)
         {
             SrmFileuploadRecordL rl= _context.SrmFileuploadRecordLs.Find(viewModel.Uid);

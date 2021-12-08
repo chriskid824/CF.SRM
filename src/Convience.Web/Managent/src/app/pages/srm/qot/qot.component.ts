@@ -21,6 +21,7 @@ import { runInThisContext } from 'node:vm';
 import { StorageService } from '../../../services/storage.service';
 import { LayoutComponent } from '../../layout/layout/layout.component';
 import { SrmModule } from '../srm.module';
+import { FileModalComponent } from '../file-modal/file-modal.component';
 
 
 interface Food {
@@ -40,6 +41,8 @@ export class QotComponent implements OnInit {
     { value: 'pizza-1', viewValue: 'Pizza' },
     { value: 'tacos-2', viewValue: 'Tacos' }
   ];
+  @ViewChild('filemodal')
+  filemodal: FileModalComponent;
   @ViewChild('tree', { static: true })
   tree: any;
   matnrs = [];
@@ -627,7 +630,7 @@ export class QotComponent implements OnInit {
   }
 
   /*GetRoundValue(cost) {
-   
+
     cost = Math.round(cost);
     return cost;
   }*/
@@ -779,9 +782,9 @@ export class QotComponent implements OnInit {
       //this._router.navigate(['srm/qotlist']);
     });
   }
-  /*RejectQot(){  
-    
-  
+  /*RejectQot(){
+
+
     var qot = {
       q:null
     }
@@ -884,7 +887,7 @@ export class QotComponent implements OnInit {
     this.MTApi.forEachNode(node => qot.material.push(node.data));
     //alert('aaaa=' + qot.material)
     //console.log('aaaa='+ qot.material)
-    
+
     this._srmQotService.Save(qot).subscribe(result => {
       console.log(result);
     });
@@ -912,7 +915,7 @@ export class QotComponent implements OnInit {
     /* 20211203*/
 
     this._srmQotService.GetQotData(this.id, this.rfqid, this.vendorid).subscribe(result => {
-    
+
       console.log(result);
 
       this.qotv = result;
@@ -1505,7 +1508,7 @@ export class QotComponent implements OnInit {
     this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => sum + current.pCostsum, 0));
     this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => sum + current.sCostsum, 0));
     this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => sum + current.oPrice, 0));
-    //#region 
+    //#region
     //this.sumMap.set("material", this.rowData_Material.reduce((sum, current) => Math.round(sum + (current.mCostPrice * 100) / 100), 0));
     //this.sumMap.set("process", this.rowData_Process.reduce((sum, current) => Math.round(sum + current.pCostsum), 0));
     //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => Math.round(sum + current.sCostsum), 0));
@@ -1745,6 +1748,19 @@ export class QotComponent implements OnInit {
     }
     return (data.data.pProcessNum);
   }
+  openFile() {
+    const data={
+      functionId:3,
+      number:this.qotv.m[0].rfqNum.toString(),
+      werks:this.qotv.m[0].werks,
+      type:1,
+      deadline:this.qotv.m[0].deadline,
+      isUpload:false,
+    }
+    this.filemodal.upload(data);
+    //window.open('../srm/rfq?id=' + id);
+  }
+
 }
 
 function GetProcessByNum(data) {
