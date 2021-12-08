@@ -649,7 +649,7 @@ namespace Convience.Service.SRM
                                Qty = rm.Qty,
                                Expiringdate = q.ExpirationDate,
                                Leadtime = q.LeadTime,
-                               estDeliveryDate = DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd"),
+                               estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString()))?DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd"):"",
                                Note = q.Note,
                                Unit = mu.MeasureDesc,//20211203
                                Purposeprice = historyprice
