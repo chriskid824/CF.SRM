@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Convience.Util.Extension;
+using Convience.Model.Models.SRM;
 
 namespace Convience.Service.SRM
 {
     public interface ISrmHistoryPriceService
     {
-        public SrmHistoryPrice GetHistoryPrice(SrmHistoryPrice query);
+        public SrmHistoryPrice GetHistoryPrice(QuerySrmHistoryPrice query);
     }
     public class SrmHistoryPriceService: ISrmHistoryPriceService
     {
@@ -19,8 +20,12 @@ namespace Convience.Service.SRM
         {
             _context = context;
         }
-        public SrmHistoryPrice GetHistoryPrice(SrmHistoryPrice query) {
-           return _context.SrmHistoryPrices.Where(r => r.Matnr.Equals(query.Matnr) || r.Essay.Equals(query.Essay)).OrderByDescending(r => r.OrderDate).FirstOrDefault();
+        public SrmHistoryPrice GetHistoryPrice(QuerySrmHistoryPrice query) {
+            var result = _context.SrmHistoryPrices
+                 .AndIfHaveValue(query.Matnr, r => r.Matnr.Equals(query.Matnr))
+                 .AndIfHaveValue(query.Essay, r => r.Essay.Equals(query.Essay))
+                 .AndIfHaveValue(query.year, r => r.OrderDate.Value.Year.Equals(query.year.Value));
+            return query.orderASC ? result.OrderBy(r => r.OrderDate).FirstOrDefault() : result.OrderByDescending(r => r.OrderDate).FirstOrDefault();
         }
     }
 }

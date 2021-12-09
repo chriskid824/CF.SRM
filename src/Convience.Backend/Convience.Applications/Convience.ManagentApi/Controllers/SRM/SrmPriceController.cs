@@ -357,10 +357,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("Currency");
             InfoRecord.Columns.Add("HistoricalPrice");
             InfoRecord.Columns.Add("HistoricalDate");
-            InfoRecord.Columns.Add("LastPrice");
-            InfoRecord.Columns.Add("LastDate");
-            InfoRecord.Columns.Add("BargainingRate");
-            InfoRecord.Columns.Add("LastBargainingRate");
+            InfoRecord.Columns.Add("FirstPrice");//前次改成首次
+            InfoRecord.Columns.Add("FirstDate");//前次改成首次
+            InfoRecord.Columns.Add("HistoricalBargainingRate");
+            InfoRecord.Columns.Add("FirstBargainingRate");//前次改成首次
             InfoRecord.Columns.Add("InfoId");
             //InfoRecord.Columns.Add("Img1");
             //InfoRecord.Columns.Add("Img2");
@@ -428,15 +428,24 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["Sortl"] = info.Sortl;
                 dr["MeasureUnit"] = rfqM.Unit;
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
-                var LastPrice = _srmHistoryPriceService.GetHistoryPrice(new SrmHistoryPrice() { Matnr = info.matnrObject.SapMatnr, Essay = rfqM.Description }).HistoryPrice;
-                if (LastPrice.HasValue)
+                var FirstPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = true });
+                if (FirstPrice!=null)
                 {
-                    dr["LastPrice"] = LastPrice.Value;
-                    dr["LastBargainingRate"] = Math.Round((decimal)((1 - (info.Price / LastPrice.Value)) * 100), 2, MidpointRounding.AwayFromZero).ToString() + "%";
+                    dr["FirstPrice"] = FirstPrice.HistoryPrice.Value;
+                    dr["FirstDate"] = FirstPrice.OrderDate.Value.ToString("yyyy/MM/dd");
+                    dr["FirstBargainingRate"] = Math.Round((decimal)(((info.Price - FirstPrice.HistoryPrice.Value)) / FirstPrice.HistoryPrice.Value*100), 2, MidpointRounding.AwayFromZero).ToString() + " % ";
+                }
+                var HistoricalPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = false,year=(rfqH.CreateDate.Value.Year-1) });
+                if (HistoricalPrice != null) {
+                    dr["HistoricalPrice"] = HistoricalPrice.HistoryPrice.Value;
+                    dr["HistoricalDate"] = HistoricalPrice.OrderDate.Value.ToString("yyyy/MM/dd");
+                    dr["HistoricalBargainingRate"] = Math.Round((decimal)(((info.Price - HistoricalPrice.HistoryPrice.Value)) / HistoricalPrice.HistoryPrice.Value * 100), 2, MidpointRounding.AwayFromZero).ToString() + " % ";
                 }
                 InfoRecord.Rows.Add(dr);
             }
-            ds.Tables.Add(InfoRecord);
+            var view = InfoRecord.AsDataView();
+            view.Sort = "HistoricalBargainingRate desc";
+            ds.Tables.Add(view.ToTable());
             return ds;
         }
 
