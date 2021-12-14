@@ -332,7 +332,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     MailMessage mail = new MailMessage();
                     //mail.From = new MailAddress("mis@chenfull.com.tw");
                     mail.To.Add(vendor.Mail);
-                    mail.CC.Add("leo.lai@chenfull.com.tw");
+                    //mail.CC.Add("leo.lai@chenfull.com.tw");
                     var sourcer = _userService.GetUsers(new UserQueryModel { UserName = rfq.CreateBy, Page = 1, Size = 1 });
                     if (!string.IsNullOrWhiteSpace(sourcer.Data[0].Email)) { mail.CC.Add(sourcer.Data[0].Email); }
                     //mail.To.Add("leo.lai@chenfull.com.tw");
