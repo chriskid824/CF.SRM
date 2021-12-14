@@ -161,19 +161,19 @@ namespace Convience.ManagentApi.Controllers.SRM
                         transaction.Dispose();
                         throw new Exception(errTitle + ex.Message);
                     }
-                    finally
-                    {
-                        if (!string.IsNullOrWhiteSpace(path))
-                        {
-                            _srmSupplierService.Delete(path);
-                        }
-                    }
                 }
                 return Ok();
             }
             catch (Exception ex)
             {
                 return this.BadRequestResult(ex.Message);
+            }
+            finally
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    _srmSupplierService.Delete(path);
+                }
             }
         }
         [HttpPost("DeleteList")]

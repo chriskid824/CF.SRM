@@ -594,19 +594,21 @@ namespace Convience.ManagentApi.Controllers.SRM
                         transaction.Dispose();
                         throw new Exception(errTitle + ex.Message);
                     }
-                    finally {
-                        if (!string.IsNullOrWhiteSpace(path))
-                        {
-                            _srmRfqHService.Delete(path);
-                        }
-                    }
                 }
                 var j = new JObject();
                 j.Add("RfqNum", RfqNum);
                 return Ok(j);
             }
-            catch (Exception ex) {
+            catch (Exception ex) 
+            {
                 return this.BadRequestResult(ex.Message);
+            }
+            finally
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    _srmRfqHService.Delete(path);
+                }
             }
         }
         private string updateFileNumber(string rfqNum, JObject rfq)
