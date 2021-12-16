@@ -89,5 +89,5 @@ export class ViewSrmFileRecord
 export class FileEmit
 {
   filtType:string;
-  file:File;
+  file:File[];
 }

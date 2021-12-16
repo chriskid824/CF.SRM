@@ -109,6 +109,10 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("UploadFile")]
         public async Task<IActionResult> UploadFile([FromForm] Model.Models.SRM.FileUploadViewModel fileUploadModel)
         {
+            if (fileUploadModel.Files == null)
+            {
+                return Ok();
+            }
             fileUploadModel.file = JsonConvert.DeserializeObject<ViewSrmFileRecordResult>(fileUploadModel.json);
             fileUploadModel.user = User.GetUserClaims();
             try

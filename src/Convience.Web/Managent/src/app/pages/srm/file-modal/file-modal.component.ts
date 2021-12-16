@@ -47,6 +47,7 @@ export class FileModalComponent implements OnInit {
   uploading: boolean = false;
 
   currentDirectory: string = '/';
+  emitfiles:any[]=[];
 
   soucedata:ViewSrmFileRecord;
   emptyValidator = (control: FormControl): { [key: string]: any } | null => {
@@ -55,10 +56,16 @@ export class FileModalComponent implements OnInit {
     return value ? null : { 'notEmpty': true };
   };
 
-  parentEventHandlerFunction(valueEmitted,) {
+  parentEventHandlerFunction(valueEmitted) {
     this.formData.append('fileTypeList',valueEmitted.filtType);
-    this.formData.append('files',valueEmitted.file);
-    console.info(valueEmitted);
+    console.info(valueEmitted.file);
+    //if(this.emitfiles!=valueEmitted.file)
+    //{
+      //this.emitfiles=valueEmitted.file;
+      this.appendFormData(this.formData, valueEmitted.file,'files');
+    //}
+
+    //this.formData.append('files',valueEmitted.file);
     this.ischanged=true;
     // this.options[valueEmitted.index]=valueEmitted;
     // this.options[9]=valueEmitted;
@@ -142,6 +149,7 @@ export class FileModalComponent implements OnInit {
 
   handleUpload() {
     this.uploading = true;
+    console.info(this.formData);
     this._srmFileService.Upload(this.formData).subscribe(result => {
           this.modal.close();
           this._messageService.success("上載完畢！");
@@ -251,6 +259,54 @@ export class FileModalComponent implements OnInit {
       this.folderList = this.folderList.slice(0, this.folderList.length - 1);
       this.currentDirectory = '/' + this.folderList.join('/');
       this.refresh();
+    }
+  }
+  fileexist(data:any)
+  {
+    if(this.emitfiles.find(p=>p.uid==data.uid))
+    {
+      return true;
+    }
+    return false;
+    alert(false);
+  }
+
+  appendFormData(formData, data, root = null) {
+    root = root || '';
+    if (data instanceof File) {
+      if(!this.fileexist(data))
+      {
+        formData.append(root, data);
+        this.emitfiles.push(data);
+      }
+
+    } else if (Array.isArray(data)) {
+      for (var i = 0; i < data.length; i++) {
+        //this.appendFormData(formData, data[i], root + '[' + i + ']');
+        if (data[i] instanceof File) {
+          if(!this.fileexist(data))
+          {
+            this.appendFormData(formData, data[i], root);
+            this.emitfiles.push(data[i]);
+          }
+        } else {
+          this.appendFormData(formData, data[i], root + '[' + i + ']');
+        }
+      }
+    } else if (typeof data === 'object' && data) {
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (root === '') {
+            this.appendFormData(formData, data[key], key);
+          } else {
+            this.appendFormData(formData, data[key], root + '.' + key);
+          }
+        }
+      }
+    } else {
+      if (data !== null && typeof data !== 'undefined') {
+        formData.append(root, data);
+      }
     }
   }
 

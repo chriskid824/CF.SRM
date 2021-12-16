@@ -158,13 +158,13 @@ namespace Convience.Service.SRM
                     Deadline = p.Deadline,
                     Filetype = p.Filetype,
                     TypeName = p.TypeName,
-                    RecordLId=p.RecordLId,
-                    Url=p.Url,
-                    CreateBy=p.CreateBy,
-                    CreateDate=p.CreateDate,
-                    LastUpdateBy=p.LastUpdateBy,
-                    LastUpdateDate=p.LastUpdateDate
-                })
+                    //RecordLId=p.RecordLId,
+                    //Url=p.Url,
+                    //CreateBy=p.CreateBy,
+                    //CreateDate=p.CreateDate,
+                    //LastUpdateBy=p.LastUpdateBy,
+                    //LastUpdateDate=p.LastUpdateDate
+                }).Distinct()
                 .ToList();
             if (result == null || result.Count() == 0)
             {
@@ -190,21 +190,35 @@ namespace Convience.Service.SRM
             else
             {
                 result.ForEach(p => {
-                    if (p.RecordLId.HasValue)
-                    {
-                        List<NzFileViewModel> filelist = new List<NzFileViewModel>();
+                    List<SrmFileuploadRecordL> RecordLList = _context.SrmFileuploadRecordLs.Where(l => l.RecordHId == p.RecordHId && l.Filetype.ToString() == p.Filetype).ToList();
+                    List<NzFileViewModel> filelist = new List<NzFileViewModel>();
+                    RecordLList.ForEach(l => {
+
                         NzFileViewModel file = new NzFileViewModel()
                         {
-                            Uid = p.RecordLId.Value,
-                            Name = p.Url.Substring(p.Url.LastIndexOf('/') + 1, p.Url.Length - p.Url.LastIndexOf('/') - 1),
+                            Uid = l.RecordLId,
+                            Name = l.Url.Substring(l.Url.LastIndexOf('/') + 1, l.Url.Length - l.Url.LastIndexOf('/') - 1),
                             Status = "done"
                         };
                         filelist.Add(file);
-                        p.fileList = filelist;
-                    }
+
+                    });
+                    p.fileList = filelist;
+                    //if (p.RecordLId.HasValue)
+                    //{
+                    //    List<NzFileViewModel> filelist = new List<NzFileViewModel>();
+                    //    NzFileViewModel file = new NzFileViewModel()
+                    //    {
+                    //        Uid = p.RecordLId.Value,
+                    //        Name = p.Url.Substring(p.Url.LastIndexOf('/') + 1, p.Url.Length - p.Url.LastIndexOf('/') - 1),
+                    //        Status = "done"
+                    //    };
+                    //    filelist.Add(file);
+                    //    p.fileList = filelist;
+                    //}
                 });
             }
-            return result;
+            return result.OrderBy(p=>p.Filetype);
         }
 
         public async Task<string> UploadAsync(FileUploadViewModel viewModel)
@@ -238,7 +252,8 @@ namespace Convience.Service.SRM
 
             foreach (var file in viewModel.Files)
             {
-                var path =  viewModel.file.Werks.ToString()+'/'+viewModel.file.Number+'/'+ (viewModel.file.Type==1? "廠內" : "廠外");
+                string typename = _context.SrmFileTypeProfiles.Where(p => p.TypeId == viewModel.fileTypeList[count]).Select(p => p.TypeName).FirstOrDefault();
+                var path =  viewModel.file.Werks.ToString()+'/'+viewModel.file.Number+'/'+ (viewModel.file.Type==1? "廠內" : "廠外")+'/'+ typename;
                 ////判斷檔案路徑是否存在，不存在則建立資料夾
                 //if (!System.IO.Directory.Exists(path))
                 //{
@@ -248,7 +263,9 @@ namespace Convience.Service.SRM
                 var info = await _fileStore.GetFileInfoAsync(path);
                 if (info != null)
                 {
-                    return "文件名冲突！";
+                    FileInfo fileinfo =  new FileInfo(_fileStore.GetPhysicalPath(path));
+                    fileinfo.Delete();
+                   // return "文件名冲突！";
                 }
 
                 var stream = file.OpenReadStream();
@@ -259,12 +276,12 @@ namespace Convience.Service.SRM
                 }
 
                 SrmFileuploadRecordL rl = new SrmFileuploadRecordL();
-                if (_context.SrmFileuploadRecordLs.Where(p => p.Filetype == viewModel.fileTypeList[count] && p.RecordHId == viewModel.file.RecordHId).Count() > 0)
+                if (_context.SrmFileuploadRecordLs.Where(p => p.Filetype == viewModel.fileTypeList[count] && p.RecordHId == viewModel.file.RecordHId && p.Url == path).Count() > 0)
                 {
-                    rl = _context.SrmFileuploadRecordLs.Where(p => p.Filetype == viewModel.fileTypeList[count] && p.RecordHId == viewModel.file.RecordHId).FirstOrDefault();
+                    rl = _context.SrmFileuploadRecordLs.Where(p => p.Filetype == viewModel.fileTypeList[count] && p.RecordHId == viewModel.file.RecordHId && p.Url == path).FirstOrDefault();
                     rl.LastUpdateBy = viewModel.user.UserName;
                     rl.LastUpdateDate = DateTime.Now;
-                    rl.Url = path;
+                    //rl.Url = path;
                     _context.Update(rl);
                 }
                 else
