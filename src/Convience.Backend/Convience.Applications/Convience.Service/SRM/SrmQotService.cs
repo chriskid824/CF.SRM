@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-
 using Convience.Entity.Data;
 using Convience.Entity.Entity;
 using Convience.Entity.Entity.Identity;
 using Convience.Entity.Entity.SRM;
 using Convience.EntityFrameWork.Repositories;
+using Convience.Filestorage.Abstraction;
 using Convience.JwtAuthentication;
 using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
@@ -16,9 +16,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System.Data;
+
 
 namespace Convience.Service.SRM
 {
@@ -56,6 +61,22 @@ namespace Convience.Service.SRM
 
         public string GetSapid(QueryQotList query);
         public SrmSurface[] GetSurface();
+        public string Upload(Model.Models.SRM.FileUploadViewModel_QOT fileUploadModel);
+
+        public DataTable ReadExcel_QotH(string path, UserClaims user);
+        public DataTable ReadExcel_Material(string path, UserClaims user);
+        public DataTable ReadExcel_Process(string path, UserClaims user);
+        public DataTable ReadExcel_Surface(string path, UserClaims user);
+        public DataTable ReadExcel_Other(string path, UserClaims user);
+        public int CheckMatnrData(string vendor, string RfqNum, string Matnr);
+        public void Delete(string path);
+        public IQueryable GetQotInfo(int rfqid, int vendorid, int qotid);
+        public int GetQotId(QueryQot query);
+        public int  GetMatnrId(QueryQot query);
+        public string GetSurfaceProcessByNum(int num);
+        public ViewQotResult GetDetailByVendorRfq(QueryQot query);
+        public SrmQotH GetQotById(QueryQot query);
+
     }
     public class SrmQotService : ISrmQotService
     {
@@ -623,15 +644,22 @@ namespace Convience.Service.SRM
                                //where e.OwnerID == user.UID 
                            select new
                            {
-
+                               RfqNum = r.RfqNum,
+                               Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
+                               Description = m.Description,
+                               Expiringdate = q.ExpirationDate,
+                               Leadtime = q.LeadTime,
+                               Note = q.Note,
+                               mEmptyFlag = q.MEmptyFlag,
+                               pEmptyFlag = q.PEmptyFlag,
+                               sEmptyFlag = q.SEmptyFlag,
+                               oPEmptyFlag = q.OEmptyFlag,
                                CreateBy = (!string.IsNullOrWhiteSpace(u1.Name))? u1.Name:q.CreateBy,//q.CreateBy,
                                CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
                                Status = s.StatusDesc,
-                               RfqNum = r.RfqNum,
                                QotId = q.QotId,
                                QotNum = q.QotNum,
                                //Status = q.Status.HasValue ? ((Status)q.Status).ToString() : "",
-                               Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
                                Material = rm.Material,
                                Weight = rm.Weight,
                                MachineName = rm.MachineName,
@@ -641,16 +669,10 @@ namespace Convience.Service.SRM
                                Height = rm.Height,
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
-                               mEmptyFlag = q.MEmptyFlag,
-                               pEmptyFlag = q.PEmptyFlag,
-                               sEmptyFlag = q.SEmptyFlag,
-                               oPEmptyFlag = q.OEmptyFlag,
-                               Description = m.Description,
+                               
                                Qty = rm.Qty,
-                               Expiringdate = q.ExpirationDate,
-                               Leadtime = q.LeadTime,
-                               estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString()))?DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd"):"",
-                               Note = q.Note,
+                               estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString())) ? DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd") : "",
+
                                Unit = mu.MeasureDesc,//20211203
                                Purposeprice = historyprice
                            });
@@ -665,6 +687,7 @@ namespace Convience.Service.SRM
             //.Where(p => p.QotId == qotid);
             return qotlist;
         }
+     
         /*public IEnumerable<ViewQot> GetDataBQotId(int QotId)
         {
             var qotlist = (from q in _context.SrmQotHs
@@ -865,17 +888,17 @@ namespace Convience.Service.SRM
                                 //where qot.QotId equals(material.QotId.Value)
                                 select new viewSrmQotMaterial
                                 {
-                                    QotMId = material.QotMId,
-                                    QotId = material.QotId,
                                     MMaterial = material.MMaterial,
-                                    MPrice = material.MPrice,
-                                    MCostPrice = material.MCostPrice,
                                     Length = material.Length,
                                     Width = material.Width,
                                     Height = material.Height,
                                     Density = material.Density,
                                     Weight = material.Weight,
+                                    MPrice = material.MPrice,
+                                    MCostPrice = material.MCostPrice,
                                     Note = material.Note,
+                                    QotMId = material.QotMId,
+                                    QotId = material.QotId,
                                     VendorId = vendor.VendorId,
                                     VendorName = vendor.VendorName
                                 })
@@ -885,24 +908,23 @@ namespace Convience.Service.SRM
             //           where qotIds.Contains(material.QotId.Value)
             //           select material).ToArray();
             qotinfo.process = (from process in _context.SrmQotProcesses
-                               join qot in _context.SrmQotHs
-                               on process.QotId equals qot.QotId
+                               join qot in _context.SrmQotHs on process.QotId equals qot.QotId
+                               join p in _context.SrmProcesss on process.PProcessNum equals p.ProcessNum.ToString() //20211217
                                join vendor in _context.SrmVendors
                                on qot.VendorId equals vendor.VendorId
                                //where qotIds.Contains(process.QotId.Value)
                                select new viewSrmQotProcess
                                {
+                                   ProcessName = p.Process, //20211217
                                    PHours = process.PHours,
-                                   PMachine = process.PMachine,
-                                   PNote = process.PNote,
                                    PPrice = process.PPrice,
+                                   PMachine = process.PMachine,
+                                   PCostsum = process.PCostsum,
+                                   PNote = process.PNote,
                                    PProcessNum = process.PProcessNum,
                                    VendorId = vendor.VendorId,
-                                   VendorName = vendor.VendorName,
-                                   //SubTotal = process.PPrice.Value * (decimal)process.PHours.Value,
-                                   QotId = process.QotId,
-                                   PCostsum = process.PCostsum
-
+                                   VendorName = vendor.VendorName,                                 
+                                   QotId = process.QotId
                                })
                                .Where(p => p.QotId == qotid)
                                .ToArray();
@@ -910,22 +932,23 @@ namespace Convience.Service.SRM
             //                             where qotIds.Contains(process.QotId.Value)
             //                             select process).ToArray();
             qotinfo.surface = (from surface in _context.SrmQotSurfaces
-                               join qot in _context.SrmQotHs
-               on surface.QotId equals qot.QotId
+                               join qot in _context.SrmQotHs on surface.QotId equals qot.QotId
+                               join s in _context.SrmSurfaces on surface.SProcess equals s.SurfaceId.ToString()  //20211217
                                join vendor in _context.SrmVendors
                                on qot.VendorId equals vendor.VendorId
                                //where qotIds.Contains(surface.QotId.Value)
                                select new viewSrmQotSurface
                                {
-                                   SNote = surface.SNote,
+                                   ProcessName = s.SurfaceDesc, //20211217
                                    SPrice = surface.SPrice,
-                                   SProcess = surface.SProcess,
                                    STimes = surface.STimes,
+                                   SCostsum = surface.SCostsum,
+                                   SNote = surface.SNote,
+                                   SProcess = surface.SProcess,
                                    VendorId = vendor.VendorId,
                                    VendorName = vendor.VendorName,
                                    //SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
-                                   QotId = surface.QotId,
-                                   SCostsum = surface.SCostsum
+                                   QotId = surface.QotId
                                })
                                .Where(p => p.QotId == qotid)
                                .ToArray();
@@ -937,21 +960,125 @@ namespace Convience.Service.SRM
                              //where qotIds.Contains(other.QotId.Value)
                              select new viewSrmQotOther
                              {
-                                 ODescription = other.ODescription,
                                  OItem = other.OItem,
-                                 ONote = other.ONote,
                                  OPrice = other.OPrice,
+                                 ONote = other.ONote,
+                                 ODescription = other.ODescription,
                                  VendorId = vendor.VendorId,
                                  VendorName = vendor.VendorName,
                                  QotId = other.QotId
                              }).Where(p => p.QotId == qotid)
                                .ToArray();
 
+            return qotinfo;
+        }
+        #region
+        public ViewQotResult GetDetailByVendorRfq(QueryQot query)
+        {
+          
+            ViewQotResult qotinfo = new ViewQotResult();
 
-
+            qotinfo.material = (from material in _context.SrmQotMaterial
+                                join qot in _context.SrmQotHs
+                                on material.QotId equals qot.QotId
+                                join vendor in _context.SrmVendors
+                                on qot.VendorId equals vendor.VendorId
+                                //where qot.QotId equals(material.QotId.Value)
+                                select new viewSrmQotMaterial
+                                {
+                                    
+                                    MMaterial = material.MMaterial,
+                                    Length = material.Length,
+                                    Width = material.Width,
+                                    Height = material.Height,
+                                    Density = material.Density,
+                                    Weight = material.Weight,
+                                    MPrice = material.MPrice,
+                                    MCostPrice = material.MCostPrice,
+                                    Note = material.Note,
+                                    QotMId = material.QotMId,
+                                    QotId = material.QotId,
+                                    VendorId = vendor.VendorId,
+                                    VendorName = vendor.VendorName,
+                                    RfqId = qot.RfqId.Value,                                 
+                                })
+                                .Where(p => p.RfqId == query.rfqId)
+                                .Where(p => p.VendorId == query.vendorId)
+                                .ToArray();
+            
+            qotinfo.process = (from process in _context.SrmQotProcesses
+                               join qot in _context.SrmQotHs on process.QotId equals qot.QotId
+                               join p in _context.SrmProcesss on process.PProcessNum equals p.ProcessNum.ToString() //20211217
+                               join vendor in _context.SrmVendors
+                               on qot.VendorId equals vendor.VendorId
+                               //where qotIds.Contains(process.QotId.Value)
+                               select new viewSrmQotProcess
+                               {
+                                   ProcessName = p.Process, //20211217
+                                   PHours = process.PHours,
+                                   PPrice = process.PPrice,
+                                   PMachine = process.PMachine,
+                                   PCostsum = process.PCostsum,
+                                   PNote = process.PNote,
+                                   PProcessNum = process.PProcessNum,
+                                   VendorId = vendor.VendorId,
+                                   VendorName = vendor.VendorName,
+                                   QotId = process.QotId,
+                                   RfqId = qot.RfqId.Value
+                               })
+                               .Where(p => p.RfqId == query.rfqId)
+                               .Where(p => p.VendorId == query.vendorId)
+                               .ToArray();
+            //price.process = (from process in db.SrmQotProcesses
+            //                             where qotIds.Contains(process.QotId.Value)
+            //                             select process).ToArray();
+            qotinfo.surface = (from surface in _context.SrmQotSurfaces
+                               join qot in _context.SrmQotHs on surface.QotId equals qot.QotId
+                               join s in _context.SrmSurfaces on surface.SProcess equals s.SurfaceId.ToString()  //20211217
+                               join vendor in _context.SrmVendors
+                               on qot.VendorId equals vendor.VendorId
+                               //where qotIds.Contains(surface.QotId.Value)
+                               select new viewSrmQotSurface
+                               {
+                                   ProcessName = s.SurfaceDesc, //20211217
+                                   SPrice = surface.SPrice,
+                                   STimes = surface.STimes,
+                                   SCostsum = surface.SCostsum,
+                                   SNote = surface.SNote,
+                                   SProcess = surface.SProcess,
+                                   VendorId = vendor.VendorId,
+                                   VendorName = vendor.VendorName,
+                                   //SubTotal = surface.SPrice.Value * (decimal)surface.STimes.Value,
+                                   QotId = surface.QotId,
+                                   RfqId = qot.RfqId.Value
+                               })
+                               .Where(p => p.RfqId == query.rfqId)
+                               .Where(p => p.VendorId == query.vendorId)
+                               .ToArray();
+            qotinfo.other = (from other in _context.SrmQotOthers
+                             join qot in _context.SrmQotHs
+               on other.QotId equals qot.QotId
+                             join vendor in _context.SrmVendors
+                             on qot.VendorId equals vendor.VendorId
+                             //where qotIds.Contains(other.QotId.Value)
+                             select new viewSrmQotOther
+                             {
+                                 OItem = other.OItem,
+                                 OPrice = other.OPrice,
+                                 ONote = other.ONote,
+                                 ODescription = other.ODescription,
+                                 VendorId = vendor.VendorId,
+                                 VendorName = vendor.VendorName,
+                                 QotId = other.QotId,
+                                 RfqId = qot.RfqId.Value
+                             })
+                                .Where(p => p.RfqId == query.rfqId)
+                                .Where(p => p.VendorId == query.vendorId)
+                                .ToArray();
 
             return qotinfo;
         }
+        #endregion
 
         public ViewQotResult GetDetailByMatnr(QueryQot query)
         {
@@ -1545,7 +1672,875 @@ namespace Convience.Service.SRM
             }            
             return msg;
         }*/
+        #endregion 上傳下載
+        #region 
+        public string Upload(Model.Models.SRM.FileUploadViewModel_QOT fileUploadModel)
+        {
+            Guid g = Guid.NewGuid();
+            var file = fileUploadModel.Files.First();
+            var path = fileUploadModel.CurrentDirectory?.TrimEnd('/') + '/' + fileUploadModel.CreateBy + '/' + g + '_' + file.FileName;
+            switch (Path.GetExtension(file.FileName).ToLower())
+            {
+                case ".xlsx":
+                    break;
+                default:
+                    throw new FileStoreException("限定xlsx！");
+            }
+            var info = new Utility.UploadFile().GetFileInfoAsync(path);
+            if (info != null)
+            {
+                throw new FileStoreException("文件名重複！");
+            }
+            var stream = file.OpenReadStream();
+            var result = new Utility.UploadFile().CreateFileFromStreamAsync(path, stream);
+            if (string.IsNullOrEmpty(result))
+            {
+                throw new FileStoreException("文件上傳失敗！");
+            }
+            return path;
+        }
+        #region 表頭 
+        public DataTable ReadExcel_QotH(string path, UserClaims user)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(0); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            //dt.Columns.Add("Unit");
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "[計畫交貨時間(日曆天)]", "有效期限","備註"};
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "LeadTime", "ExpirationDate" , "Note" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"【報價單表頭 】:格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["詢價單號"]) != null)
+                {
+                    row.GetCell(dtHeader["詢價單號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["詢價單號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+                #region 先檢查必填             
+                if (!string.IsNullOrWhiteSpace(dataRow["詢價單號"].ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(dataRow["料號"].ToString()))
+                    {
+                        throw new Exception($"【報價單表頭 】:詢價單號:{dataRow["詢價單號"].ToString()}料號未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["短文"].ToString()))
+                    {
+                        throw new Exception($"【報價單表頭 】:料號:{dataRow["料號"].ToString()}短文未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["[計畫交貨時間(日曆天)]"].ToString()))
+                    {
+                        throw new Exception($"【報價單表頭 】:料號:{dataRow["料號"].ToString()}[計畫交貨時間(日曆天)]未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["有效期限"].ToString()))
+                    {
+                        throw new Exception($"【報價單表頭 】:料號:{dataRow["料號"].ToString()}有效期限未填");
+                    }
+                }
+                #endregion
+                //詢問LEO料號狀態先不卡
+                //20211214 檢核該供應商是否有此單號、料號
+                int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
+                if (checkdata == 0)
+                {
+                    dataRow["IsExists"] = false;
+                    throw new Exception($"【報價單表頭 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
+                }
+                else
+                {
+                    dataRow["IsExists"] = true;
+                }
+                float day = 0;
+                DateTime ExperationDate = new DateTime();
+                if (!float.TryParse(dataRow["[計畫交貨時間(日曆天)]"].ToString(), out day) || day <= 0)
+                {
+                    throw new Exception($"【報價單表頭 】:料號:{dataRow["料號"].ToString()}[計畫交貨時間(日曆天)]格式錯誤");
+                }
+                //???
+                /**/
+                if (!DateTime.TryParse(dataRow["有效期限"].ToString(), out ExperationDate))
+                {
+                    double d = 0;
+                    if (!double.TryParse(dataRow["有效期限"].ToString(), out d))
+                    {
+                        throw new Exception($"【報價單表頭 】:料號:{dataRow["料號"].ToString()}有效期限格式錯誤");
+                    }
+                    ExperationDate = DateTime.FromOADate(Convert.ToDouble(dataRow["有效期限"].ToString()));
+                }
+                dataRow["有效期限"] = ExperationDate.ToString("yyyy/MM/dd");
+                ///**/
+                //if (!DateTime.TryParse(dataRow["有效期限"].ToString(), out ExperationDate))
+                //{
+                //    throw new Exception($"料號:{dataRow["料號"].ToString()}有效期限格式錯誤");
+                //    //double d = 0;
+                //    //if (!double.TryParse(dataRow["有效期限"].ToString(), out d))
+                //    //{
+                //    //    throw new Exception($"料號:{dataRow["料號"].ToString()}有效期限格式錯誤");
+                //    //}
+                //}
+                //ExperationDate = DateTime.FromOADate(Convert.ToDouble(dataRow["有效期限"].ToString()));
+                //dataRow["有效期限"] = ExperationDate.ToString("yyyy/MM/dd");
+                //dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && user.Werks.Contains(r.Werks.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
+            return dt;
+        }
+        #endregion 
+        #region 材料
+        public DataTable ReadExcel_Material(string path, UserClaims user)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(1); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            dt.Columns.Add("MCostPrice"); //小計
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "不回填", "素材材質", "長", "寬", "高", "密度", "重量", "材料單價", "備註" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "MEmptyFlag", "MMaterial", "Length", "Width", "Height", "Density", "Weight", "MPrice", "Note" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"【材料 】:格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["詢價單號"]) != null)
+                {
+                    row.GetCell(dtHeader["詢價單號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["詢價單號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+
+                #region 先檢查必填 詢價單、料號、短文、素材材質、重量、材料單價
+                if (!string.IsNullOrWhiteSpace(dataRow["詢價單號"].ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(dataRow["料號"].ToString()))
+                    {
+                        throw new Exception($"【材料 】:詢價單號:{dataRow["詢價單號"].ToString()}料號未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["短文"].ToString()))
+                    {
+                        throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}短文未填");
+                    }
+
+                    //if (string.IsNullOrWhiteSpace(dataRow["不回填"].ToString()))
+                    if (dataRow["不回填"].ToString().ToUpper() != "Y")
+                    {
+                        if (string.IsNullOrWhiteSpace(dataRow["素材材質"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}素材材質未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["重量"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}重量未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["材料單價"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}材料單價未填");
+                        }
+                    }
+                }
+                #endregion
+                //20211214 檢核該供應商是否有此單號、料號
+                int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
+                if (checkdata == 0)
+                {
+                    dataRow["IsExists"] = false;
+                    throw new Exception($"【材料 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
+                }
+                else
+                {
+                    dataRow["IsExists"] = true;
+                }
+                float weight = 0;
+                float price = 0;
+
+                //檢核素材材質
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N"))
+                {
+                    if (!_context.SrmMaterials.Any(r => r.Material.Equals(dataRow["素材材質"].ToString())))
+                    {
+                        throw new Exception($"【材料 】:素材材質:{dataRow["素材材質"].ToString()}不存在");
+                    }
+                    if (!float.TryParse(dataRow["重量"].ToString(), out weight) || weight <= 0)
+                    {
+                        throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}重量格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["重量"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["重量"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    if (!float.TryParse(dataRow["材料單價"].ToString(), out price) || price <= 0)
+                    {
+                        throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}材料單價格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["材料單價"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["材料單價"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    //新增.
+                    dataRow["MCostPrice"] = float.Parse(Math.Round(Convert.ToDecimal((float.Parse(dataRow["重量"].ToString())) * (float.Parse(dataRow["材料單價"].ToString()))), 2, MidpointRounding.AwayFromZero).ToString());
+                }
+                
+                
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
+            return dt;
+        }
         #endregion
-      
+        #region 加工
+        public DataTable ReadExcel_Process(string path, UserClaims user)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(2); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            dt.Columns.Add("PCostsum"); //小計
+            dt.Columns.Add("PProcess"); //工序名稱
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "不回填", "工序", "[工時(時)]", "[單價(時)]", "機台", "備註" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "PEmptyFlag", "PProcessNum", "PHours", "PPrice", "PMachine", "PNote" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"【加工 】:格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["詢價單號"]) != null)
+                {
+                    row.GetCell(dtHeader["詢價單號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["詢價單號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+
+                #region 先檢查必填 詢價單、料號、短文、素材材質、重量、材料單價
+                if (!string.IsNullOrWhiteSpace(dataRow["詢價單號"].ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(dataRow["料號"].ToString()))
+                    {
+                        throw new Exception($"【加工 】:詢價單號:{dataRow["詢價單號"].ToString()}料號未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["短文"].ToString()))
+                    {
+                        throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}短文未填");
+                    }
+                    //if (string.IsNullOrWhiteSpace(dataRow["不回填"].ToString()))
+                    if (dataRow["不回填"].ToString().ToUpper() != "Y")
+                    {
+                        if (string.IsNullOrWhiteSpace(dataRow["工序"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}工序未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["[工時(時)]"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}[工時(時)]未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["[單價(時)]"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}[單價(時)]未填");
+                        }
+                    }           
+                }
+                #endregion
+                //20211214 檢核該供應商是否有此單號、料號
+                int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
+                if (checkdata == 0)
+                {
+                    dataRow["IsExists"] = false;
+                    throw new Exception($"【加工 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
+                }
+                else 
+                {
+                    dataRow["IsExists"] = true;
+                }
+                //檢核素材材質
+                //20211214
+                float hour = 0;
+                float price = 0;
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                {
+                    if (!_context.SrmProcesss.Any(r => r.Process.Equals(dataRow["工序"].ToString())))
+                    {
+                        throw new Exception($"【加工 】:工序:{dataRow["工序"].ToString()}不存在");
+                    }
+                    else
+                    {
+                        //寫入工序NUM
+                        dataRow["PProcess"] = dataRow["工序"].ToString();
+                        int processnum = GetProcessNum(dataRow["工序"].ToString());
+                        dataRow["工序"] = processnum;
+                    }
+
+                    if (!float.TryParse(dataRow["[工時(時)]"].ToString(), out hour) || hour <= 0)
+                    {
+                        throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}[工時(時)]格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["[工時(時)]"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["[工時(時)]"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    if (!float.TryParse(dataRow["[單價(時)]"].ToString(), out price) || price <= 0)
+                    {
+                        throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}[單價(時)]格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["[單價(時)]"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["[單價(時)]"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    //新增.
+                    dataRow["PCostsum"] = float.Parse(Math.Round(Convert.ToDecimal((float.Parse(dataRow["[工時(時)]"].ToString())) * (float.Parse(dataRow["[單價(時)]"].ToString()))), 2, MidpointRounding.AwayFromZero).ToString());
+                }
+
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
+            return dt;
+        }
+        #endregion
+        #region 表面處理
+        public DataTable ReadExcel_Surface(string path, UserClaims user)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(3); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            dt.Columns.Add("SCostsum"); //小計
+            dt.Columns.Add("SProcessDesc"); //工序名稱
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "不回填", "工序", "[單價(時)]", "次數", "備註" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "SEmptyFlag", "SProcess", "SPrice",  "STimes", "PNote" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"【表面處理 】:格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["詢價單號"]) != null)
+                {
+                    row.GetCell(dtHeader["詢價單號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["詢價單號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+
+                #region 先檢查必填 詢價單、料號、短文、工序、[單價(時)]、次數
+                if (!string.IsNullOrWhiteSpace(dataRow["詢價單號"].ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(dataRow["料號"].ToString()))
+                    {
+                        throw new Exception($"【表面處理 】:詢價單號:{dataRow["詢價單號"].ToString()}料號未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["短文"].ToString()))
+                    {
+                        throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}短文未填");
+                    }
+                    //if(string.IsNullOrWhiteSpace(dataRow["不回填"].ToString()))
+                    if (dataRow["不回填"].ToString().ToUpper() != "Y")
+                    {
+                        if (string.IsNullOrWhiteSpace(dataRow["工序"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}工序未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["[單價(時)]"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}[單價(時)]未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["次數"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}次數未填");
+                        }
+                    }                   
+                }
+                #endregion
+                //20211214
+                float times = 0;
+                float price = 0;
+                int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
+                if (checkdata == 0)
+                {
+                    dataRow["IsExists"] = false;
+                    throw new Exception($"【表面處理 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
+                }
+                else 
+                {
+                    dataRow["IsExists"] = true;
+                }
+
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                {
+                    if (!_context.SrmSurfaces.Any(r => r.SurfaceDesc.Equals(dataRow["工序"].ToString())))
+                    {
+                        throw new Exception($"【表面處理 】:工序:{dataRow["工序"].ToString()}不存在");
+                    }
+                    else
+                    {
+                        //寫入工序NUM
+                        dataRow["SProcessDesc"] = dataRow["工序"].ToString();
+                        int surfaceid = GetSurfaceNum(dataRow["工序"].ToString());
+                        dataRow["工序"] = surfaceid;
+                    }
+                    if (!float.TryParse(dataRow["[單價(時)]"].ToString(), out price) || price <= 0)
+                    {
+                        throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}[單價(時)]格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["[單價(時)]"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["[單價(時)]"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    if (!float.TryParse(dataRow["次數"].ToString(), out times) || times <= 0)
+                    {
+                        throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}次數格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["次數"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["次數"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                    //新增.
+                    dataRow["SCostsum"] = float.Parse(Math.Round(Convert.ToDecimal((float.Parse(dataRow["[單價(時)]"].ToString())) * (float.Parse(dataRow["次數"].ToString()))), 2, MidpointRounding.AwayFromZero).ToString());
+                }
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
+            return dt;
+        }
+        #endregion
+
+        #region 其他
+        public DataTable ReadExcel_Other(string path, UserClaims user)
+        {
+            IWorkbook workbook;
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(4); // zero-based index of your target sheet
+            DataTable dt = new DataTable(sheet.SheetName);
+
+            // write header row
+            IRow headerRow = sheet.GetRow(0);
+            for (int i = 0; i < headerRow.Cells.Count; i++)
+            {
+                headerRow.GetCell(i).SetCellType(CellType.String);
+                dt.Columns.Add(headerRow.GetCell(i).StringCellValue);
+            }
+            dt.Columns.Add("IsExists");
+            dt.Columns.Add("SCostsum"); //小計
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "不回填", "項目", "單價", "說明", "備註" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "OEmptyFlag", "OItem", "OPrice", "ODescription", "ONote" };
+            Dictionary<string, int> dtHeader = new Dictionary<string, int>();
+            foreach (string header in headers)
+            {
+                if (!dt.Columns.Contains(header))
+                {
+                    throw new Exception($"【其他 】:格式錯誤，沒有欄位{header}");
+                }
+                else
+                {
+                    dtHeader.Add(header, dt.Columns.IndexOf(header));
+                }
+            }
+
+            int rowIndex = 0;
+            foreach (IRow row in sheet)
+            {
+                if (rowIndex == 0) { rowIndex++; continue; }
+                if (row.GetCell(dtHeader["詢價單號"]) != null)
+                {
+                    row.GetCell(dtHeader["詢價單號"]).SetCellType(CellType.String);
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["詢價單號"]).StringCellValue)) { break; }
+                }
+                else
+                {
+                    break;
+                }
+                DataFormatter formatter = new DataFormatter();
+                DataRow dataRow = dt.NewRow();
+                foreach (var h in dtHeader)
+                {
+                    if (row.GetCell(h.Value) != null)
+                    {
+                        row.GetCell(h.Value).SetCellType(CellType.String);
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                    }
+                }
+
+                #region 先檢查必填 詢價單、料號、短文、工序、[單價(時)]、次數
+                if (!string.IsNullOrWhiteSpace(dataRow["詢價單號"].ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(dataRow["料號"].ToString()))
+                    {
+                        throw new Exception($"【其他 】:詢價單號:{dataRow["詢價單號"].ToString()}料號未填");
+                    }
+                    if (string.IsNullOrWhiteSpace(dataRow["短文"].ToString()))
+                    {
+                        throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}短文未填");
+                    }
+                    //if(string.IsNullOrWhiteSpace(dataRow["不回填"].ToString()))
+                    if (dataRow["不回填"].ToString().ToUpper() != "Y")
+                    {
+                        if (string.IsNullOrWhiteSpace(dataRow["項目"].ToString()))
+                        {
+                            throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}項目未填");
+                        }
+                        if (string.IsNullOrWhiteSpace(dataRow["單價"].ToString()))
+                        {
+                            throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}單價未填");
+                        }
+                    }          
+                }
+                #endregion
+                int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
+                if (checkdata == 0)
+                {
+                    dataRow["IsExists"] = false;
+                    throw new Exception($"【其他 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
+                }
+                else
+                {
+                    dataRow["IsExists"] = true;
+                }
+
+                float price = 0;
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                {
+                    if (!float.TryParse(dataRow["單價"].ToString(), out price) || price <= 0)
+                    {
+                        throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}單價格式錯誤");
+                    }
+                    else
+                    {
+                        dataRow["單價"] = float.Parse(Math.Round(Convert.ToDecimal(dataRow["單價"].ToString()), 2, MidpointRounding.AwayFromZero).ToString());
+                    }
+                }
+                dt.Rows.Add(dataRow);
+                rowIndex++;
+            }
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                dt.Columns[headers[i]].ColumnName = cols[i];
+            }
+            return dt;
+        }
+        #endregion
+
+        #region 檢核供應商是否有此料號、此報價單號
+        public int  CheckMatnrData(string vendor,string RfqNum,string Matnr) 
+        {
+            int qotid = 0;
+            var Query = (from q in _context.SrmQotHs
+                         join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                         join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
+                         join m in _context.SrmMatnrs on rm.MatnrId equals m.MatnrId
+                         join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                         //where r.RfqNum.Equals(RfqNum)
+                         select new ViewSrmQotList
+                         {
+                             RFQ_NUM = r.RfqNum,
+                             VENDOR = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
+                             MATNR =(!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr :m.SrmMatnr1,
+                             QOT_ID = q.QotId
+                         })
+                         .AndIfHaveValue(vendor, p => p.VENDOR == vendor)
+                         .AndIfHaveValue(RfqNum, p => p.RFQ_NUM == RfqNum)
+                         .AndIfHaveValue(Matnr, p => p.MATNR == Matnr);
+       
+            if (Query.Count() > 0)
+            {
+                qotid = Query.Select(r => r.QOT_ID).First();
+            }
+            return qotid;
+        }
+        #endregion
+        #endregion
+        private int GetProcessNum(string Process)
+        {
+            var processid = 0;
+            var process = (from p in _context.SrmProcesss
+                          where (p.Process == Process)
+                          select new
+                          {
+                              ProcessNum = p.ProcessNum,
+                          });
+            processid = process.Select(r => r.ProcessNum).First();
+            return processid;
+
+        }
+        private int GetSurfaceNum(string Process)
+        {
+            var surfaceid = 0;
+            var surface = (from s in _context.SrmSurfaces
+                           where (s.SurfaceDesc == Process)
+                           select new
+                           {
+                               surfaceid = s.SurfaceId,
+                           });
+            surfaceid = surface.Select(r => r.surfaceid).First();
+            return surfaceid;
+        }
+        public void Delete(string path)
+        {
+            try
+            {
+                FileInfo f = new FileInfo(path);
+                if (f.Exists)
+                {
+                    f.Delete();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        public IQueryable GetQotInfo(int rfqid, int vendorid, int qotid)
+        {
+          
+            var qotlist = (from r in _context.SrmRfqHs
+                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
+                           join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                           join mu in _context.SrmMeasureUnits on rm.Unit equals mu.MeasureId into mug
+                           from mu in mug.DefaultIfEmpty()
+                           join s in _context.SrmStatuses on q.Status equals s.Status
+                           join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
+                           from u1 in u1g.DefaultIfEmpty()
+                           select new
+                           {
+                               RfqNum = r.RfqNum,
+                               Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
+                               Desc = m.Description,
+                               mEmptyFlag = q.MEmptyFlag,
+                               pEmptyFlag = q.PEmptyFlag,
+                               sEmptyFlag = q.SEmptyFlag,
+                               oPEmptyFlag = q.OEmptyFlag,
+                               CreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : q.CreateBy,//q.CreateBy,
+                               CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
+                               Status = s.StatusDesc,
+                               QotId = q.QotId,
+                               QotNum = q.QotNum,
+                               //Status = q.Status.HasValue ? ((Status)q.Status).ToString() : "",
+                               Material = rm.Material,
+                               Weight = rm.Weight,
+                               MachineName = rm.MachineName,
+                               Size = rm.Length + "*" + rm.Width + "*" + rm.Height,
+                               Length = rm.Length,
+                               Width = rm.Width,
+                               Height = rm.Height,
+                               RfqId = r.RfqId,
+                               VendorId = q.VendorId,
+                              
+                               Description = m.Description,
+                               Qty = rm.Qty,
+                               Expiringdate = q.ExpirationDate,
+                               Leadtime = q.LeadTime,
+                               estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString())) ? DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd") : "",
+                               Note = q.Note,
+                               Unit = mu.MeasureDesc,//20211203
+                           });
+            //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
+            //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
+            //.AndIfHaveValue(query.rfqno, p => p.RFQ_NUM == query.rfqno);
+            qotlist = qotlist
+            .Where(p => p.RfqId == rfqid)
+            .Where(p => p.VendorId == vendorid)
+            .Where(p => p.QotId == qotid);
+           
+            //.AndIfHaveValue(matnrid , p => p.QotId == qotid);
+            //.Where(p => p.QotId == qotid);
+            return qotlist;
+        }
+        public int GetMatnrId(QueryQot query)
+        {
+            var matnrid = 0;
+            var matnr = (from m in _context.SrmMatnrs
+                       select new
+                       {
+                           MatnrId = m.MatnrId,
+                           Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr))? m.SapMatnr:m.SrmMatnr1
+                       });
+            matnr = matnr
+           .Where(p => p.Matnr == query.matnr);
+            matnrid = matnr.Select(r => r.MatnrId).First();
+            return matnrid;
+        }
+        public string GetSurfaceProcessByNum(int num)
+        {
+            string processname = string.Empty;
+            var p = _context.SrmSurfaces.Where(p => p.SurfaceId == num).ToList();
+            processname = p.Select(r => r.SurfaceDesc).First();
+
+            return processname;
+        }
+        public SrmQotH GetQotById(QueryQot query)
+        {
+            var qot = _context.SrmQotHs.AsQueryable()
+                .AndIfHaveValue(query.qotId, r => r.QotId == query.qotId).ToList().First();
+            return qot;
+        }
     }
 }

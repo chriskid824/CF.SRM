@@ -1,4 +1,5 @@
 ﻿using Convience.Entity.Entity.SRM;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,12 @@ using System.Threading.Tasks;
 
 namespace Convience.Model.Models.SRM
 {
+    public class FileUploadViewModel_QOT :SrmQotH
+    {
+        public string CurrentDirectory { get; set; }
+        // 上传文件
+        public IEnumerable<IFormFile> Files { get; set; }
+    }
     public class QueryQot
     {
         public int? rfqId { get; set; }
@@ -16,6 +23,7 @@ namespace Convience.Model.Models.SRM
         public int? vendorId { get; set; }
         public int? qotId { get; set; }
         public int? caseId { get; set; }
+        public string  matnr { get; set; }
     }
     public class ViewSrmPriceDetail {
         public ViewSrmRfqM matnr { get; set; }
@@ -37,6 +45,7 @@ namespace Convience.Model.Models.SRM
         
         public int VendorId { get; set; }
         public string VendorName { get; set; }
+        public int RfqId { get; set; }
     }
 
     public class viewSrmQotMaterialS : SrmQotMaterial
@@ -52,11 +61,13 @@ namespace Convience.Model.Models.SRM
         public viewSrmQotProcess(SrmQotProcess parent) {
             foreach (PropertyInfo prop in parent.GetType().GetProperties())
                 GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(parent, null), null);
+
         }
         public int VendorId { get; set; }
         public string VendorName { get; set; }
         public decimal SubTotal { get; set; }
         public string ProcessName { get; set; }
+        public int RfqId { get; set; }
     }
     public class viewSrmQotSurface : SrmQotSurface
     {
@@ -70,6 +81,7 @@ namespace Convience.Model.Models.SRM
         public string VendorName { get; set; }
         public decimal SubTotal { get; set; }
         public string ProcessName { get; set; }
+        public int RfqId { get; set; }
     }
     public class viewSrmQotOther : SrmQotOther
     {
@@ -81,6 +93,7 @@ namespace Convience.Model.Models.SRM
         }
         public int VendorId { get; set; }
         public string VendorName { get; set; }
+        public int RfqId { get; set; }
     }
 
     public class ViewSrmQotList : SrmQotH
@@ -200,6 +213,7 @@ namespace Convience.Model.Models.SRM
         public int? QVendorId { get; set; }
         public string QVendor { get; set; }
         public string QMatnr { get; set; }
+        public string User { get; set; }
     }
 
     public record ResultQotModel

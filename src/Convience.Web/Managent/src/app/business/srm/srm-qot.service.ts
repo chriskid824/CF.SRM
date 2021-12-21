@@ -47,4 +47,12 @@ export class SrmQotService {
   SendAllQot(qot){
     return this.httpClient.post(`${this.uriConstant.SrmQot}/SendAllQot`, qot);
   }
+  BatchUpload(formData) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/BatchUpload`, formData);
+  }
+  
+  Download(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/Download`, query);
+    //return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
+  } 
 }
