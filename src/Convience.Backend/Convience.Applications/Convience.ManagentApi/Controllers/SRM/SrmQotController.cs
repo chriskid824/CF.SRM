@@ -300,13 +300,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ICellStyle s1 = wb.CreateCellStyle();
                 s.FillForegroundColor = HSSFColor.Yellow.Index;
                 s.FillPattern = FillPattern.SolidForeground;
+                
                 HSSFFont font1 = (HSSFFont)wb.CreateFont();
                 font1.FontName = "Microsoft JhengHei";
                 font1.FontHeightInPoints = 12;
                 s1.SetFont(font1);
+                s.SetFont(font1);
 
 
-                #region
+                #region header
                 InitExcelColumn("報價單表頭");
                 ws.CreateRow(0);//第一行為欄位名稱
                 //set 表頭欄位
@@ -314,6 +316,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     KeyValuePair<string, string> column = excelColumn.ElementAt(i);
                     ws.GetRow(0).CreateCell(i).SetCellValue(column.Value);
+                    ws.GetRow(0).GetCell(i).CellStyle = s1;// 20211222 add style                   
                 }
                 int ii = 1;
                 foreach (var q in qots)
@@ -329,12 +332,23 @@ namespace Convience.ManagentApi.Controllers.SRM
                     var estdate = (q.GetType().GetProperties()[3].GetValue(q) == null) ? "" : q.GetType().GetProperties()[3].GetValue(q).ToString();
                     var leadtime = (q.GetType().GetProperties()[4].GetValue(q) == null) ? "" : q.GetType().GetProperties()[4].GetValue(q).ToString();
                     var note = (q.GetType().GetProperties()[5].GetValue(q) ==null )?"":q.GetType().GetProperties()[5].GetValue(q).ToString();
-                    row2.CreateCell(0).SetCellValue((string)RfqNum);
+                    
+
+                  
+                    row2.CreateCell(0).SetCellValue((string)RfqNum);              
                     row2.CreateCell(1).SetCellValue((string)Matnr);
                     row2.CreateCell(2).SetCellValue((string)Description);
                     row2.CreateCell(3).SetCellValue((string)estdate);
                     row2.CreateCell(4).SetCellValue((string)leadtime);
                     row2.CreateCell(5).SetCellValue((string)note);
+                    // 20211222 add style  
+                    row2.GetCell(0).CellStyle = s1;
+                    row2.GetCell(1).CellStyle = s1;
+                    row2.GetCell(2).CellStyle = s1;
+                    row2.GetCell(3).CellStyle = s1;
+                    row2.GetCell(4).CellStyle = s1;
+                    row2.GetCell(5).CellStyle = s1;
+
                     /*取得[計畫交貨時間(日曆天)]、有效期限、備註*/
 
                     /**/
@@ -345,6 +359,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ws.GetRow(0).GetCell(2).CellStyle = s;
                 ws.GetRow(0).GetCell(3).CellStyle = s;
                 ws.GetRow(0).GetCell(4).CellStyle = s;
+            
                 #endregion
 
 
@@ -357,6 +372,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     KeyValuePair<string, string> column1 = excelColumn.ElementAt(i1);
                     ws1.GetRow(0).CreateCell(i1).SetCellValue(column1.Value);
+                    ws1.GetRow(0).GetCell(i1).CellStyle = s1;// 20211222 add style  
                 }
                 int im= 1;
                 SrmQotMaterial[] materials = qotdetail.material;
@@ -372,12 +388,19 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowm0.CreateCell(0).SetCellValue((string)RfqNum);
                         rowm0.CreateCell(1).SetCellValue((string)Matnr);
                         rowm0.CreateCell(2).SetCellValue((string)Description);
+
+                        // 20211222 add style                     
+                        rowm0.GetCell(0).CellStyle = s1;
+                        rowm0.GetCell(1).CellStyle = s1;
+                        rowm0.GetCell(2).CellStyle = s1;
+
                         var mEmptyFlag = q.GetType().GetProperties()[6].GetValue(q);
                         if (mEmptyFlag != null) 
                         {
                             if (mEmptyFlag.ToString() == "X")
                             {
                                 rowm0.CreateCell(3).SetCellValue("Y");
+                                rowm0.GetCell(3).CellStyle = s1;// 20211222 add style  
                             }
                         }
                         ii++;
@@ -399,41 +422,54 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowm.CreateCell(1).SetCellValue(MatnrNo);
                         rowm.CreateCell(2).SetCellValue((Desc));
                         rowm.CreateCell(3).SetCellValue("");//不回填??
+
+                        rowm.GetCell(0).CellStyle = s1;// 20211222 add style  
+                        rowm.GetCell(1).CellStyle = s1;// 20211222 add style  
+                        rowm.GetCell(2).CellStyle = s1;// 20211222 add style  
                         if (material.MMaterial != null)
                         {
                             rowm.CreateCell(4).SetCellValue(material.MMaterial);
+                            rowm.GetCell(4).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Length != null) 
                         {
                             rowm.CreateCell(5).SetCellValue(material.Length.Value);
+                            rowm.GetCell(5).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Width !=null) 
                         {
                             rowm.CreateCell(6).SetCellValue(material.Width.Value);
+                            rowm.GetCell(6).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Height !=null) 
                         {
                             rowm.CreateCell(7).SetCellValue(material.Height.Value);
+                            rowm.GetCell(7).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Density !=null)
                         {
                             rowm.CreateCell(8).SetCellValue(material.Density.Value);
+                            rowm.GetCell(8).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Weight != null)
                         {
                             rowm.CreateCell(9).SetCellValue(material.Weight.Value);
+                            rowm.GetCell(9).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.MPrice != null)
                         {
                             rowm.CreateCell(10).SetCellValue(double.Parse(material.MPrice.ToString()));
+                            rowm.GetCell(10).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.MCostPrice !=null) 
                         {
                             rowm.CreateCell(11).SetCellValue(double.Parse(material.MCostPrice.ToString()));
+                            rowm.GetCell(11).CellStyle = s1;// 20211222 add style  
                         }
                         if (material.Note !=null)
                         {
                             rowm.CreateCell(12).SetCellValue(material.Note);
+                            rowm.GetCell(12).CellStyle = s1;// 20211222 add style  
                         }
                         im++;
                     }
@@ -453,6 +489,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 rowm.CreateCell(1).SetCellValue((string)Matnr);
                                 rowm.CreateCell(2).SetCellValue((string)Description);
                                 rowm.CreateCell(3).SetCellValue("Y");
+                                // 20211222 add style 
+                                rowm.GetCell(0).CellStyle = s1; 
+                                rowm.GetCell(1).CellStyle = s1;
+                                rowm.GetCell(2).CellStyle = s1;
+                                rowm.GetCell(3).CellStyle = s1;
                                 cm++;
                             }
                         }
@@ -475,6 +516,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     KeyValuePair<string, string> column = excelColumn.ElementAt(i2);
                     ws2.GetRow(0).CreateCell(i2).SetCellValue(column.Value);
+                    ws2.GetRow(0).GetCell(i2).CellStyle = s1;// 20211222 add style  
                 }
                 int ip = 1;
                 SrmQotProcess[] processs = qotdetail.process;
@@ -490,12 +532,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowp0.CreateCell(0).SetCellValue((string)RfqNum);
                         rowp0.CreateCell(1).SetCellValue((string)Matnr);
                         rowp0.CreateCell(2).SetCellValue((string)Description);
+
+                        rowp0.GetCell(0).CellStyle = s1;// 20211222 add style  
+                        rowp0.GetCell(1).CellStyle = s1;// 20211222 add style  
+                        rowp0.GetCell(2).CellStyle = s1;// 20211222 add style  
+
                         var pEmptyFlag = q.GetType().GetProperties()[7].GetValue(q);
                         if (pEmptyFlag != null) 
                         {
                             if (pEmptyFlag.ToString() == "X")
                             {
                                 rowp0.CreateCell(3).SetCellValue("Y");
+                                rowp0.GetCell(3).CellStyle = s1;// 20211222 add style  
                             }
                         }                        
                         ii++;
@@ -517,31 +565,42 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowp.CreateCell(0).SetCellValue(RNo);
                         rowp.CreateCell(1).SetCellValue(MatnrNo);
                         rowp.CreateCell(2).SetCellValue((Desc));
+
+                        rowp.GetCell(0).CellStyle = s1;// 20211222 add style  
+                        rowp.GetCell(1).CellStyle = s1;// 20211222 add style  
+                        rowp.GetCell(2).CellStyle = s1;// 20211222 add style  
+
                         rowp.CreateCell(3).SetCellValue("");//不回填??
                         if (process.PProcessNum !=null) 
                         {
                             string processname = _srmQotService.GetProcessByNum(int.Parse(process.PProcessNum));
-                            rowp.CreateCell(4).SetCellValue(processname); 
+                            rowp.CreateCell(4).SetCellValue(processname);
+                            rowp.GetCell(4).CellStyle = s1;// 20211222 add style  
                         }
                         if (process.PHours != null)
                         {
                             rowp.CreateCell(5).SetCellValue(process.PHours.Value);
+                            rowp.GetCell(5).CellStyle = s1;// 20211222 add style  
                         }
                         if (process.PPrice != null)
                         {
                             rowp.CreateCell(6).SetCellValue(double.Parse(process.PPrice.ToString()));
+                            rowp.GetCell(6).CellStyle = s1;// 20211222 add style  
                         }
                         if (process.PCostsum != null)
                         {
                             rowp.CreateCell(7).SetCellValue(double.Parse(process.PCostsum.ToString()));
+                            rowp.GetCell(7).CellStyle = s1;// 20211222 add style  
                         }
                         if (process.PMachine != null)
                         {
                             rowp.CreateCell(8).SetCellValue(process.PMachine);
+                            rowp.GetCell(8).CellStyle = s1;// 20211222 add style 
                         }
                         if (process.PNote != null)
                         {
                             rowp.CreateCell(9).SetCellValue(process.PNote);
+                            rowp.GetCell(9).CellStyle = s1;// 20211222 add style 
                         }
                         ip++;
                     }
@@ -561,6 +620,12 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 rowp.CreateCell(1).SetCellValue((string)Matnr);
                                 rowp.CreateCell(2).SetCellValue((string)Description);
                                 rowp.CreateCell(3).SetCellValue("Y");
+
+                                rowp.GetCell(0).CellStyle = s1;// 20211222 add style 
+                                rowp.GetCell(1).CellStyle = s1;// 20211222 add style 
+                                rowp.GetCell(2).CellStyle = s1;// 20211222 add style 
+                                rowp.GetCell(3).CellStyle = s1;// 20211222 add style 
+
                                 cp++;
                             }
                         }
@@ -582,6 +647,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     KeyValuePair<string, string> column = excelColumn.ElementAt(i3);
                     ws3.GetRow(0).CreateCell(i3).SetCellValue(column.Value);
+                    ws3.GetRow(0).GetCell(i3).CellStyle = s1;// 20211222 add style  
                 }
                 int iss = 1;
                 SrmQotSurface[] surfaces = qotdetail.surface;
@@ -597,12 +663,17 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rows0.CreateCell(0).SetCellValue((string)RfqNum);
                         rows0.CreateCell(1).SetCellValue((string)Matnr);
                         rows0.CreateCell(2).SetCellValue((string)Description);
+
+                        rows0.GetCell(0).CellStyle = s1;// 20211222 add style 
+                        rows0.GetCell(1).CellStyle = s1;// 20211222 add style 
+                        rows0.GetCell(2).CellStyle = s1;// 20211222 add style 
                         var sEmptyFlag = q.GetType().GetProperties()[8].GetValue(q);
                         if (sEmptyFlag != null)
                         {
                             if (sEmptyFlag.ToString() == "X")
                             {
                                 rows0.CreateCell(3).SetCellValue("Y");
+                                rows0.GetCell(3).CellStyle = s1;// 20211222 add style 
                             }
                         }
                         ii++;
@@ -623,26 +694,36 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rows.CreateCell(1).SetCellValue(MatnrNo);
                         rows.CreateCell(2).SetCellValue((Desc));
                         rows.CreateCell(3).SetCellValue("");//不回填??
+
+                        rows.GetCell(0).CellStyle = s1;// 20211222 add style 
+                        rows.GetCell(1).CellStyle = s1;// 20211222 add style 
+                        rows.GetCell(2).CellStyle = s1;// 20211222 add style 
+
                         if (surface.SProcess != null) 
                         {
                             string sufacename = _srmQotService.GetSurfaceProcessByNum(int.Parse(surface.SProcess));
                             rows.CreateCell(4).SetCellValue(sufacename); //轉換成加工中文??
+                            rows.GetCell(4).CellStyle = s1;// 20211222 add style 
                         }
                         if (surface.SPrice != null)
                         {
                             rows.CreateCell(5).SetCellValue(double.Parse(surface.SPrice.ToString()));
+                            rows.GetCell(5).CellStyle = s1;// 20211222 add style 
                         }
                         if (surface.STimes != null)
                         {
                             rows.CreateCell(6).SetCellValue(double.Parse(surface.STimes.ToString()));
+                            rows.GetCell(6).CellStyle = s1;// 20211222 add style 
                         }
                         if (surface.SCostsum != null)
                         {
                             rows.CreateCell(7).SetCellValue(double.Parse(surface.SCostsum.ToString()));
+                            rows.GetCell(7).CellStyle = s1;// 20211222 add style 
                         }
                         if (surface.SNote != null)
                         {
                             rows.CreateCell(8).SetCellValue(surface.SNote);
+                            rows.GetCell(8).CellStyle = s1;// 20211222 add style 
                         }
                         iss++;
                     }
@@ -662,6 +743,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 rows.CreateCell(1).SetCellValue((string)Matnr);
                                 rows.CreateCell(2).SetCellValue((string)Description);
                                 rows.CreateCell(3).SetCellValue("Y");
+
+                                rows.GetCell(0).CellStyle = s1;// 20211222 add style 
+                                rows.GetCell(1).CellStyle = s1;// 20211222 add style 
+                                rows.GetCell(2).CellStyle = s1;// 20211222 add style 
+                                rows.GetCell(3).CellStyle = s1;// 20211222 add style 
                                 cs++;
                             }
                         } 
@@ -683,6 +769,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     KeyValuePair<string, string> column = excelColumn.ElementAt(i4);
                     ws4.GetRow(0).CreateCell(i4).SetCellValue(column.Value);
+                    ws4.GetRow(0).GetCell(i4).CellStyle = s1;// 20211222 add style  
                 }
                 int io = 1;
                 SrmQotOther[] others = qotdetail.other;
@@ -698,12 +785,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowo0.CreateCell(0).SetCellValue((string)RfqNum);
                         rowo0.CreateCell(1).SetCellValue((string)Matnr);
                         rowo0.CreateCell(2).SetCellValue((string)Description);
+
+                        rowo0.GetCell(0).CellStyle = s1;// 20211222 add style 
+                        rowo0.GetCell(1).CellStyle = s1;// 20211222 add style 
+                        rowo0.GetCell(2).CellStyle = s1;// 20211222 add style 
+
                         var oEmptyFlag = q.GetType().GetProperties()[9].GetValue(q);
                         if (oEmptyFlag != null)
                         {
                             if (oEmptyFlag.ToString() == "X")
                             {
                                 rowo0.CreateCell(3).SetCellValue("Y");
+                                rowo0.GetCell(3).CellStyle = s1;// 20211222 add style 
                             }
                         }
                         ii++;
@@ -723,22 +816,31 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowo.CreateCell(0).SetCellValue(RNo);
                         rowo.CreateCell(1).SetCellValue(MatnrNo);
                         rowo.CreateCell(2).SetCellValue((Desc));
+
+                        rowo.GetCell(0).CellStyle = s1;// 20211222 add style 
+                        rowo.GetCell(1).CellStyle = s1;// 20211222 add style 
+                        rowo.GetCell(2).CellStyle = s1;// 20211222 add style 
+
                         rowo.CreateCell(3).SetCellValue("");//不回填??
                         if (other.OItem !=null)
                         {
                             rowo.CreateCell(4).SetCellValue(other.OItem);
+                            rowo.GetCell(4).CellStyle = s1;// 20211222 add style 
                         }                       
                         if (other.OPrice != null)
                         {
                             rowo.CreateCell(5).SetCellValue(double.Parse(other.OPrice.ToString()));
+                            rowo.GetCell(5).CellStyle = s1;// 20211222 add style 
                         }
                         if (other.ODescription != null)
                         {
                             rowo.CreateCell(6).SetCellValue(other.ODescription);
+                            rowo.GetCell(6).CellStyle = s1;// 20211222 add style 
                         }
                         if (other.ONote != null)
                         {
                             rowo.CreateCell(7).SetCellValue(other.ONote);
+                            rowo.GetCell(7).CellStyle = s1;// 20211222 add style 
                         }
                         io++;
                     }
@@ -758,6 +860,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 rowo.CreateCell(1).SetCellValue((string)Matnr);
                                 rowo.CreateCell(2).SetCellValue((string)Description);
                                 rowo.CreateCell(3).SetCellValue("Y");
+
+                                rowo.GetCell(0).CellStyle = s1;// 20211222 add style 
+                                rowo.GetCell(1).CellStyle = s1;// 20211222 add style 
+                                rowo.GetCell(2).CellStyle = s1;// 20211222 add style 
+                                rowo.GetCell(3).CellStyle = s1;// 20211222 add style 
                                 co++;
                             }
                         }
