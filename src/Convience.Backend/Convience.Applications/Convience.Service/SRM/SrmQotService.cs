@@ -630,18 +630,21 @@ namespace Convience.Service.SRM
         }
         public IQueryable GetQotData(int rfqid, int vendorid, int qotid)
         {
-            decimal historyprice = GetHistoryPrice(qotid);
+            //decimal historyprice = GetHistoryPrice(qotid);
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }                         
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                           join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                           join hi in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1, Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1 } equals new { Vendor = hi.Vendor, Matnr = hi.Matnr }
                            join mu in _context.SrmMeasureUnits on rm.Unit equals mu.MeasureId into mug
                            from mu in mug.DefaultIfEmpty()
                            join s in _context.SrmStatuses on q.Status equals s.Status
                            join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
                            from u1 in u1g.DefaultIfEmpty()
+                          
 
-                               //where e.OwnerID == user.UID 
+                           //where e.OwnerID == user.UID 
                            select new
                            {
                                RfqNum = r.RfqNum,
@@ -669,12 +672,10 @@ namespace Convience.Service.SRM
                                Height = rm.Height,
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
-                               
                                Qty = rm.Qty,
                                estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString())) ? DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd") : "",
-
                                Unit = mu.MeasureDesc,//20211203
-                               Purposeprice = historyprice
+                               Purposeprice = hi.TargetPrice//historyprice
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
