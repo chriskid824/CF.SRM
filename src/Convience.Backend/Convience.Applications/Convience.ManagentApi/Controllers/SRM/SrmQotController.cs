@@ -27,6 +27,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using NPOI.HSSF.Util;
+using Microsoft.AspNetCore.Http;
+using System.Web;
+using System.Configuration;
+using System.Net.Http;
+using System.Net;
+using NPOI.XSSF.UserModel;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -38,12 +44,12 @@ namespace Convience.ManagentApi.Controllers.SRM
         private readonly ISrmQotService _srmQotService;
         private readonly ISrmRfqMService _srmRfqMService;
         private readonly appSettings _appSettingsService;
-        private  Dictionary<string, string> excelColumn = new Dictionary<string, string>();
+        private Dictionary<string, string> excelColumn = new Dictionary<string, string>();
         private readonly ISrmFileService _srmFileService;
 
         public SrmQotController(
-            ISrmQotService srmQotService, 
-            ISrmRfqMService srmRfqMService, 
+            ISrmQotService srmQotService,
+            ISrmRfqMService srmRfqMService,
             IOptions<appSettings> appSettingsOption,
             ISrmFileService srmFileService)
         {
@@ -77,12 +83,12 @@ namespace Convience.ManagentApi.Controllers.SRM
             qot.status = status;//(int)query["status"];
             qot.matnr = matnr;
             qot.vendor = vendor;
-            var result =  _srmQotService.GetQotList(qot);
+            var result = _srmQotService.GetQotList(qot);
             //if (query["vendor"].ToString().IndexOf("admin") != -1)
             //{
             //    result = _srmQotService.GetQotListByAdmin(qot);
             //}
-            
+
             //var result = _srmQotService.GetQotListByAdmin(qot); 
 
             return JsonConvert.SerializeObject(result, Formatting.None,
@@ -107,9 +113,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             //ViewSrmRfqH h = _srmRfqHService.GetDataByRfqId(id);
             //h.sourcerName = _userService.GetUsers(new UserQueryModel() { UserName = h.Sourcer, Page = 1, Size = 1 }).Data[0].Name;
             //h.C_by = _userService.GetUsers(new UserQueryModel() { UserName = h.CreateBy, Page = 1, Size = 1 }).Data[0].Name;
-            
-            
-            System.Linq.IQueryable QotV = _srmQotService.GetQotData(rfqid, vendorid,id); //表單欄位用
+
+
+            System.Linq.IQueryable QotV = _srmQotService.GetQotData(rfqid, vendorid, id); //表單欄位用
             System.Linq.IQueryable matnr = _srmQotService.GetMatnrData(rfqid, vendorid); //表單欄位用
 
             //ViewSrmRfqV[] v = _srmRfqVService.GetDataByRfqId(id);
@@ -142,7 +148,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 MatnrId = query.matnrId
             };
             detail.matnr = _srmRfqMService.GetRfqMData(m);
-            detail.qot = _srmQotService.GetQot( query);
+            detail.qot = _srmQotService.GetQot(query);
             return Ok(detail);
         }
 
@@ -150,25 +156,47 @@ namespace Convience.ManagentApi.Controllers.SRM
         //[Permission("rfq")]//???
         public IActionResult Save(JObject qot)
         {
-            SrmQotH q = qot["q"].ToObject<SrmQotH>();
-            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
-            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
-            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
-            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
-            DateTime now = DateTime.Now;
-            q.LastUpdateDate = now;
-            _srmQotService.Save(q, m, s, p, o);
-            return Ok();
+            //SrmQotH q = qot["q"].ToObject<SrmQotH>();
+            //SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+            //SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+            //SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+            //SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+            //DateTime now = DateTime.Now;
+            //q.LastUpdateDate = now;
+            //_srmQotService.Save(q, m, s, p, o);
+            //return Ok();
+            string msg = string.Empty;
+            try
+            {
+                SrmQotH q = qot["q"].ToObject<SrmQotH>();
+                SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+                SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+                SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+                SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+                DateTime now = DateTime.Now;
+                q.LastUpdateDate = now;
+                msg = _srmQotService.Save(q, m, s, p, o);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    return this.BadRequestResult(msg);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+                //this.BadRequestResult(ex.ToString());
+            }
         }
 
-        
+
         [HttpPost("Reject")]
         //[Permission("rfq")]
         public IActionResult Reject(JObject qot)
         {
             try
             {
-                SrmQotUpdateMaterial q = qot["q"].ToObject<SrmQotUpdateMaterial>();           
+                SrmQotUpdateMaterial q = qot["q"].ToObject<SrmQotUpdateMaterial>();
                 q.LastUpdateDate = DateTime.Now;
                 _srmQotService.UpdateQotStatus(((int)Status.拒絕), q);
                 _srmQotService.InsertRejectReason(q);
@@ -176,7 +204,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
                 //更新rfq
                 if (IfUpdateRfq)
-                {                   
+                {
                     _srmQotService.UpdateRfqStatus(((int)Status.確認), q);
                 }
                 return Ok();
@@ -187,9 +215,9 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
-        
 
-        
+
+
         [HttpPost("GetRowNum")]
         //[Permission("rfq")]//???
         public int GetRowNum(JObject qot)
@@ -225,24 +253,38 @@ namespace Convience.ManagentApi.Controllers.SRM
         //[Permission("rfq")]//???
         public IActionResult Send(JObject qot)
         {
-            SrmQotH q = qot["q"].ToObject<SrmQotH>();
-            SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
-            SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
-            SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
-            SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
-            DateTime now = DateTime.Now;
-            q.LastUpdateDate = now;
-            _srmQotService.Save(q, m, s, p, o);
-            SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
-            _srmQotService.UpdateQotStatus(((int)Status.確認), qu);
-            //確認所有qot
-            bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
-            //更新rfq
-            if (IfUpdateRfq)
+            string msg = string.Empty;
+            try 
             {
-                _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
+                SrmQotH q = qot["q"].ToObject<SrmQotH>();
+                SrmQotMaterial[] m = qot["material"].ToObject<SrmQotMaterial[]>();
+                SrmQotSurface[] s = qot["surface"].ToObject<SrmQotSurface[]>();
+                SrmQotProcess[] p = qot["process"].ToObject<SrmQotProcess[]>();
+                SrmQotOther[] o = qot["other"].ToObject<SrmQotOther[]>();
+                DateTime now = DateTime.Now;
+                q.LastUpdateDate = now;
+                //_srmQotService.Save(q, m, s, p, o);
+                msg = _srmQotService.Save(q, m, s, p, o);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    return this.BadRequestResult(msg);
+                }
+                SrmQotUpdateMaterial qu = qot["q"].ToObject<SrmQotUpdateMaterial>();
+                _srmQotService.UpdateQotStatus(((int)Status.確認), qu);
+                //確認所有qot
+                bool IfUpdateRfq = _srmQotService.CheckAllQot(q);
+                //更新rfq
+                if (IfUpdateRfq)
+                {
+                    _srmQotService.UpdateRfqStatus(((int)Status.確認), qu);
+                }
+                return Ok();
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return this.BadRequestResult(ex.Message);
+            }
+           
         }
         /*[HttpPost("SendAllQot")]
         //[Permission("rfq")]//???
@@ -266,9 +308,10 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             return msg;
         }*/
+       
         [HttpPost("Download")]
         //[Permission("rfq")]//???
-        public IActionResult Download(QueryQot query)
+        public async Task<IActionResult> Download(QueryQot query)
         {
             try
             {
@@ -286,7 +329,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 var qots = Queryable.Cast<object>(QotV);
                 #endregion
 
-                IWorkbook wb = new HSSFWorkbook();
+                IWorkbook wb = new XSSFWorkbook();
                 ISheet ws = wb.CreateSheet("報價單表頭");
                 ISheet ws1 = wb.CreateSheet("材料");
                 ISheet ws2 = wb.CreateSheet("加工");
@@ -300,8 +343,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ICellStyle s1 = wb.CreateCellStyle();
                 s.FillForegroundColor = HSSFColor.Yellow.Index;
                 s.FillPattern = FillPattern.SolidForeground;
-                
-                HSSFFont font1 = (HSSFFont)wb.CreateFont();
+
+                XSSFFont font1 = (XSSFFont)wb.CreateFont();
                 font1.FontName = "Microsoft JhengHei";
                 font1.FontHeightInPoints = 12;
                 s1.SetFont(font1);
@@ -324,18 +367,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                     RNo = q.GetType().GetProperties()[0].GetValue(q).ToString();
                     MatnrNo = q.GetType().GetProperties()[1].GetValue(q).ToString();
                     Desc = q.GetType().GetProperties()[2].GetValue(q).ToString();
-                 
+
                     var row2 = ws.CreateRow(ii);
                     var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                     var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                     var Description = q.GetType().GetProperties()[2].GetValue(q);
-                    var estdate = (q.GetType().GetProperties()[3].GetValue(q) == null) ? "" : q.GetType().GetProperties()[3].GetValue(q).ToString();
-                    var leadtime = (q.GetType().GetProperties()[4].GetValue(q) == null) ? "" : q.GetType().GetProperties()[4].GetValue(q).ToString();
-                    var note = (q.GetType().GetProperties()[5].GetValue(q) ==null )?"":q.GetType().GetProperties()[5].GetValue(q).ToString();
-                    
+                    var estdate = (q.GetType().GetProperties()[4].GetValue(q) == null) ? "" : q.GetType().GetProperties()[4].GetValue(q).ToString();
+                    var leadtime = (q.GetType().GetProperties()[3].GetValue(q) == null) ? "" : q.GetType().GetProperties()[3].GetValue(q).ToString();
+                    var note = (q.GetType().GetProperties()[5].GetValue(q) == null) ? "" : q.GetType().GetProperties()[5].GetValue(q).ToString();
 
-                  
-                    row2.CreateCell(0).SetCellValue((string)RfqNum);              
+
+
+                    row2.CreateCell(0).SetCellValue((string)RfqNum);
                     row2.CreateCell(1).SetCellValue((string)Matnr);
                     row2.CreateCell(2).SetCellValue((string)Description);
                     row2.CreateCell(3).SetCellValue((string)estdate);
@@ -359,13 +402,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ws.GetRow(0).GetCell(2).CellStyle = s;
                 ws.GetRow(0).GetCell(3).CellStyle = s;
                 ws.GetRow(0).GetCell(4).CellStyle = s;
-            
+
                 #endregion
 
-
-                /**/
-                //loop資料進excel
                 #region 材料
+
+                Dictionary<string, string> materiallist = new Dictionary<string, string>();
+
                 InitExcelColumn("材料");
                 ws1.CreateRow(0);
                 for (int i1 = 0; i1 < excelColumn.Count; i1++)
@@ -374,7 +417,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     ws1.GetRow(0).CreateCell(i1).SetCellValue(column1.Value);
                     ws1.GetRow(0).GetCell(i1).CellStyle = s1;// 20211222 add style  
                 }
-                int im= 1;
+                int im = 1;
                 SrmQotMaterial[] materials = qotdetail.material;
                 if (materials.Count() == 0)
                 {
@@ -395,7 +438,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowm0.GetCell(2).CellStyle = s1;
 
                         var mEmptyFlag = q.GetType().GetProperties()[6].GetValue(q);
-                        if (mEmptyFlag != null) 
+                        if (mEmptyFlag != null)
                         {
                             if (mEmptyFlag.ToString() == "X")
                             {
@@ -406,22 +449,28 @@ namespace Convience.ManagentApi.Controllers.SRM
                         ii++;
                     }
                 }
-                else 
+                else
                 {
                     foreach (var material in materials)
                     {
                         query.qotId = material.QotId;
+                        materiallist.Add($"QotId{im}", material.QotId.ToString());
                         var qotdata = _srmQotService.GetQotInfo(int.Parse(query.rfqId.ToString()), int.Parse(query.vendorId.ToString()), int.Parse(material.QotId.ToString()));
                         var qq = Queryable.Cast<object>(qotdata).FirstOrDefault();
                         RNo = qq.GetType().GetProperties()[0].GetValue(qq).ToString();
                         MatnrNo = qq.GetType().GetProperties()[1].GetValue(qq).ToString();
                         Desc = qq.GetType().GetProperties()[2].GetValue(qq).ToString();
-                        //var mEmptyFlag = qq.GetType().GetProperties()[2].GetValue(qq).ToString();
-                        var rowm = ws1.CreateRow(im);                       
+                        var mEmptyFlag = qq.GetType().GetProperties()[3].GetValue(qq).ToString();
+                        var rowm = ws1.CreateRow(im);
                         rowm.CreateCell(0).SetCellValue(RNo);
                         rowm.CreateCell(1).SetCellValue(MatnrNo);
                         rowm.CreateCell(2).SetCellValue((Desc));
-                        rowm.CreateCell(3).SetCellValue("");//不回填??
+                        //rowm.CreateCell(3).SetCellValue("");//不回填??
+                        if (mEmptyFlag.ToString() =="X") 
+                        {
+                            rowm.CreateCell(3).SetCellValue("Y");
+                            rowm.GetCell(3).CellStyle = s1;
+                        }
 
                         rowm.GetCell(0).CellStyle = s1;// 20211222 add style  
                         rowm.GetCell(1).CellStyle = s1;// 20211222 add style  
@@ -431,22 +480,22 @@ namespace Convience.ManagentApi.Controllers.SRM
                             rowm.CreateCell(4).SetCellValue(material.MMaterial);
                             rowm.GetCell(4).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.Length != null) 
+                        if (material.Length != null)
                         {
                             rowm.CreateCell(5).SetCellValue(material.Length.Value);
                             rowm.GetCell(5).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.Width !=null) 
+                        if (material.Width != null)
                         {
                             rowm.CreateCell(6).SetCellValue(material.Width.Value);
                             rowm.GetCell(6).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.Height !=null) 
+                        if (material.Height != null)
                         {
                             rowm.CreateCell(7).SetCellValue(material.Height.Value);
                             rowm.GetCell(7).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.Density !=null)
+                        if (material.Density != null)
                         {
                             rowm.CreateCell(8).SetCellValue(material.Density.Value);
                             rowm.GetCell(8).CellStyle = s1;// 20211222 add style  
@@ -461,40 +510,51 @@ namespace Convience.ManagentApi.Controllers.SRM
                             rowm.CreateCell(10).SetCellValue(double.Parse(material.MPrice.ToString()));
                             rowm.GetCell(10).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.MCostPrice !=null) 
+                        if (material.MCostPrice != null)
                         {
                             rowm.CreateCell(11).SetCellValue(double.Parse(material.MCostPrice.ToString()));
                             rowm.GetCell(11).CellStyle = s1;// 20211222 add style  
                         }
-                        if (material.Note !=null)
+                        if (material.Note != null)
                         {
                             rowm.CreateCell(12).SetCellValue(material.Note);
                             rowm.GetCell(12).CellStyle = s1;// 20211222 add style  
                         }
                         im++;
                     }
-                    int cm = materials.Count()+1;
+                    int cm = materials.Count() + 1;
+                    //沒有明細的??
                     foreach (var q in qots)
                     {
+                        bool existsm = materiallist.Values.Contains(q.GetType().GetProperties()[10].GetValue(q).ToString());
+
+                           //bool aa = materials.Contains();
+
                         var rowm = ws1.CreateRow(cm);
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
+
+
                         var mEmptyFlag = q.GetType().GetProperties()[6].GetValue(q);
-                        if (mEmptyFlag != null) 
+                        if (!existsm)
                         {
-                            if (mEmptyFlag.ToString() == "X")
+                            rowm.CreateCell(0).SetCellValue((string)RfqNum);
+                            rowm.CreateCell(1).SetCellValue((string)Matnr);
+                            rowm.CreateCell(2).SetCellValue((string)Description);
+
+                            rowm.GetCell(0).CellStyle = s1;
+                            rowm.GetCell(1).CellStyle = s1;
+                            rowm.GetCell(2).CellStyle = s1;
+                            if (mEmptyFlag != null)
                             {
-                                rowm.CreateCell(0).SetCellValue((string)RfqNum);
-                                rowm.CreateCell(1).SetCellValue((string)Matnr);
-                                rowm.CreateCell(2).SetCellValue((string)Description);
-                                rowm.CreateCell(3).SetCellValue("Y");
-                                // 20211222 add style 
-                                rowm.GetCell(0).CellStyle = s1; 
-                                rowm.GetCell(1).CellStyle = s1;
-                                rowm.GetCell(2).CellStyle = s1;
-                                rowm.GetCell(3).CellStyle = s1;
-                                cm++;
+                                if (mEmptyFlag.ToString() == "X")
+                                {
+                                    rowm.CreateCell(3).SetCellValue("Y");
+                                    // 20211222 add style 
+                                    rowm.GetCell(3).CellStyle = s1;
+                                    cm++;
+                                }
                             }
                         }
                     }
@@ -507,10 +567,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ws1.GetRow(0).GetCell(9).CellStyle = s;
                 ws1.GetRow(0).GetCell(10).CellStyle = s;
                 #endregion
-                #region 加工
 
+                #region 加工
+                Dictionary<string, string> processlist = new Dictionary<string, string>();
                 InitExcelColumn("加工");
-                
+
                 ws2.CreateRow(0);
                 for (int i2 = 0; i2 < excelColumn.Count; i2++)
                 {
@@ -529,6 +590,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
+
                         rowp0.CreateCell(0).SetCellValue((string)RfqNum);
                         rowp0.CreateCell(1).SetCellValue((string)Matnr);
                         rowp0.CreateCell(2).SetCellValue((string)Description);
@@ -538,14 +600,14 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowp0.GetCell(2).CellStyle = s1;// 20211222 add style  
 
                         var pEmptyFlag = q.GetType().GetProperties()[7].GetValue(q);
-                        if (pEmptyFlag != null) 
+                        if (pEmptyFlag != null)
                         {
                             if (pEmptyFlag.ToString() == "X")
                             {
                                 rowp0.CreateCell(3).SetCellValue("Y");
                                 rowp0.GetCell(3).CellStyle = s1;// 20211222 add style  
                             }
-                        }                        
+                        }
                         ii++;
                     }
                 }
@@ -554,14 +616,16 @@ namespace Convience.ManagentApi.Controllers.SRM
                     foreach (var process in processs)
                     {
                         var rowp = ws2.CreateRow(ip);
-
+                        
                         query.qotId = process.QotId;
+                        processlist.Add($"QotId{ip}", process.QotId.ToString());
+
                         var qotdata = _srmQotService.GetQotInfo(int.Parse(query.rfqId.ToString()), int.Parse(query.vendorId.ToString()), int.Parse(process.QotId.ToString()));
                         var qq = Queryable.Cast<object>(qotdata).FirstOrDefault();
                         RNo = qq.GetType().GetProperties()[0].GetValue(qq).ToString();
                         MatnrNo = qq.GetType().GetProperties()[1].GetValue(qq).ToString();
                         Desc = qq.GetType().GetProperties()[2].GetValue(qq).ToString();
-
+                        var pEmptyFlag = qq.GetType().GetProperties()[4].GetValue(qq).ToString();
                         rowp.CreateCell(0).SetCellValue(RNo);
                         rowp.CreateCell(1).SetCellValue(MatnrNo);
                         rowp.CreateCell(2).SetCellValue((Desc));
@@ -570,8 +634,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowp.GetCell(1).CellStyle = s1;// 20211222 add style  
                         rowp.GetCell(2).CellStyle = s1;// 20211222 add style  
 
-                        rowp.CreateCell(3).SetCellValue("");//不回填??
-                        if (process.PProcessNum !=null) 
+                        //rowp.CreateCell(3).SetCellValue("");//不回填??
+                        if (pEmptyFlag.ToString() =="X") 
+                        {
+                            rowp.CreateCell(3).SetCellValue("Y");
+                            rowp.GetCell(3).CellStyle = s1;
+                        }
+                        if (process.PProcessNum != null)
                         {
                             string processname = _srmQotService.GetProcessByNum(int.Parse(process.PProcessNum));
                             rowp.CreateCell(4).SetCellValue(processname);
@@ -605,30 +674,55 @@ namespace Convience.ManagentApi.Controllers.SRM
                         ip++;
                     }
                     int cp = processs.Count() + 1;
+
                     foreach (var q in qots)
                     {
+                        bool existsp = processlist.Values.Contains(q.GetType().GetProperties()[10].GetValue(q).ToString());
+
                         var rowp = ws2.CreateRow(cp);
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
                         var pEmptyFlag = q.GetType().GetProperties()[7].GetValue(q);
-                        if (pEmptyFlag != null) 
+
+                        if (!existsp)
                         {
-                            if (pEmptyFlag.ToString() == "X")
+                            rowp.CreateCell(0).SetCellValue((string)RfqNum);
+                            rowp.CreateCell(1).SetCellValue((string)Matnr);
+                            rowp.CreateCell(2).SetCellValue((string)Description);
+
+                            rowp.GetCell(0).CellStyle = s1;// 20211222 add style 
+                            rowp.GetCell(1).CellStyle = s1;// 20211222 add style 
+                            rowp.GetCell(2).CellStyle = s1;// 20211222 add style 
+                            if (pEmptyFlag != null)
                             {
-                                rowp.CreateCell(0).SetCellValue((string)RfqNum);
-                                rowp.CreateCell(1).SetCellValue((string)Matnr);
-                                rowp.CreateCell(2).SetCellValue((string)Description);
-                                rowp.CreateCell(3).SetCellValue("Y");
-
-                                rowp.GetCell(0).CellStyle = s1;// 20211222 add style 
-                                rowp.GetCell(1).CellStyle = s1;// 20211222 add style 
-                                rowp.GetCell(2).CellStyle = s1;// 20211222 add style 
-                                rowp.GetCell(3).CellStyle = s1;// 20211222 add style 
-
-                                cp++;
+                                if (pEmptyFlag.ToString() == "X")
+                                {
+                                    rowp.CreateCell(3).SetCellValue("Y");
+                                    rowp.GetCell(3).CellStyle = s1;// 20211222 add style 
+                                    cp++;
+                                }
                             }
+
                         }
+                        //if (pEmptyFlag != null)
+                        //{
+                        //    if (pEmptyFlag.ToString() == "X")
+                        //    {
+                        //        rowp.CreateCell(0).SetCellValue((string)RfqNum);
+                        //        rowp.CreateCell(1).SetCellValue((string)Matnr);
+                        //        rowp.CreateCell(2).SetCellValue((string)Description);
+                        //        rowp.CreateCell(3).SetCellValue("Y");
+
+                        //        rowp.GetCell(0).CellStyle = s1;// 20211222 add style 
+                        //        rowp.GetCell(1).CellStyle = s1;// 20211222 add style 
+                        //        rowp.GetCell(2).CellStyle = s1;// 20211222 add style 
+                        //        rowp.GetCell(3).CellStyle = s1;// 20211222 add style 
+                        //        cp++;
+
+                        //    }
+                        //}
+
                     }
                 }
                 ws2.GetRow(0).GetCell(0).CellStyle = s;
@@ -640,7 +734,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 #endregion
 
                 #region 表面處理
-
+                Dictionary<string, string> surfacelist = new Dictionary<string, string>();
                 InitExcelColumn("表面處理");
                 ws3.CreateRow(0);
                 for (int i3 = 0; i3 < excelColumn.Count; i3++)
@@ -680,26 +774,33 @@ namespace Convience.ManagentApi.Controllers.SRM
                     }
                 }
                 else
-                {  
+                {
                     foreach (var surface in surfaces)
                     {
                         var rows = ws3.CreateRow(iss);
                         query.qotId = surface.QotId;
+                        surfacelist.Add($"QotId{iss}", surface.QotId.ToString());
                         var qotdata = _srmQotService.GetQotInfo(int.Parse(query.rfqId.ToString()), int.Parse(query.vendorId.ToString()), int.Parse(surface.QotId.ToString()));
                         var qq = Queryable.Cast<object>(qotdata).FirstOrDefault();
                         RNo = qq.GetType().GetProperties()[0].GetValue(qq).ToString();
                         MatnrNo = qq.GetType().GetProperties()[1].GetValue(qq).ToString();
                         Desc = qq.GetType().GetProperties()[2].GetValue(qq).ToString();
+                        var sEmptyFlag = qq.GetType().GetProperties()[5].GetValue(qq).ToString();
                         rows.CreateCell(0).SetCellValue(RNo);
                         rows.CreateCell(1).SetCellValue(MatnrNo);
                         rows.CreateCell(2).SetCellValue((Desc));
-                        rows.CreateCell(3).SetCellValue("");//不回填??
+                        //rows.CreateCell(3).SetCellValue("");//不回填??
 
                         rows.GetCell(0).CellStyle = s1;// 20211222 add style 
                         rows.GetCell(1).CellStyle = s1;// 20211222 add style 
                         rows.GetCell(2).CellStyle = s1;// 20211222 add style 
+                        if (sEmptyFlag.ToString() =="X")
+                        {
+                            rows.CreateCell(3).SetCellValue("Y");
+                            rows.GetCell(3).CellStyle = s1;
+                        }
 
-                        if (surface.SProcess != null) 
+                        if (surface.SProcess != null)
                         {
                             string sufacename = _srmQotService.GetSurfaceProcessByNum(int.Parse(surface.SProcess));
                             rows.CreateCell(4).SetCellValue(sufacename); //轉換成加工中文??
@@ -730,27 +831,31 @@ namespace Convience.ManagentApi.Controllers.SRM
                     int cs = surfaces.Count() + 1;
                     foreach (var q in qots)
                     {
+                        bool existss = surfacelist.Values.Contains(q.GetType().GetProperties()[10].GetValue(q).ToString());
                         var rows = ws3.CreateRow(cs);
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
                         var sEmptyFlag = q.GetType().GetProperties()[8].GetValue(q);
-                        if (sEmptyFlag != null)
-                        {
-                            if (sEmptyFlag.ToString() == "X")
-                            {
-                                rows.CreateCell(0).SetCellValue((string)RfqNum);
-                                rows.CreateCell(1).SetCellValue((string)Matnr);
-                                rows.CreateCell(2).SetCellValue((string)Description);
-                                rows.CreateCell(3).SetCellValue("Y");
 
-                                rows.GetCell(0).CellStyle = s1;// 20211222 add style 
-                                rows.GetCell(1).CellStyle = s1;// 20211222 add style 
-                                rows.GetCell(2).CellStyle = s1;// 20211222 add style 
-                                rows.GetCell(3).CellStyle = s1;// 20211222 add style 
-                                cs++;
+                        if (!existss)
+                        {
+                            rows.CreateCell(0).SetCellValue((string)RfqNum);
+                            rows.CreateCell(1).SetCellValue((string)Matnr);
+                            rows.CreateCell(2).SetCellValue((string)Description);
+                            rows.GetCell(0).CellStyle = s1;// 20211222 add style 
+                            rows.GetCell(1).CellStyle = s1;// 20211222 add style 
+                            rows.GetCell(2).CellStyle = s1;// 20211222 add style 
+                            if (sEmptyFlag != null)
+                            {
+                                if (sEmptyFlag.ToString() == "X")
+                                { 
+                                    rows.CreateCell(3).SetCellValue("Y");
+                                    rows.GetCell(3).CellStyle = s1;// 20211222 add style 
+                                    cs++;
+                                }
                             }
-                        } 
+                        }
                     }
                 }
                 ws3.GetRow(0).GetCell(0).CellStyle = s;
@@ -762,7 +867,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 #endregion
 
                 #region 其他
-
+                Dictionary<string, string> otherlist = new Dictionary<string, string>();
                 InitExcelColumn("其他");
                 ws4.CreateRow(0);
                 for (int i4 = 0; i4 < excelColumn.Count; i4++)
@@ -782,6 +887,9 @@ namespace Convience.ManagentApi.Controllers.SRM
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
+                        
+                        var oEmptyFlag = q.GetType().GetProperties()[9].GetValue(q);
+
                         rowo0.CreateCell(0).SetCellValue((string)RfqNum);
                         rowo0.CreateCell(1).SetCellValue((string)Matnr);
                         rowo0.CreateCell(2).SetCellValue((string)Description);
@@ -790,12 +898,11 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowo0.GetCell(1).CellStyle = s1;// 20211222 add style 
                         rowo0.GetCell(2).CellStyle = s1;// 20211222 add style 
 
-                        var oEmptyFlag = q.GetType().GetProperties()[9].GetValue(q);
                         if (oEmptyFlag != null)
                         {
                             if (oEmptyFlag.ToString() == "X")
-                            {
-                                rowo0.CreateCell(3).SetCellValue("Y");
+                            {                               
+                                rowo0.CreateCell(3).SetCellValue("Y");                              
                                 rowo0.GetCell(3).CellStyle = s1;// 20211222 add style 
                             }
                         }
@@ -808,11 +915,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                     {
                         var rowo = ws4.CreateRow(io);
                         query.qotId = other.QotId;
+                        otherlist.Add($"QotId{io}", other.QotId.ToString());
                         var qotdata = _srmQotService.GetQotInfo(int.Parse(query.rfqId.ToString()), int.Parse(query.vendorId.ToString()), int.Parse(other.QotId.ToString()));
                         var qq = Queryable.Cast<object>(qotdata).FirstOrDefault();
                         RNo = qq.GetType().GetProperties()[0].GetValue(qq).ToString();
                         MatnrNo = qq.GetType().GetProperties()[1].GetValue(qq).ToString();
                         Desc = qq.GetType().GetProperties()[2].GetValue(qq).ToString();
+                        var oEmptyFlag = qq.GetType().GetProperties()[6].GetValue(qq); //20211227
                         rowo.CreateCell(0).SetCellValue(RNo);
                         rowo.CreateCell(1).SetCellValue(MatnrNo);
                         rowo.CreateCell(2).SetCellValue((Desc));
@@ -820,13 +929,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                         rowo.GetCell(0).CellStyle = s1;// 20211222 add style 
                         rowo.GetCell(1).CellStyle = s1;// 20211222 add style 
                         rowo.GetCell(2).CellStyle = s1;// 20211222 add style 
-
-                        rowo.CreateCell(3).SetCellValue("");//不回填??
-                        if (other.OItem !=null)
+                        //20211227
+                        if (oEmptyFlag.ToString() == "X") 
+                        {
+                            rowo.CreateCell(3).SetCellValue("Y");
+                            rowo.GetCell(3).CellStyle = s1;
+                        }
+                        //rowo.CreateCell(3).SetCellValue("");//不回填??
+                        if (other.OItem != null)
                         {
                             rowo.CreateCell(4).SetCellValue(other.OItem);
                             rowo.GetCell(4).CellStyle = s1;// 20211222 add style 
-                        }                       
+                        }
                         if (other.OPrice != null)
                         {
                             rowo.CreateCell(5).SetCellValue(double.Parse(other.OPrice.ToString()));
@@ -847,25 +961,29 @@ namespace Convience.ManagentApi.Controllers.SRM
                     int co = others.Count() + 1;
                     foreach (var q in qots)
                     {
+                        bool existso = otherlist.Values.Contains(q.GetType().GetProperties()[10].GetValue(q).ToString());
                         var rowo = ws4.CreateRow(co);
                         var RfqNum = q.GetType().GetProperties()[0].GetValue(q);
                         var Matnr = q.GetType().GetProperties()[1].GetValue(q);
                         var Description = q.GetType().GetProperties()[2].GetValue(q);
                         var oEmptyFlag = q.GetType().GetProperties()[9].GetValue(q);
-                        if (oEmptyFlag != null)
-                        {
-                            if (oEmptyFlag.ToString() == "X")
-                            {
-                                rowo.CreateCell(0).SetCellValue((string)RfqNum);
-                                rowo.CreateCell(1).SetCellValue((string)Matnr);
-                                rowo.CreateCell(2).SetCellValue((string)Description);
-                                rowo.CreateCell(3).SetCellValue("Y");
 
-                                rowo.GetCell(0).CellStyle = s1;// 20211222 add style 
-                                rowo.GetCell(1).CellStyle = s1;// 20211222 add style 
-                                rowo.GetCell(2).CellStyle = s1;// 20211222 add style 
-                                rowo.GetCell(3).CellStyle = s1;// 20211222 add style 
-                                co++;
+                        if (!existso) 
+                        {
+                            rowo.CreateCell(0).SetCellValue((string)RfqNum);
+                            rowo.CreateCell(1).SetCellValue((string)Matnr);
+                            rowo.CreateCell(2).SetCellValue((string)Description);
+                            rowo.GetCell(0).CellStyle = s1;// 20211222 add style 
+                            rowo.GetCell(1).CellStyle = s1;// 20211222 add style 
+                            rowo.GetCell(2).CellStyle = s1;// 20211222 add style 
+                            if (oEmptyFlag != null)
+                            {
+                                if (oEmptyFlag.ToString() == "X")
+                                {
+                                    rowo.CreateCell(3).SetCellValue("Y");
+                                    rowo.GetCell(3).CellStyle = s1;// 20211222 add style 
+                                    co++;
+                                }
                             }
                         }
                     }
@@ -875,28 +993,38 @@ namespace Convience.ManagentApi.Controllers.SRM
                 ws4.GetRow(0).GetCell(2).CellStyle = s;
                 ws4.GetRow(0).GetCell(4).CellStyle = s;
                 ws4.GetRow(0).GetCell(5).CellStyle = s;
-                
+
                 #endregion
 
                 string filepath = $"D:\\Excel";
-                string fileName = filepath + $"\\{RNo}批次報價.xls";
+                string fileName = filepath + $"\\{RNo}批次報價.xlsx";
                 FileStream file = new FileStream(fileName, FileMode.Create);//產生檔案
                 wb.Write(file);
                 file.Close();
                 Console.WriteLine($@"匯出EXCEL成功，檔名為 --> {fileName}");
-                var j = new JObject();
-                j.Add("fileName", fileName);
-                return Ok(j);
+                string name = $@"{RNo}批次報價.xlsx";
+                string localFilePath = $@"{fileName}";
+
+                var stream = System.IO.File.OpenRead(localFilePath);
+                var f = await Task.FromResult<Stream>(stream);
+                return File(f, "application/octet-stream");
+
+                //回傳檔名
+                //var j = new JObject();
+                //j.Add("fileName", fileName);
+                //return Ok(File(System.IO.File.ReadAllBytes(localFilePath), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
             }
             catch (Exception ex)
             {
+                //throw new Exception(ex.ToString());
+                //return new Task<IActionResult>(ex);
                 return this.BadRequestResult(ex.Message);
-                Console.WriteLine("匯出EXCEL發生錯誤：");
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine("匯出EXCEL發生錯誤：");
+                //Console.WriteLine(ex.Message);
             }
         }
-        
+
         private void InitExcelColumn(string tabname)
         {
             excelColumn.Clear();
@@ -1033,141 +1161,12 @@ namespace Convience.ManagentApi.Controllers.SRM
                             qq.OEmptyFlag = "";
 
                             /*檢核報價單狀態須為初始*/
-                            qotstatus = _srmQotService.GetQotStatus(qq);
-                            if (qotstatus !=1) 
-                            {
-                                break;
-                            }
-                            /**/
-                            errTitle = $"詢價單:{dr_qoth["RfqNum"].ToString()}，";
-                            if (!Convert.ToBoolean(dr_qoth["IsExists"].ToString())) //false
-                            {
-                                throw new Exception($"詢價單:{dr_qoth["RfqNum"].ToString()} 料號:{dr_qoth["Matnr"].ToString()}不存在，請再次確認");
-                            }
-                            else
-                            {
-                                for(int qi = 0; qi < data_qoth.Rows.Count; qi++)
-                                {
-                                    DataRow dr_q = data_qoth.Rows[qi];
-                                    //errTitle = $"報價單表頭 : 報價單號:{dr_q["MMaterial"].ToString()}，";
-                                   
-                                }
-                                /*20211215*/
-                                //DataTable dtm = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(data_m));
-                                //DataRow[] drsm = dtm.Select($"RfqNum='{rfqnum}'  and Matnr ='{matnr}' and  IsExists ='1'");
-                                DataRow[] drms = data_m.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
-                                DataTable data_m1 = data_m.Clone();
-                                foreach (DataRow drm in drms)
-                                {
-                                    data_m1.ImportRow(drm);
-                                }
-                                SrmQotMaterial[] ms = JsonConvert.DeserializeObject<SrmQotMaterial[]>(JsonConvert.SerializeObject(data_m1));
-                                for (int mi = 0; mi < data_m1.Rows.Count; mi++)
-                                {
-                                    qq.MEmptyFlag = "";
-                                    DataRow dr_m = data_m1.Rows[mi];
-                                    errTitle = $"A材料 : 素材材質:{dr_m["MMaterial"].ToString()}，";
-                                    //if ((!string.IsNullOrWhiteSpace(dr_m["MEmptyFlag"].ToString())) && (dr_m["MEmptyFlag"].ToString().ToUpper() == "Y"))
-                                    if(dr_m["MEmptyFlag"].ToString().ToUpper() == "Y") 
-                                    {
-                                        qq.MEmptyFlag = "X";
-                                        ms = JsonConvert.DeserializeObject<SrmQotMaterial[]>(JsonConvert.SerializeObject(new DataTable()));
-                                    }
-                                 
-                                }
-                                DataRow[] drps = data_p.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
-                                DataTable data_p1 = data_p.Clone();
-                                foreach (DataRow drp in drps)
-                                {
-                                    data_p1.ImportRow(drp);
-                                }
-
-                                SrmQotProcess[] ps = JsonConvert.DeserializeObject<SrmQotProcess[]>(JsonConvert.SerializeObject(data_p1));
-                                for (int pi = 0; pi < data_p1.Rows.Count; pi++)
-                                {
-                                    qq.PEmptyFlag = "";
-                                    DataRow dr_p = data_p1.Rows[pi];
-                                    errTitle = $"B加工 : 工序:{dr_p["PProcess"].ToString()}，";
-                                    //if ((!string.IsNullOrWhiteSpace(dr_p["PEmptyFlag"].ToString())) && (dr_p["PEmptyFlag"].ToString().ToUpper() == "Y"))
-                                    if(dr_p["PEmptyFlag"].ToString().ToUpper() == "Y")
-                                    {
-                                        qq.PEmptyFlag = "X";
-                                        ps = JsonConvert.DeserializeObject<SrmQotProcess[]>(JsonConvert.SerializeObject(new DataTable()));
-                                    }
-                                }
-                                //SProcessDesc
-                                DataRow[] drss = data_s.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
-                                DataTable data_s1 = data_s.Clone();
-                                foreach (DataRow drs in drss)
-                                {
-                                    data_s1.ImportRow(drs);
-                                }
-                                SrmQotSurface[] ss = JsonConvert.DeserializeObject<SrmQotSurface[]>(JsonConvert.SerializeObject(data_s1));
-                                for (int si = 0; si < data_s1.Rows.Count; si++)
-                                {
-                                    qq.SEmptyFlag = "";
-                                    DataRow dr_s = data_s1.Rows[si];
-                                    errTitle = $"C表面處理 : 工序:{dr_s["SProcessDesc"].ToString()}，";
-                                    //if ((!string.IsNullOrWhiteSpace(dr_s["SEmptyFlag"].ToString())) && (dr_s["SEmptyFlag"].ToString().ToUpper() == "Y"))
-                                    if(dr_s["SEmptyFlag"].ToString().ToUpper() == "Y")
-                                    {
-                                        qq.SEmptyFlag = "X";
-                                        ss = JsonConvert.DeserializeObject<SrmQotSurface[]>(JsonConvert.SerializeObject(new DataTable()));
-                                    }                           
-                                }
-                                DataRow[] dros = data_o.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
-                                DataTable data_o1 = data_o.Clone();
-                                foreach (DataRow dro in dros)
-                                {
-                                    data_o1.ImportRow(dro);
-                                }
-                                SrmQotOther[] os = JsonConvert.DeserializeObject<SrmQotOther[]>(JsonConvert.SerializeObject(data_o1));
-                                for (int oi = 0; oi < data_o1.Rows.Count; oi++)
-                                {
-                                    qq.OEmptyFlag = "";
-                                    DataRow dr_o = data_o1.Rows[oi];
-                                    errTitle = $"D其他 : 項目:{dr_o["OItem"].ToString()}，";
-                                    //if ((!string.IsNullOrWhiteSpace(dr_o["OEmptyFlag"].ToString())) && (dr_o["OEmptyFlag"].ToString().ToUpper() == "Y"))
-                                    if(dr_o["OEmptyFlag"].ToString().ToUpper() == "Y")
-                                    {
-                                        qq.OEmptyFlag = "X";
-                                        os = JsonConvert.DeserializeObject<SrmQotOther[]>(JsonConvert.SerializeObject(new DataTable()));
-                                    }                                    
-                                }
-
-                                //_srmQotService.Save(qq, ms, ss, ps, os);
-                                /*20211215*/
-                            }
-                        }
-                        #region for save
-                        qots = JsonConvert.DeserializeObject<SrmQotH[]>(JsonConvert.SerializeObject(data_qoth));
-                        for (int i = 0; i < data_qoth.Rows.Count; i++)
-                        {
-                            DataRow dr_qoth = data_qoth.Rows[i];
-
-                            RfqNum = dr_qoth["RfqNum"].ToString();
-                            matnr = dr_qoth["Matnr"].ToString();
-                            query.rfqId = fileUploadModel.RfqId;
-                            query.vendorId = fileUploadModel.VendorId;
-                            query.matnr = matnr;
-                            int matnrid = _srmQotService.GetMatnrId(query);
-                            query.matnrId = matnrid;
-                            qotid = _srmQotService.GetQotId(query);
-                            query.qotId = qotid;
-                            qq = _srmQotService.GetQot(query);
-                            qq.LeadTime = double.Parse(dr_qoth["LeadTime"].ToString());
-                            qq.ExpirationDate = DateTime.Parse(dr_qoth["ExpirationDate"].ToString());
-                            qq.MEmptyFlag = "";
-                            qq.PEmptyFlag = "";
-                            qq.SEmptyFlag = "";
-                            qq.OEmptyFlag = "";
-
-                            /*檢核報價單狀態須為初始*/
-                            qotstatus = _srmQotService.GetQotStatus(qq);
-                            if (qotstatus != 1)
-                            {
-                                break;
-                            }
+                            //qotstatus = _srmQotService.GetQotStatus(qq);
+                            //if ((qotstatus == 1) ||(qotstatus == ))
+                            //{
+                            //    //throw new Exception($"詢價單:{dr_qoth["RfqNum"].ToString()} 料號:{dr_qoth["Matnr"].ToString()}狀態不為初始，無法異動報價資訊!");
+                            //    //break;
+                            //}
                             /**/
                             errTitle = $"詢價單:{dr_qoth["RfqNum"].ToString()}，";
                             if (!Convert.ToBoolean(dr_qoth["IsExists"].ToString())) //false
@@ -1265,14 +1264,148 @@ namespace Convience.ManagentApi.Controllers.SRM
                                     }
                                 }
 
-                                _srmQotService.Save(qq, ms, ss, ps, os);
+                                //_srmQotService.Save(qq, ms, ss, ps, os);
                                 /*20211215*/
                             }
+                        }
+                        #region for save
+                        qots = JsonConvert.DeserializeObject<SrmQotH[]>(JsonConvert.SerializeObject(data_qoth));
+                        for (int i = 0; i < data_qoth.Rows.Count; i++)
+                        {
+                            DataRow dr_qoth = data_qoth.Rows[i];
+
+                            RfqNum = dr_qoth["RfqNum"].ToString();
+                            matnr = dr_qoth["Matnr"].ToString();
+                            query.rfqId = fileUploadModel.RfqId;
+                            query.vendorId = fileUploadModel.VendorId;
+                            query.matnr = matnr;
+                            int matnrid = _srmQotService.GetMatnrId(query);
+                            query.matnrId = matnrid;
+                            qotid = _srmQotService.GetQotId(query);
+                            query.qotId = qotid;
+                            qq = _srmQotService.GetQot(query);
+                            qq.LeadTime = double.Parse(dr_qoth["LeadTime"].ToString());
+                            qq.ExpirationDate = DateTime.Parse(dr_qoth["ExpirationDate"].ToString());
+                            qq.MEmptyFlag = "";
+                            qq.PEmptyFlag = "";
+                            qq.SEmptyFlag = "";
+                            qq.OEmptyFlag = "";
+
+                            /*檢核報價單狀態須為初始*/
+                            qotstatus = _srmQotService.GetQotStatus(qq);
+                            //if (qotstatus != 1)
+                            //{
+                            //    break;
+                            //}
+                            //2021年暫開失效
+                            if ((qotstatus == 1) ||(qotstatus == 17))
+                            {
+                                errTitle = $"詢價單:{dr_qoth["RfqNum"].ToString()}，";
+                                if (!Convert.ToBoolean(dr_qoth["IsExists"].ToString())) //false
+                                {
+                                    throw new Exception($"詢價單:{dr_qoth["RfqNum"].ToString()} 料號:{dr_qoth["Matnr"].ToString()}不存在，請再次確認");
+                                }
+                                else
+                                {
+                                    for (int qi = 0; qi < data_qoth.Rows.Count; qi++)
+                                    {
+                                        DataRow dr_q = data_qoth.Rows[qi];
+                                        //errTitle = $"報價單表頭 : 報價單號:{dr_q["MMaterial"].ToString()}，";
+
+                                    }
+                                    /*20211215*/
+                                    //DataTable dtm = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(data_m));
+                                    //DataRow[] drsm = dtm.Select($"RfqNum='{rfqnum}'  and Matnr ='{matnr}' and  IsExists ='1'");
+                                    DataRow[] drms = data_m.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
+                                    DataTable data_m1 = data_m.Clone();
+                                    foreach (DataRow drm in drms)
+                                    {
+                                        data_m1.ImportRow(drm);
+                                    }
+                                    SrmQotMaterial[] ms = JsonConvert.DeserializeObject<SrmQotMaterial[]>(JsonConvert.SerializeObject(data_m1));
+                                    for (int mi = 0; mi < data_m1.Rows.Count; mi++)
+                                    {
+                                        qq.MEmptyFlag = "";
+                                        DataRow dr_m = data_m1.Rows[mi];
+                                        errTitle = $"A材料 : 素材材質:{dr_m["MMaterial"].ToString()}，";
+                                        //if ((!string.IsNullOrWhiteSpace(dr_m["MEmptyFlag"].ToString())) && (dr_m["MEmptyFlag"].ToString().ToUpper() == "Y"))
+                                        if (dr_m["MEmptyFlag"].ToString().ToUpper() == "Y")
+                                        {
+                                            qq.MEmptyFlag = "X";
+                                            ms = JsonConvert.DeserializeObject<SrmQotMaterial[]>(JsonConvert.SerializeObject(new DataTable()));
+                                        }
+
+                                    }
+                                    DataRow[] drps = data_p.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
+                                    DataTable data_p1 = data_p.Clone();
+                                    foreach (DataRow drp in drps)
+                                    {
+                                        data_p1.ImportRow(drp);
+                                    }
+
+                                    SrmQotProcess[] ps = JsonConvert.DeserializeObject<SrmQotProcess[]>(JsonConvert.SerializeObject(data_p1));
+                                    for (int pi = 0; pi < data_p1.Rows.Count; pi++)
+                                    {
+                                        qq.PEmptyFlag = "";
+                                        DataRow dr_p = data_p1.Rows[pi];
+                                        errTitle = $"B加工 : 工序:{dr_p["PProcess"].ToString()}，";
+                                        //if ((!string.IsNullOrWhiteSpace(dr_p["PEmptyFlag"].ToString())) && (dr_p["PEmptyFlag"].ToString().ToUpper() == "Y"))
+                                        if (dr_p["PEmptyFlag"].ToString().ToUpper() == "Y")
+                                        {
+                                            qq.PEmptyFlag = "X";
+                                            ps = JsonConvert.DeserializeObject<SrmQotProcess[]>(JsonConvert.SerializeObject(new DataTable()));
+                                        }
+                                    }
+                                    //SProcessDesc
+                                    DataRow[] drss = data_s.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
+                                    DataTable data_s1 = data_s.Clone();
+                                    foreach (DataRow drs in drss)
+                                    {
+                                        data_s1.ImportRow(drs);
+                                    }
+                                    SrmQotSurface[] ss = JsonConvert.DeserializeObject<SrmQotSurface[]>(JsonConvert.SerializeObject(data_s1));
+                                    for (int si = 0; si < data_s1.Rows.Count; si++)
+                                    {
+                                        qq.SEmptyFlag = "";
+                                        DataRow dr_s = data_s1.Rows[si];
+                                        errTitle = $"C表面處理 : 工序:{dr_s["SProcessDesc"].ToString()}，";
+                                        //if ((!string.IsNullOrWhiteSpace(dr_s["SEmptyFlag"].ToString())) && (dr_s["SEmptyFlag"].ToString().ToUpper() == "Y"))
+                                        if (dr_s["SEmptyFlag"].ToString().ToUpper() == "Y")
+                                        {
+                                            qq.SEmptyFlag = "X";
+                                            ss = JsonConvert.DeserializeObject<SrmQotSurface[]>(JsonConvert.SerializeObject(new DataTable()));
+                                        }
+                                    }
+                                    DataRow[] dros = data_o.Select(($"RfqNum='{RfqNum}' and  Matnr ='{matnr}' "));
+                                    DataTable data_o1 = data_o.Clone();
+                                    foreach (DataRow dro in dros)
+                                    {
+                                        data_o1.ImportRow(dro);
+                                    }
+                                    SrmQotOther[] os = JsonConvert.DeserializeObject<SrmQotOther[]>(JsonConvert.SerializeObject(data_o1));
+                                    for (int oi = 0; oi < data_o1.Rows.Count; oi++)
+                                    {
+                                        qq.OEmptyFlag = "";
+                                        DataRow dr_o = data_o1.Rows[oi];
+                                        errTitle = $"D其他 : 項目:{dr_o["OItem"].ToString()}，";
+                                        //if ((!string.IsNullOrWhiteSpace(dr_o["OEmptyFlag"].ToString())) && (dr_o["OEmptyFlag"].ToString().ToUpper() == "Y"))
+                                        if (dr_o["OEmptyFlag"].ToString().ToUpper() == "Y")
+                                        {
+                                            qq.OEmptyFlag = "X";
+                                            os = JsonConvert.DeserializeObject<SrmQotOther[]>(JsonConvert.SerializeObject(new DataTable()));
+                                        }
+                                    }
+
+                                    _srmQotService.Save(qq, ms, ss, ps, os);
+                                    /*20211215*/
+                                }
+                            }
+                            /**/
+                            
                         }
                         #endregion
 
                         errTitle = "";
-
 
                         transaction.Complete();
 

@@ -1555,7 +1555,8 @@ export class QotComponent implements OnInit {
     //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => (Math.round(sum + (current.sCostsum * 100) / 100)), 0));
     //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => (Math.round(sum + (current.oPrice * 100) / 100)), 0));
     //#endregion
-    this.sumMap.set("total", this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other"));
+    var total = this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other");
+    this.sumMap.set("total", Math.round(total * 100) / 100);
 
   }
 
@@ -1805,22 +1806,13 @@ export class QotComponent implements OnInit {
       vendorid: this.vendorid,
       rfqid: this.rfqid
     };
-    this._srmQotService.Download(query).subscribe(result => {
-      //this._messageService.success("檔案已下載至D:\Excel");
-      this._messageService.success("匯出EXCEL成功，檔名為 -->" + result["fileName"]);
-    });
-
-    /*var fileInfo = new FileInfo();
-    fileInfo.fileName = "SRM批次建立詢價單Excel上傳格式.xlsx"
-    fileInfo.directory = "範例";
-    this._fileService.download(fileInfo.fileName, fileInfo.directory).subscribe((result: any) => {
+    this._srmQotService.Download(query).subscribe((result: any) => {
       const a = document.createElement('a');
       const blob = new Blob([result], { 'type': "application/octet-stream" });
       a.href = URL.createObjectURL(blob);
-      console.log(blob);
-      a.download = fileInfo.fileName;
+      a.download = "批次報價.xlsx";
       a.click();
-    });*/
+    });
   }
   beforeUpload = (file): boolean => {
     this.fileList = [];

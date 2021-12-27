@@ -23,7 +23,10 @@ using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Data;
-
+using System.Net.Http;
+using System.Net;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Convience.Service.SRM
 {
@@ -42,7 +45,7 @@ namespace Convience.Service.SRM
         public IQueryable GetMatnrData(int rfqid, int vendorid);
         //public ViewQotResult GetDetail(SrmQotH[] query);
         public ViewQotResult GetDetail(QueryQot query);
-        public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers);
+        public string Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers);
         public void UpdateQotStatus(int status, SrmQotUpdateMaterial qotH);
         public SrmQotH[] GetByVendor(QueryQot query);
         //public ViewQotListL GetDataByRfqId(int RfqId);
@@ -76,6 +79,7 @@ namespace Convience.Service.SRM
         public string GetSurfaceProcessByNum(int num);
         public ViewQotResult GetDetailByVendorRfq(QueryQot query);
         public SrmQotH GetQotById(QueryQot query);
+        public HttpResponseMessage GetFile(string fileName, string localFilePath);
 
     }
     public class SrmQotService : ISrmQotService
@@ -154,7 +158,9 @@ namespace Convience.Service.SRM
             //0825
             var qot = _srmQotHRepository.Get(r => r.QotId == qotid).First(); //qotH.QotId).First();
 
-            if ((Status)qot.Status != Status.初始)
+            //if ((Status)qot.Status != Status.初始)
+            //20211227 暫開失效
+            if (((Status)qot.Status != Status.初始) && ((Status)qot.Status != Status.失效))
             {
                 throw new Exception($"非初始狀態無法{((Status)status).ToString()}");
             }
@@ -636,7 +642,8 @@ namespace Convience.Service.SRM
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }                         
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                            join v in _context.SrmVendors on q.VendorId equals v.VendorId
-                           join hi in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1, Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1 } equals new { Vendor = hi.Vendor, Matnr = hi.Matnr }
+                           join hi in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1, Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1 } equals new { Vendor = hi.Vendor, Matnr = hi.Matnr } into hig
+                           from hi in hig.DefaultIfEmpty()
                            join mu in _context.SrmMeasureUnits on rm.Unit equals mu.MeasureId into mug
                            from mu in mug.DefaultIfEmpty()
                            join s in _context.SrmStatuses on q.Status equals s.Status
@@ -657,10 +664,11 @@ namespace Convience.Service.SRM
                                pEmptyFlag = q.PEmptyFlag,
                                sEmptyFlag = q.SEmptyFlag,
                                oPEmptyFlag = q.OEmptyFlag,
+                               QotId = q.QotId,
                                CreateBy = (!string.IsNullOrWhiteSpace(u1.Name))? u1.Name:q.CreateBy,//q.CreateBy,
                                CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
                                Status = s.StatusDesc,
-                               QotId = q.QotId,
+                               
                                QotNum = q.QotNum,
                                //Status = q.Status.HasValue ? ((Status)q.Status).ToString() : "",
                                Material = rm.Material,
@@ -1187,8 +1195,9 @@ namespace Convience.Service.SRM
         }
 
 
-        public void Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers)
+        public string Save(SrmQotH qotH, SrmQotMaterial[] qotMaterials, SrmQotSurface[] qotSurfaces, SrmQotProcess[] qotProcesses, SrmQotOther[] qotOthers)
         {
+            string errmsg = string.Empty;
             DateTime now = DateTime.Now;
             //qotH.LastUpdateDate = now;
             //0825
@@ -1201,7 +1210,44 @@ namespace Convience.Service.SRM
                 query.matnrId = qotH.MatnrId;
                 qotid = GetQotId(query);
             }
-
+            /*20211227*/
+            if (qotH.MEmptyFlag =="X") 
+            {
+                if(qotMaterials.Length>0) 
+                {
+                    errmsg = "A.材料已勾選不回填，無需填寫材料明細";
+                    return errmsg;
+                    //throw new Exception("A.材料已勾選不回填，無需填寫材料明細");
+                }
+            }
+            if (qotH.PEmptyFlag == "X")
+            {
+                if (qotProcesses.Length > 0)
+                {
+                    //throw new Exception("B.加工已勾選不回填，無需填寫加工明細");
+                    errmsg = "B.加工已勾選不回填，無需填寫加工明細";
+                    return errmsg;
+                }
+            }
+            if (qotH.SEmptyFlag == "X")
+            {
+                if (qotSurfaces.Length > 0)
+                {
+                    //throw new Exception("C.表面處理已勾選不回填，無需填寫表面處理明細");            
+                    errmsg = "C.表面處理已勾選不回填，無需填寫表面處理明細";
+                    return errmsg;
+                }
+            }
+            if (qotH.OEmptyFlag == "X")
+            {
+                if (qotOthers.Length > 0)
+                {
+                    //throw new Exception("D.其他費用已勾選不回填，無需填寫其他費用明細");
+                    errmsg = "D.其他費用已勾選不回填，無需填寫其他費用明細";
+                    return errmsg;
+                }
+            }
+            /*20211227*/
             //0825
             using (var db = new SRMContext())
             {
@@ -1249,9 +1295,13 @@ namespace Convience.Service.SRM
 
             //初始才能修改
 
-            if (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始))
+            //if (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始))
+            //20211227 暫開失效
+            if ((!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始)) && (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.失效))) 
             {
-                throw new Exception("非初始無法修改");
+                //throw new Exception("非初始無法修改");
+                errmsg = "非初始無法修改";
+                return errmsg;
             }
             //_context.SrmQotHs.Update(qotH);
 
@@ -1344,6 +1394,7 @@ namespace Convience.Service.SRM
             }
             #endregion
             _context.SaveChanges();
+            return errmsg;
             //    db.Database.CommitTransaction();
             //}
             //catch (Exception ex)
@@ -1906,6 +1957,7 @@ namespace Convience.Service.SRM
                     }
 
                     //if (string.IsNullOrWhiteSpace(dataRow["不回填"].ToString()))
+                    //沒有選擇不回填
                     if (dataRow["不回填"].ToString().ToUpper() != "Y")
                     {
                         if (string.IsNullOrWhiteSpace(dataRow["素材材質"].ToString()))
@@ -1919,6 +1971,22 @@ namespace Convience.Service.SRM
                         if (string.IsNullOrWhiteSpace(dataRow["材料單價"].ToString()))
                         {
                             throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}材料單價未填");
+                        }
+                    }
+                    //20211227 
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(dataRow["素材材質"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫材料明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["重量"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫材料明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["材料單價"].ToString()))
+                        {
+                            throw new Exception($"【材料 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫材料明細");
                         }
                     }
                 }
@@ -2062,8 +2130,25 @@ namespace Convience.Service.SRM
                         {
                             throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}[單價(時)]未填");
                         }
-                    }           
+                    }
+                    //20211227 新增卡控
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(dataRow["工序"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫加工明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["[工時(時)]"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫加工明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["[單價(時)]"].ToString()))
+                        {
+                            throw new Exception($"【加工 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫加工明細");
+                        }
+                    }
                 }
+               
                 #endregion
                 //20211214 檢核該供應商是否有此單號、料號
                 int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
@@ -2211,7 +2296,23 @@ namespace Convience.Service.SRM
                         {
                             throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}次數未填");
                         }
-                    }                   
+                    }     
+                    //20211227
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(dataRow["工序"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫表面處理明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["[單價(時)]"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫表面處理明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["次數"].ToString()))
+                        {
+                            throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫表面處理明細");
+                        }
+                    }
                 }
                 #endregion
                 //20211214
@@ -2230,7 +2331,7 @@ namespace Convience.Service.SRM
 
                 if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
                 {
-                    if (!_context.SrmSurfaces.Any(r => r.SurfaceDesc.Equals(dataRow["工序"].ToString())))
+                    if (!_context.SrmSurfaces.Any(r => r.SurfaceDesc.Equals(dataRow["工序"].ToString().Trim())))
                     {
                         throw new Exception($"【表面處理 】:工序:{dataRow["工序"].ToString()}不存在");
                     }
@@ -2353,7 +2454,20 @@ namespace Convience.Service.SRM
                         {
                             throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}單價未填");
                         }
-                    }          
+                    } 
+                    //20211227
+                    else
+                    {
+                        
+                        if (!string.IsNullOrWhiteSpace(dataRow["項目"].ToString()))
+                        {
+                            throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫其他費用明細");
+                        }
+                        if (!string.IsNullOrWhiteSpace(dataRow["單價"].ToString()))
+                        {
+                            throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫其他費用明細");
+                        }
+                    }
                 }
                 #endregion
                 int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
@@ -2543,5 +2657,40 @@ namespace Convience.Service.SRM
                 .AndIfHaveValue(query.qotId, r => r.QotId == query.qotId).ToList().First();
             return qot;
         }
+        public HttpResponseMessage GetFile(string fileName, string localFilePath)
+        {
+            fileName = @"123.txt";
+            localFilePath = @"D:\Excel\RFQ0000213批次報價.xlsx";
+
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StreamContent(new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = fileName;
+            response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            //response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/excel");
+
+            //byte[] excelData = File.ReadAllBytes(path); result.Content = new StreamContent(excelData);
+            //byte[] excelData = File.ReadAllBytes(localFilePath);
+            //MemoryStream stream = new MemoryStream(excelData);
+            //response.Content = new StreamContent(stream);
+
+            //response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+            //HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+            //var stream = new FileStream(localFilePath, FileMode.Open);
+            //result.Content = new StreamContent(stream);
+            //result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            //{
+            //    FileName = fileName
+            //};
+            //result.Content.Headers.ContentLength = stream.Length;
+            ////tried with "application/ms-excel" also
+            //result.Content.Headers.ContentType =
+            //    new MediaTypeHeaderValue("application/octet-stream");
+            //return result;
+
+            return response;
+        }
+       
     }
 }

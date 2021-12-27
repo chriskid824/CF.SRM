@@ -52,7 +52,7 @@ export class SrmQotService {
   }
   
   Download(query) {
-    return this.httpClient.post(`${this.uriConstant.SrmQot}/Download`, query);
+    return this.httpClient.post(`${this.uriConstant.SrmQot}/Download`,query, { responseType: "blob", });
     //return this.httpClient.post(`${this.uriConstant.SrmQot}/GetQotList`,query);
   } 
 }
