@@ -22,6 +22,8 @@ import { StorageService } from '../../../services/storage.service';
 import { LayoutComponent } from '../../layout/layout/layout.component';
 import { SrmModule } from '../srm.module';
 import { FileModalComponent } from '../file-modal/file-modal.component';
+import { FileInfo } from '../../content-manage/model/fileInfo';
+import { FileService } from 'src/app/business/file.service';
 
 
 interface Food {
@@ -53,6 +55,11 @@ export class QotComponent implements OnInit {
   info3: FormGroup = new FormGroup({});
   info2: FormGroup = new FormGroup({});
   info1: FormGroup = new FormGroup({});
+  uploadForm: FormGroup = new FormGroup({});//20211213
+  fileList: any[] = [];
+  uploading: boolean = false;
+  currentDirectory: string = 'qot-batch-upload';
+
   selectedDepartmentKey: string = '';
   editForm_Material: FormGroup = new FormGroup({});
   editForm_Process: FormGroup = new FormGroup({});
@@ -147,6 +154,7 @@ export class QotComponent implements OnInit {
     private _router: Router,
     private _storageService: StorageService,
     private _layout: LayoutComponent,
+    private _fileService: FileService,
   ) {
     this.Q = {
     }
@@ -160,7 +168,7 @@ export class QotComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
     this.initProcess();
     this.initSurface();
     this.initMaterial();
@@ -221,7 +229,7 @@ export class QotComponent implements OnInit {
       //leadtime: [null],
       //expiringdate: [null]
     });
-  
+
     qot.q.note = this.info4.value["note"];
     this.info4 = this._formBuilder.group({
       note: [null],
@@ -1008,7 +1016,7 @@ export class QotComponent implements OnInit {
         this.info3 = this._formBuilder.group({
           leadtime: [{ value: this.qotv.q[this.matnrIndex].leadtime, disabled: false }],
           //leadtime: [{disabled: true }],
-          expiringdate: [{ value: this.qotv.q[this.matnrIndex].expiringdate}],
+          expiringdate: [{ value: this.qotv.q[this.matnrIndex].expiringdate }],
         });
 
         this.info4 = this._formBuilder.group({
@@ -1547,7 +1555,8 @@ export class QotComponent implements OnInit {
     //this.sumMap.set("surface", this.rowData_Surface.reduce((sum, current) => (Math.round(sum + (current.sCostsum * 100) / 100)), 0));
     //this.sumMap.set("other", this.rowData_Other.reduce((sum, current) => (Math.round(sum + (current.oPrice * 100) / 100)), 0));
     //#endregion
-    this.sumMap.set("total", this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other"));
+    var total = this.sumMap.get("material") + this.sumMap.get("process") + this.sumMap.get("surface") + this.sumMap.get("other");
+    this.sumMap.set("total", Math.round(total * 100) / 100);
 
   }
 
@@ -1671,7 +1680,7 @@ export class QotComponent implements OnInit {
       //this._router.navigate(['srm/qotlist']);
       window.history.go(-1); //20211203
       location.reload();
-    
+
     });
   }
   checkCheckBoxvalue_M(event) {
@@ -1789,7 +1798,66 @@ export class QotComponent implements OnInit {
     this.filemodal.upload(data);
     //window.open('../srm/rfq?id=' + id);
   }
+  /*20211213 */
+  download() {
+    var query = {
+      qotid: this.id,
+      matnrId: this.radioValue,
+      vendorid: this.vendorid,
+      rfqid: this.rfqid
+    };
+    this._srmQotService.Download(query).subscribe((result: any) => {
+      const a = document.createElement('a');
+      const blob = new Blob([result], { 'type': "application/octet-stream" });
+      a.href = URL.createObjectURL(blob);
+      a.download = "批次報價.xlsx";
+      a.click();
+    });
+  }
+  beforeUpload = (file): boolean => {
+    this.fileList = [];
+    this.fileList = this.fileList.concat(file);
+    console.log(this.fileList);
+    return false;
+  };
+  upload(directory, fileList) {
+    const formData = new FormData();
+    formData.append('currentDirectory', directory);
+    //formData.append('material', this.uploadForm.get("material")?.value);
+    //formData.append('effectiveDate', dateFormatter(this.addForm.get("effectiveDate")?.value));
+    //formData.append('deadline', dateFormatter(this.addForm.get("deadline")?.value));
+    fileList.forEach((file: any) => {
+      formData.append('files', file);
+    });
 
+    formData.append('QotId', this.id);
+    formData.append('RfqId', this.rfqid);
+    formData.append('VendorId', this.vendorid);
+    //formData.append('MatnrId',  this.radioValue);
+
+    this._srmQotService.BatchUpload(formData).subscribe(result => {
+      console.log('------BatchUpload------');
+      console.log(result);
+      this.fileList = [];
+      this.uploading = false;
+      this._messageService.success(result["RfqNum"] + "已存檔成功");
+    }, error => {
+      this.uploading = false;
+      //this._messageService.error(result["RfqNum"] + "已建立成功");
+    });
+    //return this.httpClient.post(this.uriConstant.FileUri, formData);
+  }
+  handleUpload() {
+    for (const i in this.uploadForm.controls) {
+      this.uploadForm.controls[i].markAsDirty();
+      this.uploadForm.controls[i].updateValueAndValidity();
+    }
+    if (this.uploadForm.valid) {
+      this.uploading = true;
+      this.upload(this.currentDirectory, this.fileList);
+    }
+  }
+  /*20211213 */
 }
 
 function GetProcessByNum(data) {
