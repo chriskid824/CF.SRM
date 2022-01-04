@@ -135,4 +135,12 @@ namespace Convience.Model.Models.SRM
         public string AUFNR { get; set; }
 
     }
+    public class T_DRAD
+    {
+        public string DOKAR { get; set; }
+        public string DOKNR { get; set; }
+        public string OBZAE { get; set; }
+        public string OBJKY { get; set; }
+
+    }
 }

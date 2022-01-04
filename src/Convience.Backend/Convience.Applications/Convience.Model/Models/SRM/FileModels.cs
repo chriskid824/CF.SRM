@@ -83,8 +83,13 @@ namespace Convience.Model.Models.SRM
            } 
         }
     }
-        //public class FileUploadViewModel: ViewSrmFileRecord
-        //{
-        //    public IEnumerable<IFormFile> Files { get; set; }
-        //}
+    public class BaseFileData
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
     }
+    //public class FileUploadViewModel: ViewSrmFileRecord
+    //{
+    //    public IEnumerable<IFormFile> Files { get; set; }
+    //}
+}

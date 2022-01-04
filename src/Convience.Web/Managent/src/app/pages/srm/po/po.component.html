@@ -78,22 +78,27 @@
   </ng-container>
 </nz-modal> -->
 </nz-card>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="編輯檔案" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="檔案列表" (nzOnCancel)="handleCancel()">
   <ng-container *nzModalContent>
     <!-- <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="20480" nzLimit="1">
       <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="upload"></i>上傳文件</button>
     </nz-upload> -->
-    <nz-upload [nzSm]="6" [nzXs]="24" [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="2048" nzLimit="1" [nzDownload]="download" [nzShowUploadList]="showUploadList">
+    <!-- <nz-upload [nzSm]="6" [nzXs]="24" [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="2048" nzLimit="1" [nzDownload]="download" [nzShowUploadList]="showUploadList">
       <button *canOperate="'RFQ_ACTION'" nz-button><i nz-icon nzType="upload"></i>上傳檔案</button>
-    </nz-upload>
+    </nz-upload> -->
+    <!-- <button nz-button (click)="downLoadFile(aaa})">aaa</button>
+    <button nz-button (click)="downLoadFile(bbb)">bbb</button> -->
+    <div *ngFor="let filename of fileNameList" style="margin-top: 10px;">
+      <button nz-button (click)="downLoadFile(filename)" style="border: none;">{{filename}}</button>
+    </div>
 
 
   </ng-container>
   <ng-container *nzModalFooter>
-    <button *canOperate="'RFQ_ACTION'" nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+    <!-- <button *canOperate="'RFQ_ACTION'" nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
     [disabled]="fileList.length == 0" style="margin-top: 16px" class="mr-10">
 {{ uploading ? '上傳中...' : '開始上傳' }}
-</button>
+</button> -->
 <button nz-button type="reset" (click)="handleCancel()">取消</button>
   </ng-container>
   <!-- <ng-footer>

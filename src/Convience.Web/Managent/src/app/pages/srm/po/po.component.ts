@@ -49,6 +49,7 @@ export class PoComponent implements OnInit {
   searchId;
   tplModal: NzModalRef;
   fileList:any[] = [];
+  fileNameList:any[] = [];
   uploading: boolean = false;
   formData:FormData;
   poData:any;
@@ -268,11 +269,25 @@ export class PoComponent implements OnInit {
 
 //             }
              Width:20,
-             cellRenderer: 'buttonRenderer',
-             cellRendererParams: {
-              ondblclick:this.start.bind(this),
-              label: '',
-            },
+             cellRenderer : function(params){
+                var eDiv = document.createElement('div');
+                eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+                var eButton_file = eDiv.querySelectorAll('.btn-simple')[0];
+                eButton_file.addEventListener('click', function() {
+                  params.ondblclick(params);
+                });
+                return eDiv;
+
+              },
+              cellRendererParams: {
+                ondblclick:this.openFileModal.bind(this),
+                label: '',
+              },
+            //  cellRenderer: 'buttonRenderer',
+            //  cellRendererParams: {
+            //   ondblclick:this.start.bind(this),
+            //   label: '',
+            // },
             pinned: 'left',
           }
         ],
@@ -318,39 +333,79 @@ export class PoComponent implements OnInit {
     this.filemodal.upload(data);
     //this.isVisible=true;
   }
+downLoadFile(fileName)
+{
+this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
+  console.warn(result.responseText);
+  alert(111);
+  console.info(result);
+  this._srmPoService.DownloadFilePath(result.Path,result.Name).subscribe((data: any) => {
+    console.warn(data.responseText);
+  const a = document.createElement('a');
+  const blob = new Blob([data], { 'type': "application/octet-stream" });
+  a.href = URL.createObjectURL(blob);
+  a.download = result.Name;
+  a.click();
+});
+});
+}
+
   openFileModal(e){
-    console.info(e);
-    this.poData=e.data;
-    const formData = new FormData();
-    formData.append("number",e.data.PoNum);
-    this._fileService.get(1, 200, '/PoFiles/'+e.data.PoNum).subscribe((result: any) => {
+    this.fileNameList=[];
+    console.info(e.data);
+    //this.poData=e.data;
+    var query = {
+      I_EBELN: e.data.PoNum,
+      I_EBELP:e.data.PoLId,
+      I_MATNR: "",
+      I_WERKS: e.data.Org,
+    }
+
+    //const formData = new FormData();
+    //formData.append("number",e.data.PoNum);
+    this._srmPoService.GetPoDoc(query).subscribe((result: any) => {
 
       //result[0].showDownload=true;
       console.info(result);
       if(result.length>0)
     {
-      var fileList: NzUploadFile[] = [
-        {
-          uid: e.data.PoNum,
-          name: result[0].name,
-          status: 'done',
-          //response: 'Server Error 500', // custom error message to show
-          //url: '/PoFiles/'+e.data.PoNum
-        },
-      ]
+      result.forEach(doc => {
+        this.fileNameList.push(doc.doknr);
+      });
       //var file=[{name:result[0].name}];
       // var file:File=new File(){};
       // file.name=result.fileName;
       // file.showDownload=true;
       //console.info(file);
-      this.fileList = fileList;
+      //this.fileList = fileList;
     }
 
     });
-    this.formData=formData;
-    console.info(this.formData);
+    //this.formData=formData;
     this.isVisible=true;
   }
+  // openFileModal(e){
+  //   console.info(e);
+  //   this.poData=e.data;
+  //   const formData = new FormData();
+  //   formData.append("number",e.data.PoNum);
+  //   this._fileService.get(1, 200, '/PoFiles/'+e.data.PoNum).subscribe((result: any) => {
+  //     if(result.length>0)
+  //   {
+  //     var fileList: NzUploadFile[] = [
+  //       {
+  //         uid: e.data.PoNum,
+  //         name: result[0].name,
+  //         status: 'done',
+  //       },
+  //     ]
+  //     this.fileList = fileList;
+  //   }
+  //   });
+  //   this.formData=formData;
+  //   console.info(this.formData);
+  //   this.isVisible=true;
+  // }
   expiryDateFormatter(params) {
     if (params.value) {
       return `${params.value.date.month - 1}/${params.value.date.year}`;

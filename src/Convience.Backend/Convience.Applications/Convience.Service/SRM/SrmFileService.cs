@@ -35,7 +35,9 @@ namespace Convience.Service.SRM
         public bool UpdateTemplate(SrmFileUploadTemplate data);
         public Task<string> UploadAsync(FileUploadViewModel viewModel);
         public Task<string> UploadPoAsync(FileUploadViewModel viewModel);
+        public Task<string> UploadPoTempAsync(byte[] bytes, string filename);
         public Task<Stream> DownloadAsync(NzFileViewModel viewModel);
+        public Task<Stream> DownloadTempAsync(string path);
         public Task<Stream> DownloadPoFileAsync(NzFileViewModel viewModel);
         public Task<bool> DeleteFileAsync(NzFileViewModel viewModel);
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
@@ -305,7 +307,44 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return string.Empty;
         }
+        public async Task<string> UploadPoTempAsync(byte[] bytes,string filename)
+        {
 
+            //foreach (var file in viewModel.Files)
+            //{
+                var path = "Temp";
+                ////判斷檔案路徑是否存在，不存在則建立資料夾
+                if (System.IO.Directory.Exists(_fileStore.GetPhysicalPath(path)))
+                {
+                    //System.IO.Directory.CreateDirectory(path);//不存在就建立目錄
+                    DirectoryInfo di = new DirectoryInfo(_fileStore.GetPhysicalPath(path));
+                    FileInfo[] files = di.GetFiles();
+                    foreach (FileInfo deletefile in files)
+                    {
+                        deletefile.Delete();
+                    }
+                }
+                path = path + '/' + filename;
+                var info = await _fileStore.GetFileInfoAsync(path);
+                if (info != null)
+                {
+                    return "文件名冲突！";
+                }
+
+                //var stream = file.OpenReadStream();
+            using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                fs.Write(bytes, 0, bytes.Length);
+                fs.Position = 0;
+                //return File(fs, "application/octet-stream", result.Message);
+                var result = await _fileStore.CreateFileFromStreamAsync(path, fs);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return "文件上传失败！";
+                }
+            }
+            return _fileStore.GetPhysicalPath(path);
+        }
         public async Task<string> UploadPoAsync(FileUploadViewModel viewModel)
         {
 
@@ -344,6 +383,10 @@ namespace Convience.Service.SRM
         {
             SrmFileuploadRecordL rl= _context.SrmFileuploadRecordLs.Find(viewModel.Uid);
             return await _fileStore.GetFileStreamAsync(rl.Url);
+        }
+        public async Task<Stream> DownloadTempAsync(string path)
+        {
+            return await _fileStore.GetFileStreamAsync(path);
         }
         public async Task<Stream> DownloadPoFileAsync(NzFileViewModel viewModel)
         {
@@ -510,5 +553,25 @@ namespace Convience.Service.SRM
         {
             return _context.SrmFileUploadTemplates.Any(p => p.Werks == werks && p.TemplateType == functionId && p.Type == type);
         }
+
+        //public async Task<Stream> GetPoFile(byte[] bytes,string filename)
+        //{
+        //    var path = "Temp";
+        //    path = path + '/' + filename;
+        //    var info = await _fileStore.GetFileInfoAsync(path);
+        //    if (info != null)
+        //    {
+        //        FileInfo fileinfo = new FileInfo(_fileStore.GetPhysicalPath(path));
+        //        fileinfo.Delete();
+        //        // return "文件名冲突！";
+        //    }
+
+        //    var stream = File.OpenRead(path);// file.OpenReadStream();
+        //    var result = await _fileStore.CreateFileFromStreamAsync(path, stream);
+        //    if (string.IsNullOrEmpty(result))
+        //    {
+        //        return "文件上传失败！";
+        //    }
+        //}
     }
 }

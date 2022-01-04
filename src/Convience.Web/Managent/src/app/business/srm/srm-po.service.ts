@@ -22,6 +22,9 @@ export class SrmPoService {
   SAVE(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/Save`,po);
   }
+  GetPoDoc(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/Sap_GetPoDoc`,po);
+  }
   UpdateReplyDeliveryDate(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdateReplyDeliveryDate`,po);
   }
@@ -43,5 +46,13 @@ export class SrmPoService {
 
   Sap_GetPoData(data) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/Sap_GetPoData`, data);
+  }
+  DownloadFileUrl(fileName) {
+    let uri = `${this.uriConstant.SrmPo}/DownloadFileUrl?file_name=${fileName}`;
+    return this.httpClient.get(uri);
+  }
+  DownloadFilePath(path,fileName) {
+    let uri = `${this.uriConstant.SrmPo}/DownloadFilePath?path=${path}&file_name=${fileName}`;
+    return this.httpClient.get(uri,{ responseType: 'blob' });
   }
 }
