@@ -46,6 +46,7 @@
     "jquery": "^3.6.0",
     "jquery-datepicker": "^1.12.3",
     "jsplumb": "^2.15.5",
+    "mime": "^3.0.0",
     "monaco-editor": "^0.22.3",
     "ng-zorro-antd": "^11.1.0",
     "rxjs": "~6.6.0",

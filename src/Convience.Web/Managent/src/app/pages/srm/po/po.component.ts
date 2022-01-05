@@ -130,40 +130,56 @@ export class PoComponent implements OnInit {
         if(params.data.Status==21)
         {
           var eDiv = document.createElement('div');
-          if(params.data.hasFile)
-          {
-            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span><span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
-            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-            eButton.addEventListener('click', function() {
-              _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
-                alert('採購單號:'+params.data.PoNum+'已接收');
-                params.data.Status=11;
-                params.data.ReplyDate=new Date();
-                params.data.StatusDesc="待回覆";
-                params.data.SrmPoLs.forEach(element => {
-                  element.Status=11;
-                  element.StatusDesc="待回覆";
-                  eDiv.innerHTML='';
-                });
-                params.api.refreshCells();
+          eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span>';
+          var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+          eButton.addEventListener('click', function() {
+            _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+              alert('採購單號:'+params.data.PoNum+'已接收');
+              params.data.Status=11;
+              params.data.ReplyDate=new Date();
+              params.data.StatusDesc="待回覆";
+              params.data.SrmPoLs.forEach(element => {
+                element.Status=11;
+                element.StatusDesc="待回覆";
+                eDiv.innerHTML='';
               });
+              params.api.refreshCells();
             });
-          }
-          else
-          {
-            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
-          }
+            });
+          // if(params.data.hasFile)
+          // {
+          //   eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">接收</button></span><span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
+          //   var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+          //   eButton.addEventListener('click', function() {
+          //     _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+          //       alert('採購單號:'+params.data.PoNum+'已接收');
+          //       params.data.Status=11;
+          //       params.data.ReplyDate=new Date();
+          //       params.data.StatusDesc="待回覆";
+          //       params.data.SrmPoLs.forEach(element => {
+          //         element.Status=11;
+          //         element.StatusDesc="待回覆";
+          //         eDiv.innerHTML='';
+          //       });
+          //       params.api.refreshCells();
+          //     });
+          //   });
+          // }
+          // else
+          // {
+          //   eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple2" style="height:39px">檔案</button></span>';
+          // }
 
-          var eButton_file = eDiv.querySelectorAll('.btn-simple2')[0];
+          // var eButton_file = eDiv.querySelectorAll('.btn-simple2')[0];
 
-          eButton_file.addEventListener('click', function() {
-            params.ondblclick(params);
-          });
+          // eButton_file.addEventListener('click', function() {
+          //   params.ondblclick(params);
+          // });
           return eDiv;
           }
         },
         cellRendererParams: {
-          ondblclick:this.openFileModal.bind(this),
+          // ondblclick:this.openFileModal.bind(this),
           label: '',
         },
       }
@@ -336,16 +352,31 @@ export class PoComponent implements OnInit {
 downLoadFile(fileName)
 {
 this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
-  console.warn(result.responseText);
-  alert(111);
-  console.info(result);
   this._srmPoService.DownloadFilePath(result.Path,result.Name).subscribe((data: any) => {
-    console.warn(data.responseText);
   const a = document.createElement('a');
-  const blob = new Blob([data], { 'type': "application/octet-stream" });
-  a.href = URL.createObjectURL(blob);
-  a.download = result.Name;
-  a.click();
+  var re = /(?:\.([^.]+))?$/;
+  var ext = re.exec(result.Name)[1];
+  const mime = require('mime');
+  var type=mime.getType(ext);
+  const blob = new Blob([data], { 'type': type });
+
+  //if (window.navigator && window.navigator.msSaveOrOpenBlob) {//IE
+    //window.navigator.msSaveOrOpenBlob(data, result.Name);
+//} else {
+    // var fileURL = URL.createObjectURL(blob);
+    // if (navigator.userAgent.indexOf("Chrome") != -1 || navigator.userAgent.indexOf("Firefox") != -1){
+    //     let win = window.open(fileURL, '_blank');
+    // } else { //Safari & Opera iOS
+    //     window.location.href = fileURL;
+    // }
+    var url = window.URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.target = '_blank';
+    anchor.click();
+  //  a.href = URL.createObjectURL(blob);
+  //  a.download = result.Name;
+  //  a.click();
 });
 });
 }
