@@ -114,11 +114,14 @@ export class MaterialCComponent implements OnInit {
         werks : this.searchForm.value['werks'],
         gewei : this.searchForm.value['gewei'],
         unit : this.searchForm.value['measure'],
+        // 取下拉顯示值
+        UnitDesc : this.measurelist.filter(p=>p.measureId==this.searchForm.value['measure'])[0].measureDesc,
         ekgrp : this.searchForm.value['ekgrp'],
         bn_num : this.searchForm.value['bn_num'],
         minor_diameter : this.searchForm.value['minor_diameter'],
         major_diameter : this.searchForm.value['major_diameter'],
       }
+      console.log(material);
       this._srmMaterialService.Checkdata(material).subscribe(result => {
         console.log(material);
         if (this.searchForm.valid)
