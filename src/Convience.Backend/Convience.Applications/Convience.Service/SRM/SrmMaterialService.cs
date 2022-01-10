@@ -58,7 +58,9 @@ namespace Convience.Service.SRM
             var resultQuery = (from matnr in _context.SrmMatnrs
                                join status in _context.SrmStatuses on matnr.Status equals status.Status
                                join ekgry in _context.SrmEkgries on new { matnr.Ekgrp , Werks=matnr.Werks.Value} equals new { Ekgrp = ekgry.Ekgry, ekgry.Werks } 
-                               join unit in _context.SrmMeasureUnits on matnr.Unit equals unit.MeasureId
+                               into a from ekgry in a.DefaultIfEmpty()
+                               join unit in _context.SrmMeasureUnits on matnr.Unit equals unit.MeasureId 
+                               into b from unit in b.DefaultIfEmpty()
                                select new ViewSrmMatnr1
                                {
                                    MatnrId = matnr.MatnrId,
