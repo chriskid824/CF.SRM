@@ -322,9 +322,18 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
         }
 
-        private void sendRespective(ViewSrmRfqV[]  vendors, SrmRfqH rfq, string type) {
+        private void sendRespective(ViewSrmRfqV[] vendors, SrmRfqH rfq, string type) {
             StringBuilder sb = new StringBuilder();
             StringBuilder qotNums = new StringBuilder();
+            string login = "";
+            if (_appSettingsService.Environment == "prd")
+            {
+                login = "http://service3.cfprec.com.tw/account/login";
+            }
+            else
+            {
+                login = "http://10.88.1.28/account/login";
+            }
             foreach (var vendor in vendors)
             {
                 try
@@ -362,7 +371,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     此信為系統發送,<br />
                      如有任何問題，<br />
                      請回覆此E-MAIL致採購窗口或致電協調。<br />
-                    <a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+                    <a href='{login}'>SRM入口</a><br />
                     {sb.ToString()}";
                         subject = $"千附-{rfq.RfqNum} 詢價單作廢通知";
                     }
@@ -373,7 +382,7 @@ namespace Convience.ManagentApi.Controllers.SRM
 詢價單{rfq.RfqNum}已發送，請協助於詢價截止日期前{rfq.Deadline.Value.ToString("yyyy/MM/dd")}回覆報價資訊，謝謝！<br />
  如有任何問題，<br />
  請回覆此E-MAIL致採購窗口或致電協調。<br />
-<a href='http://10.88.1.28/account/login'>SRM入口</a><br />
+<a href='{login}'>SRM入口</a><br />
 { sb.ToString()}";
                         subject = $"千附-{rfq.RfqNum} 詢價單啟動通知";
                     }
