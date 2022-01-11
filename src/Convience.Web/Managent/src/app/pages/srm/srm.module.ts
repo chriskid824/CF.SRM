@@ -74,6 +74,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent';
 import { ProcessManageComponent } from './process-manage/process-manage.component';
 import { SurfaceManageComponent } from './surface-manage/surface-manage.component';
+import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -114,6 +115,7 @@ import { SurfaceManageComponent } from './surface-manage/surface-manage.componen
     DiscussionAddComponent,
     ProcessManageComponent,
     SurfaceManageComponent,
+    PoDownloadlogComponent,
   ],
   imports: [
     CommonModule,
@@ -127,6 +129,7 @@ import { SurfaceManageComponent } from './surface-manage/surface-manage.componen
        { path: "po/:number", component: PoComponent , canActivate: [LoginGuard]},
        { path: "po-sap", component: PoSapComponent , canActivate: [LoginGuard]},
        { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
+       { path: "po-log", component: PoDownloadlogComponent , canActivate: [LoginGuard]},
        { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
        { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
        { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},

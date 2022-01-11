@@ -43,6 +43,7 @@ namespace Convience.Service.SRM
         public string UpdatePoLDoc(int matnr_id,string des, int vendor_id, List<BaseFileData> fdList, string userid);
         public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor);
         public void addLog(int poid, int polid, string filename, string ip, string username);
+        public PagingResultModel<ViewSrmDownloadLog> GetDownloadList(QueryPoDownloadLogList query);
     }
 
     public class SrmPoService : ISrmPoService
@@ -568,6 +569,44 @@ namespace Convience.Service.SRM
             };
             _context.SrmDownloadLogs.Add(log);
             _context.SaveChanges();
+        }
+        public PagingResultModel<ViewSrmDownloadLog> GetDownloadList(QueryPoDownloadLogList query)
+        {
+            int skip = (query.page - 1) * query.size;
+
+            var result = (from log in _context.SrmDownloadLogs
+                          join h in _context.SrmPoHs on log.PoId equals h.PoId
+                          join l in _context.SrmPoLs on new { PoId = log.PoId, PoLId = log.PoLId } equals new { PoId = l.PoId, PoLId = l.PoLId }
+                          join user in _context.AspNetUsers on log.CreateBy equals user.UserName
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                          from matnr in matnrInfo.DefaultIfEmpty()
+                          select new ViewSrmDownloadLog
+                          {
+                              DId = log.DId,
+                              PoNum = h.PoNum,
+                              PoLId = log.PoLId,
+                              PoId = log.PoId,
+                              FileName = log.FileName,
+                              Ip = log.Ip,
+                              CreateBy = log.CreateBy,
+                              CreateDate = log.CreateDate,
+                              SapMatnr = matnr.SapMatnr,
+                              Description = l.Description,
+                              Name = user.Name,
+                          })
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.sapMatnr), p => p.SapMatnr.IndexOf(query.sapMatnr) > -1)
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.description), p => p.Description.IndexOf(query.description) > -1)
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.username), p => p.Name.IndexOf(query.username) > -1)
+                          .AndIfHaveValue(query.Date_s, p => p.CreateDate >= query.Date_s.Value.Date)
+                          .AndIfHaveValue(query.Date_e, p => p.CreateDate <= query.Date_e.Value.AddDays(1).Date)
+                          .ToList();
+
+            var r = result.AsQueryable().Skip(skip).Take(query.size).ToArray();//result.Skip(skip).Take(size);
+            return new PagingResultModel<ViewSrmDownloadLog>
+            {
+                Data = r,
+                Count = result.Count()
+            };
         }
     }
 }

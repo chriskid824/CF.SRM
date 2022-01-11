@@ -55,6 +55,7 @@ export class LayoutComponent implements OnInit {
       children: [
         { canOperate: 'operatelog', routerLink: '/log/operate', iconType: 'edit', firstBreadcrumb: '日誌管理', lastBreadcrumb: '操作日誌', name: '操作日誌', },
         { canOperate: 'loginlog', routerLink: '/log/login', iconType: 'login', firstBreadcrumb: '日誌管理', lastBreadcrumb: '登入日誌', name: '登入日誌', },
+        { canOperate: 'podownloadlog', routerLink: '/srm/po-log', iconType: 'download', firstBreadcrumb: '日誌管理', lastBreadcrumb: '下載日誌', name: '下載日誌', },
       ]
     },
     {

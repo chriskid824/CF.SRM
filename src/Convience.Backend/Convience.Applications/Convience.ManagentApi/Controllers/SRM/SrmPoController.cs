@@ -347,6 +347,14 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (string.IsNullOrEmpty(result)) return Ok();
             return BadRequest(result);
         }
+
+        [HttpPost("GetDownLoadLog")]
+        public IActionResult GetDownLoadLog(QueryPoDownloadLogList query)
+        {
+            query.user = User;
+            var h = _srmPoService.GetDownloadList(query);
+            return Ok(h);
+        }
     }
 
 }

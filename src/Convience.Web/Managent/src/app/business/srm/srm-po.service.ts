@@ -58,4 +58,16 @@ export class SrmPoService {
   UpdatePoLDoc(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdatePoLDoc`,po);
   }
+  // GetDownLoadLog(page, size, searchObj) {
+  //   let uri = `${this.uriConstant.LoginLogUri}?page=${page}&&size=${size}`;
+  //   uri += searchObj.sapMatnr ? `&&sapMatnr=${searchObj.sapMatnr}` : '';
+  //   uri += searchObj.description ? `&&description=${searchObj.description}` : '';
+  //   uri += searchObj.username ? `&&username=${searchObj.username}` : '';
+  //   uri += searchObj.account ? `&&account=${searchObj.account}` : '';
+  //   return this.httpClient.get(uri);
+  // }
+
+  GetDownLoadLog(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/GetDownLoadLog`,po);
+  }
 }

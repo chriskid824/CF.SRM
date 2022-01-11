@@ -25,6 +25,18 @@ namespace Convience.Model.Models.SRM
         public System.Security.Claims.ClaimsPrincipal user { get; set; }
     }
 
+    public class QueryPoDownloadLogList
+    {
+        public string sapMatnr { get; set; }
+        public string description { get; set; }
+        public string username { get; set; }
+        public DateTime? Date_s { get; set; }
+        public DateTime? Date_e { get; set; }
+        public int page { get; set; }
+        public int size { get; set; }
+        public System.Security.Claims.ClaimsPrincipal user { get; set; }
+    }
+
     public class ViewSrmDeliveryH : SrmDeliveryH
     {
         public string Address { get; set; }
@@ -142,5 +154,12 @@ namespace Convience.Model.Models.SRM
         public string OBZAE { get; set; }
         public string OBJKY { get; set; }
 
+    }
+    public class ViewSrmDownloadLog : SrmDownloadLog
+    {
+        public string PoNum { get; set; }
+        public string SapMatnr { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
     }
 }
