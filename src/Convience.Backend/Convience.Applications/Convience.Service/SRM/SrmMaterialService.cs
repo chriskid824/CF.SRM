@@ -259,10 +259,11 @@ namespace Convience.Service.SRM
             {
                 throw new Exception("編號已重複使用");
             }
-            if (description != null)
-            {
-                throw new Exception("內文已重複使用");
-            }
+            // 20220110 物料內文卡控取消
+            //if (description != null)
+            //{
+            //    throw new Exception("內文已重複使用");
+            //}
             if (ekgrp == null)
             {
                 throw new Exception("採購群組有誤，請重新輸入");
