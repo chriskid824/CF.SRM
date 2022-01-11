@@ -57,6 +57,8 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmMeasureUnit> SrmMeasureUnits { get; set; }
         public virtual DbSet<SrmSurface> SrmSurfaces { get; set; }
         public virtual DbSet<SrmHistoryPrice> SrmHistoryPrices { get; set; }
+        public virtual DbSet<SrmMatnrDoc> SrmMatnrDocs { get; set; }
+        public virtual DbSet<SrmDownloadLog> SrmDownloadLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1755,7 +1757,100 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("VENDOR")
                     .HasComment("供應商");
             });
+            modelBuilder.Entity<SrmMatnrDoc>(entity =>
+            {
+                entity.HasKey(e => e.MdocId);
 
+                entity.ToTable("SRM_MATNR_DOC");
+
+                entity.Property(e => e.MdocId).HasColumnName("MDOC_ID");
+
+                entity.Property(e => e.Active).HasColumnName("ACTIVE");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY")
+                    .HasComment("建立人員");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("建立日期");
+
+                entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.Filename)
+                    .HasMaxLength(30)
+                    .HasColumnName("FILENAME");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY")
+                    .HasComment("最後修改人員");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("最後修改日期");
+
+                entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
+
+                entity.Property(e => e.VendorId).HasColumnName("VENDOR_ID");
+            });
+            modelBuilder.Entity<SrmDownloadLog>(entity =>
+            {
+                entity.HasKey(e => e.DId);
+
+                entity.ToTable("SRM_DOWNLOAD_LOG");
+
+                entity.Property(e => e.DId).HasColumnName("D_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY")
+                    .HasComment("建立人員");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("建立日期");
+
+                entity.Property(e => e.FileName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasColumnName("FILE_NAME");
+
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnName("IP");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY")
+                    .HasComment("最後修改人員");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("最後修改日期");
+
+                entity.Property(e => e.PoId).HasColumnName("PO_ID");
+
+                entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
+
+                entity.Property(e => e.Reason)
+                    .HasMaxLength(50)
+                    .HasColumnName("REASON");
+
+                entity.Property(e => e.Success)
+                    .HasColumnName("SUCCESS")
+                    .HasDefaultValueSql("((1))");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

@@ -51,8 +51,11 @@ export class SrmPoService {
     let uri = `${this.uriConstant.SrmPo}/DownloadFileUrl?file_name=${fileName}`;
     return this.httpClient.get(uri);
   }
-  DownloadFilePath(path,fileName) {
-    let uri = `${this.uriConstant.SrmPo}/DownloadFilePath?path=${path}&file_name=${fileName}`;
+  DownloadFilePath(path,fileName,poid,polid) {
+    let uri = `${this.uriConstant.SrmPo}/DownloadFilePath?path=${path}&file_name=${fileName}&po_id=${poid}&po_l_id=${polid}`;
     return this.httpClient.get(uri,{ responseType: 'blob' });
+  }
+  UpdatePoLDoc(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdatePoLDoc`,po);
   }
 }

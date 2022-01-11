@@ -24,6 +24,7 @@ using System.Net.Http.Headers;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Convience.ManagentApi.Controllers.SRM
 {
@@ -183,6 +184,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    string ponum = data["I_EBELN"].ToString();
+                    string polid = data["I_EBELP"].ToString();
                     string json = JsonConvert.SerializeObject(data);
                     HttpContent httpContent = new StringContent(json,
                                     Encoding.UTF8,
@@ -196,8 +199,9 @@ namespace Convience.ManagentApi.Controllers.SRM
                         if (!string.IsNullOrWhiteSpace(result) && result != "null")
                         {
                             List<T_DRAD> dataSet = JsonConvert.DeserializeObject<List<T_DRAD>>(JObject.Parse(result)["T_DRAD"].ToString());
+                            List<BaseFileData> fdList = _srmPoService.GetMatnrDocListFromSap(ponum, Convert.ToInt32(polid), dataSet, User.GetIsVendor());
                             //returndata.List = _srmPoService.UpdateSapData(dataSet, User.GetUserName());
-                            return Ok(dataSet);
+                            return Ok(fdList);
                         }
                     }
                     else
@@ -218,11 +222,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             //}
             //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
             return BadRequest("Sap取得資料失敗");
-        }
-
-        public void GetDoc()
-        {
-            
         }
 
         [HttpPost("GetPoPoL")]
@@ -287,12 +286,21 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpGet("DownloadFilePath")]
-        public async Task<IActionResult> DownloadFilePath(string path,string file_name)
+        public async Task<IActionResult> DownloadFilePath(string path,string file_name,int po_id,int po_l_id)
         {
             var stream = await _srmFileService.DownloadTempAsync(path);
             stream.Position = 0;
             try
             {
+                string remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                if (!string.IsNullOrEmpty(remoteIpAddress) && System.Text.RegularExpressions.Regex.IsMatch(remoteIpAddress, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$"))
+                {
+                }
+                else
+                {
+                    remoteIpAddress = "127.0.0.1";
+                }
+                _srmPoService.addLog(po_id, po_l_id, file_name, remoteIpAddress, User.GetUserName());
                 return File(stream, "application/octet-stream", file_name);
             }
             catch (Exception ex)
@@ -328,6 +336,17 @@ namespace Convience.ManagentApi.Controllers.SRM
 
         }
 
+        [HttpPost("UpdatePoLDoc")]
+        public IActionResult UpdatePoLDoc(JObject query)
+        {
+            int matnr_id = Convert.ToInt32(query["I_MATNR"]);
+            string Des = query["DESCRIPTION"].ToString();
+            int vendor_id = Convert.ToInt32(query["VENDOR_ID"]);
+            List<BaseFileData> fdList = JsonConvert.DeserializeObject<List<BaseFileData>>(query["fileNameList"].ToString());
+            string result=_srmPoService.UpdatePoLDoc(matnr_id,Des, vendor_id, fdList, User.GetUserName());
+            if (string.IsNullOrEmpty(result)) return Ok();
+            return BadRequest(result);
+        }
     }
 
 }

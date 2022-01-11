@@ -89,7 +89,7 @@
     <!-- <button nz-button (click)="downLoadFile(aaa})">aaa</button>
     <button nz-button (click)="downLoadFile(bbb)">bbb</button> -->
     <div *ngFor="let filename of fileNameList" style="margin-top: 10px;">
-      <button nz-button (click)="downLoadFile(filename)" style="border: none;">{{filename}}</button>
+      <label nz-checkbox [(ngModel)]="filename.active" name="filename.name"></label><button nz-button (click)="downLoadFile(filename.name)" style="border: none;">{{filename.name}}</button>
     </div>
 
 
@@ -99,6 +99,7 @@
     [disabled]="fileList.length == 0" style="margin-top: 16px" class="mr-10">
 {{ uploading ? '上傳中...' : '開始上傳' }}
 </button> -->
+<button nz-button type="button" [nzType]="'primary'" (click)="handleOk()">確定</button>
 <button nz-button type="reset" (click)="handleCancel()">取消</button>
   </ng-container>
   <!-- <ng-footer>

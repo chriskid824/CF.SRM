@@ -64,7 +64,7 @@ namespace Convience.Entity.Entity
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    
+
 namespace Convience.Entity.Configurations
 {
     public class ${camel}Configuration : IEntityTypeConfiguration<${camel}>
@@ -91,12 +91,12 @@ namespace Convience.Entity.Configurations
     {
         ${propertyString}
     }
-    
+
     public class ${this.upperFirstCharacter(entityName)}ResultModel
     {
         ${propertyString}
     }
-    
+
     public class ${this.upperFirstCharacter(entityName)}QueryModel : PageSortQueryModel
     {
         ${propertyString}
@@ -124,7 +124,7 @@ namespace Convience.Entity.Configurations
     });
 
     return builder ? `using FluentValidation;
-    
+
 namespace Convience.Model.Validators
 {
     public class ${camel}ViewModelValidator : AbstractValidator<${camel}ViewModel>
@@ -147,7 +147,7 @@ namespace Convience.Model.Validators
     {
         public ${camel}QueryModelValidator()
         {
-            RuleFor(viewmodel => viewmodel.Size).Must(size => size == 10 || size == 20 || size == 30 || size == 40).WithMessage("错误的长度！");
+            RuleFor(viewmodel => viewmodel.Size).Must(size => size == 10 || size == 20 || size == 30 || size == 40).WithMessage("錯誤的長度！");
         }
     }
 }`;
@@ -197,7 +197,7 @@ namespace Convience.Service
     public class ${camel}Service : BaseService , I${camel}Service
     {
         private readonly IRepository<${camel}> _${lower}Repository;
-        
+
         private readonly SystemIdentityDbUnitOfWork _unitOfWork;
 
         private readonly IMapper _mapper;
@@ -216,18 +216,18 @@ namespace Convience.Service
             var ${camel} = await _${lower}Repository.GetAsync(id);
             return _mapper.Map<${camel}ResultModel>(${camel});
         }
-        
+
         public PagingResultModel<${camel}ResultModel> Get${camel}s(${camel}QueryModel queryModel)
         {
             // 构造查询
             var query = from ${lower} in _${lower}Repository.Get(false)
                         select ${lower};
-            
+
             // 构造排序
             var sortFieldDic = new Dictionary<string, Expression<Func<${camel}, object>>>();
-            ${sortFieldDic}            
-            query = GetOrderQuery(query, queryModel.Sort, queryModel.Order, sortFieldDic);            
-                        
+            ${sortFieldDic}
+            query = GetOrderQuery(query, queryModel.Sort, queryModel.Order, sortFieldDic);
+
             // 取得数据
             var skip = queryModel.Size * (queryModel.Page - 1);
             var result = query.Skip(skip).Take(queryModel.Size).ToList();
@@ -290,7 +290,7 @@ namespace Convience.ManagentApi.Controllers
     [ApiController]
     [Authorize]
     public class ${camel}Controller : ControllerBase
-    {       
+    {
         private readonly I${camel}Service _${lower}Service;
 
         public ${camel}Controller(I${camel}Service ${lower}Service)
@@ -435,7 +435,7 @@ export class ${camel}Service {
     let result = `
 <!--搜索表单-->
 <nz-card [nzSize]="'small'">
-    <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">    
+    <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
         ${items}
         <nz-form-item>
             <nz-form-control>
@@ -534,7 +534,7 @@ export class ${camel}Component implements OnInit {
 
     // 页面大小
     public size: number = 10;
-    
+
     // 页码
     public page: number = 1;
 
@@ -543,19 +543,19 @@ export class ${camel}Component implements OnInit {
 
     // 搜索表单
     public searchForm: FormGroup = new FormGroup({});
-    
+
     // 编辑表单
     public editForm: FormGroup = new FormGroup({});
- 
+
     // 表格数据
-    public data: ${camel}[] = [];  
+    public data: ${camel}[] = [];
 
     // 模态框
     public modal: NzModalRef;
 
     // 表格排序功能
     private _sortArray: string[] = [];
-  
+
     // 表格排序功能
     private _orderArray: string[] = [];
 
@@ -584,13 +584,13 @@ export class ${camel}Component implements OnInit {
     }
 
     // 点击搜索
-    submitSearch() {    
+    submitSearch() {
       ${setSearchObject}
       this.initData();
     }
 
     // 初始化页面数据
-    initData() { 
+    initData() {
       this._${lower}Service.getList(this.page, this.size, this._sortArray, this._orderArray, this._searchObj)
         .subscribe(result => {
           this.data = result['data'];
@@ -649,7 +649,7 @@ export class ${camel}Component implements OnInit {
       if (this.editForm.valid) {
         let ${lower} = new ${camel}();
         ${fse}
-        
+
         if (${lower}.id) {
           this._${lower}Service.update(${lower}).subscribe(result => {
             this._messageService.success("修改成功！");
@@ -664,12 +664,12 @@ export class ${camel}Component implements OnInit {
           });
         }
       }
-    }    
+    }
 
     pageChange() {
       this.initData();
     }
-  
+
     sizeChange() {
       this.page = 1;
       this.initData();
@@ -678,7 +678,7 @@ export class ${camel}Component implements OnInit {
     cancel() {
       this.modal.close();
     }
-   
+
     // 排序发生变化
     public onQueryParamsChange(params: NzTableQueryParams) {
       let currentSort = params.sort.filter(s => s.value != null);

@@ -10,6 +10,7 @@ using Convience.Model.Constants.SystemManage;
 using Convience.Model.Models;
 using Convience.Model.Models.SRM;
 using Convience.Model.Models.SystemManage;
+using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
@@ -28,19 +29,25 @@ namespace Convience.Service.SRM
         /// </summary>
         public PagingResultModel<ViewSrmVendor> GetVendor(QueryVendorModel vendorQuery);
         public SrmVendor GetVendorById(int id);
+        public Task<string> AddUserFromVendor();
+        public Task<string> DefaultPassword();
+        public List<AspNetUser> GetUsersByVendor(UserClaims user);
     }
     class SrmVendorService:ISrmVendorService
     {
         private readonly IRepository<SrmVendor> _srmVendorRepository;
         //private readonly SystemIdentityDbUnitOfWork _systemIdentityDbUnitOfWork;
-
+        private readonly SRMContext _context;
+        private readonly IUserService _userService;
         public SrmVendorService(
             //IMapper mapper,
-            IRepository<SrmVendor> srmVendorRepository)
+            IRepository<SrmVendor> srmVendorRepository, SRMContext context, IUserService userService)
         //SystemIdentityDbUnitOfWork systemIdentityDbUnitOfWork)
         {
             //_mapper = mapper;
             _srmVendorRepository = srmVendorRepository;
+            _context = context;
+            _userService = userService;
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
@@ -64,6 +71,50 @@ namespace Convience.Service.SRM
         {
             return _srmVendorRepository.Get(r => r.VendorId == id).FirstOrDefault();
         }
+        public async Task<string> AddUserFromVendor()
+        {
+            List<UserViewModel> users = (from vendors in _context.SrmVendors
+                                         select new UserViewModel()
+                                         {
+                                             Avatar="",
+                                             UserName= vendors.SrmVendor1,
+                                             PhoneNumber=vendors.TelPhone,
+                                             Email=vendors.Mail,
+                                             Sex=0,
+                                             Name=vendors.VendorName,
+                                             RoleIds="4",
+                                             IsActive=true,
+                                             Password="Ab123456",
+                                             SapId= vendors.SrmVendor1,
+                                             PositionIds="",
+                                         }).ToList();
+            foreach (var user in users)
+            {
+                if (!_context.AspNetUsers.Any(p => p.UserName == user.UserName))
+                {
+                    var result = _userService.AddUserAsync(user);
+                }
+            }
+            return null;
+        }
+        public async Task<string> DefaultPassword()
+        {
+            List<int> users = _context.AspNetUsers.Where(p => p.PasswordHash == null).Select(p => p.Id).ToList();
 
+            //_userService.SetPasswordAsync(new UserPasswordModel(user, "Ab123456"));
+            foreach (var id in users)
+            {
+                var result = await _userService.SetPasswordAsync(new UserPasswordModel(id, "Ab123456"));
+
+            }
+            return null;
+        }
+        public List<AspNetUser> GetUsersByVendor(UserClaims user)
+        {
+            return null;
+            //from u in _context.AspNetUsers
+            //join v in _context.SrmVendors on u.SapId equals v.VendorId
+            //select u;
+        }
     }
 }

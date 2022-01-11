@@ -17,6 +17,7 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { SrmFileService } from 'src/app/business/srm/srm-file.service';
 import { FileService } from 'src/app/business/file.service';
 import { FileInfo } from '../../content-manage/model/fileInfo';
+import { StorageService } from 'src/app/services/storage.service';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -33,6 +34,7 @@ export class PoComponent implements OnInit {
 
   // @ViewChild('ctest2')
   // ctest2: TemplateRef<any>;
+  isvendor:boolean=false;
   gridApi;
   gridColumnApi;
   columnDefs;
@@ -53,6 +55,7 @@ export class PoComponent implements OnInit {
   uploading: boolean = false;
   formData:FormData;
   poData:any;
+  polData:any;
   showUploadList = {
     showDownloadIcon: true,
    showRemoveIcon: false,
@@ -63,7 +66,8 @@ export class PoComponent implements OnInit {
     private _modalService: NzModalService,
     private _srmFileService: SrmFileService,
     private _fileService: FileService,
-    private dialog: MatDialog,private route: ActivatedRoute) {
+    private dialog: MatDialog,private route: ActivatedRoute,
+    private _storageService: StorageService) {
       this.route.params.subscribe(params => {
         this.searchId = params['id'];
         console.log(params['id']);
@@ -211,7 +215,7 @@ export class PoComponent implements OnInit {
             hide:'true',
           },
           {
-            headerName:'料號識別碼',
+            headerName:'料號',
             field: 'Matnr',
           },
           {
@@ -329,6 +333,7 @@ export class PoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isvendor=this._storageService.vendorId.length>0;
     this.searchForm = this._formBuilder.group({
       PO_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
@@ -351,8 +356,15 @@ export class PoComponent implements OnInit {
   }
 downLoadFile(fileName)
 {
+  // var ip =
+  // (req.headers["x-forwarded-for"] || "").split(",").pop() ||
+  // req.connection.remoteAddress ||
+  // req.socket.remoteAddress ||
+  // req.connection.socket.remoteAddress;
+  //console.info(req);
+  //alert(request.connection.remoteAddress.replace(/^.*:/, ""));
 this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
-  this._srmPoService.DownloadFilePath(result.Path,result.Name).subscribe((data: any) => {
+  this._srmPoService.DownloadFilePath(result.Path,result.Name,this.polData.PoId,this.polData.PoLId).subscribe((data: any) => {
   const a = document.createElement('a');
   var re = /(?:\.([^.]+))?$/;
   var ext = re.exec(result.Name)[1];
@@ -383,6 +395,7 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
 
   openFileModal(e){
     this.fileNameList=[];
+    this.polData=e.data;
     console.info(e.data);
     //this.poData=e.data;
     var query = {
@@ -398,18 +411,13 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
 
       //result[0].showDownload=true;
       console.info(result);
-      if(result.length>0)
-    {
-      result.forEach(doc => {
-        this.fileNameList.push(doc.doknr);
-      });
-      //var file=[{name:result[0].name}];
-      // var file:File=new File(){};
-      // file.name=result.fileName;
-      // file.showDownload=true;
-      //console.info(file);
-      //this.fileList = fileList;
-    }
+      this.fileNameList=result;
+      // if(result.length>0)
+      // {
+      //     result.forEach(doc => {
+      //     this.fileNameList.push(doc.doknr);
+      //   });
+      // }
 
     });
     //this.formData=formData;
@@ -450,7 +458,9 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
 
   onGridReady(params) {
     this.gridApi = params.api;
+    console.info(this.gridApi);
     this.gridColumnApi = params.columnApi;
+    console.info(this.gridColumnApi);
     this.refresh();
     //this.getPoList(null);
     // this._srmPoService.GetPo(null)
@@ -466,6 +476,18 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
   }
   handleOk(): void {
     this.modalclose();
+    var query = {
+      I_EBELN: this.polData.PoNum,
+      I_EBELP: this.polData.PoLId,
+      I_MATNR: this.polData.MatnrId,
+      DESCRIPTION: this.polData.Description,
+      VENDOR_ID: this.polData.VendorId,
+      fileNameList: this.fileNameList,
+    }
+    this._srmPoService.UpdatePoLDoc(query).subscribe((result: any) => {
+      console.info(result);
+    });
+    //呼叫後台保存filename跟active跟ponum,polid
   }
 
   handleCancel(): void {

@@ -85,6 +85,7 @@ namespace Convience.Model.Models.SRM
     }
     public class BaseFileData
     {
+        public bool active { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
     }

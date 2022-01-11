@@ -40,6 +40,9 @@ namespace Convience.Service.SRM
 
         public bool UpdateStatus(int id, int status);
         public List<SapResultData> UpdateSapData(SapPoData data, string userName);
+        public string UpdatePoLDoc(int matnr_id,string des, int vendor_id, List<BaseFileData> fdList, string userid);
+        public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor);
+        public void addLog(int poid, int polid, string filename, string ip, string username);
     }
 
     public class SrmPoService : ISrmPoService
@@ -89,7 +92,7 @@ namespace Convience.Service.SRM
         {
             var result = (from poh in _context.SrmPoHs
                           join status in _context.SrmStatuses on poh.Status equals status.Status
-                          join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
+                          join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId              
                           select new ViewSrmPoH
                           {
                               PoId = poh.PoId,
@@ -133,7 +136,8 @@ namespace Convience.Service.SRM
                              join h in _context.SrmPoHs on l.PoId equals h.PoId
                              join status in _context.SrmStatuses on l.Status equals status.Status
                              join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
-                             join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
+                             join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                             from matnr in matnrInfo.DefaultIfEmpty()
                              select new ViewSrmPoL
                              {
                                  PoNum = h.PoNum,
@@ -424,7 +428,7 @@ namespace Convience.Service.SRM
                         //料號
                         if (_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
                         {
-                            int matnrid = _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
+                            int matnrid = pol.MATNR==""?0: _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
                             SrmPoL poL = new SrmPoL()
                             {
                                 PoLId = pol.EBELP,
@@ -480,6 +484,90 @@ namespace Convience.Service.SRM
             });
             _context.SaveChanges();
             return result;
+        }
+
+        public string UpdatePoLDoc(int matnr_id, string des, int vendor_id, List<BaseFileData> fdList,string userid)
+        {
+            foreach (var item in fdList)
+            {
+                SrmMatnrDoc doc = _context.SrmMatnrDocs.Where(p => p.Filename == item.Name&&p.VendorId==vendor_id)
+                    .AndIfCondition(matnr_id==0,p=>p.Description==des)
+                    .AndIfCondition(matnr_id!=0,p=> p.MatnrId == matnr_id)
+                    .FirstOrDefault();
+                if (doc == null)
+                {
+                    doc = new SrmMatnrDoc() { 
+                        MatnrId=matnr_id,
+                        Description=des,
+                        VendorId=vendor_id,
+                        Filename=item.Name,
+                        Active=item.active,
+                        CreateBy= userid,
+                        LastUpdateBy=userid
+                    };
+                    _context.SrmMatnrDocs.Add(doc);
+                }
+                else
+                {
+                    doc.Active = item.active;
+                    doc.LastUpdateBy = userid;
+                    doc.LastUpdateDate = DateTime.Now;
+                    _context.SrmMatnrDocs.Update(doc);
+                }
+            }
+            _context.SaveChanges();
+            return null;
+        }
+
+        public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet,bool isvendor)
+        {
+            List<BaseFileData> fdList = new List<BaseFileData>();
+            int poid = _context.SrmPoHs.Where(p => p.PoNum == ponum).Select(p=>p.PoId).FirstOrDefault();
+            int vendor_id = _context.SrmPoHs.Where(p => p.PoNum == ponum).Select(p => p.VendorId).FirstOrDefault();
+            if (poid <= 0||vendor_id<=0) return null;
+            int matnr_id = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.MatnrId).FirstOrDefault();
+            string des= _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.Description).FirstOrDefault();
+            //if (matnr_id <= 0) return null;
+            List<SrmMatnrDoc> doclist = _context.SrmMatnrDocs.Where(p => p.VendorId == vendor_id)
+                .AndIfCondition(matnr_id == 0, p => p.Description == des)
+                .AndIfCondition(matnr_id != 0, p => p.MatnrId == matnr_id)
+                .ToList();
+            foreach (var set in dataSet)
+            {
+
+                BaseFileData fd = new BaseFileData()
+                {
+                    Name = set.DOKNR,
+                    active = false,
+                };
+                if (doclist != null)
+                {
+                    SrmMatnrDoc doc = doclist.Where(p => p.Filename == set.DOKNR).FirstOrDefault();
+                    if (doc != null) fd.active = doc.Active.HasValue ? doc.Active.Value : false;
+                }
+
+                if (!isvendor || (isvendor && fd.active))
+                {
+                    fdList.Add(fd);
+                }
+
+                //此處要有從資料庫抓取資料的紀錄
+            }
+            return fdList;
+        }
+        public void addLog(int poid, int polid, string filename,string ip,string username)
+        {
+            SrmDownloadLog log = new SrmDownloadLog()
+            {
+                PoId=poid,
+                PoLId=polid,
+                FileName=filename,
+                Ip=ip,
+                CreateBy=username,
+                LastUpdateBy=username
+            };
+            _context.SrmDownloadLogs.Add(log);
+            _context.SaveChanges();
         }
     }
 }
