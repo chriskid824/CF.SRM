@@ -162,10 +162,11 @@ namespace Convience.Service.SRM
 
             SrmMeasureUnit Unit = _context.SrmMeasureUnits.Where(p => p.MeasureDesc == data.UnitDesc).FirstOrDefault();
 
-            if (description != null)
-            {
-                throw new Exception("物料內文重複，請重新輸入");
-            }
+            // 20220110 物料內文卡控取消
+            //if (description != null)
+            //{
+            //    throw new Exception("物料內文重複，請重新輸入");
+            //}
             if (ekgrp == null)
             {
                 throw new Exception("採購群組有誤，請重新輸入");
@@ -223,10 +224,11 @@ namespace Convience.Service.SRM
             SrmMatnr sapmatnr = _context.SrmMatnrs.Where(p => p.SapMatnr == data.SapMatnr).FirstOrDefault();
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks==data.Werks).FirstOrDefault();
 
-            if (description != null)
-            {
-                msg = "物料內文 已重複使用";
-            }
+            // 20220110 物料內文卡控取消
+            //if (description != null)
+            //{
+            //    msg = "物料內文 已重複使用";
+            //}
             if (!string.IsNullOrWhiteSpace(data.SapMatnr))
             {
                 if (sapmatnr != null)
