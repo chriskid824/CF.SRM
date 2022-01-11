@@ -60,9 +60,10 @@ namespace Convience.Model.Models.SRM
         public string id { get; set; }
         public string number { get; set; }
         public int status { get; set; }
+        public string status_desc { get; set; }
         public string viewstatus
         {
-            get { return ((Status)status).ToString(); }
+            get { return string.IsNullOrEmpty(status_desc)? ((Status)status).ToString():status_desc; }
         }
         public string color { get { 
             switch(this.status)

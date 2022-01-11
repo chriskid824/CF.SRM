@@ -413,8 +413,11 @@ namespace Convience.Service.SRM
             }
             result.Add(GetAnn4(query));
 
+            if(query.user.GetIsVendor())
+            {
+                result.Add(GetAnn5(query));
+            }
 
-            //result.Add(GetAnn5(query));
             //result.Add(GetAnn6(query));
 
             return result;
@@ -508,12 +511,42 @@ namespace Convience.Service.SRM
         }
         public AnnouncementType GetAnn5(QueryFile query)
         {
+
             AnnouncementType ann = new AnnouncementType()
             {
                 Stylecolor = "lightgreen",
-                TxtTypeName = "供應商",
+                TxtTypeName = "檔案更新",
                 Icon = "mdi-mother-heart",
+                Router = "po",
             };
+            var result = (from log in _context.SrmPoUpdateLogs
+                          join h in _context.SrmPoHs on log.PoNum equals h.PoNum
+                          join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                          //join l in _context.SrmPoLs on new { PoId = h.PoId, PoLId = log.PoLId } equals new { PoId = l.PoId, PoLId = l.PoLId }
+                          //join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                          //from matnr in matnrInfo.DefaultIfEmpty()
+                          select new ViewSrmDownloadLog
+                          {
+                              //DId = log.DId,
+                              PoNum = h.PoNum,
+                              PoLId = log.PoLId,
+                              Name=vendor.SapVendor,
+                              PoId = h.PoId,
+                              FileName = log.Filename,
+                              SapMatnr= log.SapMatnr,
+                              //Ip = log.Ip,
+                              CreateBy = log.CreateBy,
+                              CreateDate = log.CreateDate,
+
+                              //SapMatnr = matnr.SapMatnr,
+                              Description = log.Description,
+                              //Name = user.Name,
+                          })
+                .Where(p => p.Name == query.user.GetVendorId()).ToList();
+            if (result != null)
+            {
+                ann.NumberList = result.Select(p => new AnnouncementDetail() { id = p.PoId.ToString(), number = p.PoNum.ToString()+"-"+p.PoLId.ToString()+"-"+ p.FileName, status_desc = "修改" }).ToList();
+            }
             return ann;
         }
         public AnnouncementType GetAnn6(QueryFile query)

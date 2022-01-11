@@ -59,6 +59,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmHistoryPrice> SrmHistoryPrices { get; set; }
         public virtual DbSet<SrmMatnrDoc> SrmMatnrDocs { get; set; }
         public virtual DbSet<SrmDownloadLog> SrmDownloadLogs { get; set; }
+        public virtual DbSet<SrmPoUpdateLog> SrmPoUpdateLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1850,6 +1851,60 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Success)
                     .HasColumnName("SUCCESS")
                     .HasDefaultValueSql("((1))");
+            });
+
+            modelBuilder.Entity<SrmPoUpdateLog>(entity =>
+            {
+                entity.HasKey(e => e.UId);
+
+                entity.ToTable("SRM_PO_UPDATE_LOG");
+
+                entity.Property(e => e.UId).HasColumnName("U_ID");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("CREATE_BY")
+                    .HasComment("建立人員");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("建立日期");
+
+                entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.Filename)
+                    .HasMaxLength(30)
+                    .HasColumnName("FILENAME");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(8)
+                    .HasColumnName("LAST_UPDATE_BY")
+                    .HasComment("最後修改人員");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE")
+                    .HasDefaultValueSql("(getdate())")
+                    .HasComment("最後修改日期");
+
+                entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
+
+                entity.Property(e => e.PoNum)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("PO_NUM");
+
+                entity.Property(e => e.SapMatnr)
+                    .HasMaxLength(18)
+                    .HasColumnName("SAP_MATNR")
+                    .HasComment("SAP料號");
+
+                entity.Property(e => e.SapVendor)
+                    .HasMaxLength(8)
+                    .HasColumnName("SAP_VENDOR")
+                    .HasComment("SAP供應商代碼");
             });
             OnModelCreatingPartial(modelBuilder);
         }
