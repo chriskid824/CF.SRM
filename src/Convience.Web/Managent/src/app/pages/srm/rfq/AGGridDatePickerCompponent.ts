@@ -23,7 +23,7 @@ export class AgGridDatePickerComponent_RFQ implements ICellEditorAngularComp {
   }
 
   getValue(): any {
-    return this.selectedDate;
+    return `${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth() + 1}-${this.selectedDate.getDate()}`;
   }
 
   isPopup(): boolean {

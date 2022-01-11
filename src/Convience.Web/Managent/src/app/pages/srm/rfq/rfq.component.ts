@@ -650,7 +650,7 @@ guid:string;
     }
     if (rfq.v.length == 0) { alert('供應商至少需一筆!'); return; }
     this._srmRfqService.StartUp(rfq).subscribe(result => {
-      alert('上架成功');
+      alert(result["rfqNum"]+'上架成功');
       //window.close();
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
