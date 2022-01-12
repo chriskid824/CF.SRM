@@ -111,7 +111,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     return this.BadRequestResult(result);
                 }
-                return Ok();
+                return Ok(h);
             }
             catch (Exception ex) {
                 return this.BadRequestResult(ex.Message);
@@ -312,7 +312,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     #endregion 單封
                     sendRespective(vendors, rfq, "作廢");
                     transaction.Complete();
-                    return Ok();
+                    return Ok(rfq);
                 }
                 catch (Exception ex)
                 {
@@ -459,7 +459,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 rfqH.LastUpdateBy = user.UserName;
                 rfqH.LastUpdateDate = DateTime.Now;
                 _srmRfqHService.UpdateStatus(((int)Status.刪除), rfqH);
-                return Ok();
+                return Ok(rfqH);
             }catch (Exception ex)
             {
                 return this.BadRequestResult(ex.Message);

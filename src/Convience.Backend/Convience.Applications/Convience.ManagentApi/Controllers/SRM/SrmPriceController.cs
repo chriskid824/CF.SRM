@@ -384,7 +384,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("Sortl");
             InfoRecord.Columns.Add("MeasureUnit");
             InfoRecord.Columns.Add("MeasureDesc");
- 
+            InfoRecord.Columns.Add("File1");
+
             foreach (var info in infos)
             {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
@@ -428,6 +429,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["Sortl"] = info.Sortl;
                 dr["MeasureUnit"] = rfqM.Unit;
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
+                dr["File1"] = "";
                 var FirstPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = true });
                 if (FirstPrice!=null)
                 {

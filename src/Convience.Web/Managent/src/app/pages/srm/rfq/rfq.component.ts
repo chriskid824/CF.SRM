@@ -613,7 +613,7 @@ guid:string;
     var rfq = this.getrfq();
     this._srmRfqService.SAVE(rfq).subscribe(result => {
       console.log(result);
-      alert('保存成功');
+      alert(result["rfqNum"] +'保存成功');
       //window.close();
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
@@ -667,7 +667,7 @@ guid:string;
     var rfq = this.getrfq();
     console.log(rfq);
     this._srmRfqService.Cancel(rfq.h).subscribe(result => {
-      alert('作廢成功');
+      alert(result["rfqNum"]+'作廢成功');
       //window.close();
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
@@ -677,7 +677,7 @@ guid:string;
   delete() {
     var rfq = this.getrfq();
     this._srmRfqService.Delete(rfq.h).subscribe(result => {
-      alert('刪除成功');
+      alert(result["rfqNum"] +'刪除成功');
       //window.close();
       this._layout.navigateTo('rfq-manage');
       this._router.navigate(['srm/rfq-manage']);
