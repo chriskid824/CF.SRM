@@ -47,6 +47,14 @@ export class SrmFileService {
     let uri = `${this.uriConstant.SrmFile}/list?page=${page}&&size=${size}&&directory=${directory}`;
     return this.httpClient.get(uri);
   }
+  getFunctionList() {
+    let uri = `${this.uriConstant.SrmFile}/GetFunctionList`;
+    return this.httpClient.get(uri);
+  }
+  getFileTypeList() {
+    let uri = `${this.uriConstant.SrmFile}/GetFileTypeList`;
+    return this.httpClient.get(uri);
+  }
   delete(uid) {
     let uri = `${this.uriConstant.SrmFile}?uid=${uid}`;
     return this.httpClient.delete(uri);

@@ -84,7 +84,7 @@
         <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_templateId'">樣板編號</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="templateId錯誤！">
             <input nz-input [attr.id]="'edit_templateId'" formControlName="templateId"
-                placeholder="樣板編號" [disabled]="true" />
+                placeholder="樣板編號" [disabled]="true"/>
         </nz-form-control>
     </nz-form-item>
 
@@ -94,8 +94,8 @@
         <nz-form-control [nzSm]="14" [nzXs]="24">
             <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'templateType'" formControlName="templateType"
                 nzMode="default">
-                <nz-option *ngFor="let role of typeOptions" [nzValue]="role.id"
-                    [nzLabel]="role.name">
+                <nz-option *ngFor="let templateType of typeOptions" [nzValue]="templateType.id"
+                    [nzLabel]="templateType.name">
                 </nz-option>
             </nz-select>
         </nz-form-control>
@@ -105,8 +105,8 @@
       <nz-form-control [nzSm]="14" [nzXs]="24">
           <nz-select nzAllowClear nzPlaceHolder="請選擇" [attr.id]="'werks'" formControlName="werks"
               nzMode="default">
-              <nz-option *ngFor="let role of werkOptions" [nzValue]="role.id"
-                  [nzLabel]="role.name">
+              <nz-option *ngFor="let werk of werkOptions" [nzValue]="werk.id"
+                  [nzLabel]="werk.name">
               </nz-option>
           </nz-select>
       </nz-form-control>

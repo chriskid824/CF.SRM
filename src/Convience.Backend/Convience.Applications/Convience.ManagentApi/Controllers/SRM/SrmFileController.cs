@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -52,7 +53,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (_srmFileService.UpdateTemplate(template)) return Ok();
             return BadRequest("樣板修改失敗");
         }
-
         [HttpPost("GetTemplateList")]
         public IActionResult GetTemplateList(JObject query)
         {
@@ -64,7 +64,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             QueryFile q = new QueryFile();
             //var aaa = query.Property("poNum");
-            q.id = query["templateId"].ToString()==""?0: (int)query["templateId"];
+            q.id = query["templateId"].ToString() == "" ? 0 : (int)query["templateId"];
             q.werk = (int)query["werks"];
             q.user = User;
             var aaa = _srmFileService.GetTemplateList(q);
@@ -76,6 +76,18 @@ namespace Convience.ManagentApi.Controllers.SRM
             //            {
             //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             //            });
+        }
+        [HttpGet("GetFunctionList")]
+        public IActionResult GetFunctionList()
+        {
+            var result = _srmFileService.GetFunctionList().Select(p => new ViewSelects() { id = p.FunctionId.ToString(), name = p.FunctionName }).ToList();
+            return Ok(result);
+        }
+        [HttpGet("GetFileTypeList")]
+        public IActionResult GetFileTypeList()
+        {
+            var result = _srmFileService.GetFileTypeProfiles().Select(p => new ViewSelects() { id = p.TypeId.ToString(), name = p.TypeName }).ToList();
+            return Ok(result);
         }
         [HttpPost("GetFileList")]
         public IActionResult GetFileList(JObject query)

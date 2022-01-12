@@ -64,9 +64,9 @@ export class FileTemplateComponent implements OnInit {
   size: number = 2;
   total: number;
   types: Function[] = [];
-  fileTypes: BaseSelect[] = [{id:1,name:"SIP"},{id:2,name:"SOP"},{id:3,name:"ZDR"},{id:4,name:"材證"},{id:5,name:"第三方檢驗文件"},{id:6,name:"進口報關文件"}];
+  fileTypes: any = [{id:1,name:"SIP"},{id:2,name:"SOP"},{id:3,name:"ZDR"},{id:4,name:"材證"},{id:5,name:"第三方檢驗文件"},{id:6,name:"進口報關文件"}];
   werkOptions: BaseSelect[] = [{id:1100,name:"廠工事業處"},{id:1200,name:"機械事業處"},{id:3100,name:"精密事業處"}];
-  typeOptions: BaseSelect[] = [{id:1,name:"供應商"},{id:2,name:"料號"},{id:3,name:"詢價單"},{id:4,name:"報價單"},{id:5,name:"價格資訊"},{id:6,name:"資訊紀錄"},{id:7,name:"採購單"},{id:8,name:"出貨單"}];
+  typeOptions: any = [{id:1,name:"供應商"},{id:2,name:"料號"},{id:3,name:"詢價單"},{id:4,name:"報價單"},{id:5,name:"價格資訊"},{id:6,name:"資訊紀錄"},{id:7,name:"採購單"},{id:8,name:"出貨單"}];
   constructor(
     private _formBuilder: FormBuilder,
     private _messageService: NzMessageService,
@@ -75,8 +75,25 @@ export class FileTemplateComponent implements OnInit {
 }
 
   ngOnInit(): void {
+    this.refreshSelect();
     this.refresh();
     this.resetSearchForm();
+  }
+  refreshSelect(){
+    this._srmFileService.getFunctionList()
+    .subscribe(result => {
+      if(result!=null&&result!=undefined)
+      {
+        this.typeOptions=result;
+      }
+    });
+    this._srmFileService.getFileTypeList()
+    .subscribe(result => {
+      if(result!=null&&result!=undefined)
+      {
+        this.fileTypes=result;
+      }
+    });
   }
   resetSearchForm() {
     this.searchForm = this._formBuilder.group({
@@ -119,9 +136,10 @@ export class FileTemplateComponent implements OnInit {
        this.isNewUser = false;
        this.editedTemplate = template;
        console.info(template);
+       console.info(template['templateType'].toString());
        this.editForm = this._formBuilder.group({
         templateId: [template['templateId']],
-        templateType: [template['templateType'],[Validators.required, Validators.maxLength(15)]],
+        templateType: [template['templateType'].toString(),[Validators.required, Validators.maxLength(15)]],
         werks: [template['werks'], [Validators.required, Validators.maxLength(15)]],
         type: [template['type'], [Validators.required, Validators.maxLength(10)]],
         effectiveDate: [template['effectiveDate']],

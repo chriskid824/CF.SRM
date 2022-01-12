@@ -43,6 +43,8 @@ namespace Convience.Service.SRM
         public IEnumerable<AnnouncementType> GetAnnList(QueryFile query);
         public string UpdateNumber(string number, string guid);
         public bool HasTemplate(int werks, int functionId,int type);
+        public List<SrmFunctionList> GetFunctionList();
+        public List<SrmFileTypeProfile> GetFileTypeProfiles();
     }
 
     public class SrmFileService : ISrmFileService
@@ -606,5 +608,13 @@ namespace Convience.Service.SRM
         //        return "文件上传失败！";
         //    }
         //}
+        public List<SrmFunctionList> GetFunctionList()
+        {
+            return _context.SrmFunctionLists.ToList();
+        }
+        public List<SrmFileTypeProfile> GetFileTypeProfiles()
+        {
+            return _context.SrmFileTypeProfiles.ToList();
+        }
     }
 }
