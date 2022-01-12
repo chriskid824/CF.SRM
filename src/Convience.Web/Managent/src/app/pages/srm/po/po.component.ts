@@ -205,9 +205,8 @@ export class PoComponent implements OnInit {
         frameworkComponents:this.frameworkComponents,
         columnDefs: [
           {
-            headerName:'採購單明細識別碼',
+            headerName:'項次',
             field: 'PoLId',
-            hide:'true',
           },
           {
             headerName:'採購單號',
@@ -288,7 +287,7 @@ export class PoComponent implements OnInit {
 //               return eDiv;
 
 //             }
-             Width:20,
+             Width:10,
              cellRenderer : function(params){
                 var eDiv = document.createElement('div');
                 eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';

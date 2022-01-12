@@ -47,7 +47,7 @@
           nzTheme="outline"></i>設定</button> -->
   <div class="mt-10">
       <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
-          nzBordered="true">
+          nzBordered="true" [nzScroll]="{ x: '2460px' }">
           <thead>
               <tr>
                   <th nzAlign="center" nzWidth="50px">#</th>
