@@ -1634,6 +1634,7 @@ namespace DMSAPI
                 result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
                 result.MaxReceivedMessageSize = int.MaxValue;
                 result.AllowCookies = true;
+                result.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
                 return result;
             }
             if ((endpointConfiguration == EndpointConfiguration.APISoap12))
@@ -1642,11 +1643,11 @@ namespace DMSAPI
                 System.ServiceModel.Channels.TextMessageEncodingBindingElement textBindingElement = new System.ServiceModel.Channels.TextMessageEncodingBindingElement();
                 textBindingElement.MessageVersion = System.ServiceModel.Channels.MessageVersion.CreateVersion(System.ServiceModel.EnvelopeVersion.Soap12, System.ServiceModel.Channels.AddressingVersion.None);
                 result.Elements.Add(textBindingElement);
-                System.ServiceModel.Channels.HttpTransportBindingElement httpBindingElement = new System.ServiceModel.Channels.HttpTransportBindingElement();
-                httpBindingElement.AllowCookies = true;
-                httpBindingElement.MaxBufferSize = int.MaxValue;
-                httpBindingElement.MaxReceivedMessageSize = int.MaxValue;
-                result.Elements.Add(httpBindingElement);
+                System.ServiceModel.Channels.HttpsTransportBindingElement httpsBindingElement = new System.ServiceModel.Channels.HttpsTransportBindingElement();
+                httpsBindingElement.AllowCookies = true;
+                httpsBindingElement.MaxBufferSize = int.MaxValue;
+                httpsBindingElement.MaxReceivedMessageSize = int.MaxValue;
+                result.Elements.Add(httpsBindingElement);
                 return result;
             }
             throw new System.InvalidOperationException(string.Format("找不到名為 \'{0}\' 的端點。", endpointConfiguration));
@@ -1656,11 +1657,11 @@ namespace DMSAPI
         {
             if ((endpointConfiguration == EndpointConfiguration.APISoap))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.1.1.180/CF.DMS.Service/API.asmx");
+                return new System.ServiceModel.EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
             }
             if ((endpointConfiguration == EndpointConfiguration.APISoap12))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.1.1.180/CF.DMS.Service/API.asmx");
+                return new System.ServiceModel.EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
             }
             throw new System.InvalidOperationException(string.Format("找不到名為 \'{0}\' 的端點。", endpointConfiguration));
         }

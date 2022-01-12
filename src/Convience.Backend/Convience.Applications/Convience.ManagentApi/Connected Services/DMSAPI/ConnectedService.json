@@ -6,7 +6,7 @@
   },
   "ExtendedData": {
     "inputs": [
-      "http://10.1.1.180/CF.DMS.Service/API.asmx"
+      "https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx"
     ],
     "collectionTypes": [
       "System.Array",
