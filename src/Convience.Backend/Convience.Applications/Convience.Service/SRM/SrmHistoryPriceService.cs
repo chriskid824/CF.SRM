@@ -22,6 +22,7 @@ namespace Convience.Service.SRM
         }
         public SrmHistoryPrice GetHistoryPrice(QuerySrmHistoryPrice query) {
             var result = _context.SrmHistoryPrices
+                 .Where(r=>r.Ekorg.Equals(query.Ekorg))
                  .AndIfHaveValue(query.Matnr, r => r.Matnr.Equals(query.Matnr))
                  .AndIfHaveValue(query.Essay, r => r.Essay.Equals(query.Essay))
                  .AndIfHaveValue(query.year, r => r.OrderDate.Value.Year.Equals(query.year.Value));

@@ -10,6 +10,7 @@ namespace Convience.Entity.Entity.SRM
     public partial class SrmHistoryPrice
     {
         public int HistoryId { get; set; }
+        public int? Ekorg { get; set; }
         public string Matnr { get; set; }
         public string Vendor { get; set; }
         public string Essay { get; set; }

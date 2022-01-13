@@ -1701,6 +1701,11 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("EKGRY")
                     .HasComment("採購群組");
 
+                entity.Property(e => e.Ekgry)
+                    .HasMaxLength(3)
+                    .HasColumnName("EKGRY")
+                    .HasComment("採購群組");
+
                 entity.Property(e => e.Essay)
                     .HasMaxLength(40)
                     .HasColumnName("ESSAY")
