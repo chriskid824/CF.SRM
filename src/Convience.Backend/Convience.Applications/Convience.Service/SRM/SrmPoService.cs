@@ -599,6 +599,7 @@ namespace Convience.Service.SRM
                           .AndIfCondition(!string.IsNullOrWhiteSpace(query.username), p => p.Name.IndexOf(query.username) > -1)
                           .AndIfHaveValue(query.Date_s, p => p.CreateDate >= query.Date_s.Value.Date)
                           .AndIfHaveValue(query.Date_e, p => p.CreateDate <= query.Date_e.Value.AddDays(1).Date)
+                          .OrderByDescending(p => p.CreateDate)
                           .ToList();
 
             var r = result.AsQueryable().Skip(skip).Take(query.size).ToArray();//result.Skip(skip).Take(size);

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
+import { UserService } from 'src/app/business/system-manage/user.service';
 @Component({
   selector: 'app-po-downloadlog',
   templateUrl: './po-downloadlog.component.html',
@@ -24,22 +25,35 @@ export class PoDownloadlogComponent implements OnInit {
   public page = 1;
   public size = 10;
   public total = 0;
-
+  public users:any=[];
   @ViewChild("settingTpl", { static: true })
   settingTpl;
 
   constructor(private _modalService: NzModalService,
     private _formBuilder: FormBuilder,
     private _srmPoService: SrmPoService,
+    private _userService: UserService,
     private _messageService: NzMessageService) { }
 
   ngOnInit(): void {
+    this._userService.getUsersAll()
+      .subscribe(result => {
+        this.users=result;
+      });
     this.initSearchForm();
     this.submitSearch();
     //this.initData();
   }
 
   initData() {
+    this._searchObject = {};
+    this._searchObject.sapMatnr = this.searchForm.value["sapMatnr"];
+    this._searchObject.description = this.searchForm.value["description"];
+    this._searchObject.username = this.searchForm.value["username"];
+    this._searchObject.Date_s = this.searchForm.value["Date_s"];
+    this._searchObject.Date_e = this.searchForm.value["Date_e"];
+    this._searchObject.page = this.page;
+    this._searchObject.size = this.size;
     this._srmPoService.GetDownLoadLog(this._searchObject).subscribe((result: any) => {
       console.info(result);
       this.data = result.data;
@@ -70,14 +84,6 @@ export class PoDownloadlogComponent implements OnInit {
   }
 
   public submitSearch() {
-    this._searchObject = {};
-    this._searchObject.sapMatnr = this.searchForm.value["sapMatnr"];
-    this._searchObject.description = this.searchForm.value["description"];
-    this._searchObject.username = this.searchForm.value["username"];
-    this._searchObject.Date_s = this.searchForm.value["Date_s"];
-    this._searchObject.Date_e = this.searchForm.value["Date_e"];
-    this._searchObject.page = this.page;
-    this._searchObject.size = this.size;
     this.initData();
   }
 

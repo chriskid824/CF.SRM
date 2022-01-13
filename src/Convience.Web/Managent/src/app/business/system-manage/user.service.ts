@@ -25,6 +25,12 @@ export class UserService {
     return this.httpClient.get(uri);
   }
 
+  getUsersAll()
+  {
+    let uri = `${this.uriConstant.UserUri}/GetUsersAll`;
+    return this.httpClient.get(uri);
+  }
+
   getUserDic(name) {
     let uri = `${this.uriConstant.UserUri}/dic?name=${name}`;
     return this.httpClient.get(uri);

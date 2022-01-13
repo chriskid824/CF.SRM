@@ -17,8 +17,11 @@
     <nz-form-item>
       <nz-form-label [nzFor]="'module'">供應商</nz-form-label>
       <nz-form-control>
-          <input nz-input placeholder="供應商" [formControlName]="'username'" [attr.id]="'module'"
-              autocomplete="off" />
+          <!-- <input nz-input placeholder="供應商" [formControlName]="'username'" [attr.id]="'module'"
+              autocomplete="off" /> -->
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="供應商" [formControlName]="'username'" style="width: 200px;">
+                <nz-option *ngFor="let user of users" [nzValue]="user.name" [nzLabel]="user.name"></nz-option>
+            </nz-select>
       </nz-form-control>
   </nz-form-item>
   <nz-form-item>

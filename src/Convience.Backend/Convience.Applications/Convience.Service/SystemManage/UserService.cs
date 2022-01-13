@@ -36,6 +36,7 @@ namespace Convience.Service.SystemManage
         public Task<string> RemoveUserAsync(string Id);
 
         public Task<string> SetPasswordAsync(UserPasswordModel model);
+        public List<SystemUser> GetUsersAll();
     }
 
     public class UserService : BaseService, IUserService
@@ -330,6 +331,10 @@ namespace Convience.Service.SystemManage
                 return user.SapId;
             }
             return null;
+        }
+        public List<SystemUser> GetUsersAll()
+        {
+            return _userRepository.Get().ToList();
         }
     }
 }

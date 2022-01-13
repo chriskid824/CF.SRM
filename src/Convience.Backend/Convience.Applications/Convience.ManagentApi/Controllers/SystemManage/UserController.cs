@@ -28,6 +28,11 @@ namespace Convience.ManagentApi.Controllers.SystemManage
         {
             return Ok(_userService.GetUsers(userQuery));
         }
+        [HttpGet("GetUsersAll")]
+        public IActionResult GetUsersAll()
+        {
+            return Ok(_userService.GetUsersAll());
+        }
 
         [HttpGet("dic")]
         [Permission("userDic")]

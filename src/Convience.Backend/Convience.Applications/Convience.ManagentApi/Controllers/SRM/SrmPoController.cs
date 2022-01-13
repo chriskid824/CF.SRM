@@ -242,22 +242,22 @@ namespace Convience.ManagentApi.Controllers.SRM
         public async Task<IActionResult> DownloadFileUrl(string file_name)
         {
             //string file_name = viewModel.ToString();
-            BasicHttpBinding binding = new BasicHttpBinding();
+            BasicHttpsBinding binding = new BasicHttpsBinding();
             binding.MaxReceivedMessageSize = 20000000;
             binding.MaxBufferSize = 20000000;
             binding.MaxBufferPoolSize = 20000000;
             binding.AllowCookies = true;
-            EndpointAddress address = new EndpointAddress("http://10.88.1.90/CF.DMS.Service/API.asmx");
+            EndpointAddress address = new EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
             if (_appSettingsService.Environment == "dev")
             {
-                address = new EndpointAddress("http://10.88.1.90/CF.DMS.Service/API.asmx");
+                //address = new EndpointAddress("http://10.88.1.90/CF.DMS.Service/API.asmx");
                 //address = new EndpointAddress("http://localhost/CF.DMS.Service/API.asmx");
-                //address = new EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
+                address = new EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
             }
             else
             {
-                //address = new EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
-                address = new EndpointAddress("http://10.88.1.90/CF.DMS.Service/API.asmx");
+                address = new EndpointAddress("https://cfns178.chenfull.com.tw/CF.DMS.Service/API.asmx");
+                //address = new EndpointAddress("http://10.88.1.90/CF.DMS.Service/API.asmx");
                 //http://10.88.1.90/CF.DMS.Service/API.asmx
             }
             APISoapClient dms = new APISoapClient(binding, address);
