@@ -390,6 +390,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
+                decimal price = Math.Round(info.Price.Value / info.Unit.Value, 2, MidpointRounding.AwayFromZero);
                 //dr["SapMatnr"] = rfqM.matnr;
                 dr["DESCRIPTION"] = rfqM.Description;
                 dr["QTY"] = rfqM.Qty;
@@ -404,7 +405,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["CTotal"] = info.Ctotal;
                 dr["DTotal"] = info.Dtotal;
                 dr["Total"] = info.total;
-                dr["Price"] = info.Price;
+                dr["Price"] = price;
                 dr["Currency"] = info.Currency;
                 dr["InfoId"] = info.InfoId;
                 //dr["Img1"] = "/BPM/images/logo.jpg";
@@ -431,7 +432,6 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
                 dr["File1"] = "";
                 var FirstPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Ekorg = rfqH.Werks, Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = true });
-                decimal price = Math.Round(info.Price.Value / info.Unit.Value, 2, MidpointRounding.AwayFromZero);
                 if (FirstPrice!=null)
                 {
                     decimal firstPrice = Math.Round(FirstPrice.HistoryPrice.Value / FirstPrice.PriceUnit.Value, 2, MidpointRounding.AwayFromZero);
