@@ -431,17 +431,17 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
                 dr["File1"] = "";
                 var FirstPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Ekorg = rfqH.Werks, Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = true });
-                decimal price = info.Price.Value / info.Unit.Value;
+                decimal price = Math.Round(info.Price.Value / info.Unit.Value, 2, MidpointRounding.AwayFromZero);
                 if (FirstPrice!=null)
                 {
-                    decimal firstPrice = FirstPrice.HistoryPrice.Value / FirstPrice.PriceUnit.Value;
+                    decimal firstPrice = Math.Round(FirstPrice.HistoryPrice.Value / FirstPrice.PriceUnit.Value, 2, MidpointRounding.AwayFromZero);
                     dr["FirstPrice"] = firstPrice;
                     dr["FirstDate"] = FirstPrice.OrderDate.Value.ToString("yyyy/MM/dd");
                     dr["FirstBargainingRate"] = Math.Round((decimal)(((price - firstPrice)) / firstPrice * 100), 2, MidpointRounding.AwayFromZero).ToString() + " % ";
                 }
                 var HistoricalPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Ekorg = rfqH.Werks, Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = false });
                 if (HistoricalPrice != null) {
-                    decimal historicalPrice = HistoricalPrice.HistoryPrice.Value / HistoricalPrice.PriceUnit.Value;
+                    decimal historicalPrice = Math.Round(HistoricalPrice.HistoryPrice.Value / HistoricalPrice.PriceUnit.Value, 2, MidpointRounding.AwayFromZero);
                     dr["HistoricalPrice"] = historicalPrice;
                     dr["HistoricalDate"] = HistoricalPrice.OrderDate.Value.ToString("yyyy/MM/dd");
                     dr["HistoricalBargainingRate"] = Math.Round((decimal)(((price - historicalPrice)) / historicalPrice * 100), 2, MidpointRounding.AwayFromZero).ToString() + " % ";
