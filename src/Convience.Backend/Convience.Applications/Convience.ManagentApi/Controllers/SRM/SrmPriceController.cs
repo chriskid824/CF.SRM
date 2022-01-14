@@ -385,12 +385,14 @@ namespace Convience.ManagentApi.Controllers.SRM
             InfoRecord.Columns.Add("MeasureUnit");
             InfoRecord.Columns.Add("MeasureDesc");
             InfoRecord.Columns.Add("File1");
+            InfoRecord.Columns.Add("BargainingRate");
 
             foreach (var info in infos)
             {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
                 decimal price = Math.Round(info.Price.Value / info.Unit.Value, 2, MidpointRounding.AwayFromZero);
+                decimal total = Math.Round(info.total, 2, MidpointRounding.AwayFromZero);
                 //dr["SapMatnr"] = rfqM.matnr;
                 dr["DESCRIPTION"] = rfqM.Description;
                 dr["QTY"] = rfqM.Qty;
@@ -404,7 +406,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["BTotal"] = info.Btotal;
                 dr["CTotal"] = info.Ctotal;
                 dr["DTotal"] = info.Dtotal;
-                dr["Total"] = info.total;
+                dr["Total"] = total;
                 dr["Price"] = price;
                 dr["Currency"] = info.Currency;
                 dr["InfoId"] = info.InfoId;
@@ -431,6 +433,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["MeasureUnit"] = rfqM.Unit;
                 dr["MeasureDesc"] = rfqM.MeasureDesc;
                 dr["File1"] = "";
+                dr["BargainingRate"] = Math.Round((decimal)(((price - total)) / total * 100), 2, MidpointRounding.AwayFromZero).ToString() + " % ";
                 var FirstPrice = _srmHistoryPriceService.GetHistoryPrice(new QuerySrmHistoryPrice() { Ekorg = rfqH.Werks, Matnr = info.Type.ToUpper() == "M" ? info.matnrObject.SapMatnr : string.Empty, Essay = info.Type.ToUpper() == "W" ? rfqM.Description : string.Empty, orderASC = true });
                 if (FirstPrice!=null)
                 {
