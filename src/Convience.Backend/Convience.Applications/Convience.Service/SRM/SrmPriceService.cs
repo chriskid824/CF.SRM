@@ -118,6 +118,7 @@ namespace Convience.Service.SRM
             must.Add("price", "總計(NT)");
             must.Add("unit", "幣別");
             must.Add("ekgry", "採購群組");
+            must.Add("currency", "幣別");
             must.Add("leadTime", "計畫交貨時間");
             must.Add("standQty", "標準採購數量");
             must.Add("minQty", "最小採購數量");
@@ -138,6 +139,27 @@ namespace Convience.Service.SRM
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
                 }
+                int tempInt = 0;
+                if (!int.TryParse(info.Price.Value.ToString(), out tempInt))
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，議價格式錯誤");
+                }
+
+                if (!int.TryParse(info.Unit.Value.ToString(), out tempInt))
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，價格單位格式錯誤");
+                }
+
+                if (info.LeadTime.Value < 1)
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，計畫交貨時間必須大於等於1");
+                }
+
+                if (info.StandQty.Value < 1)
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，標準採購數量必須大於等於1");
+                }
+
                 if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl)) {
                     throw new Exception($"報價單號:{info.qotNum}，資訊紀錄類型W時，排序條件必填");
                 }
@@ -176,6 +198,7 @@ namespace Convience.Service.SRM
             must.Add("price", "總計(NT)");
             must.Add("unit", "幣別");
             must.Add("ekgry", "採購群組");
+            must.Add("currency", "幣別");
             must.Add("leadTime", "計畫交貨時間");
             must.Add("standQty", "標準採購數量");
             must.Add("minQty", "最小採購數量");
@@ -197,6 +220,24 @@ namespace Convience.Service.SRM
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
                 }
+                int tempInt = 0;
+                if (!int.TryParse(info.Price.Value.ToString(), out tempInt)) { 
+                    throw new Exception($"報價單號:{info.qotNum}，議價格式錯誤");
+                }
+
+                if (!int.TryParse(info.Unit.Value.ToString(), out tempInt)){
+                    throw new Exception($"報價單號:{info.qotNum}，價格單位格式錯誤");
+                }
+
+                if (info.LeadTime.Value < 1) {
+                    throw new Exception($"報價單號:{info.qotNum}，計畫交貨時間必須大於等於1");
+                }
+
+                if (info.StandQty.Value < 1)
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，標準採購數量必須大於等於1");
+                }
+
                 if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl))
                 {
                     throw new Exception($"報價單號:{info.qotNum}，資訊紀錄類型W時，排序條件必填");
