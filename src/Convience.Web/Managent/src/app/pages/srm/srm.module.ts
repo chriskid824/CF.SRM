@@ -196,4 +196,5 @@ export class SrmModule {
   static decimal = /^(0|([1-9](\d)*))(\.(\d)*)?$/;
   static decimalTwoDigits = /^(0|([1-9](\d)*))(\.(\d){1,2})?$/;
   static number = /^(0|([1-9](\d)*))$/;
+  static numbercanbenegative = /^[-+]?\d+(\.\d+)?$/;//20220117
 }
