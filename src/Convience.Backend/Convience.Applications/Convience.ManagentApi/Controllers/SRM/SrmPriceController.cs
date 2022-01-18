@@ -407,7 +407,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 dr["CTotal"] = info.Ctotal;
                 dr["DTotal"] = info.Dtotal;
                 dr["Total"] = total;
-                dr["Price"] = price;
+                dr["Price"] = info.Price.Value;
                 dr["Currency"] = info.Currency;
                 dr["InfoId"] = info.InfoId;
                 //dr["Img1"] = "/BPM/images/logo.jpg";

@@ -120,7 +120,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasComment("長");
 
                 entity.Property(e => e.Material)
-                    .HasMaxLength(10)
+                    .HasMaxLength(50)
                     .HasColumnName("MATERIAL")
                     .HasComment("材質規格");
 
@@ -279,7 +279,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("MAJOR_DIAMETER");
 
                 entity.Property(e => e.Material)
-                    .HasMaxLength(10)
+                    .HasMaxLength(50)
                     .HasColumnName("MATERIAL")
                     .HasComment("材質規格");
 

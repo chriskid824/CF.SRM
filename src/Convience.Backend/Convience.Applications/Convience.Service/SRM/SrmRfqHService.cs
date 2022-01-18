@@ -183,7 +183,8 @@ namespace Convience.Service.SRM
             var rfqHs = GetRfqList(q);
             DateTime now = DateTime.Now;
             foreach (ViewSrmRfqH rfq in rfqHs) {
-                rfq.Status = (int)Status.確認;
+                var isStarted = _context.SrmQotHs.Any(r => r.Status == (int)Status.確認 && r.RfqId == rfq.RfqId);
+                rfq.Status = isStarted ? (int)Status.確認 : (int)Status.失效;
                 rfq.LastUpdateBy = "MIS";
                 rfq.LastUpdateDate = now;
                 _context.Entry(rfq).Property(x => x.Status).IsModified = true;
@@ -587,8 +588,11 @@ namespace Convience.Service.SRM
                 if (row.GetCell(dtHeader["供應商編號"]) != null)
                 {
                     row.GetCell(dtHeader["供應商編號"]).SetCellType(CellType.String);
+                    if (row.GetCell(dtHeader["供應商編號"]).StringCellValue.IndexOf("1.") == 0){
+                        { break; }
+                    }
                     row.GetCell(dtHeader["供應商名稱"]).SetCellType(CellType.String);
-                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商編號"]).StringCellValue)&& string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商名稱"]).StringCellValue)) 
+                    if (string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商編號"]).StringCellValue) && string.IsNullOrWhiteSpace(row.GetCell(dtHeader["供應商名稱"]).StringCellValue))
                     { break; }
                 }
                 else
