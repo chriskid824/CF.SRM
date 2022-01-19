@@ -37,6 +37,8 @@ export class PriceComponent implements OnInit {
   SurfaceList;
   OtherList;
   inited = false;
+  currency: string;
+  unit;
 
   TaxcodeList;
   //taxcode: FormControl;
@@ -706,15 +708,16 @@ export class PriceComponent implements OnInit {
     //this.currency.setValue(e.rowData.currency);
     //this.taxcode.setValue(e.rowData.taxcode);
     //this.ekgry.setValue(e.rowData.ekgry);
-
+    this.currency = e.rowData.currency ? e.rowData.currency : "TWD";
+    this.unit = e.rowData.unit ? e.rowData.unit : ""
     this.editForm = this._formBuilder.group({
       qotId: [null, [Validators.required]],
       //price: ['', [Validators.pattern(/^(0|([1-9](\d)*))(\.(\d)*)?$/)]],
-      price: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
+      price: [null, [Validators.required, Validators.pattern(SrmModule.decimalFourDigits)]],
       unit: [null, [Validators.required, Validators.pattern(SrmModule.number)]],
-      currency: [null, [Validators.required]],
+      currency: [this.currency, [Validators.required]],
       ekgry: [null, [Validators.required]],
-      leadTime: [null, [Validators.required, Validators.pattern(SrmModule.decimal), Validators.min(1)]],
+      leadTime: [null, [Validators.required, Validators.pattern(SrmModule.number), Validators.min(1)]],
       standQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal), Validators.min(1)]],
       minQty: [null, [Validators.required, Validators.pattern(SrmModule.decimal)]],
       taxcode: [null, [Validators.required]],
@@ -770,6 +773,10 @@ export class PriceComponent implements OnInit {
       , type: e.rowData.type ? e.rowData.type : ""
       , sortl: e.rowData.sortl ? e.rowData.sortl : ""
     });
+    //this.editForm.patchValue({
+    //  unit: e.rowData.unit ? e.rowData.unit : ""
+    //});
+    this.unit = e.rowData.unit ? e.rowData.unit : "";
     console.log(e.rowData);
 
     this.tplModal = this._modalService.create({
@@ -779,6 +786,37 @@ export class PriceComponent implements OnInit {
     nzClosable: true,
     nzMaskClosable: false,
   });
+  }
+  GetUnit() {
+    if (this.unit) {
+      var unit = this.unit;
+      this.unit = null;
+      return unit;
+    }
+    if (this.editForm.get('price').value % 1 === 0) {
+      return 1;
+    }
+    else {
+      if (this.currency == "TWD") {
+        return 100;
+      }
+      else {
+        var temp_price = parseFloat(this.editForm.get('price').value).toString();
+        return Math.pow(10,temp_price.substring(temp_price.indexOf('.') + 1, temp_price.length).length);
+      }
+    }
+  }
+
+  onChange(e) {
+    console.log("異動");
+    console.log(e);
+    this.editForm.patchValue({
+      unit: this.GetUnit()
+    });
+  }
+
+  isInteger(obj) {
+    return obj % 1 === 0
   }
 
   edit() {

@@ -111,64 +111,11 @@ namespace Convience.Service.SRM
             return price;
         }
         public int? Start(ViewSrmInfoRecord[] infos) {
-            DateTime now = DateTime.Now;
             int? rfqId = null;
             //string[] must = new string[] { "price", "unit", "ekgry", "leadTime", "standQty", "minQty", "taxcode", "effectiveDate", "expirationDate" };
-            Dictionary<string, string> must = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            must.Add("price", "總計(NT)");
-            must.Add("unit", "幣別");
-            must.Add("ekgry", "採購群組");
-            must.Add("currency", "幣別");
-            must.Add("leadTime", "計畫交貨時間");
-            must.Add("standQty", "標準採購數量");
-            must.Add("minQty", "最小採購數量");
-            must.Add("taxcode", "稅碼");
-            must.Add("effectiveDate", "生效日期");
-            must.Add("expirationDate", "有效日期");
-            //must.Add("note", "備註");
-            must.Add("org", "採購組織");
-            must.Add("infoKind", "資訊紀錄種類");
-            must.Add("type", "資訊紀錄類型");
+            Validate(infos);
             foreach (ViewSrmInfoRecord info in infos)
             {
-                foreach (PropertyInfo prop in info.GetType().GetProperties())
-                {
-                    var temp = prop.GetValue(info);
-                    if (must.Keys.Contains(prop.Name, StringComparer.OrdinalIgnoreCase) && (temp == null || string.IsNullOrWhiteSpace(temp.ToString())))
-                    {
-                        throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
-                    }
-                }
-                int tempInt = 0;
-                if (!int.TryParse(info.Price.Value.ToString(), out tempInt))
-                {
-                    throw new Exception($"報價單號:{info.qotNum}，議價格式錯誤");
-                }
-
-                if (!int.TryParse(info.Unit.Value.ToString(), out tempInt))
-                {
-                    throw new Exception($"報價單號:{info.qotNum}，價格單位格式錯誤");
-                }
-
-                if (info.LeadTime.Value < 1)
-                {
-                    throw new Exception($"報價單號:{info.qotNum}，計畫交貨時間必須大於等於1");
-                }
-
-                if (info.StandQty.Value < 1)
-                {
-                    throw new Exception($"報價單號:{info.qotNum}，標準採購數量必須大於等於1");
-                }
-
-                if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl)) {
-                    throw new Exception($"報價單號:{info.qotNum}，資訊紀錄類型W時，排序條件必填");
-                }
-
-                if (info.ExpirationDate <= info.EffectiveDate)
-                {
-                    throw new Exception($"有效日期需大於生效日期");
-                }
-
                 if (_context.SrmInforecords.Any(r => r.QotId == info.QotId))
                 {
                     throw new Exception($"已啟動過簽核");
@@ -194,6 +141,29 @@ namespace Convience.Service.SRM
 
         public void Save(ViewSrmInfoRecord[] infos)
         {
+            Validate(infos);
+            List<int> infoIds = new List<int>();
+            foreach (ViewSrmInfoRecord info in infos)
+            {
+                if (_context.SrmInforecords.Any(r => r.QotId == info.QotId))
+                {
+                    _context.SrmInforecords.Update(info);
+                    infoIds.Add(info.InfoId);
+                }
+                else
+                {
+                    _context.SrmInforecords.Add(info);
+                }
+            }
+
+            var old = _context.SrmInforecords.Where(r => r.Caseid == infos[0].Caseid && !infoIds.Contains(r.InfoId));
+            _context.SrmInforecords.RemoveRange(old);
+            _context.SaveChanges();
+        }
+
+
+        private void Validate(ViewSrmInfoRecord[] infos)
+        {
             Dictionary<string, string> must = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             must.Add("price", "總計(NT)");
             must.Add("unit", "幣別");
@@ -209,7 +179,6 @@ namespace Convience.Service.SRM
             must.Add("org", "採購組織");
             must.Add("infoKind", "資訊紀錄種類");
             must.Add("type", "資訊紀錄類型");
-            List<int> infoIds = new List<int>();
             foreach (ViewSrmInfoRecord info in infos)
             {
                 foreach (PropertyInfo prop in info.GetType().GetProperties())
@@ -221,16 +190,35 @@ namespace Convience.Service.SRM
                     }
                 }
                 int tempInt = 0;
-                if (!int.TryParse(info.Price.Value.ToString(), out tempInt)) { 
-                    throw new Exception($"報價單號:{info.qotNum}，議價格式錯誤");
+                //if (!int.TryParse(info.Price.Value.ToString(), out tempInt))
+                //{
+                //    throw new Exception($"報價單號:{info.qotNum}，總計格式錯誤");
+                //}
+                int digNmu = 4;
+                if (info.Currency.ToUpper() == "TWD")
+                {
+                    digNmu = 2;
+                }
+                if (info.Price.Value.ToString().Split('.').Count() > 1)
+                {
+                    if (info.Price.Value.ToString().Split('.')[1].Length > digNmu)
+                    {
+                        throw new Exception($"報價單號:{info.qotNum}，總計格式錯誤，{info.currencyName}小數點最高{digNmu}碼");
+                    }
                 }
 
-                if (!int.TryParse(info.Unit.Value.ToString(), out tempInt)){
+                if (!int.TryParse(info.Unit.Value.ToString(), out tempInt))
+                {
                     throw new Exception($"報價單號:{info.qotNum}，價格單位格式錯誤");
                 }
 
-                if (info.LeadTime.Value < 1) {
+                if (info.LeadTime.Value < 1)
+                {
                     throw new Exception($"報價單號:{info.qotNum}，計畫交貨時間必須大於等於1");
+                }
+                if (!int.TryParse(info.LeadTime.Value.ToString(), out tempInt))
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，計畫交貨時間需為整數");
                 }
 
                 if (info.StandQty.Value < 1)
@@ -247,21 +235,7 @@ namespace Convience.Service.SRM
                 {
                     throw new Exception($"有效日期需大於生效日期");
                 }
-
-                if (_context.SrmInforecords.Any(r => r.QotId == info.QotId))
-                {
-                    _context.SrmInforecords.Update(info);
-                    infoIds.Add(info.InfoId);
-                }
-                else
-                {
-                    _context.SrmInforecords.Add(info);
-                }
             }
-
-            var old = _context.SrmInforecords.Where(r => r.Caseid == infos[0].Caseid && !infoIds.Contains(r.InfoId));
-            _context.SrmInforecords.RemoveRange(old);
-            _context.SaveChanges();
         }
 
         public void UpdateCaseid(ViewSrmInfoRecord[] infos)

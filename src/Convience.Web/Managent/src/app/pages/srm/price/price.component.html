@@ -221,11 +221,11 @@
     <nz-form-item>
       <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">總計(NT)</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="priceErrorTpl">
-        <input placeholder="總計(NT)" formControlName="price"
+        <input placeholder="總計(NT)" formControlName="price" (change)="onChange($event)"
                autocomplete="off" nz-input>
         <ng-template #priceErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">需為正整數</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">格式錯誤</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
@@ -245,7 +245,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="幣別" formControlName="unit"
       autocomplete="off" />-->
-        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" formControlName="currency">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇幣別" formControlName="currency" [(ngModel)]="currency" (ngModelChange)="onChange($event)">
           <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option>
         </nz-select>
       </nz-form-control>
