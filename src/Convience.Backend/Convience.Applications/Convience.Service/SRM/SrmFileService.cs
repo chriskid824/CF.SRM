@@ -503,6 +503,7 @@ namespace Convience.Service.SRM
             }
             else
             {
+                ann.Router = "price-work";
                 QueryQotList qot = new QueryQotList();
                 qot.status = 1;//(int)query["status"];
                 qot.username = query.user.GetUserName();

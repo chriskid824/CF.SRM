@@ -411,7 +411,7 @@ namespace Convience.Service.SRM
                           from record in recordt.DefaultIfEmpty()
                           select new ViewQotListH
                           {
-                              VRfqId = q.QotId,
+                              VRfqId = r.RfqId,
                               VRfqNum = q.QotNum,
                               VStatus = q.Status,
                               VStatusDesc = status.StatusDesc,

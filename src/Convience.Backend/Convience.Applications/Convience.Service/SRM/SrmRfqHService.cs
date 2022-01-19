@@ -395,6 +395,7 @@ namespace Convience.Service.SRM
                  .AndIfHaveValue(query.status, r => r.Status == query.status)
                  .AndIfHaveValue(query.statuses, r => query.statuses.Contains(r.Status.Value))
                  .AndIfHaveValue(query.werks, r => query.werks.Contains(r.Werks.Value))
+                 .AndIfHaveValue(query.rfqId, r => query.rfqId == r.RfqId)
                  .FirstOrDefault();
             //}
         }
