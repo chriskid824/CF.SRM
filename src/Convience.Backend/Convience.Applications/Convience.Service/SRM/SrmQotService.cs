@@ -334,7 +334,7 @@ namespace Convience.Service.SRM
             //});
             //return result;
             var result = (from r in _context.SrmRfqHs
-                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId 
                           join status in _context.SrmStatuses on r.Status equals status.Status
                           join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
                           select new ViewQotListH
@@ -401,71 +401,76 @@ namespace Convience.Service.SRM
         {
             //int venderid = query.vendor;
             var result = (from r in _context.SrmRfqHs
-                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
-                          join status in _context.SrmStatuses on r.Status equals status.Status
+                          join q in _context.SrmQotHs on new { RfqId=r.RfqId, username=r.CreateBy } equals new { RfqId=q.RfqId.Value, username=query.username }
+                          //join q in _context.SrmQotHs on r.RfqId equals q.RfqId
+                          join status in _context.SrmStatuses on q.Status equals status.Status
                           //join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
-                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName
-                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName
+                          join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName
+                          join u2 in _context.AspNetUsers on q.LastUpdateBy equals u2.UserName
+                          join record in _context.SrmInforecords on q.QotId equals record.QotId into recordt
+                          from record in recordt.DefaultIfEmpty()
                           select new ViewQotListH
                           {
-                              VRfqId = r.RfqId,
-                              VRfqNum = r.RfqNum,
-                              VStatus = r.Status,
+                              VRfqId = q.QotId,
+                              VRfqNum = q.QotNum,
+                              VStatus = q.Status,
                               VStatusDesc = status.StatusDesc,
-                              VCreateDate = r.CreateDate,
+                              VCreateDate = q.CreateDate,
                               VCreateBy = u1.Name,
-                              VLastUpdateDate = r.LastUpdateDate,
+                              VLastUpdateDate = q.LastUpdateDate,
                               VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
+                              Sourcer= record.InfoId.ToString()
                               //VVendor = vendor.SapVendor,
 
 
                           })
                         //.Where(p => p.VVendor == query.vendor)
-                        .Where(p => p.VStatus == 7)
+                        .Where(p => (p.VStatus == 5||p.VStatus==6)&& p.Sourcer==null )
                             //.Where()
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
                             //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
                             .AndIfHaveValue(query.rfqId, p => p.VRfqId == query.rfqId)
-                        .Distinct()
+                            //.AndIfHaveValue(query.username,p=>p.)
+                        //.Distinct()
                         .ToList();
 
-            result.ForEach(p =>
-            {
-                p.SrmQotHs = (from q in _context.SrmQotHs
+            //result.ForEach(p =>
+            //{
+            //    p.SrmQotHs = (from q in _context.SrmQotHs
 
-                              join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
-                              join status in _context.SrmStatuses on q.Status equals status.Status
-                              join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
-                              join u3 in _context.AspNetUsers on r.CreateBy equals u3.UserName
-                              join u4 in _context.AspNetUsers on r.LastUpdateBy equals u4.UserName
-                              //join v in _context.SrmVendors on q.VendorId equals v.VendorId
-                              select new ViewQotListL
-                              {
-                                  QRfqId = q.RfqId,
-                                  QStatus = q.Status,
-                                  QQotId = q.QotId,
-                                  QQotNum = q.QotNum,
-                                  QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
-                                  QCreateBy = u3.Name,
-                                  QCreateDate = q.CreateDate,
-                                  QLastUpdateBy = u4.Name,
-                                  QLastUpdateDate = q.LastUpdateDate,
-                                  QVendorId = q.VendorId,
-                                  //QVendor = v.SapVendor,
-                                  QStatusDesc = status.StatusDesc
-                              })
-                              //.ToList();
-                              //.Where(p => p.QVendorId.Value == query.vendor)
+            //                  join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+            //                  join status in _context.SrmStatuses on q.Status equals status.Status
+            //                  join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+            //                  join u3 in _context.AspNetUsers on r.CreateBy equals u3.UserName
+            //                  join u4 in _context.AspNetUsers on r.LastUpdateBy equals u4.UserName
+            //                  //join v in _context.SrmVendors on q.VendorId equals v.VendorId
+            //                  select new ViewQotListL
+            //                  {
+            //                      QRfqId = q.RfqId,
+            //                      QStatus = q.Status,
+            //                      QQotId = q.QotId,
+            //                      QQotNum = q.QotNum,
+            //                      QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
+            //                      QCreateBy = u3.Name,
+            //                      QCreateDate = q.CreateDate,
+            //                      QLastUpdateBy = u4.Name,
+            //                      QLastUpdateDate = q.LastUpdateDate,
+            //                      QVendorId = q.VendorId,
+            //                      //QVendor = v.SapVendor,
+            //                      QStatusDesc = status.StatusDesc
+            //                  })
+            //                  //.ToList();
+            //                  //.Where(p => p.QVendorId.Value == query.vendor)
 
-                              //.Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
-                              .Where(l => l.QRfqId.Value == p.VRfqId)
-                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
-                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
-                              .ToList();
-            });
-            return result.Where(p=>p.SrmQotHs.Count>0).ToList();
+            //                  //.Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
+            //                  .Where(l => l.QRfqId.Value == p.VRfqId)
+            //                  .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
+            //                  .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status)
+            //                  .ToList();
+            //});
+            return result.ToList();
         }
        
 

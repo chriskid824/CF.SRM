@@ -136,6 +136,7 @@ namespace Convience.Model.Models.SRM
         public string matnr { get; set; }
         public int vendorid { get; set; }
         public string vendor { get; set; }
+        public string username { get; set; }
     }
     public class ViewQot : SrmQotH
     {

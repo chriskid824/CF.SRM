@@ -463,6 +463,10 @@ namespace Convience.Service.SRM
             };
             QueryRfqList q = new QueryRfqList();
             UserClaims user = query.user.GetUserClaims();
+            if (!user.IsVendor)
+            {
+                q.name = user.UserName;
+            }
             q.werks = user.Werks;
             int page = 1;
             int size = 50;
@@ -501,7 +505,9 @@ namespace Convience.Service.SRM
             {
                 QueryQotList qot = new QueryQotList();
                 qot.status = 1;//(int)query["status"];
-                var result = _srmQotService.GetQotListByAdmin(qot).Where(p => p.SrmQotHs != null && p.SrmQotHs.Count != 0).OrderBy(p=>p.VDeadline).ToList();
+                qot.username = query.user.GetUserName();
+                //var result = _srmQotService.GetQotListByAdmin(qot).Where(p => p.SrmQotHs != null && p.SrmQotHs.Count != 0).OrderBy(p=>p.VDeadline).ToList();
+                var result = _srmQotService.GetQotListByAdmin(qot).OrderBy(p => p.VDeadline).ThenBy(x => x.VRfqNum).ToList();
                 if (result != null)
                 {
                     ann.NumberList = result.Select(p => new AnnouncementDetail() { id = p.VRfqId.ToString(), number = p.VRfqNum, status = p.VStatus.Value }).ToList();
