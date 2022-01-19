@@ -324,6 +324,11 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("EstDeliveryDate")
                     .HasComment("期望日期");
+
+                entity.Property(e => e.OtherDesc)
+                   .HasColumnName("OTHER_DESC")
+                   .HasComment("其他內文");
+
             });
 
             modelBuilder.Entity<SrmRfqV>(entity =>
