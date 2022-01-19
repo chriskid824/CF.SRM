@@ -15,5 +15,9 @@ namespace Convience.ManagentApi.Controllers.Extension
         {
             return string.Format("{0:N2}", value).Replace(".00", "").Replace(",","");
         }
+        public static string NormalizeFourDigits(this decimal value)
+        {
+            return string.Format("{0:N4}", value).Replace(".0000", "").Replace(",", "");
+        }
     }
 }

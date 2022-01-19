@@ -190,10 +190,17 @@ namespace Convience.ManagentApi.Controllers.SRM
                     temp[item.i].total = (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
                     if (temp[item.i].qotStatus == Status.確認)
                     {
-                        temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
-                        temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : "1";
+                        //temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : "1";
                         temp[item.i].currency = item.value.Currency?.ToString() ?? "TWD";
                         temp[item.i].currencyName = item.value.currencyName?.ToString() ?? "新台幣元";
+                        if (temp[item.i].currency.ToUpper() == "TWD")
+                        {
+                            temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeTwoDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeTwoDigits();
+                        }
+                        else {
+                            temp[item.i].price = (item.value.Price.HasValue) ? item.value.Price.Value.NormalizeFourDigits() : (item.value.Atotal + item.value.Btotal + item.value.Ctotal + item.value.Dtotal).NormalizeFourDigits();
+                        }
+                        temp[item.i].unit = (item.value.Unit.HasValue) ? item.value.Unit.Value.ToString() : GetUnit(temp[item.i].currency, temp[item.i].price).ToString();
                         temp[item.i].leadTime = (item.value.LeadTime.HasValue) ? item.value.LeadTime.Value.ToString() : qot.LeadTime.GetValueOrDefault().ToString();
                         temp[item.i].standQty = (item.value.StandQty.HasValue) ? item.value.StandQty.Value.ToString() : "1";
                         temp[item.i].minQty = (item.value.MinQty.HasValue) ? item.value.MinQty.Value.ToString() : "1";
@@ -226,12 +233,32 @@ namespace Convience.ManagentApi.Controllers.SRM
             return Ok(summ);
         }
 
+        private int GetUnit(string currency,string price)
+        {
+            int temp = 0;
+            if (Int32.TryParse(price, out temp))
+            {
+                return 1;
+            }
+            else {
+                if (currency.ToUpper() == "TWD")
+                {
+                    return 100;
+                }
+                else
+                {
+                    var temp_price = price.TrimEnd('0');
+                    return temp_price.Substring(temp_price.IndexOf('.') + 1, temp_price.Length - price.IndexOf('.') - 1).Length;
+                }
+            }
+        }
+
         [HttpPost("Start")]
         [Permission("price")]
         public IActionResult Start(JObject jobj) {
             int rfqId = (int)jobj["rfqId"];
             var rfqH = _srmRfqHService.GetDataByRfqId(rfqId);
-            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成) {
+            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成 && rfqH.Status.Value != (int)Status.啟動) {
                 return this.BadRequestResult("詢價單狀態異常");
             }
             ViewSrmInfoRecord[] infos = jobj["infos"].ToObject<ViewSrmInfoRecord[]>();
@@ -282,7 +309,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             int rfqId = (int)jobj["rfqId"];
             int caseId = (int)jobj["caseId"];
             var rfqH = _srmRfqHService.GetDataByRfqId(rfqId);
-            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成)
+            if (rfqH.Status.Value != (int)Status.確認 && rfqH.Status.Value != (int)Status.簽核中 && rfqH.Status.Value != (int)Status.完成 && rfqH.Status.Value != (int)Status.啟動)
             {
                 return this.BadRequestResult("詢價單狀態異常");
             }
@@ -391,7 +418,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             {
                 var rfqM = _srmRfqMService.GetRfqMData(new SrmRfqM() { RfqId = rfqH.RfqId, MatnrId = info.MatnrId });
                 DataRow dr = InfoRecord.NewRow();
-                decimal price = Math.Round(info.Price.Value / info.Unit.Value, 2, MidpointRounding.AwayFromZero);
+                decimal price = Math.Round(info.Price.Value, 2, MidpointRounding.AwayFromZero);
                 decimal total = Math.Round(info.total, 2, MidpointRounding.AwayFromZero);
                 //dr["SapMatnr"] = rfqM.matnr;
                 dr["DESCRIPTION"] = rfqM.Description;
