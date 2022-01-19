@@ -29,5 +29,6 @@ namespace Convience.Entity.Entity.SRM
         public string Minor_diameter { get; set; }
         public string Description { get; set; }
         public DateTime? EstDeliveryDate { get; set; }
+        public string OtherDesc { get; set; }
     }
 }
