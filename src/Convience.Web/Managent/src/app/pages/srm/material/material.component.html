@@ -36,7 +36,7 @@
         <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
       </div>
       <div class="mt-10">
-        <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'2000px'}" nzShowPagination="false" nzFrontPagination="false"
+        <nz-table #dataTable nzSize="middle" [nzData]="data" [nzScroll]="{x:'2400px'}" nzShowPagination="false" nzFrontPagination="false"
         nzBordered="true" pagination="true">
           <thead>
             <tr>
@@ -60,6 +60,7 @@
               <th nzAlign="center" nzWidth="40px">評估案號</th>
               <th nzAlign="center" nzWidth="40px">狀態</th>
               <th nzAlign="center" nzWidth="40px">備註</th>
+              <th nzAlign="center" nzWidth="120px">其他內文</th>
 
               
               <!--<th nzAlign="center" nzWidth="80px" nzRight>操作</th>-->
@@ -93,6 +94,9 @@
 
               <td nzAlign="center">{{ data.statusDesc }}</td>
               <td nzAlign="center">{{ data.note }}</td>
+
+
+              <td nzAlign="left">{{ data.otherDesc }}</td>
               
             </tr>
           </tbody>            
@@ -240,6 +244,13 @@
             <nz-form-control>
                 <input [attr.id]="'edit_note'" formControlName="note" nz-input
                     placeholder="備註" autocomplete="off"  />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" [nzFor]="'edit_otherDesc'">其他內文</nz-form-label>
+            <nz-form-control> 
+              <textarea [attr.id]="'edit_otherDesc'"
+              formControlName="otherDesc" nz-input placeholder="其他內文" rows="4"></textarea>
             </nz-form-control>
           </nz-form-item>
     

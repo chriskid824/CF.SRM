@@ -83,6 +83,7 @@ namespace Convience.Service.SRM
                                    Bn_num = matnr.Bn_num,
                                    Major_diameter = matnr.Major_diameter,
                                    Minor_diameter = matnr.Minor_diameter,
+                                   OtherDesc = matnr.OtherDesc,
                                })
                           .AndIfHaveValue(query.material, r => r.SrmMatnr1.Contains(query.material))
                           .AndIfHaveValue(query.name, r => r.Description.Contains(query.name));
@@ -121,6 +122,7 @@ namespace Convience.Service.SRM
                                 Bn_num = matnr.Bn_num,
                                 Major_diameter= matnr.Major_diameter,
                                 Minor_diameter = matnr.Minor_diameter,
+                                OtherDesc = matnr.OtherDesc,
                             })
                           .Where(r => r.SrmMatnr1 == query.material).FirstOrDefault()
                           //.Where(r => r.Org == query.Org)
@@ -150,6 +152,7 @@ namespace Convience.Service.SRM
                 Bn_num = material.Bn_num,
                 Major_diameter = material.Major_diameter,
                 Minor_diameter = material.Minor_diameter,
+                OtherDesc = material.OtherDesc,
             };
         }
         public bool UpdateMaterial(ViewSrmMatnr1 data)
@@ -208,6 +211,7 @@ namespace Convience.Service.SRM
             material.Bn_num = data.Bn_num;
             material.Major_diameter = data.Major_diameter;
             material.Minor_diameter = data.Minor_diameter;
+            material.OtherDesc = data.OtherDesc;
 
 
             _context.SrmMatnrs.Update(material);
@@ -377,6 +381,7 @@ namespace Convience.Service.SRM
                 Ekgrp = data.Ekgrp,
                 Major_diameter=data.Major_diameter,
                 Minor_diameter=data.Minor_diameter,
+                OtherDesc = data.OtherDesc,
 
                 CreateDate = DateTime.Now,
                 CreateBy = data.User,

@@ -163,7 +163,15 @@
                    autocomplete="off"/>
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'edit_otherDesc'" style="width: 55px; text-align: left; margin-left:-10px">其他內文</nz-form-label>
+          <nz-form-control> 
+            <textarea [attr.id]="'edit_otherDesc'"
+            formControlName="otherDesc" nz-input placeholder="其他內文" rows="3" style="width: 399px;"></textarea>
+          </nz-form-control>
+        </nz-form-item>
       </form>
+      
       
 
     </nz-card>

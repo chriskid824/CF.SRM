@@ -116,6 +116,7 @@ export class MaterialComponent implements OnInit {
         minor_diameter: [result['minor_diameter']],
         statusDesc: [result['statusDesc']],
         note: [result['note']],
+        otherDesc: [result['otherDesc']],
       });
       this.tplModal = this._modalService.create({
         nzTitle: title,
@@ -179,6 +180,7 @@ export class MaterialComponent implements OnInit {
       material.bn_num = this.editForm.value['bnnum'];
       material.minor_diameter = this.editForm.value['minor_diameter'];
       material.major_diameter = this.editForm.value['major_diameter'];
+      material.otherDesc = this.editForm.value['otherDesc'];
       console.log(this._storageService.userName);
 
       this._srmMaterialService.update(material).subscribe(result => {

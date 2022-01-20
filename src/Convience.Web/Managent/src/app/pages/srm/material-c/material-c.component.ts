@@ -58,6 +58,7 @@ export class MaterialCComponent implements OnInit {
       bn_num: [null],
       major_diameter: [null],
       minor_diameter: [null],
+      otherDesc: [null],
       //roles: this._storageService.werks.split(','),      
     });
     this.initRoleList();
@@ -120,6 +121,7 @@ export class MaterialCComponent implements OnInit {
         bn_num : this.searchForm.value['bn_num'],
         minor_diameter : this.searchForm.value['minor_diameter'],
         major_diameter : this.searchForm.value['major_diameter'],
+        otherDesc : this.searchForm.value['otherDesc'],
       }
       console.log(material);
       this._srmMaterialService.Checkdata(material).subscribe(result => {

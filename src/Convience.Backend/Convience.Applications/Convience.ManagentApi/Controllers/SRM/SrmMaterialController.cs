@@ -129,8 +129,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 }
                 path = _srmSupplierService.Upload(fileUploadModel);
 
-                string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","計量單位" };
-                string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY","UnitDesc"};
+                string[] headers = new string[] { "料號", "物料內文", "物料群組", "工廠", "採購群組代碼", "版次", "材質規格", "長", "寬", "高(厚)", "圓外徑", "圓內徑", "密度", "重量", "重量單位", "評估案號", "備註", "數量","計量單位","其他內文" };
+                string[] cols = new string[] { "SrmMatnr1", "Description", "MatnrGroup", "Werks", "Ekgrp", "Version", "Material", "Length", "Width", "Height", "Major_diameter", "Minor_diameter", "Density", "Weight", "Gewei", "Bn_num", "Note", "QTY","UnitDesc","OtherDesc"};
                 string checkname = "物料內文";
                 DataTable data_m = new Utility().ReadExcel(path, 0, headers, cols, checkname);
                 //DataTable data_v = _srmRfqHService.ReadExcel_Vendor(path, user);
