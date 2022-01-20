@@ -248,7 +248,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 else
                 {
                     var temp_price = price.TrimEnd('0');
-                    return temp_price.Substring(temp_price.IndexOf('.') + 1, temp_price.Length - price.IndexOf('.') - 1).Length;
+                    return Convert.ToInt32(Math.Pow(10, temp_price.Substring(temp_price.IndexOf('.') + 1, temp_price.Length - price.IndexOf('.') - 1).Length));
                 }
             }
         }
