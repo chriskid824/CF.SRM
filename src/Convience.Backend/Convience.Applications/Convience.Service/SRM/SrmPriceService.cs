@@ -190,10 +190,10 @@ namespace Convience.Service.SRM
                     }
                 }
                 int tempInt = 0;
-                //if (!int.TryParse(info.Price.Value.ToString(), out tempInt))
-                //{
-                //    throw new Exception($"報價單號:{info.qotNum}，總計格式錯誤");
-                //}
+                if (!int.TryParse((info.Price.Value*info.Unit.Value).ToString().TrimEnd('0','.'), out tempInt))
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，總計*價格單位需為整數");
+                }
                 int digNmu = 4;
                 if (info.Currency.ToUpper() == "TWD")
                 {

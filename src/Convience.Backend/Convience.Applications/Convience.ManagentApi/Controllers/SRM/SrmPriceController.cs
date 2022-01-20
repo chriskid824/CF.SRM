@@ -530,7 +530,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             param.Add("logonid", rfqH.Sourcer);
             param.Add("signType", "採購資訊紀錄簽核單");
             Dictionary<string, object> Variables = new Dictionary<string, object>();
-            Variables.Add("SUBJECT", "採購資訊紀錄簽核單TEST");
+            Variables.Add("SUBJECT", $"採購資訊紀錄簽核單-{rfqH.RfqNum}");
             Dictionary<string, object> FormControls = new Dictionary<string, object>();
             FormControls.Add("werks", rfqH.Werks.Value);
             FormControls.Add("rfqId", rfqH.RfqId);
