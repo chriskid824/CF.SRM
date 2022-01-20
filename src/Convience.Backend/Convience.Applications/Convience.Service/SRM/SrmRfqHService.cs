@@ -232,9 +232,14 @@ namespace Convience.Service.SRM
                            Deadline = rfq.Deadline,
                            Werks = rfq.Werks
                        };
-            return rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name) || r.CreateBy.Contains(q.name))
+            rfqs = rfqs.AndIfHaveValue(q.name, r => r.C_by.Contains(q.name) || r.CreateBy.Contains(q.name))
                 .AndIfCondition(q.end, r => r.Status == (int)Status.啟動 && r.Deadline.Value.AddDays(1) <= DateTime.Now.Date)
-                .Distinct().ToArray();
+                .Distinct();
+            if (q.orderDesc)
+            {
+                rfqs = rfqs.OrderByDescending(r => r.RfqId);
+            }
+            return rfqs.ToArray();
         }
 
         public PagingResultModel<ViewSrmRfqH> GetRfqList(QueryRfqList q, int page, int size)

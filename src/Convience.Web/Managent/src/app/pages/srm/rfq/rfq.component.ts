@@ -442,6 +442,7 @@ guid:string;
         field: "note",
         enableRowGroup: true,
         cellClass: "show-cell",
+        editable: this.canModify,
         width: "150px",
       },
       {
@@ -452,6 +453,14 @@ guid:string;
         stopEditingWhenCellsLoseFocus: false,
         cellEditorFramework: AgGridDatePickerComponent_RFQ,
         width: "200px",
+      },
+      {
+        headerName: "其他內文",
+        field: "otherDesc",
+        enableRowGroup: true,
+        cellClass: "show-cell",
+        editable: this.canModify,
+        width: "150px",
       }
     ]
   }

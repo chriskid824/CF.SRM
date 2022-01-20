@@ -87,7 +87,8 @@ export class RfqManageComponent implements OnInit {
       status: this._status,
       name: this._name,
       page: this.page,
-      size: this.size
+      size: this.size,
+      orderDesc:true,
     }
     console.log(query);
     this._srmRfqService.GetRfqList(query).subscribe(result => {

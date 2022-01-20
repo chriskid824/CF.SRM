@@ -149,6 +149,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.rfqNum = query["rfqNum"].ToString();
             q.status = (int)query["status"];
             q.name = query["name"].ToString();
+            q.orderDesc = query["orderDesc"]==null?false:(bool)query["orderDesc"];
             UserClaims user = User.GetUserClaims();
             q.werks = user.Werks;
             int page = (int)query["page"];

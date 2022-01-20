@@ -93,7 +93,8 @@ namespace Convience.Service.SRM
                             Minor_diameter = a.Minor_diameter,
                             EstDeliveryDate = a.EstDeliveryDate,
                             unit = a.Unit,
-                            MeasureDesc = x.MeasureDesc
+                            MeasureDesc = x.MeasureDesc,
+                            otherDesc = a.OtherDesc
                         };
             return query; //_srmRfqMRepository.Get(r => r.RfqId == RfqId);
         }

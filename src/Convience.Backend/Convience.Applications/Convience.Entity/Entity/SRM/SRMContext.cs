@@ -166,6 +166,11 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Unit)
                     .HasColumnName("UNIT")
                     .HasComment("計量單位");
+
+                entity.Property(e => e.OtherDesc)
+                    .HasColumnName("OTHER_DESC")
+                    .HasComment("其他內文");
+
             });
 
             modelBuilder.Entity<SrmRfqH>(entity =>
