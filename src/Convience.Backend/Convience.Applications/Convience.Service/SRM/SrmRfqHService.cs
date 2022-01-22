@@ -208,9 +208,15 @@ namespace Convience.Service.SRM
         public ViewSrmRfqH[] GetRfqList(QueryRfqList q)
         {
             var rfqQuery = _srmRfqHRepository.Get().AndIfHaveValue(q.rfqNum, r => r.RfqNum.Contains(q.rfqNum))
-        .AndIfCondition(q.status!=0, r => r.Status.Equals(q.status));
-
-            rfqQuery = rfqQuery.Where(r => r.Status != (int)Status.刪除);
+        .AndIfCondition(q.status != 0, r => r.Status.Equals(q.status))
+        .Where(r => r.Status != (int)Status.刪除);
+            if (!string.IsNullOrWhiteSpace(q.matnr)) {
+                rfqQuery = from rfq in rfqQuery
+                           join rfqm in _context.SrmRfqMs on rfq.RfqId equals rfqm.RfqId
+                           join m in _context.SrmMatnrs on rfqm.MatnrId equals m.MatnrId
+                           where m.SrmMatnr1.Contains(q.matnr)
+                           select rfq;
+            }
 
             var rfqs = from rfq in rfqQuery
                            //join e in _context.SrmEkgries on rfq.CreateBy equals e.Empid
@@ -496,7 +502,7 @@ namespace Convience.Service.SRM
                 foreach (var h in dtHeader) {
                     if (row.GetCell(h.Value) != null) {
                         row.GetCell(h.Value).SetCellType(CellType.String);
-                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue.Replace(System.Environment.NewLine, "").Replace("\n", ""); ;
                     }
                 }
                 if (_context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && r.Status != (int)(Status.失效) && user.Werks.Contains(r.Werks.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆
@@ -525,25 +531,32 @@ namespace Convience.Service.SRM
                 {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}數量未填");
                 }
-                if (string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
-                {
-                    throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期未填");
-                }
+                //if (string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
+                //{
+                //    throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期未填");
+                //}
                 double qty = 0;
                 DateTime estDeliveryDate = new DateTime();
                 if (!double.TryParse(dataRow["數量"].ToString(),out qty)||qty<=0)
                 {
                     throw new Exception($"料號:{dataRow["料號"].ToString()}數量格式錯誤");
                 }
-                if (!DateTime.TryParse(dataRow["期望日期"].ToString(), out estDeliveryDate))
+                if (!string.IsNullOrWhiteSpace(dataRow["期望日期"].ToString()))
                 {
-                    double d = 0;
-                    if (!double.TryParse(dataRow["期望日期"].ToString(), out d)) {
-                        throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期格式錯誤");
+                    if (!DateTime.TryParse(dataRow["期望日期"].ToString(), out estDeliveryDate))
+                    {
+                        double d = 0;
+                        if (!double.TryParse(dataRow["期望日期"].ToString(), out d))
+                        {
+                            throw new Exception($"料號:{dataRow["料號"].ToString()}期望日期格式錯誤");
+                        }
+                        estDeliveryDate = DateTime.FromOADate(Convert.ToDouble(dataRow["期望日期"].ToString()));
                     }
-                    estDeliveryDate = DateTime.FromOADate(Convert.ToDouble(dataRow["期望日期"].ToString()));
+                    dataRow["期望日期"] = estDeliveryDate.ToString("yyyy/MM/dd");
                 }
-                dataRow["期望日期"] = estDeliveryDate.ToString("yyyy/MM/dd");
+                else {
+                    dataRow["期望日期"] = null;
+                }
                 //dataRow["IsExists"] = _context.SrmMatnrs.Any(r => r.SrmMatnr1.Equals(dataRow["料號"].ToString()) && user.Werks.Contains(r.Werks.Value));//2021/10/19問過LEO 同名字不同廠可能存在多筆
                 dt.Rows.Add(dataRow);
                 rowIndex++;
@@ -612,7 +625,7 @@ namespace Convience.Service.SRM
                     if (row.GetCell(h.Value) != null)
                     {
                         row.GetCell(h.Value).SetCellType(CellType.String);
-                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue;
+                        dataRow[h.Key] = row.GetCell(h.Value).StringCellValue.Replace(System.Environment.NewLine,"").Replace("\n", "");
                     }
                 }
                 if (_context.SrmVendors.Any(r => r.SrmVendor1.Equals(dataRow["供應商編號"]) && r.Status != (int)(Status.失效) && user.Werks.Contains(r.Ekorg.Value)))//2021/10/19問過LEO 同名字不同廠可能存在多筆

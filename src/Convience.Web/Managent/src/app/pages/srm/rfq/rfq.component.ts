@@ -435,6 +435,7 @@ guid:string;
         field: "bn_num",
         enableRowGroup: true,
         cellClass: "show-cell",
+        editable: this.canModify,
         width: "150px",
       },
       {
@@ -648,10 +649,11 @@ guid:string;
         alert("料號" + rfq.m[i].srmMatnr1 + "計量單位未填");
         return;
       }
-      if (!rfq.m[i].estDeliveryDate) {
-        alert("料號" + rfq.m[i].srmMatnr1 + "期望日期未填");
-        return;
-      }
+      //if (!rfq.m[i].estDeliveryDate) {
+      //  alert("料號" + rfq.m[i].srmMatnr1 + "期望日期未填");
+      //  return;
+      //}
+
       //if (!rfq.m[i].machineName) {
       //  alert("料號" + rfq.m[i].srmMatnr1 + "機種未填");
       //  return;

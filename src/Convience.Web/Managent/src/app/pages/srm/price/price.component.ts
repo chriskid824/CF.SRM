@@ -39,6 +39,8 @@ export class PriceComponent implements OnInit {
   inited = false;
   currency: string;
   unit;
+  currMatnr="";
+  currVendor="";
 
   TaxcodeList;
   //taxcode: FormControl;
@@ -709,7 +711,9 @@ export class PriceComponent implements OnInit {
     //this.taxcode.setValue(e.rowData.taxcode);
     //this.ekgry.setValue(e.rowData.ekgry);
     this.currency = e.rowData.currency ? e.rowData.currency : "TWD";
-    this.unit = e.rowData.unit ? e.rowData.unit : ""
+    this.unit = e.rowData.unit ? e.rowData.unit : "";
+    this.currMatnr = e.rowData.matnr;
+    this.currVendor = e.rowData.vendorName;
     this.editForm = this._formBuilder.group({
       qotId: [null, [Validators.required]],
       //price: ['', [Validators.pattern(/^(0|([1-9](\d)*))(\.(\d)*)?$/)]],
@@ -1285,6 +1289,16 @@ export class PriceComponent implements OnInit {
     });
     console.log(selectedRows);
   }
+
+  //merge() {
+  //  var selectedRows = this.gridApi_summary.getSelectedRows();
+  //  if (selectedRows.length == 0) { return; }
+  //  var obj = {
+  //    infos: selectedRows,
+  //    rfqId: this.rfqId,
+  //    caseId: this.caseId
+  //  };
+  //}
 }
 
 function dateFormatter(data) {

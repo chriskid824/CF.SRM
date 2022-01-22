@@ -21,6 +21,7 @@ export class RfqManageComponent implements OnInit {
   t = "";
 
   _rfqNum;
+  _matnr;
   _status;
   _name;
 
@@ -37,11 +38,13 @@ export class RfqManageComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       RFQ_NUM: [null],
       STATUS: ["1"],
-      NAME:[null]
+      NAME: [null],
+      MATNR:[null],
     });
     if (sessionStorage.getItem("rfq-manage")) {
       var query = JSON.parse(sessionStorage.getItem("rfq-manage"));
       this._rfqNum = query.rfqNum;
+      this._matnr = query.matnr;
       this._name = query.name;
       this._status = query.status;
       this.page = query.page;
@@ -49,6 +52,7 @@ export class RfqManageComponent implements OnInit {
       console.log(this._status);
       this.searchForm.patchValue({
         RFQ_NUM: this._rfqNum,
+        MATNR: this._matnr,
         NAME: this._name,
         STATUS: this._status
       });
@@ -59,6 +63,7 @@ export class RfqManageComponent implements OnInit {
 
   submitSearch() {
     this._rfqNum = this.searchForm.value["RFQ_NUM"] == null ? "" : this.searchForm.value["RFQ_NUM"];
+    this._matnr = this.searchForm.value["MATNR"] == null ? "" : this.searchForm.value["MATNR"];
     this._status = this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"];
     this._name = this.searchForm.value["NAME"] == null ? "" : this.searchForm.value["NAME"];
     this.page = 1;
@@ -84,6 +89,7 @@ export class RfqManageComponent implements OnInit {
     console.log(this.searchForm.value["STATUS"]);
     var query = {
       rfqNum: this._rfqNum,
+      matnr: this._matnr,
       status: this._status,
       name: this._name,
       page: this.page,

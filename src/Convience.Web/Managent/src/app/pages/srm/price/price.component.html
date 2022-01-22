@@ -85,6 +85,12 @@
                 <ng-container *ngIf="caseId&&canEdit">
                   <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 20px" (click)="save()"><i nz-icon nzType="send"></i>保存</button>
                 </ng-container>
+                <!--<div class="col-4" style="margin-left: 20px;display:inline-flex">
+                  <ng-container *ngIf="canEdit">
+                    <input nz-input placeholder="博格單號" formControlName="txtSN" autocomplete="off"/>
+                    <button *canOperate="'RFQ_ACTION'" nz-button style="margin-left: 10px" (click)="merge()"><i nz-icon nzType="send"></i>併單</button>
+                  </ng-container>
+                </div>-->
               </h1>
                 <div>
                   <ag-grid-angular #agGrid
@@ -208,6 +214,8 @@
 
 <ng-template #ctest1>
   <span>修改總計</span>
+  <span style="margin-left:20px">料號:{{currMatnr}}</span>
+  <span style="margin-left:20px">供應商:{{currVendor}}</span>
 </ng-template>
 <ng-template #ctest2>
   <form nz-form [formGroup]="editForm" (ngSubmit)="edit()">

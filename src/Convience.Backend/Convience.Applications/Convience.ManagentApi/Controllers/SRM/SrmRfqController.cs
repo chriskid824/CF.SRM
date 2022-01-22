@@ -143,18 +143,19 @@ namespace Convience.ManagentApi.Controllers.SRM
 
         [HttpPost("GetRfqList")]
         [Permission("rfq-manage")]
-        public IActionResult GetRfqList(JObject query)
+        public IActionResult GetRfqList(QueryRfqList q)
         {
-            QueryRfqList q = new QueryRfqList();
-            q.rfqNum = query["rfqNum"].ToString();
-            q.status = (int)query["status"];
-            q.name = query["name"].ToString();
-            q.orderDesc = query["orderDesc"]==null?false:(bool)query["orderDesc"];
+            //QueryRfqList q = new QueryRfqList();
+            //q.rfqNum = query["rfqNum"].ToString();
+            //q.status = (int)query["status"];
+            //q.name = query["name"].ToString();
+            //q.orderDesc = query["orderDesc"]==null?false:(bool)query["orderDesc"];
+            //q.matnr = query["matnr"].ToString();
             UserClaims user = User.GetUserClaims();
             q.werks = user.Werks;
-            int page = (int)query["page"];
-            int size = (int)query["size"];
-            var h = _srmRfqHService.GetRfqList(q,page,size);
+            //int page = (int)query["page"];
+            //int size = (int)query["size"];
+            var h = _srmRfqHService.GetRfqList(q,q.page,q.size);
             return Ok(h);
         }
         [HttpPost("StartUp")]
@@ -544,7 +545,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                                 var temp_matnr = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = dr_m["SrmMatnr1"].ToString(), Werks = user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0];
                                 m[i] = JsonConvert.DeserializeObject<SrmRfqM>(JsonConvert.SerializeObject(temp_matnr));
                                 m[i].Qty = Convert.ToDouble(data_m.Rows[i]["Qty"].ToString());
-                                m[i].EstDeliveryDate = Convert.ToDateTime(data_m.Rows[i]["EstDeliveryDate"].ToString()).Date;
+                                if (!string.IsNullOrWhiteSpace(data_m.Rows[i]["EstDeliveryDate"].ToString()))
+                                {
+                                    m[i].EstDeliveryDate = Convert.ToDateTime(data_m.Rows[i]["EstDeliveryDate"].ToString()).Date;
+                                }
                                 //m[i].Unit = Convert.ToInt32(data_m.Rows[i]["Unit"].ToString());
                                 //m[i].MatnrId = _srmMatnrService.GetMatnr(new QueryMatnrModel() { MatnrEquals = data_m.Rows[i]["SrmMatnr1"].ToString(),Werks=user.Werks, withoutStatus = new int[] { (int)Status.失效 }, Page = 1, Size = 1 }).Data[0].MatnrId;
                             }

@@ -23,6 +23,9 @@ export class AgGridDatePickerComponent_RFQ implements ICellEditorAngularComp {
   }
 
   getValue(): any {
+    if (!this.selectedDate) {
+      return this.selectedDate;
+    }
     return `${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth() + 1}-${this.selectedDate.getDate()}`;
   }
 

@@ -189,6 +189,11 @@ namespace Convience.Service.SRM
                         throw new Exception($"報價單號:{info.qotNum}，{must[prop.Name]}未填");
                     }
                 }
+
+                if (_context.SrmInforecords.Any(r => r.QotId == info.QotId && r.Caseid != info.Caseid)) {
+                    throw new Exception($"報價單號:{info.qotNum}，已被申請過");
+                }
+
                 int tempInt = 0;
                 if (!int.TryParse((info.Price.Value*info.Unit.Value).ToString().TrimEnd('0','.'), out tempInt))
                 {
@@ -224,6 +229,11 @@ namespace Convience.Service.SRM
                 if (info.StandQty.Value < 1)
                 {
                     throw new Exception($"報價單號:{info.qotNum}，標準採購數量必須大於等於1");
+                }
+
+                if (info.StandQty < info.MinQty) 
+                {
+                    throw new Exception($"報價單號:{info.qotNum}，標準採購數量必須大於等於最小採購數量");
                 }
 
                 if (info.Type.ToUpper() == "W" && string.IsNullOrWhiteSpace(info.Sortl))

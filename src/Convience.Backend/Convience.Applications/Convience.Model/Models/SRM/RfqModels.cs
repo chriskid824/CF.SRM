@@ -105,10 +105,12 @@ namespace Convience.Model.Models.SRM
         public string rfqNum { get; set; }
         public int status { get; set; }
         public string name { get; set; }
-        public int[] statuses { get; set; }
         public int[] werks { get; set; }
         public bool end { get; set; }
         public bool orderDesc { get; set; }
+        public string matnr { get; set; }
+        public int page { get; set; }
+        public int size { get; set; }
     }
     public class QueryRfq
     {

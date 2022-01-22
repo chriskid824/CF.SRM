@@ -11,6 +11,13 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
+          <nz-form-label [nzFor]="'MATNR'">料號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="料號" [formControlName]="'MATNR'" [attr.id]="'MATNR'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
           <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
           <nz-form-control>
             <nz-select [formControlName]="'STATUS'">
@@ -18,6 +25,7 @@
               <nz-option nzValue="7" nzLabel="啟動"></nz-option>
               <nz-option nzValue="5" nzLabel="確認"></nz-option>
               <nz-option nzValue="8" nzLabel="簽核中"></nz-option>
+              <nz-option nzValue="17" nzLabel="失效"></nz-option>
               <nz-option nzValue="20" nzLabel="作廢"></nz-option>
               <nz-option nzValue="18" nzLabel="完成"></nz-option>
             </nz-select>
