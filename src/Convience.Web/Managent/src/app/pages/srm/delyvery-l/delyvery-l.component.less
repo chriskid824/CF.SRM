@@ -31,3 +31,22 @@
 .rag-amber-outer .rag-element {
   background-color: lightsalmon;
 }
+@media screen {
+  #printSection {
+      display: none;
+  }
+}
+
+@media print {
+  body * {
+    visibility:hidden;
+  }
+  #printSection, #printSection * {
+    visibility:hidden;
+  }
+  #printSection {
+    position:absolute;
+    left:0;
+    top:0;
+  }
+}

@@ -45,9 +45,11 @@ export class DelyveryLComponent implements OnInit {
   frameworkComponents: any;
   isedit:boolean;
   PoNumOption = [];
+  PoNumOptionExceptCurrent = [];
   PoLIdOption=[];
   PoList;
   currenPoLID;
+  MaxDeliveryQty:number=0;
   @ViewChild('ctest1')
   ctest1: TemplateRef<any>;
 
@@ -93,7 +95,7 @@ export class DelyveryLComponent implements OnInit {
         headerName:'建立人員',
         field: 'CreateBy',
       },
-      //  { headerName: '操作', field: 'fieldName',
+       { headerName: '操作', field: 'fieldName',
       //  innerWidth:500,
       //  cellRenderer: 'buttonRenderer',
       //   cellRendererParams: {
@@ -103,146 +105,146 @@ export class DelyveryLComponent implements OnInit {
       //     onstorage:this.save.bind(this),
       //     label: '',
       //   },
-      //   pinned: 'left',
-      //  cellRenderer : function(params){
-      //    if(params.data.Status==14)
-      //    {
-      //      var eDiv = document.createElement('div');
-      //      eDiv.innerHTML = '<span class="my-css-class" style="width:100%"><button nz-button nzType="primary" class="btn-simple" style="height:39px"><i nz-icon nzType="delete"></i>列印出貨單</button><button nz-button nzType="primary" class="btn-edit" style="height:39px;margin-left:10px;"><i nz-icon nzType="delete"></i>編輯</button><button nz-button nzType="primary" class="btn-save" style="height:39px;margin-left:10px;"><i nz-icon nzType="save"></i>保存</button><button nz-button nzType="primary" class="btn-cancel" style="height:39px;margin-left:10px;"><i nz-icon nzType="cancel"></i>取消</button><button nz-button nzType="primary" class="btn-add" style="height:39px;margin-left:10px;"><i nz-icon nzType="add"></i>新增</button></span>';
-      //      //eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>';
-      //      var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-      //      var eButton_edit = eDiv.querySelectorAll('.btn-edit')[0];
-      //      var eButton_add = eDiv.querySelectorAll('.btn-add')[0];
-      //      var eButton_save = eDiv.querySelectorAll('.btn-save')[0];
-      //      var eButton_cancel = eDiv.querySelectorAll('.btn-cancel')[0];
-      //      eButton_save.setAttribute('hidden','true');
-      //      eButton_cancel.setAttribute('hidden','true');
-      //      //eButton.addEventListener('click', showDialog);
-      //       eButton.addEventListener('click', function() {
-      //         var dialogData=new DialogData();
-      //         dialogData.data=params.data;
-      //         const dialogConfig = new MatDialogConfig();
-      //         dialogConfig.disableClose = true;
-      //         dialogConfig.autoFocus = true;
-      //         dialogConfig.minWidth = "1500px";
-      //         dialogConfig.maxHeight = "1500px";
-      //         dialogConfig.data = dialogData;
-      //         dialog.open(DeliveryModalComponent, dialogConfig);
-      //       });
-      //       eButton_edit.addEventListener('click', function() {
-      //         // params.api.forEachDetailGridInfo(function(detailGridInfo) {
-      //         //   console.info(detailGridInfo);
-      //         // });
-      //         // var detailGridID = eButton_edit.closest('div[row-id]')
-      //         // params.api.setRowNodeExpanded({rowNode:params.node,expanded:true});
-      //         // params.node.expanded = true;
-      //         // params.api.onGroupExpandedOrCollapsed();
-      //         eButton_edit.setAttribute('hidden','true');
-      //         eButton_save.removeAttribute('hidden');
-      //         eButton_cancel.removeAttribute('hidden');
-      //         var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-      //         if (detailGrid) {
-      //           var length=params.data.SrmDeliveryLs.length;
-      //           detailGrid.api.setFocusedCell(0, 'DeliveryQty');
-      //           for(var i=0;i<length;i++)
-      //           {
-      //             detailGrid.api.startEditingCell({
-      //               rowIndex: i,
-      //               colKey: 'DeliveryQty',
-      //             });
-      //           }
-      //         }
+        pinned: 'left',
+       cellRenderer : function(params){
+         if(params.data.Status==14)
+         {
+           var eDiv = document.createElement('div');
+           //eDiv.innerHTML = '<span class="my-css-class" style="width:100%"><button nz-button nzType="primary" class="btn-simple" style="height:39px"><i nz-icon nzType="delete"></i>列印出貨單</button><button nz-button nzType="primary" class="btn-edit" style="height:39px;margin-left:10px;"><i nz-icon nzType="delete"></i>編輯</button><button nz-button nzType="primary" class="btn-save" style="height:39px;margin-left:10px;"><i nz-icon nzType="save"></i>保存</button><button nz-button nzType="primary" class="btn-cancel" style="height:39px;margin-left:10px;"><i nz-icon nzType="cancel"></i>取消</button><button nz-button nzType="primary" class="btn-add" style="height:39px;margin-left:10px;"><i nz-icon nzType="add"></i>新增</button></span>';
+           eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>';
+           var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+          //  var eButton_edit = eDiv.querySelectorAll('.btn-edit')[0];
+          //  var eButton_add = eDiv.querySelectorAll('.btn-add')[0];
+          //  var eButton_save = eDiv.querySelectorAll('.btn-save')[0];
+          //  var eButton_cancel = eDiv.querySelectorAll('.btn-cancel')[0];
+          //  eButton_save.setAttribute('hidden','true');
+          //  eButton_cancel.setAttribute('hidden','true');
+           //eButton.addEventListener('click', showDialog);
+            eButton.addEventListener('click', function() {
+              var dialogData=new DialogData();
+              dialogData.data=params.data;
+              const dialogConfig = new MatDialogConfig();
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              dialogConfig.minWidth = "1500px";
+              dialogConfig.maxHeight = "1500px";
+              dialogConfig.data = dialogData;
+              dialog.open(DeliveryModalComponent, dialogConfig);
+            });
+            // eButton_edit.addEventListener('click', function() {
+            //   // params.api.forEachDetailGridInfo(function(detailGridInfo) {
+            //   //   console.info(detailGridInfo);
+            //   // });
+            //   // var detailGridID = eButton_edit.closest('div[row-id]')
+            //   // params.api.setRowNodeExpanded({rowNode:params.node,expanded:true});
+            //   // params.node.expanded = true;
+            //   // params.api.onGroupExpandedOrCollapsed();
+            //   eButton_edit.setAttribute('hidden','true');
+            //   eButton_save.removeAttribute('hidden');
+            //   eButton_cancel.removeAttribute('hidden');
+            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
+            //   if (detailGrid) {
+            //     var length=params.data.SrmDeliveryLs.length;
+            //     detailGrid.api.setFocusedCell(0, 'DeliveryQty');
+            //     for(var i=0;i<length;i++)
+            //     {
+            //       detailGrid.api.startEditingCell({
+            //         rowIndex: i,
+            //         colKey: 'DeliveryQty',
+            //       });
+            //     }
+            //   }
 
 
-      //         //  console.info(params);
-      //         // params.api.setFocusedCell(2, 'DeliveryNum');
+            //   //  console.info(params);
+            //   // params.api.setFocusedCell(2, 'DeliveryNum');
 
-      //       });
-      //       eButton_add.addEventListener('click', function() {
-      //         // params.node.expanded = true;
-      //         // params.api.onGroupExpandedOrCollapsed();
-      //         var dialogData=new DialogData();
-      //         dialogData.data=params.data;
-      //         const dialogConfig = new MatDialogConfig();
-      //         dialogConfig.disableClose = true;
-      //         dialogConfig.autoFocus = true;
-      //         dialogConfig.minWidth = "250px";
-      //         //dialogConfig.maxHeight = "250px";
-      //         dialogConfig.data = dialogData;
-      //         const dialogRef =dialog.open(DeliveryAddComponent, dialogConfig);
-      //         dialogRef.afterClosed().subscribe(result => {
-      //           console.log('The dialog was closed');
-      //           if(result!=undefined)
-      //           {
+            // });
+            // eButton_add.addEventListener('click', function() {
+            //   // params.node.expanded = true;
+            //   // params.api.onGroupExpandedOrCollapsed();
+            //   var dialogData=new DialogData();
+            //   dialogData.data=params.data;
+            //   const dialogConfig = new MatDialogConfig();
+            //   dialogConfig.disableClose = true;
+            //   dialogConfig.autoFocus = true;
+            //   dialogConfig.minWidth = "250px";
+            //   //dialogConfig.maxHeight = "250px";
+            //   dialogConfig.data = dialogData;
+            //   const dialogRef =dialog.open(DeliveryAddComponent, dialogConfig);
+            //   dialogRef.afterClosed().subscribe(result => {
+            //     console.log('The dialog was closed');
+            //     if(result!=undefined)
+            //     {
 
-      //           }
+            //     }
 
-      //         });
-      //       });
-      //       eButton_save.addEventListener('click', function() {
-      //         eButton_edit.removeAttribute('hidden');
-      //         eButton_save.setAttribute('hidden','true');
-      //         eButton_cancel.setAttribute('hidden','true');
-      //         var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-      //         if (detailGrid) {
-      //           var length=params.data.SrmDeliveryLs.length;
-      //           for(var i=0;i<length;i++)
-      //           {
-      //             detailGrid.api.stopEditing({
-      //               rowIndex: i,
-      //               colKey: 'DeliveryQty',
-      //             });
-      //           }
-      //         }
-      //       });
-      //       eButton_cancel.addEventListener('click', function() {
-      //         eButton_edit.removeAttribute('hidden');
-      //         eButton_save.setAttribute('hidden','true');
-      //         eButton_cancel.setAttribute('hidden','true');
-      //         var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-      //         if (detailGrid) {
-      //           var length=params.data.SrmDeliveryLs.length;
-      //           for(var i=0;i<length;i++)
-      //           {
-      //             detailGrid.api.stopEditing({
-      //               rowIndex: i,
-      //               colKey: 'DeliveryQty',
-      //             });
-      //           }
-      //         }
-      //       });
-      //         //this.showDialog();
-      //          //  this.tplModal = _modalService.create({
-      //         //     nzTitle: "123",
-      //         //     nzContent: `123`,
-      //          //    nzFooter: null,
-      //         //   });
-      //         // this._roleService.getRole(role.id).subscribe(reuslt => {
-      //         //   this.editedRole = reuslt;
-      //         //   this.editForm = this._formBuilder.group({
-      //         //     roleName: [this.editedRole.name, [Validators.required, Validators.maxLength(15)]],
-      //         //     remark: [this.editedRole.remark, [Validators.maxLength(30)]],
-      //         //     menus: [this.editedRole.menus?.split(',')]
-      //         //   });
-      //         //   this.tplModal = this._modalService.create({
-      //         //     nzTitle: 123,
-      //         //     nzContent: 123,
-      //         //     nzFooter: null,
-      //         //   });
+            //   });
+            // });
+            // eButton_save.addEventListener('click', function() {
+            //   eButton_edit.removeAttribute('hidden');
+            //   eButton_save.setAttribute('hidden','true');
+            //   eButton_cancel.setAttribute('hidden','true');
+            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
+            //   if (detailGrid) {
+            //     var length=params.data.SrmDeliveryLs.length;
+            //     for(var i=0;i<length;i++)
+            //     {
+            //       detailGrid.api.stopEditing({
+            //         rowIndex: i,
+            //         colKey: 'DeliveryQty',
+            //       });
+            //     }
+            //   }
+            // });
+            // eButton_cancel.addEventListener('click', function() {
+            //   eButton_edit.removeAttribute('hidden');
+            //   eButton_save.setAttribute('hidden','true');
+            //   eButton_cancel.setAttribute('hidden','true');
+            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
+            //   if (detailGrid) {
+            //     var length=params.data.SrmDeliveryLs.length;
+            //     for(var i=0;i<length;i++)
+            //     {
+            //       detailGrid.api.stopEditing({
+            //         rowIndex: i,
+            //         colKey: 'DeliveryQty',
+            //       });
+            //     }
+            //   }
+            // });
+              //this.showDialog();
+               //  this.tplModal = _modalService.create({
+              //     nzTitle: "123",
+              //     nzContent: `123`,
+               //    nzFooter: null,
+              //   });
+              // this._roleService.getRole(role.id).subscribe(reuslt => {
+              //   this.editedRole = reuslt;
+              //   this.editForm = this._formBuilder.group({
+              //     roleName: [this.editedRole.name, [Validators.required, Validators.maxLength(15)]],
+              //     remark: [this.editedRole.remark, [Validators.maxLength(30)]],
+              //     menus: [this.editedRole.menus?.split(',')]
+              //   });
+              //   this.tplModal = this._modalService.create({
+              //     nzTitle: 123,
+              //     nzContent: 123,
+              //     nzFooter: null,
+              //   });
 
-      //         // });
-      //       //   _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
-      //       //     alert('採購單號:'+params.data.DeliveryNum+'已交貨');
-      //       //     params.data.Status=11;
-      //       //     params.data.ReplyDate=new Date();
-      //       //    params.api.refreshCells();
-      //       //  });
-      //       //});
-      //      return eDiv;
-      //      }
-      //    }
+              // });
+            //   _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+            //     alert('採購單號:'+params.data.DeliveryNum+'已交貨');
+            //     params.data.Status=11;
+            //     params.data.ReplyDate=new Date();
+            //    params.api.refreshCells();
+            //  });
+            //});
+           return eDiv;
+           }
+         }
 
-    //},
+    },
 
     //    {
     //     headerName: "",
@@ -262,6 +264,11 @@ export class DelyveryLComponent implements OnInit {
           {
             headerName:'項次',
             field: 'DeliveryLId',
+            hide:true,
+          },
+          {
+            headerName:'項次',
+            valueGetter: "node.rowIndex + 1"
           },
           {
             headerName:'物料',
@@ -335,9 +342,13 @@ export class DelyveryLComponent implements OnInit {
         this.PoList=result;
         var newoptions=[];
         for (var po in result) {
-          newoptions.push({label:result[po].PoNum,value:result[po].PoId});
+            if(!newoptions.some(p=>p.value==result[po].PoId))
+            {
+              newoptions.push({label:result[po].PoNum,value:result[po].PoId});
+            }
           }
           this.PoNumOption=newoptions;
+          this.PoNumOptionExceptCurrent=this.PoNumOption;
         //this.rowData = result;
       });
   }
@@ -350,14 +361,16 @@ export class DelyveryLComponent implements OnInit {
     }
     this.PoLIdOption=newoptions2;
   }
-  onPoLIdChange(value) {
+  onPoLIdChange() {
+    console.info(this.editForm.get('PoNum').value);
     var PoId=this.editForm.get('PoNum').value;
     var PoLId=this.editForm.get('PoLId').value;
     if(PoId==null||PoLId==null||this.currenPoLID==PoLId)
     { return; }
     this.currenPoLID=PoLId;
     var PoLItem= this.PoList.find(p=>p.PoId==PoId &&p.PoLId==PoLId);
-    console.info(PoLItem.PoLId);
+    this.MaxDeliveryQty=PoLItem.DeliveryQty;
+    console.info(PoLItem);
     this.editForm.setValue({
       DeliveryId: this.editForm.get('DeliveryId').value,
       DeliveryLId: null
@@ -366,7 +379,6 @@ export class DelyveryLComponent implements OnInit {
       , PoLId: PoLItem.PoLId
       , DeliveryQty: PoLItem.DeliveryQty
     });
-    console.info(this.editForm.get('PoLId').value);
     // var query = {
     //   poNum: PoNum,
     //   poLId: PoLId,
@@ -481,6 +493,8 @@ export class DelyveryLComponent implements OnInit {
 
 
   add(e) {
+    var ids=this.rowData.filter(p=>p.DeliveryId==e.rowData.DeliveryId)[0].SrmDeliveryLs.map(({ PoNum }) => PoNum);
+    this.PoNumOptionExceptCurrent=this.PoNumOption.filter(p=>!ids.includes(p.label));
     this.isedit=false;
     this.editForm = this._formBuilder.group({
       DeliveryId: [{value:null,disabled: true}, [Validators.required]],
@@ -541,7 +555,11 @@ export class DelyveryLComponent implements OnInit {
     });
   }
   start(e){
+    var PoLItem= this.PoList.find(p=>p.PoId==e.rowData.PoId &&p.PoLId==e.rowData.PoLId);
+    this.MaxDeliveryQty=PoLItem.DeliveryQty+e.rowData.DeliveryQty;
     this.isedit=true;
+    console.info(e.rowData);
+    console.info(this.rowData);
     this.editForm = this._formBuilder.group({
       DeliveryId: [{value:null,disabled: true}, [Validators.required]],
       DeliveryLId: [{value:null,disabled: true}, [Validators.required]],
@@ -573,14 +591,21 @@ export class DelyveryLComponent implements OnInit {
     //console.log(this.CurrencyList.find(r => r.currency == this.currency.value)?.currencyName);
     //console.log(this.tempqotId);
     console.log(this.editForm);
+
      for (const i in this.editForm.controls) {
        this.editForm.controls[i].markAsDirty();
        this.editForm.controls[i].updateValueAndValidity();
      }
      if (this.editForm.valid) {
+       if(this.editForm.get('DeliveryQty').value>this.MaxDeliveryQty)
+       {
+        alert("最大數量為"+this.MaxDeliveryQty);
+        return;
+       }
        if(this.isedit)
        {
         var r = this.rowData.find(r => r.DeliveryId == this.editForm.get('DeliveryId').value).SrmDeliveryLs.find(p=>p.PoLId==this.editForm.get('PoLId').value);
+
         r.DeliveryQty = this.editForm.get('DeliveryQty').value;
      //   r.standQty = this.editForm.get('standQty').value;
      //   r.minQty = this.editForm.get('minQty').value;

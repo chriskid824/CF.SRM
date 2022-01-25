@@ -87,6 +87,7 @@ export class DeliveryModalComponent implements OnInit {
     };
     this.deliverydata=this.data.data;
     this.rowData = this.data.data.SrmDeliveryLs;
+    console.info(this.rowData);
     this.Title=this.data.paramname+" - "+this.data.columnname+" - "+this.data.valuetype;
     this.sideBar = {
       toolPanels: [
@@ -139,7 +140,7 @@ function printElement(elem) {
       // window.print();
       // return;
   }
-
+  $printSection = document.getElementById("printSection");
   $printSection.innerHTML = "";
   $printSection.appendChild(domClone);
   window.print();

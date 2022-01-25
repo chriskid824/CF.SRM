@@ -57,8 +57,14 @@ export class PoDetailComponent implements OnInit {
         field: 'StatusDesc',
       },
       {
+        headerName:'廠商交貨日期',
+        field: 'ReplyDeliveryDate',
+        valueFormatter:dateFormatter,
+      },
+      {
         headerName:'採購單總金額',
         field: 'TotalAmount',
+        hide:'true'
       },
       {
         headerName:'採購人員',
@@ -99,11 +105,7 @@ export class PoDetailComponent implements OnInit {
         field: 'DeliveryDate',
         valueFormatter:dateFormatter
       },
-      {
-        headerName:'廠商交貨日期',
-        field: 'ReplyDeliveryDate',
-        valueFormatter:dateFormatter,
-      },
+
       {
         headerName:'交貨地點',
         field: 'DeliveryPlace',

@@ -185,7 +185,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="欄位必填">
         <!--<input nz-input placeholder="幣別" formControlName="unit"
       autocomplete="off" />-->
-        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="選擇採購單" formControlName="PoNum" [(nzOptions)]="PoNumOption" (ngModelChange)="onChange($event)" [(ngModel)]="PoNum">
+        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="選擇採購單" formControlName="PoNum" [(nzOptions)]="PoNumOptionExceptCurrent" (ngModelChange)="onChange($event)" [(ngModel)]="PoNum">
           <!-- <nz-option *ngFor="let option of CurrencyList" [nzLabel]="option.currencyName" [nzValue]="option.currency"></nz-option> -->
         </nz-select>
         <input *ngIf="isedit" nz-input placeholder="選擇採購單" formControlName="PoNum"
@@ -197,7 +197,7 @@
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <!--<input nz-input placeholder="採購群組" formControlName="ekgry"
        autocomplete="off" />-->
-        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="採購項次" formControlName="PoLId" [(nzOptions)]="PoLIdOption" (ngModelChange)="onPoLIdChange($event)">
+        <nz-select *ngIf="!isedit" nzShowSearch nzAllowClear nzPlaceHolder="採購項次" formControlName="PoLId" [(nzOptions)]="PoLIdOption" (ngModelChange)="onPoLIdChange()">
           <!-- <nz-option *ngFor="let option of EkgryList" [nzLabel]="option.ekgry" [nzValue]="option.ekgry"></nz-option> -->
         </nz-select>
         <input *ngIf="isedit" nz-input placeholder="採購項次" formControlName="PoLId"

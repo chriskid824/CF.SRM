@@ -64,6 +64,15 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             try
             {
+                if (dls != null && dls.Count > 0)
+                {
+                    string result = _srmDeliveryService.ReceiveDeliveryL(dls);
+                    if (string.IsNullOrEmpty(result))
+                    { }                    
+                    else
+                    { return BadRequest(result); }
+                    
+                }
                 using (HttpClient client = new HttpClient())
                 {
                     string json = JsonConvert.SerializeObject(dls);
@@ -79,6 +88,10 @@ namespace Convience.ManagentApi.Controllers.SRM
                         {
                             return BadRequest(response.Content.ReadAsStringAsync().Result);
                         }
+                        else
+                        {
+                            return Ok();
+                        }
                     }
                     else
                     {
@@ -91,12 +104,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 //throw e;
                 return BadRequest("修改資料在sap階段失敗 請聯絡工程師調整");
             }
-            if (dls != null && dls.Count > 0)
-            {
-                string result = _srmDeliveryService.ReceiveDeliveryL(dls);
-                if (string.IsNullOrEmpty(result)) return Ok();
-                return BadRequest(result);
-            }
+
             //if (_srmDeliveryService.DeleteDeliveryL(dls)) return Ok();
             return BadRequest("項次 新增/修改 失敗");
         }

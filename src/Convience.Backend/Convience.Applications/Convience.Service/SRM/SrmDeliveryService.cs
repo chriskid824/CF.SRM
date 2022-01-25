@@ -224,10 +224,11 @@ namespace Convience.Service.SRM
             {
                 _context.SrmDeliveryLs.Remove(dl);
                 SrmPoL pol = _context.SrmPoLs.Find(data.PoId, data.PoLId);
-                pol.Status = 14;
+                pol.Status = 15;
+                pol.DeliveryDate = null;
                 _context.SrmPoLs.Update(pol);
                 SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
-                poh.Status = 14;
+                poh.Status = 15;
                 _context.SrmPoHs.Update(poh);
                 _context.SaveChanges();
                 return true;
@@ -240,7 +241,12 @@ namespace Convience.Service.SRM
             ViewSrmDeliveryL dl = datalist.FirstOrDefault();
             #region 1.1 dh
             SrmDeliveryH dh = _context.SrmDeliveryHs.Find(dl.DeliveryId);
+            if (dh.Status == 12)
+            {
+                return "此交貨單已交貨!";
+            }
             dh.Status = 12;
+            dh.LastUpdateDate = DateTime.Now;
             _context.SrmDeliveryHs.Update(dh);
             #endregion
             #region 1.2 pol

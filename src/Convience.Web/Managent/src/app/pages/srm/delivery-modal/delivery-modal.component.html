@@ -39,15 +39,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of basicTable.data">
+        <tr *ngFor="let data of basicTable.data;let i = index">
           <!-- <td><qrcode style="float: right" [qrdata]="'/srm/deliveryreceive/${data.DeliveryLId}/${deliverydata.DeliveryNum}'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td> -->
           <td><qrcode style="float: right" [qrdata]="data.Url" [width]="10" [scale]="3" [errorCorrectionLevel]="'M'" ></qrcode></td>
-          <td>{{ data.DeliveryLId }}</td>
+          <td>{{ i+1 }}</td>
           <td>{{ data.Matnr }}</td>
           <td>{{ data.Description }}</td>
           <td>{{ data.PoNum }}</td>
           <td>{{ data.PoLId }}</td>
-          <td>{{ data.Qty }}</td>
+          <td>{{ data.DeliveryQty }}</td>
           <td></td>
           <td>{{ data.WoNum }}</td>
           <td>{{ data.WoItem }}</td>
