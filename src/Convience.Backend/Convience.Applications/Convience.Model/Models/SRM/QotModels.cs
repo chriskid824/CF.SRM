@@ -137,6 +137,8 @@ namespace Convience.Model.Models.SRM
         public int vendorid { get; set; }
         public string vendor { get; set; }
         public string username { get; set; }
+        //提供非供應商查詢供應商用
+        public string queryvendor { get; set; }
     }
     public class ViewQot : SrmQotH
     {
