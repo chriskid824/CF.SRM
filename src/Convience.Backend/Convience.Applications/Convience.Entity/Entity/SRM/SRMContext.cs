@@ -883,7 +883,7 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.SCostsum)
                    .HasColumnType("money")
-                   .HasColumnName("S_COSTSUM");               
+                   .HasColumnName("S_COSTSUM");
 
                 entity.Property(e => e.SProcess)
                     .HasMaxLength(18)
@@ -1164,7 +1164,7 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(10)
                     .HasColumnName("EQP_NUM")
                     .IsUnicode(false)
-                    .HasComputedColumnSql("(('PS'+substring(CONVERT([varchar](10),datepart(year,getdate())),(3),(2)))+right('00000'+CONVERT([varchar],[EQP_ID]),(3)))", false)
+                    //.HasComputedColumnSql("(('PS'+substring(CONVERT([varchar](10),datepart(year,getdate())),(3),(2)))+right('00000'+CONVERT([varchar],[EQP_ID]),(3)))", false)
                     .HasComment("反應單號");
 
                 entity.Property(e => e.LastUpdateBy)
@@ -1251,6 +1251,11 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.FileName)
                   .HasColumnName("FILE_NAME")
                   .HasComment("附件名稱");
+
+                entity.Property(e => e.Guid)
+                 .HasColumnName("GUID")
+                  .HasComment("附件資料夾名稱");
+
 
             });
             modelBuilder.Entity<SrmMaterialGroup>(entity =>
