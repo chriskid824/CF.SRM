@@ -75,11 +75,12 @@ namespace Convience.Service.SRM
         public void Delete(string path);
         public IQueryable GetQotInfo(int rfqid, int vendorid, int qotid);
         public int GetQotId(QueryQot query);
-        public int  GetMatnrId(QueryQot query);
+        public int GetMatnrId(QueryQot query);
         public string GetSurfaceProcessByNum(int num);
         public ViewQotResult GetDetailByVendorRfq(QueryQot query);
         public SrmQotH GetQotById(QueryQot query);
         public HttpResponseMessage GetFile(string fileName, string localFilePath);
+        public IEnumerable<ViewQotListH> GetQotListBesidesVendor(QueryQotList query);
 
     }
     public class SrmQotService : ISrmQotService
@@ -334,7 +335,7 @@ namespace Convience.Service.SRM
             //});
             //return result;
             var result = (from r in _context.SrmRfqHs
-                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId 
+                          join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on r.Status equals status.Status
                           join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
                           select new ViewQotListH
@@ -368,7 +369,7 @@ namespace Convience.Service.SRM
                                   QStatus = q.Status,
                                   QQotId = q.QotId,
                                   QQotNum = q.QotNum,
-                                  QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr))? m.SapMatnr : m.SrmMatnr1,
+                                  QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
                                   QCreateBy = q.CreateBy,
                                   QCreateDate = q.CreateDate,
                                   QLastUpdateBy = q.LastUpdateBy,
@@ -401,7 +402,7 @@ namespace Convience.Service.SRM
         {
             //int venderid = query.vendor;
             var result = (from r in _context.SrmRfqHs
-                          join q in _context.SrmQotHs on new { RfqId=r.RfqId, username=r.CreateBy } equals new { RfqId=q.RfqId.Value, username=query.username }
+                          join q in _context.SrmQotHs on new { RfqId = r.RfqId, username = r.CreateBy } equals new { RfqId = q.RfqId.Value, username = query.username }
                           //join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on q.Status equals status.Status
                           //join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
@@ -420,19 +421,19 @@ namespace Convience.Service.SRM
                               VLastUpdateDate = q.LastUpdateDate,
                               VLastUpdateBy = u2.Name,
                               VEndDate = r.EndDate,
-                              Sourcer= record.InfoId.ToString()
+                              Sourcer = record.InfoId.ToString()
                               //VVendor = vendor.SapVendor,
 
 
                           })
                         //.Where(p => p.VVendor == query.vendor)
-                        .Where(p => (p.VStatus == 5||p.VStatus==6)&& p.Sourcer==null )
+                        .Where(p => (p.VStatus == 5 || p.VStatus == 6) && p.Sourcer == null)
                             //.Where()
                             //.AndIfCondition(query.status != 0, p => p.Status == 7)
                             //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
                             .AndIfHaveValue(query.rfqId, p => p.VRfqId == query.rfqId)
-                            //.AndIfHaveValue(query.username,p=>p.)
+                        //.AndIfHaveValue(query.username,p=>p.)
                         //.Distinct()
                         .ToList();
 
@@ -472,20 +473,24 @@ namespace Convience.Service.SRM
             //});
             return result.ToList();
         }
-       
+
 
         public IEnumerable<ViewQotListH> GetQotList(QueryQotList query)
         {
 
             string vendorname = GetSapid(query);//20211203
             #region getvendorid 20211101
-            int venderid = GetVendorId(vendorname);
+            int venderid = 0;
+            if (!string.IsNullOrWhiteSpace(vendorname))  //20220103
+            {
+                venderid = GetVendorId(vendorname);
+            }
             #endregion
             //int venderid = query.vendor;
             var result = (from r in _context.SrmRfqHs
                           join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                           join status in _context.SrmStatuses on r.Status equals status.Status
-                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId                         
+                          join vendor in _context.SrmVendors on q.VendorId equals vendor.VendorId
                           join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName into u1g
                           from u1 in u1g.DefaultIfEmpty()
                           join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName into u2g
@@ -499,24 +504,25 @@ namespace Convience.Service.SRM
                               VCreateDate = r.CreateDate,
                               VCreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : r.CreateBy,
                               VLastUpdateDate = r.LastUpdateDate,
-                              VLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name))? u2.Name:r.LastUpdateBy,
+                              VLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name)) ? u2.Name : r.LastUpdateBy,
                               VEndDate = r.EndDate,
-                              VVendor = (!string.IsNullOrWhiteSpace(vendor.SapVendor))? vendor.SapVendor:vendor.SrmVendor1,
+                              VVendor = (!string.IsNullOrWhiteSpace(vendor.SapVendor)) ? vendor.SapVendor : vendor.SrmVendor1,
                               VVendorId = vendor.VendorId,
                               Werks = r.Werks,
-                              VDeadline = r.Deadline
+                              VDeadline = r.Deadline,
                           })
                         //.Where(p => p.VVendor == query.vendor)
-                        .Where(p => p.VVendorId == venderid)
-                            //.Where(p => p.VStatus == 7) //0827
-                            //.Where()
-                            //.AndIfCondition(query.status != 0, p => p.Status == 7)
-                            //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
+                        //.Where(p => p.VVendorId == venderid) 20220103
+                        .AndIfCondition(!string.IsNullOrWhiteSpace(vendorname), p => p.VVendorId == venderid) //20220103
+                                                                                                              //.Where(p => p.VStatus == 7) //0827
+                                                                                                              //.Where()
+                                                                                                              //.AndIfCondition(query.status != 0, p => p.Status == 7)
+                                                                                                              //.AndIfCondition(!string.IsNullOrWhiteSpace(query.vendor), p => p.VVendor == query.vendor)
                             .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
                             .AndIfHaveValue(query.rfqId, m => m.VRfqId == query.rfqId)
                         .Distinct()
                         .ToList();
-           
+
             result.ForEach(p =>
             {
                 p.SrmQotHs = (from q in _context.SrmQotHs
@@ -542,13 +548,16 @@ namespace Convience.Service.SRM
                                   QLastUpdateDate = q.LastUpdateDate,
                                   QVendorId = q.VendorId,
                                   QVendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
-                                  QStatusDesc = status.StatusDesc
+                                  QStatusDesc = status.StatusDesc,
+
                               })
                               //.ToList();
                               //.Where(p => p.QVendorId.Value == query.vendor)
 
-                              .Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼
+                              //.Where(p => p.QVendor == query.vendor) //供應商登入帳號為供應商代碼 20220103
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(vendorname), p => p.QVendor == query.vendor) //20220103
                               .Where(l => l.QRfqId.Value == p.VRfqId)
+                              .Where(l => l.QVendorId == p.VVendorId)
 
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
                               .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status) //0827
@@ -556,7 +565,81 @@ namespace Convience.Service.SRM
             });
             return result.Where(p => p.SrmQotHs.Count > 0).ToList();
         }
+        #region 非供應商查詢
+        public IEnumerable<ViewQotListH> GetQotListBesidesVendor(QueryQotList query)
+        {
+            query.vendor = query.queryvendor;
+            string vendorname = GetSapid(query);
+            #region getvendorid 
+            int venderid = 0;
+            if (!string.IsNullOrWhiteSpace(vendorname))
+            {
+                venderid = GetVendorId(vendorname);
+            }
+            #endregion
+            //queryvendor
+            var result = (from r in _context.SrmRfqHs
+                          join status in _context.SrmStatuses on r.Status equals status.Status
+                          join u1 in _context.AspNetUsers on r.CreateBy equals u1.UserName into u1g
+                          from u1 in u1g.DefaultIfEmpty()
+                          join u2 in _context.AspNetUsers on r.LastUpdateBy equals u2.UserName into u2g
+                          from u2 in u2g.DefaultIfEmpty()
+                          select new ViewQotListH
+                          {
+                              VRfqId = r.RfqId,
+                              VRfqNum = r.RfqNum,
+                              VStatus = r.Status,
+                              VStatusDesc = status.StatusDesc,
+                              VCreateDate = r.CreateDate,
+                              VCreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : r.CreateBy,
+                              VLastUpdateDate = r.LastUpdateDate,
+                              VLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name)) ? u2.Name : r.LastUpdateBy,
+                              VEndDate = r.EndDate,
+                              Werks = r.Werks,
+                              VDeadline = r.Deadline,
+                          })
+                            .AndIfCondition(!string.IsNullOrWhiteSpace(query.rfqno), p => p.VRfqNum == query.rfqno)
+                            .AndIfHaveValue(query.rfqId, m => m.VRfqId == query.rfqId)
+                        //.AndIfCondition(!string.IsNullOrWhiteSpace(vendorname), p => p.VVendorId == venderid)
+                        .Distinct()
+                        .ToList();
 
+            result.ForEach(p =>
+            {
+                p.SrmQotHs = (from q in _context.SrmQotHs
+                              join r in _context.SrmRfqHs on q.RfqId equals r.RfqId
+                              join status in _context.SrmStatuses on q.Status equals status.Status
+                              join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
+                              join v in _context.SrmVendors on q.VendorId equals v.VendorId
+                              join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
+                              from u1 in u1g.DefaultIfEmpty()
+                              join u2 in _context.AspNetUsers on q.LastUpdateBy equals u2.UserName into u2g
+                              from u2 in u2g.DefaultIfEmpty()
+                              select new ViewQotListL
+                              {
+                                  QRfqId = q.RfqId,
+                                  QStatus = q.Status,
+                                  QQotId = q.QotId,
+                                  QQotNum = q.QotNum,
+                                  QMatnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
+                                  QCreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : q.CreateBy,
+                                  QCreateDate = q.CreateDate,
+                                  QLastUpdateBy = (!string.IsNullOrWhiteSpace(u2.Name)) ? u2.Name : q.LastUpdateBy,
+                                  QLastUpdateDate = q.LastUpdateDate,
+                                  QVendorId = q.VendorId,
+                                  QVendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
+                                  QStatusDesc = status.StatusDesc,
+
+                              })
+                              .Where(l => l.QRfqId.Value == p.VRfqId)
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(vendorname), p => p.QVendorId == venderid)
+                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.QMatnr == query.matnr)
+                              .AndIfCondition(query.status != 0, p => p.QStatus.Value == query.status) //0827
+                              .ToList();
+            });
+            return result.Where(p => p.SrmQotHs.Count > 0).ToList();
+        }
+        #endregion
         /*public IEnumerable<ViewSrmQotList> GetQotList(QueryQotList query)
         {
 
@@ -621,21 +704,21 @@ namespace Convience.Service.SRM
             qotlist = qotlist.Where(p => p.RfqId == rfqid && p.VendorId == vendorid).OrderBy(p => p.QotId);
             return qotlist;
         }
-        public decimal GetHistoryPrice(int qotid) 
+        public decimal GetHistoryPrice(int qotid)
         {
             decimal historyprice = 0;
-            var history = (from q in _context.SrmQotHs 
+            var history = (from q in _context.SrmQotHs
                            join v in _context.SrmVendors on q.VendorId equals v.VendorId
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
-                           join h in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)? v.SapVendor:v.SrmVendor1), Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)? m.SapMatnr:m.SrmMatnr1) } equals new { Vendor = h.Vendor, Matnr = h.Matnr }
+                           join h in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor) ? v.SapVendor : v.SrmVendor1), Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr) ? m.SapMatnr : m.SrmMatnr1) } equals new { Vendor = h.Vendor, Matnr = h.Matnr }
                            where (q.QotId == qotid)
-                          select new
-                          {
-                              historyprice = h.TargetPrice,
-                          });
-            if (history.Count()>0)
+                           select new
+                           {
+                               historyprice = h.TargetPrice,
+                           });
+            if (history.Count() > 0)
             {
-                historyprice = history.Select(r => (r.historyprice != null) ? r.historyprice.Value:0).First();
+                historyprice = history.Select(r => (r.historyprice != null) ? r.historyprice.Value : 0).First();
             }
             return historyprice;
         }
@@ -644,7 +727,7 @@ namespace Convience.Service.SRM
             //decimal historyprice = GetHistoryPrice(qotid);
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
-                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }                         
+                           join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
                            join m in _context.SrmMatnrs on q.MatnrId equals m.MatnrId
                            join v in _context.SrmVendors on q.VendorId equals v.VendorId
                            join hi in _context.SrmHistoryPrices on new { Vendor = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1, Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1 } equals new { Vendor = hi.Vendor, Matnr = hi.Matnr } into hig
@@ -654,9 +737,9 @@ namespace Convience.Service.SRM
                            join s in _context.SrmStatuses on q.Status equals s.Status
                            join u1 in _context.AspNetUsers on q.CreateBy equals u1.UserName into u1g
                            from u1 in u1g.DefaultIfEmpty()
-                          
 
-                           //where e.OwnerID == user.UID 
+
+                               //where e.OwnerID == user.UID 
                            select new
                            {
                                RfqNum = r.RfqNum,
@@ -670,10 +753,10 @@ namespace Convience.Service.SRM
                                sEmptyFlag = q.SEmptyFlag,
                                oPEmptyFlag = q.OEmptyFlag,
                                QotId = q.QotId,
-                               CreateBy = (!string.IsNullOrWhiteSpace(u1.Name))? u1.Name:q.CreateBy,//q.CreateBy,
+                               CreateBy = (!string.IsNullOrWhiteSpace(u1.Name)) ? u1.Name : q.CreateBy,//q.CreateBy,
                                CreateDate = DateTime.Parse(q.CreateDate.ToString()).ToString("yyyy/MM/dd HH:mm:ss"),
                                Status = s.StatusDesc,
-                               
+
                                QotNum = q.QotNum,
                                //Status = q.Status.HasValue ? ((Status)q.Status).ToString() : "",
                                Material = rm.Material,
@@ -688,7 +771,9 @@ namespace Convience.Service.SRM
                                Qty = rm.Qty,
                                estDeliveryDate = (!string.IsNullOrWhiteSpace(rm.EstDeliveryDate.ToString())) ? DateTime.Parse(rm.EstDeliveryDate.ToString()).ToString("yyyy/MM/dd") : "",
                                Unit = mu.MeasureDesc,//20211203
-                               Purposeprice = hi.TargetPrice//historyprice
+                               Purposeprice = hi.TargetPrice,//historyprice
+                               Rmnote = rm.Note, //20220119
+                               OtherDesc = rm.OtherDesc //20220119
                            });
             //.AndIfCondition(query.status != 0, p => p.QSTATUS == query.status)
             //.AndIfHaveValue(matnrid, p => p.MATNR == query.matnr).t
@@ -701,7 +786,7 @@ namespace Convience.Service.SRM
             //.Where(p => p.QotId == qotid);
             return qotlist;
         }
-     
+
         /*public IEnumerable<ViewQot> GetDataBQotId(int QotId)
         {
             var qotlist = (from q in _context.SrmQotHs
@@ -835,7 +920,12 @@ namespace Convience.Service.SRM
                           {
                               SapId = u.SapId
                           });
-            vendorid = vendor.Select(r => r.SapId).First();
+            //20220103
+            if (vendor.Count() > 0)
+            {
+                vendorid = vendor.Select(r => r.SapId).First();
+            }
+
             return vendorid;
         }
         #endregion
@@ -848,7 +938,11 @@ namespace Convience.Service.SRM
                           {
                               VendorId = v.VendorId,
                           });
-            vendorid = vendor.Select(r => r.VendorId).First();
+            if (vendor.Count() > 0)
+            {
+                vendorid = vendor.Select(r => r.VendorId).First();
+            }
+
             return vendorid;
 
         }
@@ -937,7 +1031,7 @@ namespace Convience.Service.SRM
                                    PNote = process.PNote,
                                    PProcessNum = process.PProcessNum,
                                    VendorId = vendor.VendorId,
-                                   VendorName = vendor.VendorName,                                 
+                                   VendorName = vendor.VendorName,
                                    QotId = process.QotId
                                })
                                .Where(p => p.QotId == qotid)
@@ -989,7 +1083,7 @@ namespace Convience.Service.SRM
         #region
         public ViewQotResult GetDetailByVendorRfq(QueryQot query)
         {
-          
+
             ViewQotResult qotinfo = new ViewQotResult();
 
             qotinfo.material = (from material in _context.SrmQotMaterial
@@ -1000,7 +1094,7 @@ namespace Convience.Service.SRM
                                 //where qot.QotId equals(material.QotId.Value)
                                 select new viewSrmQotMaterial
                                 {
-                                    
+
                                     MMaterial = material.MMaterial,
                                     Length = material.Length,
                                     Width = material.Width,
@@ -1014,12 +1108,12 @@ namespace Convience.Service.SRM
                                     QotId = material.QotId,
                                     VendorId = vendor.VendorId,
                                     VendorName = vendor.VendorName,
-                                    RfqId = qot.RfqId.Value,                                 
+                                    RfqId = qot.RfqId.Value,
                                 })
                                 .Where(p => p.RfqId == query.rfqId)
                                 .Where(p => p.VendorId == query.vendorId)
                                 .ToArray();
-            
+
             qotinfo.process = (from process in _context.SrmQotProcesses
                                join qot in _context.SrmQotHs on process.QotId equals qot.QotId
                                join p in _context.SrmProcesss on process.PProcessNum equals p.ProcessNum.ToString() //20211217
@@ -1216,9 +1310,9 @@ namespace Convience.Service.SRM
                 qotid = GetQotId(query);
             }
             /*20211227*/
-            if (qotH.MEmptyFlag =="X") 
+            if (qotH.MEmptyFlag == "X")
             {
-                if(qotMaterials.Length>0) 
+                if (qotMaterials.Length > 0)
                 {
                     errmsg = "A.材料已勾選不回填，無需填寫材料明細";
                     return errmsg;
@@ -1302,7 +1396,7 @@ namespace Convience.Service.SRM
 
             //if (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始))
             //20211227 暫開失效
-            if ((!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始)) && (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.失效))) 
+            if ((!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.初始)) && (!_context.SrmQotHs.Any(r => r.RfqId == qotH.RfqId && r.Status == (int)Status.失效)))
             {
                 //throw new Exception("非初始無法修改");
                 errmsg = "非初始無法修改";
@@ -1777,8 +1871,8 @@ namespace Convience.Service.SRM
             }
             dt.Columns.Add("IsExists");
             //dt.Columns.Add("Unit");
-            string[] headers = new string[] { "詢價單號", "料號", "短文", "[計畫交貨時間(日曆天)]", "有效期限","備註"};
-            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "LeadTime", "ExpirationDate" , "Note" };
+            string[] headers = new string[] { "詢價單號", "料號", "短文", "[計畫交貨時間(日曆天)]", "有效期限", "備註" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "LeadTime", "ExpirationDate", "Note" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers)
             {
@@ -2036,8 +2130,8 @@ namespace Convience.Service.SRM
                     //新增.
                     dataRow["MCostPrice"] = float.Parse(Math.Round(Convert.ToDecimal((float.Parse(dataRow["重量"].ToString())) * (float.Parse(dataRow["材料單價"].ToString()))), 2, MidpointRounding.AwayFromZero).ToString());
                 }
-                
-                
+
+
                 dt.Rows.Add(dataRow);
                 rowIndex++;
             }
@@ -2153,7 +2247,7 @@ namespace Convience.Service.SRM
                         }
                     }
                 }
-               
+
                 #endregion
                 //20211214 檢核該供應商是否有此單號、料號
                 int checkdata = CheckMatnrData(user.UserName, dataRow["詢價單號"].ToString(), dataRow["料號"].ToString());
@@ -2162,7 +2256,7 @@ namespace Convience.Service.SRM
                     dataRow["IsExists"] = false;
                     throw new Exception($"【加工 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
                 }
-                else 
+                else
                 {
                     dataRow["IsExists"] = true;
                 }
@@ -2170,7 +2264,7 @@ namespace Convience.Service.SRM
                 //20211214
                 float hour = 0;
                 float price = 0;
-                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N"))
                 {
                     if (!_context.SrmProcesss.Any(r => r.Process.Equals(dataRow["工序"].ToString())))
                     {
@@ -2237,7 +2331,7 @@ namespace Convience.Service.SRM
             dt.Columns.Add("SCostsum"); //小計
             dt.Columns.Add("SProcessDesc"); //工序名稱
             string[] headers = new string[] { "詢價單號", "料號", "短文", "不回填", "工序", "[單價(時)]", "次數", "備註" };
-            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "SEmptyFlag", "SProcess", "SPrice",  "STimes", "PNote" };
+            string[] cols = new string[] { "RfqNum", "Matnr", "Description", "SEmptyFlag", "SProcess", "SPrice", "STimes", "PNote" };
             Dictionary<string, int> dtHeader = new Dictionary<string, int>();
             foreach (string header in headers)
             {
@@ -2301,7 +2395,7 @@ namespace Convience.Service.SRM
                         {
                             throw new Exception($"【表面處理 】:料號:{dataRow["料號"].ToString()}次數未填");
                         }
-                    }     
+                    }
                     //20211227
                     else
                     {
@@ -2329,12 +2423,12 @@ namespace Convience.Service.SRM
                     dataRow["IsExists"] = false;
                     throw new Exception($"【表面處理 】:詢價單號:{dataRow["詢價單號"].ToString()}查無 料號:{dataRow["料號"].ToString()} 資訊");
                 }
-                else 
+                else
                 {
                     dataRow["IsExists"] = true;
                 }
 
-                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N"))
                 {
                     if (!_context.SrmSurfaces.Any(r => r.SurfaceDesc.Equals(dataRow["工序"].ToString().Trim())))
                     {
@@ -2459,11 +2553,11 @@ namespace Convience.Service.SRM
                         {
                             throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}單價未填");
                         }
-                    } 
+                    }
                     //20211227
                     else
                     {
-                        
+
                         if (!string.IsNullOrWhiteSpace(dataRow["項目"].ToString()))
                         {
                             throw new Exception($"【其他 】:料號:{dataRow["料號"].ToString()}，已選擇不回填，無需填寫其他費用明細");
@@ -2487,7 +2581,7 @@ namespace Convience.Service.SRM
                 }
 
                 float price = 0;
-                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N")) 
+                if ((string.IsNullOrWhiteSpace(dataRow["不回填"].ToString())) || (dataRow["不回填"].ToString().ToUpper() == "N"))
                 {
                     if (!float.TryParse(dataRow["單價"].ToString(), out price) || price <= 0)
                     {
@@ -2510,7 +2604,7 @@ namespace Convience.Service.SRM
         #endregion
 
         #region 檢核供應商是否有此料號、此報價單號
-        public int  CheckMatnrData(string vendor,string RfqNum,string Matnr) 
+        public int CheckMatnrData(string vendor, string RfqNum, string Matnr)
         {
             int qotid = 0;
             var Query = (from q in _context.SrmQotHs
@@ -2523,13 +2617,13 @@ namespace Convience.Service.SRM
                          {
                              RFQ_NUM = r.RfqNum,
                              VENDOR = (!string.IsNullOrWhiteSpace(v.SapVendor)) ? v.SapVendor : v.SrmVendor1,
-                             MATNR =(!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr :m.SrmMatnr1,
+                             MATNR = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
                              QOT_ID = q.QotId
                          })
                          .AndIfHaveValue(vendor, p => p.VENDOR == vendor)
                          .AndIfHaveValue(RfqNum, p => p.RFQ_NUM == RfqNum)
                          .AndIfHaveValue(Matnr, p => p.MATNR == Matnr);
-       
+
             if (Query.Count() > 0)
             {
                 qotid = Query.Select(r => r.QOT_ID).First();
@@ -2542,11 +2636,11 @@ namespace Convience.Service.SRM
         {
             var processid = 0;
             var process = (from p in _context.SrmProcesss
-                          where (p.Process == Process)
-                          select new
-                          {
-                              ProcessNum = p.ProcessNum,
-                          });
+                           where (p.Process == Process)
+                           select new
+                           {
+                               ProcessNum = p.ProcessNum,
+                           });
             processid = process.Select(r => r.ProcessNum).First();
             return processid;
 
@@ -2579,7 +2673,7 @@ namespace Convience.Service.SRM
         }
         public IQueryable GetQotInfo(int rfqid, int vendorid, int qotid)
         {
-          
+
             var qotlist = (from r in _context.SrmRfqHs
                            join q in _context.SrmQotHs on r.RfqId equals q.RfqId
                            join rm in _context.SrmRfqMs on new { RfqId = q.RfqId, MatnrId = q.MatnrId } equals new { RfqId = rm.RfqId, MatnrId = rm.MatnrId }
@@ -2613,7 +2707,7 @@ namespace Convience.Service.SRM
                                Height = rm.Height,
                                RfqId = r.RfqId,
                                VendorId = q.VendorId,
-                              
+
                                Description = m.Description,
                                Qty = rm.Qty,
                                Expiringdate = q.ExpirationDate,
@@ -2629,7 +2723,7 @@ namespace Convience.Service.SRM
             .Where(p => p.RfqId == rfqid)
             .Where(p => p.VendorId == vendorid)
             .Where(p => p.QotId == qotid);
-           
+
             //.AndIfHaveValue(matnrid , p => p.QotId == qotid);
             //.Where(p => p.QotId == qotid);
             return qotlist;
@@ -2638,11 +2732,11 @@ namespace Convience.Service.SRM
         {
             var matnrid = 0;
             var matnr = (from m in _context.SrmMatnrs
-                       select new
-                       {
-                           MatnrId = m.MatnrId,
-                           Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr))? m.SapMatnr:m.SrmMatnr1
-                       });
+                         select new
+                         {
+                             MatnrId = m.MatnrId,
+                             Matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1
+                         });
             matnr = matnr
            .Where(p => p.Matnr == query.matnr);
             matnrid = matnr.Select(r => r.MatnrId).First();
@@ -2696,6 +2790,6 @@ namespace Convience.Service.SRM
 
             return response;
         }
-       
+
     }
 }
