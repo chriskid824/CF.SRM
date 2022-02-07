@@ -55,7 +55,7 @@ import { MaterialTrendComponent } from './material-trend/material-trend.componen
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { MaterialManageComponent } from './material-manage/material-manage.component';
 import {EqpComponent} from'./eqp/eqp.component';
-//import { EqplistComponent } from './eqplist/eqplist.component';
+import { EqplistComponent } from './eqplist/eqplist.component';
 import { RfqBatchUploadComponent } from './rfq-batch-upload/rfq-batch-upload.component';
 import { SupplierBatchUploadComponent } from './supplier-batch-upload/supplier-batch-upload.component';
 import { MaterialBatchUploadComponent } from './material-batch-upload/material-batch-upload.component';
@@ -103,7 +103,7 @@ import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.componen
     MaterialTrendComponent,
     MaterialManageComponent,
     EqpComponent,
-    //EqplistComponent
+    EqplistComponent,
     RfqBatchUploadComponent,
     SupplierBatchUploadComponent,
     MaterialBatchUploadComponent,
@@ -154,7 +154,7 @@ import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.componen
         { path: "diss-list", component: DiscussionListComponent, canActivate: [LoginGuard]},
         { path: "diss-add", component: DiscussionAddComponent, canActivate: [LoginGuard]},
         { path: "diss-add/:functionId/:number", component: DiscussionAddComponent, canActivate: [LoginGuard]},
-        //{ path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
+        { path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
         { path: "process-manage", component: ProcessManageComponent, canActivate: [LoginGuard] },
         { path: "surface-manage", component: SurfaceManageComponent, canActivate: [LoginGuard] },
     ]),

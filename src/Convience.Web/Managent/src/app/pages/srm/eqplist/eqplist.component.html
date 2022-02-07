@@ -1,0 +1,109 @@
+<div class="two-column" style="width: 93%;">
+  <div class="right">
+    <!--搜索欄-->
+    <nz-card [nzSize]="'small'" id="searchBar">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+        <nz-form-item>
+          <nz-form-label [nzFor]="'EQP_NUM'">反應單號</nz-form-label>
+          <nz-form-control>
+            <input style="width: 100px;" nz-input placeholder="反應單號" [formControlName]="'EQP_NUM'" [attr.id]="'EQP_NUM'" autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'woNum'">採購單號</nz-form-label>
+          <nz-form-control>
+            <input style="width: 100px;" nz-input placeholder="採購單號" [formControlName]="'woNum'" [attr.id]="'woNum'" autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzFor]="'no'">序號</nz-form-label>
+          <nz-form-control>
+            <input  style="width: 100px;" nz-input placeholder="序號" [formControlName]="'no'" [attr.id]="'no'" autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzFor]="'matnr'">料號</nz-form-label>
+          <nz-form-control>
+            <input  style="width: 100px;" nz-input placeholder="料號" [formControlName]="'matnr'" [attr.id]="'matnr'" autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
+          <nz-form-control>
+            <nz-select [formControlName]="'STATUS'" style="width: 100px;" ngModel="1">
+              <nz-option nzValue="0" nzLabel="全部"></nz-option>
+              <nz-option nzValue="1" nzLabel="初始"></nz-option>
+              <nz-option nzValue="7" nzLabel="啟動"></nz-option>
+              <nz-option nzValue="19" nzLabel="刪除"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <!--<nz-form-item>
+          <nz-form-label [nzFor]="'creationdate'">建立日期</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker style="width: 200px;" nzPlaceHolder="建立日期" name="creationdate" formControlName="creationdate" ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>-->
+        <nz-form-item>
+          <nz-form-control>
+            <button *canOperate="'eqplist'" nz-button nzType="primary">搜索</button>
+            <!--<button nz-button nzType="outline" type="button" class="ml-10"
+                (click)="resetSearchForm()">
+          重置
+        </button>-->
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+
+    <!--詢價單數據-->
+    <nz-card [nzSize]="'small'" id="eqpCard">
+      <button *canOperate="'EQP_CREATE'" nz-button   (click)="GoToEQP()"><i nz-icon nzType="plus"></i>建立反應單</button>
+      <div>
+        <button *ngIf="false" nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
+      </div>
+      <div class="mt-10">
+        <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
+          nzBordered="true" [nzScroll]="{ x: '180px' }">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzWidth="15px">單號</th>
+              <th nzAlign="center" nzWidth="10px">狀態</th>
+              <!--<th nzAlign="center" nzWidth="10px">反應者</th>-->
+              <th nzAlign="center" nzWidth="10px">填表日期</th>
+              <th nzAlign="center" nzWidth="15px">採購單</th>
+              <th nzAlign="center" nzWidth="15px">料號</th>
+              <th nzAlign="center" nzWidth="10px">序號</th>
+              <th nzAlign="center" nzWidth="20px">品名</th>
+              <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of dataTable.data;let i = index">
+              <!--<td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.rfqId)"> {{ data.rfqNum }}</a></td>-->
+              <td nzAlign="center"><a href="javascript:void(0);" (click)="open(data.eqpId)">{{ data.eqpNum }}</a></td>
+              <td nzAlign="center">{{ data.statusDesc }}</td>
+              <td nzAlign="center">{{ data.ecreateDate }}</td>
+              <td nzAlign="center">{{ data.poNum }}</td>
+              <td nzAlign="center">{{ data.matnr }}</td>
+              <td nzAlign="center">{{ data.no }}</td>
+              <td nzAlign="center">{{ data.description }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <!--<div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+          nzShowQuickJumper>
+        </nz-pagination>
+      </div>-->
+      <div class="mt-10">
+        <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
+                       nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
+        </nz-pagination>
+      </div>
+    </nz-card>
+  </div>
+</div>

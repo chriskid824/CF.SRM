@@ -1,277 +1,269 @@
 <!--<h1 style="font-family: 微軟正黑體;">工程/品質問題反應單</h1>-->
 
 <div style="margin-top: 10px;">
-  <button  nz-button class="mr-10"  (click)="save()"><i nz-icon nzType="save"></i>保存</button>
-  <button  nz-button class="mr-10"  (click)="start()"><i nz-icon nzType="send"></i>啟動</button>
+  <button nz-button class="mr-10" (click)="save()" disabled="{{canModify==false}}"><i nz-icon
+      nzType="save"></i>保存</button>
+  <button nz-button class="mr-10" (click)="start()" disabled="{{canModify==false}}"><i nz-icon
+      nzType="send"></i>啟動</button>
+  <button nz-button class="mr-10" (click)="delete()" disabled="{{canDelete==false}}"><i nz-icon
+      nzType="delete"></i>刪除</button>
 </div>
 <div style="display: -webkit-box;margin-top:20px">
   <div>
     <nz-card>
-      <form nz-form [nzLayout]="'inline'" [formGroup]="Quality_Problems">
-        <table  class="table1">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="eqpinfo1">
+        <table class="table1">
           <tr>
-            <td>
-              <nz-form-label [nzFor]="'userName'">編號</nz-form-label>
+            <!---->
+            <td style="display:none">
+              <nz-form-label [nzFor]="'eqpstatus'">狀態</nz-form-label>
             </td>
-            <td>
+            <td style="display:none">
               <nz-form-control>
-                <input [attr.id]="'eqp_no'" nz-input autocomplete="off" disabled/>
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'ddluser'">反應者</nz-form-label>
-              
-            </td>
-            <td> <span >{{name}}
-            </span>
-            <!--<input [attr.id]="'txtuser'" nz-input placeholder="" autocomplete="off" disabled />-->
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'txtdate'">填表日期</nz-form-label>
-            </td>
-            <td>
-              <nz-date-picker style="width: 160px;" nzPlaceHolder="填表日期" name="txtdate">
-              </nz-date-picker>
-            </td>
-           
-            <td>
-              <nz-form-label [nzFor]="'wono'">採購單</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'wono'" nz-input placeholder="採購單" autocomplete="off" />
-              </nz-form-control>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <nz-form-label [nzFor]="'material_no'">料號</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'material_no'" nz-input placeholder="" autocomplete="off" />
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'no'">序號</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'no'" nz-input placeholder="" autocomplete="off" />
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'material_name'">品名</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'material_name'" formControlName="material_name" nz-input placeholder="品名"
-                  autocomplete="off" />
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'version'">版次</nz-form-label>
-            </td>
-            <td> <input [attr.id]="'version'" nz-input placeholder="版次" autocomplete="off" />
-            </td>
-          </tr>
-          <tr>
-
-            <td>
-              <nz-form-label [nzFor]="'orderqty'">訂單數量</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'orderqty'" nz-input placeholder="訂單數量" autocomplete="off" />
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'qty_defect'">異常數量</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input [attr.id]="'qty_defect'" nz-input placeholder="異常數量" autocomplete="off" />
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'delivery_date'">原定交期</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <nz-date-picker style="width: 160px;" nzPlaceHolder="原定交期" name="delivery_date"
-                  formControlName="delivery_date">
-                </nz-date-picker>
+                <input nz-input placeholder="狀態" formControlName="eqpstatus" readonly="readonly" autocomplete="off" />
               </nz-form-control>
             </td>
 
-          </tr>
-          <tr>
-
+            <!---->
             <td>
-              <nz-form-label [nzFor]="'nonconformance_description'">異常狀況及<br>過程說明</nz-form-label>
+              <nz-form-label [nzFor]="'eqpNum'">編號</nz-form-label>
             </td>
-            <td colspan="3">
-              <nz-form-control> <textarea [attr.id]="'nonconformance_description'"
-                  formControlName="nonconformance_description" nz-input placeholder="異常狀況及過程說明" rows="2"></textarea>
+            <td>
+              <nz-form-control>
+                <input value="{{eqpNum}}" [attr.id]="'eqpNum'" nz-input placeholder="編號" autocomplete="off" disabled />
+
+                <!--<input nz-input placeholder="編號" formControlName="eqpNum" readonly="readonly" autocomplete="off" disabled/>-->
               </nz-form-control>
             </td>
             <td>
-              <nz-form-label [nzFor]="'preliminary_analyses_of_cause'">初步肇因分析</nz-form-label>
+              <nz-form-label [nzFor]="'createBy'">反應者</nz-form-label>
+
             </td>
-            <td colspan="3">
-              <nz-form-control> <textarea [attr.id]="'preliminary_analyses_of_cause'"
-                  formControlName="preliminary_analyses_of_cause" nz-input placeholder="初步肇因分析" rows="2"></textarea>
+            <td>
+              <input value="{{name}}" [attr.id]="'createBy'" nz-input placeholder="反應者" autocomplete="off" disabled />
+            </td>
+            <td>
+              <nz-form-label [nzFor]="'createDate'">填表日期</nz-form-label>
+            </td>
+            <td>
+              <!--<nz-date-picker style="width: 160px;" nzPlaceHolder="填表日期" name="createDate" formControlName="createDate" disabled="{{canModify==false}}" >
+              </nz-date-picker>-->
+              <nz-form-control>
+                <input value="{{createDate}}" [attr.id]="'createDate'" nz-input placeholder="填表日期" autocomplete="off"
+                  disabled />
               </nz-form-control>
             </td>
             <td></td>
-          </tr>
-          <!--<tr>
-            <td>
-              <nz-form-label [nzFor]="'supervisor_date'">反應人員主管/日期</nz-form-label>
-            </td>
-            <td> <input [attr.id]="'supervisor_date'" formControlName="supervisor_date" nz-input placeholder="反應人員主管/日期"
-                autocomplete="off" /></td>
-            <td>
-              <nz-form-label [nzFor]="'owner_date'">反應人員/日期</nz-form-label>
-            </td>
-            <td>
-              <input [attr.id]="'owner_date'" formControlName="owner_date" nz-input placeholder="反應人員/日期"
-                autocomplete="off" />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <nz-form-label [nzFor]="'pc'">知會單位 生管</nz-form-label>
-            </td>
+            <td></td>
 
-            <td>
-              <input [attr.id]="'pc'" formControlName="owner_date" nz-input placeholder="知會單位 生管" autocomplete="off" />
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'cfpdqe'">千附收文單位 採購/品工</nz-form-label>
-            </td>
-            <td>
-              <input [attr.id]="'cfpdqe'" formControlName="cfpdqe" nz-input placeholder="千附收文單位 採購(CF PD)／品工(QE)"
-                autocomplete="off" />
-            </td>
-          </tr>-->
+          </tr>
           <tr>
-            <td colspan="2"><input type="file" nv-file-select uploader="uploader" /></td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'woNum'">採購單</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control [nzErrorTip]="woNumErrorTpl">
+                <input value="{{woNum}}" [attr.id]="'woNum'" nz-input placeholder="採購單" formControlName="woNum"
+                  disabled="{{canModify==false}}" />
+              </nz-form-control>
+              <ng-template #woNumErrorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">欄位必填</ng-container>
+                <!--<ng-container *ngIf="control.hasError('pattern')">輸入的格式不正確</ng-container>-->
+              </ng-template>
+            </td>
+            <td style="display:none">
+              <nz-form-label [nzFor]="'poId'">poId</nz-form-label>
+            </td>
+            <td style="display:none">
+              <nz-form-control>
+                <input value="{{poId}}" [attr.id]="'poId'" nz-input placeholder="poId" autocomplete="off"
+                  formControlName="poId" #poId disabled="{{canModify==false}}" />
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'matnr'">料號</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{matnr}}" [attr.id]="'matnr'" nz-input placeholder="料號" formControlName="matnr"
+                  disabled="{{canModify==false}}" />
+
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'no'">序號</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{no}}" [attr.id]="'no'" nz-input placeholder="" placeholder="序號" formControlName="no"
+                  disabled="{{canModify==false}}" />
+              </nz-form-control>
+            </td>
+            <td> <button nz-button class="mr-10" (click)="searchPo()" disabled="{{canModify==false}}"><i nz-icon
+                  nzType="search"></i>查詢</button></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="display:none">
+              <nz-form-label [nzFor]="'matnrId'">matnrId</nz-form-label>
+            </td>
+            <td style="display:none">
+              <nz-form-control>
+                <input value="{{matnrId}}" [attr.id]="'matnrId'" nz-input placeholder="" autocomplete="off" disabled
+                  formControlName="matnrId" disabled="{{canModify==false}}" />/>
+              </nz-form-control>
+            </td>
+            <td style="display:none">
+              <nz-form-label [nzFor]="'ekgry'">ekgry</nz-form-label>
+            </td>
+            <td style="display:none">
+              <nz-form-control>
+                <input value="{{ekgry}}" [attr.id]="'ekgry'" nz-input placeholder="" autocomplete="off" disabled
+                  formControlName="ekgry" disabled="{{canModify==false}}" />/>
+              </nz-form-control>
+            </td>
+            <td style="display:none">
+              <nz-form-label [nzFor]="'ekgryid'">ekgry</nz-form-label>
+            </td>
+            <td style="display:none">
+              <nz-form-control>
+                <input value="{{ekgryid}}" [attr.id]="'ekgryid'" nz-input placeholder="" autocomplete="off" disabled
+                  formControlName="ekgryid" disabled="{{canModify==false}}" />/>
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'description'">品名</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{description}}" [attr.id]="'description'" nz-input placeholder="品名" autocomplete="off"
+                  disabled />
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label [nzFor]="'deliveryDate'">原定交期</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{deliveryDate}}" [attr.id]="'deliveryDate'" nz-input placeholder="原定交期"
+                  autocomplete="off" disabled />
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'poQty'">訂單數量</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{poQty}}" [attr.id]="'poQty'" nz-input placeholder="訂單數量" autocomplete="off" disabled />
+              </nz-form-control>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'ngQty'">異常數量</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+
+                <input [attr.id]="'ngQty'" nz-input placeholder="異常數量" formControlName="ngQty"
+                  disabled="{{canModify==false}}" />
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'version'">版次</nz-form-label>
+            </td>
+            <td> <input [attr.id]="'version'" nz-input placeholder="版次" autocomplete="off" formControlName="version"
+                disabled="{{canModify==false}}" />
+            </td>
+            <td colspan="2">
+              <!--<input type="file" nv-file-select uploader="uploader" />-->
+              <button *canOperate="'EQP_CREATE'" nz-button style="margin-left: 20px"  (click)="openFile()"><i nz-icon nzType="plus"></i>上傳檔案</button>
+              <app-file-modal #filemodal></app-file-modal>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'ngDesc'">異常狀況及<br>過程說明</nz-form-label>
+            </td>
+            <td colspan="3">
+              <nz-form-control> <textarea [attr.id]="'ngDesc'" formControlName="ngDesc" nz-input placeholder="異常狀況及過程說明"
+                  rows="2" ng-disabled="all"></textarea>
+              </nz-form-control>
+            </td>
+            <td>
+              <nz-form-label nzRequired [nzFor]="'causeAnalyses'">初步肇因分析</nz-form-label>
+            </td>
+            <td colspan="3">
+              <nz-form-control> <textarea [attr.id]="'causeAnalyses'" formControlName="causeAnalyses" nz-input
+                  placeholder="初步肇因分析" rows="2" disabled="{{canModify==false}}"></textarea>
+              </nz-form-control>
+            </td>
+          </tr>
+          <tr>
           </tr>
 
         </table>
         <div></div>
 
       </form>
+     
     </nz-card>
     <nz-card>
-      <form nz-form [nzLayout]="'inline'">
+      <form nz-form [nzLayout]="'inline'" [formGroup]="eqpinfo2">
         <table class="table2">
           <tr>
             <td>
               <nz-form-label [nzFor]="'disposition'">工程問題</nz-form-label>
             </td>
             <td>
-              <!--<mat-checkbox class="example-margin" id="disposition_Y">是</mat-checkbox>
-              <mat-checkbox class="example-margin" id="disposition_N">否</mat-checkbox>-->
-              <nz-select [formControlName]="'disposition'" style="width: 160px;" ngModel="1">
-                <nz-option nzValue="0" nzLabel="是"></nz-option>
-                <nz-option nzValue="1" nzLabel="否"></nz-option>
-              </nz-select>
+              <input value="{{disposition}}" disabled formControlName="disposition" nz-input autocomplete="off"
+                disabled />
             </td>
             <td>
-              <nz-form-label [nzFor]="'ddlresdept'">研判肇因單位</nz-form-label>
+              <nz-form-label [nzFor]="'causeDept'">研判肇因單位</nz-form-label>
             </td>
-            <!--<td>
-              <nz-select [formControlName]="'ddlresdept'" style="width: 160px;" ngModel="1">
-                <nz-option nzValue="0" nzLabel="廠內"></nz-option>
-                <nz-option nzValue="1" nzLabel="廠外"></nz-option>
-              </nz-select>
-            </td>-->
-            <td colspan="2"><input [attr.id]="'unit'" nz-input placeholder="單位" autocomplete="off" /></td>
-            <td>
-              <nz-form-label [nzFor]="'ddldisposition'">品質研判措施</nz-form-label>
+            <td colspan="2"><input value="{{causeDept}}" [attr.id]="'causeDept'" nz-input autocomplete="off" disabled />
             </td>
             <td>
-              <nz-select [formControlName]="'ddldisposition'" ngModel="1" style="width:160px">
-                <nz-option nzValue="0" nzLabel="報廢"></nz-option>
-                <nz-option nzValue="1" nzLabel="特採"></nz-option>
-                <nz-option nzValue="2" nzLabel="千附整修"></nz-option>
-                <nz-option nzValue="3" nzLabel="廠商整修"></nz-option>
-                <nz-option nzValue="4" nzLabel="反應客戶研判"></nz-option>
-                <nz-option nzValue="5" nzLabel="其他"></nz-option>
-              </nz-select>
+              <nz-form-label [nzFor]="'qcDispoaition'">品質研判措施</nz-form-label>
             </td>
             <td>
-              <nz-form-label [nzFor]="'qdrno'">QDR No</nz-form-label>
+              <input value="{{qcDispoaition}}" disabled formControlName="qcDispoaition" nz-input autocomplete="off" />
             </td>
-            <td> <input [attr.id]="'qdrno'" formControlName="qdrno" nz-input placeholder="QDR No" autocomplete="off" />
+            <td>
+              <nz-form-label [nzFor]="'qdrNum'">QDR No</nz-form-label>
+            </td>
+            <td> <input value="{{qdrNum}}" disabled [attr.id]="'qdrNum'" formControlName="qdrNum" nz-input
+                autocomplete="off" />
             </td>
           </tr>
           <tr>
             <td>
-              <nz-form-label [nzFor]="'note'">補充說明</nz-form-label>
+              <nz-form-label [nzFor]="'qcNote'">補充說明</nz-form-label>
             </td>
             <td colspan="9">
-              <textarea [attr.id]="'note'" nz-input placeholder="補充說明" rows="2"></textarea>
+              <textarea value="{{qcNote}}" disabled [attr.id]="'qcNote'" nz-input rows="2"></textarea>
             </td>
           </tr>
-          <!--<tr>
-            <td>
-              <nz-form-label [nzFor]="'majorexception'">重大異常</nz-form-label>
-            </td>
-            <td>
-              <mat-checkbox class="example-margin" id="chkmajorexception_Y">是</mat-checkbox>
-              <mat-checkbox class="example-margin" id="chkmajorexception_N">否</mat-checkbox>
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'goQDR'">開立QDR </nz-form-label>
-            </td>
-            <td>
-              <mat-checkbox class="example-margin" id="chkgoQDR_Y">是</mat-checkbox>
-              <mat-checkbox class="example-margin" id="chkgoQDR_N">否</mat-checkbox>
-            </td>
-          </tr>-->
           <tr>
-
-
           </tr>
           <tr>
             <td>
-              <nz-form-label [nzFor]="'reworkcosts'">預估整修成本</nz-form-label>
+              <nz-form-label [nzFor]="'reworkCosts'">預估整修成本</nz-form-label>
             </td>
-            <td colspan="4"> <textarea [attr.id]="'reworkcosts'" nz-input placeholder="預估整修成本" rows="2"></textarea></td>
+            <td colspan="4"> <textarea value="{{reworkCosts}}" disabled [attr.id]="'reworkCosts'" nz-input
+                rows="2"></textarea></td>
             <td>
-              <nz-form-label [nzFor]="'solve'">工程處置措施</nz-form-label>
+              <nz-form-label [nzFor]="'peAction'">工程處置措施</nz-form-label>
             </td>
-            <td  colspan="4"> <textarea [attr.id]="'solve'" nz-input placeholder="工程處置措施" rows="2"></textarea>
+            <td colspan="4"> <textarea value="{{peAction}}" disabled [attr.id]="'peAction'" nz-input
+                rows="2"></textarea>
             </td>
-            <!--<td>
-              <nz-form-label [nzFor]="'signpe'">產工</nz-form-label>
-            </td>
-            <td><input [attr.id]="'signpe'" formControlName="signpe" nz-input placeholder="產工" autocomplete="off" />
-            </td>
-            <td>
-              <nz-form-label [nzFor]="'signpeboss'">PE主管/日期</nz-form-label>
-            </td>
-            <td><input [attr.id]="'signpeboss'" formControlName="signpeboss" nz-input placeholder="PE主管/日期"
-                autocomplete="off" /></td>-->
           </tr>
-          <!--<tr>
-            <td>
-              <nz-form-label [nzFor]="'signqesqe'">QE/SQE</nz-form-label>
-            </td>
-            <td><input [attr.id]="'signqesqe'" formControlName="signqesqe" nz-input placeholder="QE/SQE"
-                autocomplete="off" /></td>
-            <td>
-              <nz-form-label [nzFor]="'signqesqeboss'">QE/SQE主管/日期</nz-form-label>
-            </td>
-            <td><input [attr.id]="'signqesqeboss'" formControlName="signqesqeboss" nz-input placeholder="QE/SQE"
-                autocomplete="off" /></td>
-          </tr>-->
         </table>
       </form>
     </nz-card>
-
   </div>
 </div>

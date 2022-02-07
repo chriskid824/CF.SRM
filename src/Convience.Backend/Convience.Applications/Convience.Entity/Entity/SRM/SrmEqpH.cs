@@ -38,6 +38,10 @@ namespace Convience.Entity.Entity.SRM
         public string no { get; set; }
         public int? Status { get; set; }
         public string FileName { get; set; }
+        public int? Caseid { get; set; }
+        public string Guid { get; set; }
+        
+
     }
     public partial class ViewSrmEqpH : SrmEqpH
     {
@@ -51,6 +55,7 @@ namespace Convience.Entity.Entity.SRM
         public string StatusDesc { get; set; }
         public string txtSN { get; set; }
         public string CreateByName { get; set; }
+        public string EcreateDate { get; set; }
 
     }
  }

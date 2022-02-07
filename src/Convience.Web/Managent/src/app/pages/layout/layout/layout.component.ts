@@ -114,10 +114,10 @@ export class LayoutComponent implements OnInit {
     }
     ,
     {
-      canOperate: 'eqp_m', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '工程/品質問題',
+      canOperate: 'eqp_m', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '工程/品質問題反應',
       children: [
-        { canOperate: 'eqp', routerLink: '/srm/eqp', iconType: 'fund-view', firstBreadcrumb: '工程/品質問題反應單', lastBreadcrumb: '工程/品質問題反應單', name: '工程/品質問題反應單', },
-        { canOperate: 'eqplist', routerLink: '/srm/eqplist', iconType: 'fund-view', firstBreadcrumb: '工程/品質問題反應單查詢', lastBreadcrumb: '工程/品質問題反應單查詢', name: '工程/品質問題反應單查詢', },
+        { canOperate: 'eqp', routerLink: '/srm/eqp', iconType: 'fund-view', firstBreadcrumb: '新增反應單', lastBreadcrumb: '新增反應單', name: '新增反應單', },
+        { canOperate: 'eqplist', routerLink: '/srm/eqplist', iconType: 'fund-view', firstBreadcrumb: '反應單查詢', lastBreadcrumb: '反應單查詢', name: '反應單查詢', },
       ]
     }
     ,
