@@ -408,9 +408,9 @@ export class EqpComponent implements OnInit {
       ekgryid: null,
     }
 
-    alert('1  this.eqpinfo1.value["no"] = ' + this.eqpinfo1.value["no"])
-    alert('2  this.eqpinfo1.get("no")?.value =' + this.eqpinfo1.get("no")?.value)
-    alert('3  this.no  =' + this.no)
+    //alert('1  this.eqpinfo1.value["no"] = ' + this.eqpinfo1.value["no"])
+    //alert('2  this.eqpinfo1.get("no")?.value =' + this.eqpinfo1.get("no")?.value)
+    //alert('3  this.no  =' + this.no)
     //var eqp1 = this.geteqp();
 
     var eqp1 = this.geteqp();
@@ -460,9 +460,9 @@ export class EqpComponent implements OnInit {
 
 
 
-    alert('qwoNum = ' + qwoNum);
-    alert('qmatnr = ' + qmatnr);
-    alert('qno = ' + qno);
+    //alert('qwoNum = ' + qwoNum);
+    //alert('qmatnr = ' + qmatnr);
+    //alert('qno = ' + qno);
 
     if ((qwoNum != '') && (qwoNum != null)) {
       if (((qmatnr != null) && (qmatnr != '')) || ((qno != null) && (qno != ''))) {
