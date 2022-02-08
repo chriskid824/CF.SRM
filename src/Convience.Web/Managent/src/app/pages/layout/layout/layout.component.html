@@ -51,7 +51,7 @@
         <!-- <app-navbar></app-navbar> -->
     </nz-header>
     <nz-layout>
-        <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" *ngIf="isSideMenu">
+        <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" *ngIf="isSideMenu" nzBreakpoint="lg" [nzCollapsedWidth]="0">
             <ul nz-menu nzMode="inline" nzTheme="light" class="sider-menu">
                 <ng-container *ngFor="let node of menuTree">
                     <ng-container *canOperate="node.canOperate">
@@ -77,7 +77,7 @@
         <nz-layout class="inner-layout">
             <nz-card [nzSize]="'small'">
                 <div style="display:flex;display: -webkit-flex;align-items:center;">
-                    <ng-container *ngIf="isSideMenu">
+                    <!-- <ng-container *ngIf="isSideMenu">
                         <div style="float: left;">
                             <button nz-button nzType="link" nzSize="small" (click)="isCollapsed = !isCollapsed">
                                 <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
@@ -91,7 +91,7 @@
                             <i class="trigger" nz-icon
                                 [nzType]="isSideMenu ? 'insert-row-left' : 'insert-row-above'"></i>
                         </button>
-                    </div>
+                    </div> -->
                     <div style="float: left;padding:0 10px;color: lightgray;">|</div>
 
                     <nz-breadcrumb style="margin:0;float: left;top: 50%;">
