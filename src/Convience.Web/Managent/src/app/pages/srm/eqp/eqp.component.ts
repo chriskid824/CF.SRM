@@ -325,9 +325,12 @@ export class EqpComponent implements OnInit {
     this._srmEqpService.SAVE(eqp).subscribe(result => {
       console.log(result);
       alert('保存成功');
-      window.close();
+      //window.close();
+      //window.open('../srm/eqplist', "_self");
+      //location.reload();
+      //window.history.go(-1); //20211203
       window.open('../srm/eqplist', "_self");
-      location.reload();
+      //location.reload();
       //this._layout.navigateTo('eqplist');
       //this._router.navigate(['srm/eqplist']);
       //location.reload();
@@ -372,7 +375,7 @@ export class EqpComponent implements OnInit {
       //this._layout.navigateTo('eqplist');
       //this._router.navigate(['srm/eqplist']);
       window.open('../srm/eqplist', "_self");
-      location.reload();
+      //location.reload();
     });
   }
   //#endregion
@@ -511,7 +514,7 @@ export class EqpComponent implements OnInit {
             poNo: this.poNo,
             ekgry: this.ekgry,
             ekgryid: this.ekgryid,
-      
+
           });
 
 
