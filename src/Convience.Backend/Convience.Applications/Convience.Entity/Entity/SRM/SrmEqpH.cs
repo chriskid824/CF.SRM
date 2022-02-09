@@ -56,6 +56,7 @@ namespace Convience.Entity.Entity.SRM
         public string txtSN { get; set; }
         public string CreateByName { get; set; }
         public string EcreateDate { get; set; }
+        public string vendor { get; set; }
 
     }
  }
