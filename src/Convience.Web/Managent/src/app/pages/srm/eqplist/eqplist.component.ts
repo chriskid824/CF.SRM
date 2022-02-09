@@ -48,6 +48,7 @@ export class EqplistComponent implements OnInit {
       matnr: [null],
       STATUS: ["1"],
     });
+    this.refresh();
     if (sessionStorage.getItem("eqplist")) {
       var query = JSON.parse(sessionStorage.getItem("eqplist"));
       this._eqpNum = query.eqpNum;

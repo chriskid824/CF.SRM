@@ -156,24 +156,24 @@ namespace Convience.Service.SRM
             {
                 //20220126為測試先拿掉
                 //檢查重複的內容.
-                //bool isexist = CheckIfExists(eqpH);
-                //if (!isexist)
-                //{
+                bool isexist = CheckIfExists(eqpH);
+                if (!isexist)
+                {
                     eqpH.LastUpdateDate = now;
                     eqpH.CreateBy = eqpH.LastUpdateBy;
-                    //eqpH.Status = 1;
+                    eqpH.Status = 1;
                     EqpNum = GettxtSN();
                     eqpH.EqpNum = EqpNum;
                     obj["txtSN"] = EqpNum;
                     _context.SrmEqpHs.Add(eqpH);
                     _context.SaveChanges();
-                //}
-                //else 
-                //{
-                //    string matnr = GetMatnr(eqpH);
-                //    obj["msg"] = $"採購單{eqpH.WoNum}，料號{matnr}重複申請";
-                //    return obj;
-                //}
+                }
+                else
+                {
+                    string matnr = GetMatnr(eqpH);
+                    obj["msg"] = $"採購單{eqpH.WoNum}，料號{matnr}重複申請";
+                    return obj;
+                }
             }
             else
             {
