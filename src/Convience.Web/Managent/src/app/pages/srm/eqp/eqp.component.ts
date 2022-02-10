@@ -358,7 +358,7 @@ export class EqpComponent implements OnInit {
     if ((eqp.h.woNum == null) || (eqp.h.woNum = "")) { alert("採購單未輸入"); return; }
 
     //if (this.eqpinfo1.get("woNum").value == null) { alert("採購單未輸入"); return; }
-    if ((eqp.h.matnr == null) || (eqp.h.matnr == "")) { alert("料號未輸入"); return; }
+    //if ((eqp.h.matnr == null) || (eqp.h.matnr == "")) { alert("料號未輸入"); return; }
     if ((eqp.h.no == null) || (eqp.h.no == "")) { alert("序號未輸入"); return; }
     if ((eqp.h.ngQty == null) || (eqp.h.ngQty == "")) { alert("異常數量未輸入"); return; }
     if ((eqp.h.version == null) || (eqp.h.version == "")) { alert("版次未輸入"); return; }

@@ -79,11 +79,18 @@ namespace Convience.Service.SRM
         public IEnumerable<ViewEqpList> GetPoData(QueryEqp query)
         {
             int matnrid = 0;
-            if (query.matnr != null)  
+            
+            if ((query.matnr != null) && (query.matnr != ""))
             {
                 var m = _context.SrmMatnrs.Where(p => p.SrmMatnr1 == query.matnr || p.SapMatnr == query.matnr).ToList();
                 matnrid = m.Select(r => r.MatnrId).First();
             }
+            else 
+            {
+                //若查詢條件為序號
+
+            }
+
             if (matnrid == 0)
             {
                 if (query.matnrid != 0) 
@@ -96,6 +103,8 @@ namespace Convience.Service.SRM
                            join pol in _context.SrmPoLs on poh.PoId equals pol.PoId
                            join ek in _context.SrmEkgries on poh.Buyer equals ek.Ekgry
                            join m in _context.SrmMatnrs on pol.MatnrId equals m.MatnrId
+                           into mg
+                           from mm in mg.DefaultIfEmpty()
                            join v in _context.SrmVendors on poh.VendorId equals v.VendorId
                            select new ViewEqpList
                            {
@@ -106,8 +115,8 @@ namespace Convience.Service.SRM
                                description = pol.Description,
                                qty = pol.Qty,
                                deliverydate = pol.DeliveryDate,
-                               matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr)) ? m.SapMatnr : m.SrmMatnr1,
-                               matnr_id = m.MatnrId,//pol.MatnrId,
+                               matnr = (!string.IsNullOrWhiteSpace(mm.SapMatnr)) ? mm.SapMatnr : mm.SrmMatnr1,
+                               matnr_id = (mm.MatnrId.ToString() != null) ? mm.MatnrId : 0,//pol.MatnrId,
                                ekgry = ek.Ekgry,
                                ekgry_desc = ek.EkgryDesc,
                                ekgry_id = ek.Empid,
@@ -117,8 +126,10 @@ namespace Convience.Service.SRM
                               .AndIfHaveValue(query.woNum, p => p.po_num == query.woNum)
                               .AndIfHaveValue(query.no, p => p.polid.ToString() == query.no)
                               //.AndIfHaveValue(query.matnr, p => p.matnr == query.matnr);
-                              .AndIfCondition(matnrid != 0, p => p.matnr_id == matnrid) //20220111改用matnrid 取
+                              .AndIfCondition((query.matnr != null) && (query.matnr != ""), p => p.matnr_id == matnrid) //20220111改用matnrid 取
+
                               .AndIfCondition((!string.IsNullOrWhiteSpace(query.vendor)), p => p.vendor == query.vendor);
+                              //.Where(p => p.matnr_id == matnrid);
 
             return eqplist;
         }
@@ -318,7 +329,7 @@ namespace Convience.Service.SRM
                        //.AndIfCondition(vendorid != 0 , p => p.vendorid == vendorid)
                        .AndIfCondition(vendorid != 0, p => p.vendor == e.vendor) //20220209 為取得博格拋轉肇因單位為該供應商及該供應商填的單
                        .AndIfCondition(!string.IsNullOrWhiteSpace(e.txtSN), p => p.EqpNum == e.txtSN) //20220126取vendorid
-                       .AndIfCondition(!string.IsNullOrWhiteSpace(e.woNum), p => p.WoNum == e.woNum)
+                       .AndIfCondition(!string.IsNullOrWhiteSpace(e.woNum), p => p.poNum == e.woNum)
                        .AndIfCondition(!string.IsNullOrWhiteSpace(e.matnr), p => p.matnr == e.matnr)
                        .AndIfCondition(!string.IsNullOrWhiteSpace(e.no), p => p.no == e.no)
                        .AndIfCondition(e.status != 0, p => p.Status == e.status)//????
@@ -384,21 +395,18 @@ namespace Convience.Service.SRM
         public ViewSrmEqpH GetDataByEqpId(int EqpId)
         {
             var eqp = (from eq in _context.SrmEqpHs
-                       from p in _context.SrmPoHs
-                       from l in _context.SrmPoLs
-                       from m in _context.SrmMatnrs
-                       from ek in _context.SrmEkgries
-                       from status in _context.SrmStatuses
-                       from u in _context.AspNetUsers 
-                       where eq.PoId == p.PoId
-                       && p.PoId == l.PoId
-                       && eq.no == l.PoLId.ToString()
-                       && l.MatnrId == m.MatnrId
-                       && p.Buyer == ek.Ekgry
-                       && eq.Status == status.Status
-                       //&& eq.CreateBy == u.UserName
-                       && eq.LastUpdateBy == u.UserName
-                       && eq.EqpId.Equals(EqpId)
+                       join p in _context.SrmPoHs on eq.PoId equals p.PoId
+                       into pg from phg in pg.DefaultIfEmpty()
+                       join l in _context.SrmPoLs on new { no = eq.no, PoId = phg.PoId } equals new { no = l.PoLId.ToString(), PoId = l.PoId }
+                       into pl
+                       from plg in pl.DefaultIfEmpty()
+                       join m in _context.SrmMatnrs on  plg.MatnrId equals m.MatnrId into mg
+                       from mgg in mg.DefaultIfEmpty()
+                       join ek in _context.SrmEkgries on phg.Buyer equals ek.Ekgry
+                       join status in _context.SrmStatuses on eq.Status equals status.Status
+                       join u in _context.AspNetUsers on eq.LastUpdateBy equals u.UserName
+                       where eq.EqpId.Equals(EqpId)
+
                        select new ViewSrmEqpH
                        {
                            EqpNum = eq.EqpNum,
@@ -406,20 +414,20 @@ namespace Convience.Service.SRM
                            CreateDate = eq.CreateDate,
                            WoNum = eq.WoNum,
                            PoId = eq.PoId,
-                           matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr))? m.SapMatnr:m.SrmMatnr1,//要判斷
+                           matnr = (!string.IsNullOrWhiteSpace(mgg.SapMatnr)) ? mgg.SapMatnr : mgg.SrmMatnr1,//要判斷
                            no = eq.no,
-                           MatnrId = l.MatnrId,
-                           ekgry = p.Buyer,
+                           MatnrId = (plg.MatnrId.ToString() != null) ? plg.MatnrId:0,
+                           ekgry = phg.Buyer,
                            ekgryid = ek.Empid,
-                           Description = l.Description,
+                           Description = plg.Description,
                            DeliveryDate = eq.DeliveryDate,
                            PoQty = eq.PoQty,
                            NgQty = eq.NgQty,
                            Version = eq.Version,
                            NgDesc = eq.NgDesc,
                            CauseAnalyses = eq.CauseAnalyses,
-                           Dispoaition = (eq.Dispoaition == "Y")?"是": "否",
-                           CauseDept =eq.CauseDept,
+                           Dispoaition = (eq.Dispoaition == "Y") ? "是" : "否",
+                           CauseDept = eq.CauseDept,
                            QcDispoaition = eq.QcDispoaition,
                            QdrNum = eq.QdrNum,
                            QcNote = eq.QcNote,
@@ -428,6 +436,51 @@ namespace Convience.Service.SRM
                            Status = status.Status,
                            CreateByName = u.Name
                        }).First();
+            //var eqp = (from eq in _context.SrmEqpHs 
+            //           from p in _context.SrmPoHs
+            //           from l in _context.SrmPoLs
+            //           from m in _context.SrmMatnrs
+            //           from ek in _context.SrmEkgries
+            //           from status in _context.SrmStatuses
+            //           from u in _context.AspNetUsers 
+            //           where eq.PoId == p.PoId
+            //           && p.PoId == l.PoId
+            //           && eq.no == l.PoLId.ToString()
+            //           && l.MatnrId == m.MatnrId
+            //           && p.Buyer == ek.Ekgry
+            //           && eq.Status == status.Status
+            //           //&& eq.CreateBy == u.UserName
+            //           && eq.LastUpdateBy == u.UserName
+            //           && eq.EqpId.Equals(EqpId)
+            //           select new ViewSrmEqpH
+            //           {
+            //               EqpNum = eq.EqpNum,
+            //               CreateBy = eq.CreateBy,
+            //               CreateDate = eq.CreateDate,
+            //               WoNum = eq.WoNum,
+            //               PoId = eq.PoId,
+            //               matnr = (!string.IsNullOrWhiteSpace(m.SapMatnr))? m.SapMatnr:m.SrmMatnr1,//要判斷
+            //               no = eq.no,
+            //               MatnrId = l.MatnrId,
+            //               ekgry = p.Buyer,
+            //               ekgryid = ek.Empid,
+            //               Description = l.Description,
+            //               DeliveryDate = eq.DeliveryDate,
+            //               PoQty = eq.PoQty,
+            //               NgQty = eq.NgQty,
+            //               Version = eq.Version,
+            //               NgDesc = eq.NgDesc,
+            //               CauseAnalyses = eq.CauseAnalyses,
+            //               Dispoaition = (eq.Dispoaition == "Y")?"是": "否",
+            //               CauseDept =eq.CauseDept,
+            //               QcDispoaition = eq.QcDispoaition,
+            //               QdrNum = eq.QdrNum,
+            //               QcNote = eq.QcNote,
+            //               ReworkCosts = eq.ReworkCosts,
+            //               PeAction = eq.PeAction,
+            //               Status = status.Status,
+            //               CreateByName = u.Name
+            //           }).First();
             return eqp;
         }
         #endregion
