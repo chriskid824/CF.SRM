@@ -322,6 +322,15 @@ export class EqpComponent implements OnInit {
       alert("異常數量格式錯誤，請輸入數值格式");
       return;
     }
+    //Number('1234')
+    //alert(parseInt(eqp.h.ngQty))
+    //alert(parseInt(this.poQty))
+    if(parseInt(eqp.h.ngQty) > parseInt(this.poQty))
+    {
+      alert("異常數量不得大於訂單數量");
+      return;
+    }
+
     this._srmEqpService.SAVE(eqp).subscribe(result => {
       console.log(result);
       alert('保存成功');
@@ -358,10 +367,10 @@ export class EqpComponent implements OnInit {
     if ((eqp.h.woNum == null) || (eqp.h.woNum = "")) { alert("採購單未輸入"); return; }
 
     //if (this.eqpinfo1.get("woNum").value == null) { alert("採購單未輸入"); return; }
-    if ((eqp.h.matnr == null) || (eqp.h.matnr == "")) { alert("料號未輸入"); return; }
+    //if ((eqp.h.matnr == null) || (eqp.h.matnr == "")) { alert("料號未輸入"); return; }
     if ((eqp.h.no == null) || (eqp.h.no == "")) { alert("序號未輸入"); return; }
     if ((eqp.h.ngQty == null) || (eqp.h.ngQty == "")) { alert("異常數量未輸入"); return; }
-    if ((eqp.h.version == null) || (eqp.h.version == "")) { alert("版次未輸入"); return; }
+    //if ((eqp.h.version == null) || (eqp.h.version == "")) { alert("版次未輸入"); return; }
     //alert(eqp.h.version)
     if ((eqp.h.ngDesc == null) || (eqp.h.ngDesc == "")) { alert("異常狀況及過程說明未輸入"); return; }
     if ((eqp.h.causeAnalyses == null) || (eqp.h.causeAnalyses == "")) { alert("初步肇因分析未輸入"); return; }
@@ -503,6 +512,8 @@ export class EqpComponent implements OnInit {
           this.ekgry = result[0]["ekgry_desc"];
           this.ekgryid = result[0]["ekgry_id"];
 
+          this.ngQty = result[0]["qty"]; //20220210
+
           this.eqpinfo1.patchValue({
             poId: this.poId,
             matnr: this.matnr,
@@ -514,7 +525,7 @@ export class EqpComponent implements OnInit {
             poNo: this.poNo,
             ekgry: this.ekgry,
             ekgryid: this.ekgryid,
-
+            ngQty: this.ngQty//20220210
           });
 
 
