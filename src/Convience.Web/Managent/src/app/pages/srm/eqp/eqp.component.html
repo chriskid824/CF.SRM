@@ -80,6 +80,17 @@
                   formControlName="poId" #poId disabled="{{canModify==false}}" />
               </nz-form-control>
             </td>
+            
+            <td>
+              <nz-form-label nzRequired [nzFor]="'no'">項次</nz-form-label>
+            </td>
+            <td>
+              <nz-form-control>
+                <input value="{{no}}" [attr.id]="'no'" nz-input placeholder="" placeholder="項次" formControlName="no"
+                  disabled="{{canModify==false}}" />
+              </nz-form-control>
+            </td>
+
             <td>
               <nz-form-label [nzFor]="'matnr'">料號</nz-form-label>
             </td>
@@ -88,15 +99,6 @@
                 <input value="{{matnr}}" [attr.id]="'matnr'" nz-input placeholder="料號" formControlName="matnr"
                   disabled="{{canModify==false}}" />
 
-              </nz-form-control>
-            </td>
-            <td>
-              <nz-form-label nzRequired [nzFor]="'no'">序號</nz-form-label>
-            </td>
-            <td>
-              <nz-form-control>
-                <input value="{{no}}" [attr.id]="'no'" nz-input placeholder="" placeholder="序號" formControlName="no"
-                  disabled="{{canModify==false}}" />
               </nz-form-control>
             </td>
             <td> <button nz-button class="mr-10" (click)="searchPo()" disabled="{{canModify==false}}"><i nz-icon
