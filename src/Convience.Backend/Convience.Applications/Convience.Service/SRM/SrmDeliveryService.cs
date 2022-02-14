@@ -117,7 +117,8 @@ namespace Convience.Service.SRM
                                    join h in _context.SrmDeliveryHs on l.DeliveryId equals h.DeliveryId
                                    join pol in _context.SrmPoLs on new { PoId = l.PoId.Value, PoLId = l.PoLId.Value } equals new { PoId = pol.PoId, PoLId = pol.PoLId }
                                    join poh in _context.SrmPoHs on l.PoId equals poh.PoId
-                                   join matnr in _context.SrmMatnrs on pol.MatnrId equals matnr.MatnrId
+                                   join matnr in _context.SrmMatnrs on pol.MatnrId equals matnr.MatnrId into matnrInfo
+                                   from matnr in matnrInfo.DefaultIfEmpty()
                                    join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
                                    select new ViewSrmDeliveryL
                                    {
