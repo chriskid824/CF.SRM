@@ -196,7 +196,8 @@ namespace Convience.Service.SRM
                           join h in _context.SrmPoHs on l.PoId equals h.PoId
                           join status in _context.SrmStatuses on l.Status equals status.Status
                           join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
-                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                          from matnr in matnrInfo.DefaultIfEmpty()
                           select new ViewSrmPoL
                           {
                               PoNum = h.PoNum,
