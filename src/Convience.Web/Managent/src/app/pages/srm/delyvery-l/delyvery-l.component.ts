@@ -126,7 +126,7 @@ export class DelyveryLComponent implements OnInit {
               const dialogConfig = new MatDialogConfig();
               dialogConfig.disableClose = true;
               dialogConfig.autoFocus = true;
-              dialogConfig.minWidth = "1500px";
+              //dialogConfig.minWidth = "1500px";
               dialogConfig.maxHeight = "1500px";
               dialogConfig.data = dialogData;
               dialog.open(DeliveryModalComponent, dialogConfig);
@@ -255,7 +255,7 @@ export class DelyveryLComponent implements OnInit {
     // }
     ];
 
-    this.defaultColDef = { flex: 1 };
+    this.defaultColDef = { flex: 1,resizable: true, };
     this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
       detailGridOptions: {

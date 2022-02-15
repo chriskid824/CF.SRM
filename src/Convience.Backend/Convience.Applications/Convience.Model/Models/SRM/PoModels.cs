@@ -60,6 +60,8 @@ namespace Convience.Model.Models.SRM
         public string WoNum { get; set; }
         public int VendorId { get; set; }
         public string VendorName { get; set; }
+        public string TelPhone { get; set; }
+        public string Address { get; set; }
         public string SapVendor { get; set; }
         public string Url { get { return this.DeliveryId + "/" + this.DeliveryLId; } }
         public int? Org { get; set; }

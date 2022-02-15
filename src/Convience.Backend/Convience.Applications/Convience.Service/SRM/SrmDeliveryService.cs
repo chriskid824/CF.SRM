@@ -138,6 +138,9 @@ namespace Convience.Service.SRM
                                        VendorId = vendor.VendorId,
                                        Org = poh.Org,
                                        DeliveryPlace = pol.DeliveryPlace,
+                                       TelPhone=vendor.TelPhone,
+                                       Address=vendor.Address,
+
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
@@ -151,6 +154,9 @@ namespace Convience.Service.SRM
                 if (p.SrmDeliveryLs.Count > 0)
                 {
                     p.VendorName = p.SrmDeliveryLs.First().VendorName;
+                    p.TelPhone= p.SrmDeliveryLs.First().TelPhone;
+                    p.Address = p.SrmDeliveryLs.First().Address;
+                    p.DeliveryPlace = p.SrmDeliveryLs.First().DeliveryPlace;
                 }
             });
             return result.Where(p => p.SrmDeliveryLs.Count > 0).ToList();

@@ -2,27 +2,26 @@
 <div id="printThis">
 <!-- <h1 mat-dialog-title>{{Title}}</h1> -->
 <mat-dialog-content style="max-height: 80vh;display: contents;" id="printable">
-  <nz-card>
-    <div class="row" style="height: 100px;display:inline-block">
+    <div class="row col-md-4 col-sm-6" style="height: 100px;display:inline-block">
       <img src="\assets\千附精密.png" style="float: left;position:relative;left:10px">
       <qrcode style="float:right;position:absolute;left:1300px" [qrdata]="deliverydata.DeliveryNum" [elementType]="'string'" [width]="100" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode>
     </div>
-    <h2 class="container" style="width: 100%;">
-      <div style="border:1px solid;height: 150px;" class="row">
-      <div class="col-md-2" style="margin-top: 15px;">出貨單號</div>
-      <div class="col-md-4" style="margin-top: 15px;">{{deliverydata.DeliveryNum}}</div>
-      <div class="col-md-2" style="margin-top: 15px;">供應商</div>
-      <div class="col-md-4" style="margin-top: 15px;">千附實業{{deliverydata.VendorName}}</div>
-      <div class="col-md-2" style="margin-top: 15px;">出貨日期</div>
-      <div class="col-md-4" style="margin-top: 15px;">{{deliverydata.CreateDate}}</div>
-      <div class="col-md-2" style="margin-top: 15px;">供應商地址</div>
-      <div class="col-md-4" style="margin-top: 15px;">台中科學園區{{deliverydata.Address}}</div>
-      <div class="col-md-2" style="margin-top: 15px;">送貨地址</div>
-      <div class="col-md-4" style="margin-top: 15px;">北商辦{{deliverydata.DeliveryPlace}}</div>
-      <div class="col-md-2" style="margin-top: 15px;">供應商電話</div>
-      <div class="col-md-4" style="margin-top: 15px;">02-8825252{{deliverydata.TelPhone}}</div>
+<
+      <div style="border:1px solid;margin:15px;" class="row col-md-12 col-sm-12">
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">出貨單號</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryNum}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.VendorName}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">出貨日期</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.CreateDate}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商地址</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.Address}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">送貨地址</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryPlace}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商電話</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.TelPhone}}</div>
       </div>
-    </h2>
+
     <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false">
       <thead>
         <tr>
@@ -63,7 +62,6 @@
       [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowGroupPanelShow]="rowGroupPanelShow"
       [rowGroupPanelShow]="true" [rowData]="rowData" (gridReady)="onGridReady($event)" [enableCharts]="true"
       [enableRangeSelection]="true" [groupUseEntireRow]="false" [suppressAggFuncInHeader]="true"></ag-grid-angular> -->
-  </nz-card>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

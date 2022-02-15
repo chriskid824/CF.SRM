@@ -173,17 +173,23 @@ Here hiding is not required as the same is been displayed on screen
   #printable, #printable * {
     visibility:visible;
   }
+  .cdk-overlay-pane
+  {
+    min-width: 1500px;
+  }
+  @page {
+    //size: A4 landscape;
+    size:auto;
+    margin-top: 3cm;
+    margin-left: 3cm;
+  }
   // #printable {
   //   position:absolute;
   //   left:0;
   //   top:0;
   // }
 }
-@page {
-  size: A4 landscape;
-  margin-top: 3cm;
-  margin-left: 3cm;
-}
+
 .ant-empty-description{
    display: none;
   }
