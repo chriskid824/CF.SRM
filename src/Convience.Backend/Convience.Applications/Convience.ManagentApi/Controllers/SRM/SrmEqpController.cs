@@ -146,7 +146,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                 {
                     return this.BadRequestResult(msg);
                 }
-                return Ok();
+                //return Ok();
+                return Ok(j);//20220214
             }
             catch (Exception ex)
             {
@@ -233,7 +234,8 @@ namespace Convience.ManagentApi.Controllers.SRM
                     //_srmEqpService.UpdateStatus((int)Status.啟動, e);
                     transaction.Complete();
 
-                    return Ok();
+                    //return Ok();
+                    return Ok(j);
                 }
                 catch (Exception ex)
                 {

@@ -333,7 +333,7 @@ export class EqpComponent implements OnInit {
 
     this._srmEqpService.SAVE(eqp).subscribe(result => {
       console.log(result);
-      alert('保存成功');
+      alert(result["txtSN"]+" " +'保存成功');
       //window.close();
       //window.open('../srm/eqplist', "_self");
       //location.reload();
@@ -379,7 +379,8 @@ export class EqpComponent implements OnInit {
       console.log(result);
     });*/
     this._srmEqpService.Start(eqp).subscribe(result => {
-      alert('起單成功');
+      //alert('起單成功');
+      alert(result["txtSN"]+" " +'起單成功');
       //window.close();
       //this._layout.navigateTo('eqplist');
       //this._router.navigate(['srm/eqplist']);

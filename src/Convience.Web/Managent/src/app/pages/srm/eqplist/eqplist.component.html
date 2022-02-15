@@ -6,29 +6,35 @@
         <nz-form-item>
           <nz-form-label [nzFor]="'EQP_NUM'">反應單號</nz-form-label>
           <nz-form-control>
-            <input style="width: 100px;" nz-input placeholder="反應單號" [formControlName]="'EQP_NUM'" [attr.id]="'EQP_NUM'" autocomplete="off" />
+            <input style="width: 100px;" nz-input placeholder="反應單號" [formControlName]="'EQP_NUM'" [attr.id]="'EQP_NUM'"
+              autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label [nzFor]="'woNum'">採購單號</nz-form-label>
           <nz-form-control>
-            <input style="width: 100px;" nz-input placeholder="採購單號" [formControlName]="'woNum'" [attr.id]="'woNum'" autocomplete="off" />
+            <input style="width: 100px;" nz-input placeholder="採購單號" [formControlName]="'woNum'" [attr.id]="'woNum'"
+              autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
-
         <nz-form-item>
-          <nz-form-label [nzFor]="'no'">序號</nz-form-label>
+          <nz-form-label [nzFor]="'no'">項次</nz-form-label>
           <nz-form-control>
-            <input  style="width: 100px;" nz-input placeholder="序號" [formControlName]="'no'" [attr.id]="'no'" autocomplete="off" />
+            <input style="width: 100px;" nz-input placeholder="項次" [formControlName]="'no'" [attr.id]="'no'"
+              autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label [nzFor]="'matnr'">料號</nz-form-label>
           <nz-form-control>
-            <input  style="width: 100px;" nz-input placeholder="料號" [formControlName]="'matnr'" [attr.id]="'matnr'" autocomplete="off" />
+            <input style="width: 100px;" nz-input placeholder="料號" [formControlName]="'matnr'" [attr.id]="'matnr'"
+              autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
+
+
+
         <nz-form-item>
           <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
           <nz-form-control>
@@ -60,7 +66,7 @@
 
     <!--詢價單數據-->
     <nz-card [nzSize]="'small'" id="eqpCard">
-      <button *canOperate="'EQP_CREATE'" nz-button   (click)="GoToEQP()"><i nz-icon nzType="plus"></i>建立反應單</button>
+      <button *canOperate="'EQP_CREATE'" nz-button (click)="GoToEQP()"><i nz-icon nzType="plus"></i>建立反應單</button>
       <div>
         <button *ngIf="false" nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新</button>
       </div>
@@ -74,8 +80,9 @@
               <!--<th nzAlign="center" nzWidth="10px">反應者</th>-->
               <th nzAlign="center" nzWidth="10px">填表日期</th>
               <th nzAlign="center" nzWidth="15px">採購單</th>
+              <th nzAlign="center" nzWidth="10px">項次</th>
               <th nzAlign="center" nzWidth="15px">料號</th>
-              <th nzAlign="center" nzWidth="10px">序號</th>
+
               <th nzAlign="center" nzWidth="20px">品名</th>
               <th *ngIf="status==5" nzAlign="center" nzWidth="20px" nzRight>操作</th>
             </tr>
@@ -87,8 +94,9 @@
               <td nzAlign="center">{{ data.statusDesc }}</td>
               <td nzAlign="center">{{ data.ecreateDate }}</td>
               <td nzAlign="center">{{ data.poNum }}</td>
-              <td nzAlign="center">{{ data.matnr }}</td>
               <td nzAlign="center">{{ data.no }}</td>
+              <td nzAlign="center">{{ data.matnr }}</td>
+
               <td nzAlign="center">{{ data.description }}</td>
             </tr>
           </tbody>
@@ -101,7 +109,7 @@
       </div>-->
       <div class="mt-10">
         <nz-pagination [(nzPageSize)]="size" [(nzPageIndex)]="page" [nzTotal]="total" nzShowSizeChanger
-                       nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
+          nzShowQuickJumper (nzPageIndexChange)="pageChange()" (nzPageSizeChange)="sizeChange()">
         </nz-pagination>
       </div>
     </nz-card>
