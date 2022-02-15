@@ -2,12 +2,12 @@
 <div id="printThis">
 <!-- <h1 mat-dialog-title>{{Title}}</h1> -->
 <mat-dialog-content style="max-height: 80vh;display: contents;" id="printable">
-    <div class="row col-md-4 col-sm-6" style="height: 100px;display:inline-block">
+    <div class="row col-md-6 col-sm-6" style="height: 100px;display:inline-block">
       <img src="\assets\千附精密.png" style="float: left;position:relative;left:10px">
       <qrcode style="float:right;position:absolute;left:1300px" [qrdata]="deliverydata.DeliveryNum" [elementType]="'string'" [width]="100" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode>
     </div>
 <
-      <div style="border:1px solid;margin:15px;" class="row col-md-12 col-sm-12">
+      <div style="border:1px solid;margin:15px;font-size:20px;padding:15px" class="row col-md-12 col-sm-12">
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">出貨單號</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryNum}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商</div>
@@ -22,10 +22,10 @@
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.TelPhone}}</div>
       </div>
 
-    <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false">
+    <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false" style="font-size: 30px;">
       <thead>
         <tr>
-          <th></th>
+          <!-- <th></th> -->
           <th>項次</th>
           <th>物料</th>
           <th>物料說明</th>
@@ -40,7 +40,7 @@
       <tbody>
         <tr *ngFor="let data of basicTable.data;let i = index">
           <!-- <td><qrcode style="float: right" [qrdata]="'/srm/deliveryreceive/${data.DeliveryLId}/${deliverydata.DeliveryNum}'" [width]="10" [scale]="1" [errorCorrectionLevel]="'M'"></qrcode></td> -->
-          <td><qrcode style="float: right" [qrdata]="data.Url" [width]="10" [scale]="3" [errorCorrectionLevel]="'M'" ></qrcode></td>
+          <!-- <td><qrcode style="float: right" [qrdata]="data.Url" [width]="10" [scale]="3" [errorCorrectionLevel]="'M'" ></qrcode></td> -->
           <td>{{ i+1 }}</td>
           <td>{{ data.Matnr }}</td>
           <td>{{ data.Description }}</td>
