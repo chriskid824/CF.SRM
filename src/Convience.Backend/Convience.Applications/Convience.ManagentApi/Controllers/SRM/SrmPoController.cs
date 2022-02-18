@@ -47,7 +47,92 @@ namespace Convience.ManagentApi.Controllers.SRM
             _srmFileService = srmFileService;
             _appSettingsService = appSettingsOption.Value;
         }
+        //public bool isValdeXml()
+        //{
+        //    string sss = "<CAT><NAME>Izzy</NAME><BREED>Siamese</BREED><AGE>6</AGE><ALTERED>yes</ALTERED><DECLAWED>no</DECLAWED><LICENSE>Izz138bod</LICENSE><OWNER>Colin Wilcox</OWNER></CAT>";
+        //    List<string> tags = getalltags(sss);
+        //    if (xmlrule1(tags) && xmlrule2(tags))
+        //    {
+        //        return true;
+        //    }
 
+        //    return false;
+        //}
+        //public List<string> getalltags(string xmlstring)
+        //{
+        //   List<string> xmltags = new List<string>();
+        //    int lastindex = 0;
+        //    while (lastindex < xmlstring.Length)
+        //    {
+        //        string remainString = xmlstring.Substring(lastindex, xmlstring.Length- lastindex);
+        //        int pFrom = remainString.IndexOf("<") + 1;
+        //        int pTo = remainString.IndexOf(">");
+        //        if (pTo == -1)
+        //        {
+        //            return null;
+        //        }
+        //        lastindex = lastindex+pTo + 1;
+        //        string result = remainString.Substring(pFrom, pTo - pFrom);
+        //        xmltags.Add(result);
+        //    }
+        //    return xmltags;
+        //}
+        //public bool xmlrule1(List<string> tags)
+        //{
+        //    foreach (var tag in tags)
+        //    {
+        //        //找出是否全部都有前後對應
+        //        string key = "";
+        //        if (tag.StartsWith('/'))
+        //        {
+        //            key = tag.Substring(1);
+        //        }
+        //        else
+        //        {
+        //            key = "/" + tag;
+
+        //        }
+        //        if (!tags.Contains(key))
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
+        //public bool xmlrule2(List<string> tags)
+        //{
+        //    List<string> sttags = tags.FindAll(p => !p.StartsWith('/'));
+        //    //找出中間any沒前後對應的
+        //    foreach (var tag in sttags)
+        //    {
+        //        int startindex = tags.FindIndex(p => p == tag);
+        //        string key = "/" + tag;
+        //        if (tags.Contains(key))
+        //        {
+        //            int lastindex = tags.FindIndex(p=>p==key);
+        //            for (int i = startindex+1; i < lastindex; i++)
+        //            {
+
+        //                if (i == 1 && tags[i].StartsWith('/'))
+        //                {
+        //                    return false;
+        //                }
+        //                if (!tags[i].StartsWith('/'))
+        //                {
+        //                    string innerkey = "/" + tags[i];
+        //                    int innerkeyindex = tags.FindIndex(p => p == innerkey);
+        //                    //如果中間有任何結尾的index不在st跟last中間 false
+        //                    if (innerkeyindex > lastindex || innerkeyindex < 0)
+        //                    {
+        //                        return false;
+        //                    }
+        //                }
+
+        //            }
+        //        }                
+        //    }
+        //    return true;
+        //}
         [HttpPost("GetPo")]
         public string GetPo(JObject query)
         {
@@ -71,7 +156,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             q.poNum = query["poNum"].ToString();
             q.status = (int)query["status"];
             q.dataStatus = query["dataStatus"] == null ? 0 : (int)query["dataStatus"];
-            q.buyer = query["buyer"].ToString();
+            q.ekgryDesc = query["ekgryDesc"].ToString();
             q.user = User;
             var aaa = _srmPoService.GetAll(q);
 
@@ -231,7 +316,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             QueryPoList q = new QueryPoList();
             q.poNum = query["poNum"] == null ? null : query["poNum"].ToString();
             q.status = query["status"] == null ? 0 : (int)query["status"];
-            q.buyer = query["buyer"].ToString();
+            q.ekgryDesc = query["ekgryDesc"].ToString();
             q.user = User;
             int page = (int)query["page"];
             int size = (int)query["size"];
