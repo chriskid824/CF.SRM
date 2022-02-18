@@ -229,7 +229,7 @@ export class PoComponent implements OnInit {
             field: 'Price',
           },
           {
-            headerName:'交貨日期',
+            headerName:'本次需求日',
             field: 'DeliveryDate',
             valueFormatter:dateFormatter
           },

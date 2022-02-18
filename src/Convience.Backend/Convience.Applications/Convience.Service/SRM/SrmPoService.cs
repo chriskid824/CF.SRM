@@ -450,12 +450,15 @@ namespace Convience.Service.SRM
                                 Qty = Convert.ToInt32(Convert.ToDouble(pol.MENGE)),
                                 Price = pol.NETPR,
                                 DeliveryDate = pol.EINDT,
-                                DeliveryPlace = pol.LGOBE,
+                                DeliveryPlace = pol.PLACE,
                                 CriticalPart = pol.KZKRI,
                                 InspectionTime = 1,
                                 Status = 21,
                                 WoNum = pol.AUFNR,
                                 OtherDesc=pol.OTHER_DESC,
+                                Storage=pol.LGORT,
+                                StorageDesc=pol.LGOBE,
+                                Cell=pol.LGPBE,
                             };
                             _context.SrmPoLs.Add(poL);
                             r.OutCome = "成功";

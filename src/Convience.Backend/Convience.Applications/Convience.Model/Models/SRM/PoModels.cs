@@ -153,7 +153,7 @@ namespace Convience.Model.Models.SRM
         public string OTHER_DESC { get; set; }
         public string LGPBE { get; set; }
         public string LGORT { get; set; }
-
+        public string PLACE { get; set; }
     }
     public class T_DRAD
     {
