@@ -18,11 +18,16 @@ namespace Convience.Entity.Entity.SRM
         public DateTime? DeliveryDate { get; set; }
         public DateTime? ReplyDeliveryDate { get; set; }
         public string DeliveryPlace { get; set; }
+        public string Storage { get; set; }
+        public string StorageDesc { get; set; }
+        public string Cell { get; set; }
         public string CriticalPart { get; set; }
         public float? InspectionTime { get; set; }
+        public float? InspectionQty { get; set; }
         public int? Status { get; set; }
         public string WoNum { get; set; }
         public int? WoItem { get; set; }
+        public string OtherDesc { get; set; }
 
         public virtual SrmPoH Po { get; set; }
     }

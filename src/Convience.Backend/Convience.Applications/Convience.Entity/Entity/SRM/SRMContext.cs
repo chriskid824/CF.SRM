@@ -678,7 +678,8 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("CREATE_DATE");
+                    .HasColumnName("CREATE_DATE")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Currency)
                     .HasMaxLength(3)
@@ -730,6 +731,11 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
 
+                entity.Property(e => e.Cell)
+                    .HasMaxLength(10)
+                    .HasColumnName("CELL")
+                    .HasComment("儲格");
+
                 entity.Property(e => e.CriticalPart)
                     .HasMaxLength(5)
                     .HasColumnName("CRITICAL_PART");
@@ -740,19 +746,28 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.DeliveryPlace)
                     .HasMaxLength(20)
-                    .HasColumnName("DELIVERY_PLACE");
+                    .HasColumnName("DELIVERY_PLACE")
+                    .HasComment("交貨地點");
 
                 entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.InspectionQty).HasColumnName("INSPECTION_QTY");
 
                 entity.Property(e => e.InspectionTime).HasColumnName("INSPECTION_TIME");
 
                 entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
 
+                entity.Property(e => e.OtherDesc)
+                    .HasColumnName("OTHER_DESC")
+                    .HasComment("其他內文");
+
                 entity.Property(e => e.Price)
                     .HasColumnType("money")
                     .HasColumnName("PRICE");
 
-                entity.Property(e => e.Qty).HasColumnName("QTY");
+                entity.Property(e => e.Qty)
+                    .HasColumnName("QTY")
+                    .HasComment("採單數量");
 
                 entity.Property(e => e.ReplyDeliveryDate)
                     .HasColumnType("datetime")
@@ -762,10 +777,20 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("STATUS")
                     .HasDefaultValueSql("((21))");
 
+                entity.Property(e => e.Storage)
+                    .HasMaxLength(4)
+                    .HasColumnName("STORAGE")
+                    .HasComment("儲存地點");
+
+                entity.Property(e => e.StorageDesc)
+                    .HasMaxLength(16)
+                    .HasColumnName("STORAGE_DESC")
+                    .HasComment("儲存地點說明");
+
                 entity.Property(e => e.WoItem).HasColumnName("WO_ITEM");
 
                 entity.Property(e => e.WoNum)
-                    .HasMaxLength(10)
+                    .HasMaxLength(12)
                     .HasColumnName("WO_NUM");
 
                 entity.HasOne(d => d.Po)
@@ -774,6 +799,7 @@ namespace Convience.Entity.Entity.SRM
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("PO_ID");
             });
+
 
             modelBuilder.Entity<SrmQotMaterial>(entity =>
             {

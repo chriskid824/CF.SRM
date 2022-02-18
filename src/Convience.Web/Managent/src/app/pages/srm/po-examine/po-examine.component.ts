@@ -21,7 +21,7 @@ export class PoExamineComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       PO_NUM: [null],
       STATUS: [0],
-      BUYER:[null]
+      EkgryDesc:[null]
     });
     this.refresh();
   }
@@ -36,7 +36,7 @@ export class PoExamineComponent implements OnInit {
     var query = {
       poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "" : this.searchForm.value["STATUS"],
-      buyer: this.searchForm.value["BUYER"] == null ? "" : this.searchForm.value["BUYER"],
+      ekgryDesc: this.searchForm.value["EkgryDesc"] == null ? "" : this.searchForm.value["EkgryDesc"],
       page: this.page,
       size: this.size
     }

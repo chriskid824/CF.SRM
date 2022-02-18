@@ -105,8 +105,7 @@ export class PoComponent implements OnInit {
       },
       {
         headerName:'採購人員',
-        field: 'Buyer',
-        editable:true
+        field: 'EkgryDesc',
       },
       {
         headerName:'採購組織',
@@ -222,7 +221,7 @@ export class PoComponent implements OnInit {
             field: 'Description',
           },
           {
-            headerName:'數量',
+            headerName:'採單數量',
             field: 'Qty',
           },
           {
@@ -267,12 +266,16 @@ export class PoComponent implements OnInit {
             field: 'DeliveryPlace',
           },
           {
-            headerName:'關鍵零組件/首件',
+            headerName:'關鍵零組件',
             field: 'CriticalPart',
           },
           {
             headerName:'檢驗時間(天)',
             field: 'InspectionTime',
+          },
+          {
+            headerName:'其他內文',
+            field: 'OtherDesc',
           },
           { headerName: '操作',
 //           cellRenderer : function(params){
@@ -336,7 +339,7 @@ export class PoComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       PO_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
-      BUYER:[null],
+      EkgryDesc:[null],
       DATASTATUS:[0]
     });
   }
@@ -557,7 +560,7 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
       poId:this.searchId,
       poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
-      buyer: this.searchForm.value["BUYER"] == null ? "" : this.searchForm.value["BUYER"],
+      ekgryDesc: this.searchForm.value["EkgryDesc"] == null ? "" : this.searchForm.value["EkgryDesc"],
       dataStatus:this.searchForm.value["DATASTATUS"] == null ? "0" : this.searchForm.value["DATASTATUS"],
       page: this.page,
       size: this.size
@@ -570,7 +573,7 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
       query = {
         poNum: "",
         status: "0",
-        buyer: "",
+        ekgryDesc: "",
         dataStatus:"0",
         page: this.page,
         size: this.size

@@ -24,9 +24,9 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzFor]="'BUYER'">採購人員</nz-form-label>
+          <nz-form-label [nzFor]="'EkgryDesc'">採購人員</nz-form-label>
           <nz-form-control>
-            <input nz-input placeholder="採購人員" [formControlName]="'BUYER'" [attr.id]="'BUYER'"
+            <input nz-input placeholder="採購人員" [formControlName]="'EkgryDesc'" [attr.id]="'EkgryDesc'"
                    autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
@@ -59,11 +59,11 @@
 
               <th nzAlign="center" nzWidth="20px">料號識別碼</th>
               <th nzAlign="center" nzWidth="20px">物料內文</th>
-              <th nzAlign="center" nzWidth="20px">數量</th>
-              <th nzAlign="center" nzWidth="20px">交貨日期</th>
+              <th nzAlign="center" nzWidth="20px">採單數量</th>
+              <th nzAlign="center" nzWidth="20px">本次需求日</th>
               <th nzAlign="center" nzWidth="20px">廠商交貨日期</th>
               <th nzAlign="center" nzWidth="20px">交貨地點</th>
-              <th nzAlign="center" nzWidth="20px">關鍵零組件/首件</th>
+              <th nzAlign="center" nzWidth="20px">關鍵零組件</th>
               <th nzAlign="center" nzWidth="20px">檢驗時間(天)</th>
               <th nzAlign="center" nzWidth="20px">採購人員</th>
               <th nzAlign="center" nzWidth="20px">採購組織</th>
@@ -90,7 +90,7 @@
               <td nzAlign="center">{{ data.deliveryPlace }}</td>
               <td nzAlign="center">{{ data.criticalPart }}</td>
               <td nzAlign="center">{{ data.inspectionTime }}</td>
-              <td nzAlign="center">{{ data.buyer }}</td>
+              <td nzAlign="center">{{ data.ekgryDesc }}</td>
               <td nzAlign="center">{{ data.org }}</td>
               <td nzAlign="center">{{ data.replyDate| date: "yyyy-MM-dd" }}</td>
               <td nzAlign="center">{{data.createDate| date: "yyyy-MM-dd"}}</td>

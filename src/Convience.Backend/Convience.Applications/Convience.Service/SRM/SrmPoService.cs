@@ -93,7 +93,9 @@ namespace Convience.Service.SRM
         {
             var result = (from poh in _context.SrmPoHs
                           join status in _context.SrmStatuses on poh.Status equals status.Status
-                          join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId              
+                          join vendor in _context.SrmVendors on poh.VendorId equals vendor.VendorId
+                          join ekgry in _context.SrmEkgries on poh.Buyer equals ekgry.Ekgry into ekgryInfo
+                          from ekgry in ekgryInfo.DefaultIfEmpty()
                           select new ViewSrmPoH
                           {
                               PoId = poh.PoId,
@@ -112,12 +114,13 @@ namespace Convience.Service.SRM
                               StatusDesc = status.StatusDesc,
                               VendorName = vendor.VendorName,
                               SapVendor = vendor.SapVendor,
+                              EkgryDesc=ekgry.EkgryDesc,
                               //SrmPoLs = poh.SrmPoLs,
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                           .AndIfHaveValue(query.poId,p=>p.PoId==query.poId)
-                .AndIfCondition(!string.IsNullOrWhiteSpace(query.buyer), p => p.Buyer.IndexOf(query.buyer) > -1)
+                .AndIfCondition(!string.IsNullOrWhiteSpace(query.ekgryDesc), p => p.EkgryDesc.IndexOf(query.ekgryDesc) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
             // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
@@ -198,6 +201,8 @@ namespace Convience.Service.SRM
                           join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
                           join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
                           from matnr in matnrInfo.DefaultIfEmpty()
+                          join ekgry in _context.SrmEkgries on h.Buyer equals ekgry.Ekgry into ekgryInfo
+                          from ekgry in ekgryInfo.DefaultIfEmpty()
                           select new ViewSrmPoL
                           {
                               PoNum = h.PoNum,
@@ -220,7 +225,8 @@ namespace Convience.Service.SRM
                               Buyer = h.Buyer,
                               StatusDesc = status.StatusDesc,
                               Matnr = matnr.SapMatnr,
-                              Org = h.Org
+                              Org = h.Org,
+                              EkgryDesc=ekgry.EkgryDesc,
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
@@ -302,6 +308,8 @@ namespace Convience.Service.SRM
                           join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
                           join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
                           from matnr in matnrInfo.DefaultIfEmpty()
+                          join ekgry in _context.SrmEkgries on h.Buyer equals ekgry.Ekgry into ekgryInfo
+                          from ekgry in ekgryInfo.DefaultIfEmpty()
                           select new ViewSrmPoPoL
                           {
                               PoNum = h.PoNum,
@@ -328,6 +336,7 @@ namespace Convience.Service.SRM
                               DocDate = h.DocDate,
                               ReplyDate = h.ReplyDate,
                               CreateDate = h.CreateDate,
+                              EkgryDesc=ekgry.EkgryDesc
                           })
               .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
               .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
@@ -336,7 +345,7 @@ namespace Convience.Service.SRM
     //.AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
     //.AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
     .AndIfCondition(query.status != 0, p => p.Status == query.status)
-                .AndIfHaveValue(query.buyer, p => p.Buyer == query.buyer).ToList();
+    .AndIfCondition(!string.IsNullOrWhiteSpace(query.ekgryDesc), p => p.EkgryDesc.IndexOf(query.ekgryDesc) > -1).ToList();
 
             var r = result.AsQueryable().Skip(skip).Take(size).ToArray();//result.Skip(skip).Take(size);
             return new PagingResultModel<ViewSrmPoPoL>
@@ -446,6 +455,7 @@ namespace Convience.Service.SRM
                                 InspectionTime = 1,
                                 Status = 21,
                                 WoNum = pol.AUFNR,
+                                OtherDesc=pol.OTHER_DESC,
                             };
                             _context.SrmPoLs.Add(poL);
                             r.OutCome = "成功";

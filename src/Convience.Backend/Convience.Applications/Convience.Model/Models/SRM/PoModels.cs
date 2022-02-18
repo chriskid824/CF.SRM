@@ -12,7 +12,7 @@ namespace Convience.Model.Models.SRM
     public class QueryPoList
     {
         public int? poId { get; set; }
-        public string buyer { get; set; }
+        public string ekgryDesc { get; set; }
         public int deliveryLId { get; set; }
         public string deliveryNum { get; set; }
         public string poNum { get; set; }
@@ -83,6 +83,7 @@ namespace Convience.Model.Models.SRM
         public string StatusDesc { get; set; }
         public string SapVendor { get; set; }
         public int? Org { get; set; }
+        public string EkgryDesc { get; set; }
         public string Number { get { return this.PoNum + "-" + this.PoLId.ToString(); } }
     }
     public class ViewSrmPoH : SrmPoH
@@ -92,6 +93,7 @@ namespace Convience.Model.Models.SRM
         public string OrgName { get; set; }
         public string SapVendor { get; set; }
         public bool hasFile { get; set; }
+        public string EkgryDesc { get; set; }
         new public virtual ICollection<ViewSrmPoL> SrmPoLs { get; set; }
     }
 
@@ -101,6 +103,7 @@ namespace Convience.Model.Models.SRM
         public DateTime? DocDate { get; set; }
         public DateTime? ReplyDate { get; set; }
         public DateTime? CreateDate { get; set; }
+        public string EkgryDesc { get; set; }
     }
 
 
@@ -147,6 +150,9 @@ namespace Convience.Model.Models.SRM
         public string LGOBE { get; set; }
         public string KZKRI { get; set; }
         public string AUFNR { get; set; }
+        public string OTHER_DESC { get; set; }
+        public string LGPBE { get; set; }
+        public string LGORT { get; set; }
 
     }
     public class T_DRAD

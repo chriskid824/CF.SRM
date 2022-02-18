@@ -68,7 +68,7 @@ export class PoDetailComponent implements OnInit {
       },
       {
         headerName:'採購人員',
-        field: 'Buyer',
+        field: 'EkgryDesc',
       },
       {
         headerName:'料號識別碼',
@@ -84,7 +84,7 @@ export class PoDetailComponent implements OnInit {
         field: 'Description',
       },
       {
-        headerName:'數量',
+        headerName:'採單數量',
         field: 'Qty',
       },
       {
@@ -101,7 +101,7 @@ export class PoDetailComponent implements OnInit {
         field: 'Price',
       },
       {
-        headerName:'交貨日期',
+        headerName:'本次需求日',
         field: 'DeliveryDate',
         valueFormatter:dateFormatter
       },
@@ -112,7 +112,7 @@ export class PoDetailComponent implements OnInit {
         hide:'true'
       },
       {
-        headerName:'關鍵零組件/首件',
+        headerName:'關鍵零組件',
         field: 'CriticalPart',
         hide:'true'
       },
@@ -161,7 +161,7 @@ export class PoDetailComponent implements OnInit {
     this.searchForm = this._formBuilder.group({
       PO_NUM: [null],
       STATUS: [1],
-      BUYER:[null],
+      EkgryDesc:[null],
       replyDeliveryDate_s: [null],
       replyDeliveryDate_e: [null],
     });
@@ -204,6 +204,7 @@ export class PoDetailComponent implements OnInit {
     this._srmPoService.GetPoL(query)
       .subscribe((result) => {
         this.rowData = result;
+        console.info()
       });
   }
   getSelectedRowData(event) {
