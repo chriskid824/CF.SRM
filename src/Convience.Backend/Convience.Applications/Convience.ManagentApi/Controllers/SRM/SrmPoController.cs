@@ -198,6 +198,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             if (rfq.Property("ReplyDeliveryDate") == null) return Ok();
             SrmPoL data = rfq.ToObject<SrmPoL>();
+            data.Status = 15;
             _srmDeliveryService.UpdateReplyDeliveryDate(data);
             if (_srmPoService.CheckAllReply(data.PoId))
             {
