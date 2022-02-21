@@ -430,7 +430,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             FormControls.Add("txtPart", eqp.matnr);//料號
             FormControls.Add("txtNo", eqp.no);//序號
             FormControls.Add("eqp_id",eqp.EqpId);//eqp_id
-            FormControls.Add("txtDeptFromSRM", eqp.CreateByName); //供應商名字
+            FormControls.Add("txtDeptFromSRM", eqp.CreateBy); //供應商名字
 
             FormControls.Add("txtPartName", eqp.Description);//品名
             FormControls.Add("txtWoNo", eqp.WoNum);//採購單/工單號
