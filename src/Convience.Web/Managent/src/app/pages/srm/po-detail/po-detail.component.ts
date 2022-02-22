@@ -94,7 +94,20 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
-        editable:true
+        editable:true,
+        valueGetter: function (params) {
+          console.info(params);
+          if(params.data.DeliveryQty>params.data.RemainQty)
+          {
+            params.data.DeliveryQty=params.data.RemainQty;
+          }
+          return params.data.DeliveryQty;
+          // if (params.node.group) {
+          //   return params.node.key;
+          // } else {
+          //   return params.data[params.colDef.field];
+          // }
+        },
       },
       {
         headerName:'單價',

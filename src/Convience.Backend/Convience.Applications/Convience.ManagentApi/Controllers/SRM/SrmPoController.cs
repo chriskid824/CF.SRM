@@ -352,9 +352,12 @@ namespace Convience.ManagentApi.Controllers.SRM
             callMethodParm.Token = "token";
             //callMethodParm.Options = "464805A0-5EB6-4B45-B1AB-1B172E78B07D";
             JObject param = new JObject();
-           // FileObj fileObj = new FileObj();
+            // FileObj fileObj = new FileObj();
             //fileObj.file_id = "464805A0-5EB6-4B45-B1AB-1B172E78B07D";
-            param.Add("file_name", file_name);
+            string[] dataarr = file_name.Split('_');
+            param.Add("file_name", dataarr[2]);
+            param.Add("folder_name", dataarr[0]);
+            param.Add("doc_no", dataarr[1]);
             param.Add("auth_type", "user");
             param.Add("ds", "111");
             //callMethodParm.Method = "UpdateCF";
@@ -366,7 +369,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                 return BadRequest(result.Message);
             }
             byte[] bytes = Convert.FromBase64String(result.Options.ToString());
-            string path = await _srmFileService.UploadPoTempAsync(bytes, result.Message.ToString());
+            string path = await _srmFileService.UploadPoTempAsync(bytes, dataarr[1] + "_"+ dataarr[0] + "_" + result.Message.ToString());
             string aaa = path;
             BaseFileData fd = new BaseFileData() {
                 Name = result.Message.ToString(),
