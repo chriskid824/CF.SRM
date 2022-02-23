@@ -553,7 +553,7 @@ namespace Convience.Service.SRM
 
                 BaseFileData fd = new BaseFileData()
                 {
-                    Name = set.DOKAR+'_'+set.OBJKY+'_'+set.DOKNR,
+                    Name = set.DOKNR,
                     active = false,
                 };
                 if (doclist != null)

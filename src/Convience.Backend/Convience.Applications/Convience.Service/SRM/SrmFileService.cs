@@ -326,7 +326,15 @@ namespace Convience.Service.SRM
                         deletefile.Delete();
                     }
                 }
-                path = path + '/' + filename;
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                filename = filename.Replace(c.ToString(), "");
+            }
+            path = path + '/' + filename;
+            foreach (char c in Path.GetInvalidPathChars())
+            {
+                path = path.Replace(c.ToString(), "");
+            }
                 var info = await _fileStore.GetFileInfoAsync(path);
                 if (info != null)
                 {
@@ -364,7 +372,12 @@ namespace Convience.Service.SRM
                         deletefile.Delete();
                     }
                 }
+                //filename = filename.Trim(Path.GetInvalidFileNameChars());
                 path = path + '/' + file.FileName;
+                foreach (char c in Path.GetInvalidPathChars())
+                {
+                    path = path.Replace(c.ToString(), "");
+                }
                 var info = await _fileStore.GetFileInfoAsync(path);
                 if (info != null)
                 {
