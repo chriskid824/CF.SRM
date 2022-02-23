@@ -89,7 +89,6 @@ export class EqpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.name = this._storageService.Name;
     this.eqpinfo1 = this._formBuilder.group({
       eqpNum: [{ value: null, disabled: false }],
@@ -224,11 +223,19 @@ export class EqpComponent implements OnInit {
           peAction: this.peAction
         });
         //console.log(55);
+        //20220223
+        this.name = this._storageService.Name;
+
+        //alert(this.eqpNum.substring(0,2))
+        if (this.eqpNum.substring(0, 2) == "PC") {
+          this.name = "千附"
+        }
+        //20220223
       });
     } else {
       this.canModify = true;
     }
-    this.name = this._storageService.Name;
+    //this.name = this._storageService.Name;
     var initdate = new Date();
     this.createDate = initdate.getFullYear() + "-" + (initdate.getMonth() + 1) + "-" + initdate.getDate();
     console.log('--status--')
@@ -325,15 +332,14 @@ export class EqpComponent implements OnInit {
     //Number('1234')
     //alert(parseInt(eqp.h.ngQty))
     //alert(parseInt(this.poQty))
-    if(parseInt(eqp.h.ngQty) > parseInt(this.poQty))
-    {
+    if (parseInt(eqp.h.ngQty) > parseInt(this.poQty)) {
       alert("異常數量不得大於訂單數量");
       return;
     }
 
     this._srmEqpService.SAVE(eqp).subscribe(result => {
       console.log(result);
-      alert(result["txtSN"]+" " +'保存成功');
+      alert(result["txtSN"] + " " + '保存成功');
       //window.close();
       //window.open('../srm/eqplist', "_self");
       //location.reload();
@@ -380,7 +386,7 @@ export class EqpComponent implements OnInit {
     });*/
     this._srmEqpService.Start(eqp).subscribe(result => {
       //alert('起單成功');
-      alert(result["txtSN"]+" " +'起單成功');
+      alert(result["txtSN"] + " " + '起單成功');
       //window.close();
       //this._layout.navigateTo('eqplist');
       //this._router.navigate(['srm/eqplist']);
