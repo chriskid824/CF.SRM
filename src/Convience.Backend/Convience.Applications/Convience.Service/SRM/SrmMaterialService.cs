@@ -345,12 +345,13 @@ namespace Convience.Service.SRM
             }
             else
             {
-                no = data.SrmMatnr1;
+                //防止USER填寫料號時加入空白
+                no = data.SrmMatnr1.Replace(" ", "");
                 if (data.SrmMatnr1.Substring(0, 1) == "Z" || data.SrmMatnr1.Substring(0, 1) == "F" ||
                     data.SrmMatnr1.Substring(0, 1) == "T" || data.SrmMatnr1.Substring(0, 1) == "C" ||
                     data.SrmMatnr1.Substring(0, 1) == "K" || data.SrmMatnr1.Substring(0, 1) == "M")
                 {
-                    sapno = data.SrmMatnr1;
+                    sapno = data.SrmMatnr1.Replace(" ", "");
                 }
                 else
                 {
