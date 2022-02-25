@@ -185,13 +185,13 @@ namespace Convience.Service.SRM
 
             if (string.IsNullOrWhiteSpace(data.SapMatnr))
             {
-                material.SrmMatnr1 = data.SrmMatnr1;
+                material.SrmMatnr1 = data.SrmMatnr1.Replace(" ", "");
             }
             else
             {
-                material.SrmMatnr1 = data.SapMatnr;
+                material.SrmMatnr1 = data.SapMatnr.Replace(" ", "");
             }
-            material.SapMatnr = data.SapMatnr;
+            material.SapMatnr = data.SapMatnr.Replace(" ", "");
             material.MatnrGroup = data.MatnrGroup;
             material.Description = data.Description;
             material.Version = data.Version;
