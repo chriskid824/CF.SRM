@@ -172,7 +172,7 @@ namespace Convience.Service.SRM
                 {
                     eqpH.LastUpdateDate = now;
                     eqpH.CreateBy = eqpH.LastUpdateBy;
-                    eqpH.Status = 1;
+                    eqpH.Status = eqpH.Status; //20220302
                     EqpNum = GettxtSN();
                     eqpH.EqpNum = EqpNum;
                     obj["txtSN"] = EqpNum;
@@ -320,7 +320,7 @@ namespace Convience.Service.SRM
                            vendorid = phg.VendorId, //p.VendorId,
                            Status = eq.Status,
                            StatusDesc = st.StatusDesc,
-                           vendor = eq.LastUpdateBy
+                           vendor = (!string.IsNullOrWhiteSpace(eq.LastUpdateBy)) ? eq.LastUpdateBy : eq.CreateBy 
 
                        }; 
             return eqps
