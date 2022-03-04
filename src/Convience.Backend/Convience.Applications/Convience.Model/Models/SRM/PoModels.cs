@@ -86,6 +86,11 @@ namespace Convience.Model.Models.SRM
         public string EkgryDesc { get; set; }
         public string Number { get { return this.PoNum + "-" + this.PoLId.ToString(); } }
     }
+    public class AddDeliveryModel
+    {
+        public DateTime? date { get; set; }
+        public List<ViewSrmPoL> data = new List<ViewSrmPoL>();
+    }
     public class ViewSrmPoH : SrmPoH
     {
         public string StatusDesc { get; set; }
@@ -146,6 +151,7 @@ namespace Convience.Model.Models.SRM
         public string MAKTX { get; set; }
         public string MENGE { get; set; }
         public decimal? NETPR { get; set; }
+        public DateTime? O_EINDT { get; set; }
         public DateTime? EINDT { get; set; }
         public string LGOBE { get; set; }
         public string KZKRI { get; set; }

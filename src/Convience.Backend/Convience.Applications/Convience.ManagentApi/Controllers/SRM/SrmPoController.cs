@@ -194,16 +194,26 @@ namespace Convience.ManagentApi.Controllers.SRM
                         });
         }
         [HttpPost("UpdateReplyDeliveryDate")]
-        public IActionResult UpdateReplyDeliveryDate(JObject rfq)
+        public IActionResult UpdateReplyDeliveryDate(JObject po)
         {
-            if (rfq.Property("ReplyDeliveryDate") == null) return Ok();
-            SrmPoL data = rfq.ToObject<SrmPoL>();
+            if (po.Property("ReplyDeliveryDate") == null) return Ok();
+            SrmPoL data = po.ToObject<SrmPoL>();
             data.Status = 15;
             _srmDeliveryService.UpdateReplyDeliveryDate(data);
             if (_srmPoService.CheckAllReply(data.PoId))
             {
                 _srmPoService.UpdateStatus(data.PoId, 15);
             }
+            return Ok();
+        }
+        [HttpPost("UpdateReplyDeliveryDateH")]
+        public IActionResult UpdateReplyDeliveryDateH(JObject po)
+        {
+            if (po.Property("PoNum") == null|| po.Property("date") == null) return Ok();
+            string PoNum = po["PoNum"].ToString();
+            DateTime date = (DateTime)po["date"];
+            int poid=_srmDeliveryService.UpdateReplyDeliveryDateH(PoNum, date);
+            _srmPoService.UpdateStatus(poid, 15);
             return Ok();
         }
         [HttpGet("UpdateStatus")]

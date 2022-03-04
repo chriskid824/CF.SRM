@@ -25,6 +25,9 @@ export class SrmPoService {
   GetPoDoc(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/Sap_GetPoDoc`,po);
   }
+  UpdateReplyDeliveryDateH(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdateReplyDeliveryDateH`,po);
+  }
   UpdateReplyDeliveryDate(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdateReplyDeliveryDate`,po);
   }

@@ -75,6 +75,7 @@ import { AgGridDatePickerComponent_RFQ } from './rfq/AGGridDatePickerCompponent'
 import { ProcessManageComponent } from './process-manage/process-manage.component';
 import { SurfaceManageComponent } from './surface-manage/surface-manage.component';
 import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.component';
+import { PoDateModalComponent } from './po/po-date-modal';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -116,6 +117,7 @@ import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.componen
     ProcessManageComponent,
     SurfaceManageComponent,
     PoDownloadlogComponent,
+    PoDateModalComponent,
   ],
   imports: [
     CommonModule,

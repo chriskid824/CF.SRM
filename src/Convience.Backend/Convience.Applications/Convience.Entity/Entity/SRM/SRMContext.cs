@@ -21,9 +21,9 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmRfqH> SrmRfqHs { get; set; }
         public virtual DbSet<SrmRfqM> SrmRfqMs { get; set; }
         public virtual DbSet<SrmRfqV> SrmRfqVs { get; set; }
-        public virtual DbSet<SrmVendor> SrmVendors { get; set; }
         public virtual DbSet<SrmPoH> SrmPoHs { get; set; }
         public virtual DbSet<SrmPoL> SrmPoLs { get; set; }
+        public virtual DbSet<SrmVendor> SrmVendors { get; set; }
         public virtual DbSet<SrmQotH> SrmQotHs { get; set; }
         public virtual DbSet<SrmEkgry> SrmEkgries { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
@@ -616,6 +616,11 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("CREATE_DATE")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.DeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DELIVERY_DATE")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.DeliveryNum)
                     .HasMaxLength(20)
                     .HasColumnName("DELIVERY_NUM");
@@ -757,6 +762,11 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
 
+                entity.Property(e => e.OriginalDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ORIGINAL_DATE")
+                    .HasComment("原始需求日");
+
                 entity.Property(e => e.OtherDesc)
                     .HasColumnName("OTHER_DESC")
                     .HasComment("其他內文");
@@ -799,6 +809,8 @@ namespace Convience.Entity.Entity.SRM
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("PO_ID");
             });
+
+
 
 
             modelBuilder.Entity<SrmQotMaterial>(entity =>

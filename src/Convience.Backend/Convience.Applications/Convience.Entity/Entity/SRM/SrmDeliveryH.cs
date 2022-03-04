@@ -15,6 +15,7 @@ namespace Convience.Entity.Entity.SRM
         }
 
         public int DeliveryId { get; set; }
+        public DateTime? DeliveryDate { get; set; }
         public string DeliveryNum { get; set; }
         public int? Status { get; set; }
         public DateTime CreateDate { get; set; }

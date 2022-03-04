@@ -15,6 +15,7 @@ namespace Convience.Entity.Entity.SRM
         public string Description { get; set; }
         public float? Qty { get; set; }
         public decimal? Price { get; set; }
+        public DateTime? OriginalDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public DateTime? ReplyDeliveryDate { get; set; }
         public string DeliveryPlace { get; set; }

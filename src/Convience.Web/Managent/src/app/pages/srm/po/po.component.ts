@@ -18,6 +18,7 @@ import { SrmFileService } from 'src/app/business/srm/srm-file.service';
 import { FileService } from 'src/app/business/file.service';
 import { FileInfo } from '../../content-manage/model/fileInfo';
 import { StorageService } from 'src/app/services/storage.service';
+import { PoDateModalComponent} from './po-date-modal';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -124,6 +125,18 @@ export class PoComponent implements OnInit {
         cellEditorFramework: AgGridDatePickerComponent
       },
       {
+        headerName:'公司',
+        field: 'Org',
+        valueGetter: function (params) {
+          console.info(params);
+          if(params.data.Org=='3100')
+          {
+            return "千附精密";
+          }
+          return "千附實業";
+        }
+      },
+      {
         headerName:'拋轉日期',
         field: 'CreateDate',
         valueFormatter:dateFormatter
@@ -180,6 +193,25 @@ export class PoComponent implements OnInit {
           // });
           return eDiv;
           }
+          else if(params.data.Status==11)
+          {
+            var eDiv = document.createElement('div');
+            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">統一回覆</button></span>';
+            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+
+            eButton.addEventListener('click', function() {
+              // var dialogData=new DialogData();
+              // dialogData.data=params.data;
+              const dialogConfig = new MatDialogConfig();
+              dialogConfig.disableClose = true;
+              dialogConfig.autoFocus = true;
+              //dialogConfig.minWidth = "1500px";
+              dialogConfig.maxHeight = "1500px";
+              dialogConfig.data = params.data.PoNum;
+              dialog.open(PoDateModalComponent, dialogConfig);
+              });
+            return eDiv;
+            }
         },
         cellRendererParams: {
           // ondblclick:this.openFileModal.bind(this),
@@ -227,6 +259,11 @@ export class PoComponent implements OnInit {
           {
             headerName:'單價',
             field: 'Price',
+          },
+          {
+            headerName:'原始需求日',
+            field: 'OriginalDate',
+            valueFormatter:dateFormatter
           },
           {
             headerName:'本次需求日',

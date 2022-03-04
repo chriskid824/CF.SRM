@@ -15,6 +15,7 @@ export class DeliveryModalComponent implements OnInit {
   sideBar;
   Title;
   deliverydata;
+  iscf:boolean=false;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.rowGroupPanelShow='always';
     // var defs=[];
@@ -87,7 +88,11 @@ export class DeliveryModalComponent implements OnInit {
     };
     this.deliverydata=this.data.data;
     this.rowData = this.data.data.SrmDeliveryLs;
-    console.info(this.rowData);
+    if(this.data.data.SrmDeliveryLs.length>0&&this.data.data.SrmDeliveryLs[0].Org!='3100')
+    {
+      this.iscf=true;
+    }
+    console.info(this.deliverydata);
     this.Title=this.data.paramname+" - "+this.data.columnname+" - "+this.data.valuetype;
     this.sideBar = {
       toolPanels: [

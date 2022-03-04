@@ -25,10 +25,10 @@ namespace Convience.Service.SRM
 {
     public interface ISrmDeliveryService
     {
-        public bool AddDelivery(List<ViewSrmPoL> data);
+        public bool AddDelivery(AddDeliveryModel data);
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
-
+        public int UpdateReplyDeliveryDateH(string ponum,DateTime date);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryL(ViewSrmDeliveryL data);
@@ -56,12 +56,15 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public bool AddDelivery(List<ViewSrmPoL> data)
+        public bool AddDelivery(AddDeliveryModel data)
         {
             var neworder = _context.SrmDeliveryHs
     .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
+            SrmDeliveryH dh = _context.SrmDeliveryHs.Find(neworder.DeliveryId);
+            dh.DeliveryDate = data.date;
+            _context.SrmDeliveryHs.Update(dh);
             if (neworder == null) return false;
-            data.ForEach(m =>
+            data.data.ForEach(m =>
             {
                 SrmDeliveryL l = new SrmDeliveryL()
                 {
@@ -69,7 +72,7 @@ namespace Convience.Service.SRM
                     PoId = m.PoId,
                     PoLId = m.PoLId,
                     DeliveryQty = m.DeliveryQty,
-                    QmQty = 0
+                    QmQty = 0,
                 };
                 _context.SrmDeliveryLs.Add(l);
                 //如果都未發貨數量0了才改狀態
@@ -81,7 +84,7 @@ namespace Convience.Service.SRM
                 }
             });
             _context.SaveChanges();
-            data.ForEach(m =>
+            data.data.ForEach(m =>
             {
                 //如果所有項次狀態都發貨了就改主檔狀態
                 if (!_context.SrmPoLs.Any(p => p.PoId == m.PoId && p.Status != 14))
@@ -104,6 +107,7 @@ namespace Convience.Service.SRM
                 .Select(p => new ViewSrmDeliveryH
                 {
                     DeliveryId = p.DeliveryId,
+                    DeliveryDate=p.DeliveryDate,
                     DeliveryNum = p.DeliveryNum,
                     Status = p.Status,
                     CreateDate = p.CreateDate,
@@ -161,7 +165,19 @@ namespace Convience.Service.SRM
             });
             return result.Where(p => p.SrmDeliveryLs.Count > 0).ToList();
         }
-
+        public int UpdateReplyDeliveryDateH(string ponum, DateTime date)
+        {
+            int poid = _context.SrmPoHs.Where(p => p.PoNum == ponum).FirstOrDefault().PoId;
+            List<SrmPoL> pols = _context.SrmPoLs.Where(p => p.PoId == poid).ToList();
+            foreach (var item in pols)
+            {
+                item.Status = 15;
+                item.ReplyDeliveryDate = date;
+            }
+            _context.SrmPoLs.UpdateRange(pols);
+            _context.SaveChanges();
+            return poid;
+        }
         public bool UpdateReplyDeliveryDate(SrmPoL data)
         {
             _context.SrmPoLs.Update(data);

@@ -3,17 +3,17 @@
 <!-- <h1 mat-dialog-title>{{Title}}</h1> -->
 <mat-dialog-content style="max-height: 80vh;display: contents;" id="printable">
     <div class="row col-md-6 col-sm-6" style="height: 100px;display:inline-block">
-      <img src="\assets\千附精密.png" style="float: left;position:relative;left:10px">
+      <img src="\assets\千附實業.png" *ngIf="iscf" style="float: left;position:relative;left:10px">
+      <img src="\assets\千附精密.png" *ngIf="!iscf" style="float: left;position:relative;left:10px">
       <qrcode style="float:right;position:absolute;left:70vw" [qrdata]="deliverydata.DeliveryNum" [elementType]="'string'" [width]="100" [scale]="1" [errorCorrectionLevel]="'M'" class="printqr"></qrcode>
     </div>
-<
       <div style="border:1px solid;margin:15px;font-size:20px;padding:15px" class="row col-md-12 col-sm-12">
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">出貨單號</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryNum}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.VendorName}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">出貨日期</div>
-      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.CreateDate}}</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryDate| date:'yyyy-MM-dd'}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商地址</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.Address}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">送貨地址</div>

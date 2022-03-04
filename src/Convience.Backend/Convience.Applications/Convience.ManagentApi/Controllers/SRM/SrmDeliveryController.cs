@@ -37,9 +37,9 @@ namespace Convience.ManagentApi.Controllers.SRM
         }
 
         [HttpPost("AddDelivery")]
-        public IActionResult AddDelivery(List<ViewSrmPoL> pols)
+        public IActionResult AddDelivery(AddDeliveryModel data)
         {
-            if (_srmDeliveryService.AddDelivery(pols)) return Ok();
+            if (_srmDeliveryService.AddDelivery(data)) return Ok();
             return BadRequest("出貨單生成失敗");
         }
         [HttpPost("UpdateDeliveryL")]

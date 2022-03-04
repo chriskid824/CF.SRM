@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { SrmDeliveryService } from '../../../business/srm/srm-delivery.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DateFilterModel } from 'ag-grid-community';
 @Component({
   selector: 'app-po-detail',
   encapsulation: ViewEncapsulation.None,
@@ -23,6 +24,7 @@ export class PoDetailComponent implements OnInit {
   paginationNumberFormatter;
   rowData;
   searchForm: FormGroup = new FormGroup({});
+  deliverydate;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService) {
     this.columnDefs = [
       {
@@ -228,8 +230,12 @@ export class PoDetailComponent implements OnInit {
       return;
     }
     let selectedData = selectedNodes.map(node => node.data);
-    console.info(selectedData);
-    this._srmDeliveryService.AddDelivery(selectedData)
+    var query = {
+      date: this.deliverydate,
+      data: selectedData,
+    }
+    console.info(query);
+    this._srmDeliveryService.AddDelivery(query)
     .subscribe((result) => {
       if(result==null) alert('出貨單生成成功');
       this.refresh();
