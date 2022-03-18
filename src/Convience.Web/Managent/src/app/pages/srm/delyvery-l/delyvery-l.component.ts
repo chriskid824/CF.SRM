@@ -285,7 +285,7 @@ export class DelyveryLComponent implements OnInit {
           {
             headerName:'交貨數量',
             field: 'DeliveryQty',
-            editable:true,
+            editable:false,
           },
           {
             headerName:'已品檢數量',
@@ -555,7 +555,11 @@ export class DelyveryLComponent implements OnInit {
     });
   }
   start(e){
-    var PoLItem= this.PoList.find(p=>p.PoId==e.rowData.PoId &&p.PoLId==e.rowData.PoLId);
+
+    var PoLItem= this.PoList.filter(p=>p.PoId==e.rowData.PoId &&p.PoLId==e.rowData.PoLId);
+    console.info(this.PoList);
+    console.info(PoLItem);
+    console.info(e.rowData);
     this.MaxDeliveryQty=PoLItem.DeliveryQty+e.rowData.DeliveryQty;
     this.isedit=true;
     console.info(e.rowData);

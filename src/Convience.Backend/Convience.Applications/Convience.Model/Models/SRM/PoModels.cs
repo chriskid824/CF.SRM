@@ -22,6 +22,7 @@ namespace Convience.Model.Models.SRM
         public int status { get; set; }
         public string host { get; set; }
         public int dataStatus { get; set; }
+        public bool onlysevendays { get; set; } = true;
         public System.Security.Claims.ClaimsPrincipal user { get; set; }
     }
 

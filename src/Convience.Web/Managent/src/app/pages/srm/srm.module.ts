@@ -76,6 +76,7 @@ import { ProcessManageComponent } from './process-manage/process-manage.componen
 import { SurfaceManageComponent } from './surface-manage/surface-manage.component';
 import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.component';
 import { PoDateModalComponent } from './po/po-date-modal';
+import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -118,6 +119,7 @@ import { PoDateModalComponent } from './po/po-date-modal';
     SurfaceManageComponent,
     PoDownloadlogComponent,
     PoDateModalComponent,
+    PoDetail1200Component,
   ],
   imports: [
     CommonModule,
@@ -133,6 +135,7 @@ import { PoDateModalComponent } from './po/po-date-modal';
        { path: "po-examine", component: PoExamineComponent , canActivate: [LoginGuard]},
        { path: "po-log", component: PoDownloadlogComponent , canActivate: [LoginGuard]},
        { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
+       { path: "deliveryh1200", component: PoDetail1200Component, canActivate: [LoginGuard] },
        { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
        { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},
        { path: "deliveryreceive", component: DeliveryReceiveComponent , canActivate: [LoginGuard]},

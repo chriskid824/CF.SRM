@@ -39,7 +39,28 @@ namespace Convience.ManagentApi.Controllers.SRM
         [HttpPost("AddDelivery")]
         public IActionResult AddDelivery(AddDeliveryModel data)
         {
-            if (_srmDeliveryService.AddDelivery(data)) return Ok();
+            bool success = true;
+            List<ViewSrmPoL> list1 = data.data.FindAll(p => p.Storage == "05Z1");
+            List<ViewSrmPoL> list2 = data.data.FindAll(p => p.Storage != "05Z1");
+            if (list1.Count > 0)
+            {
+                if (!_srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list1, date = data.date, }))
+                {
+                    success = false;
+                }
+            }
+            if (list2.Count > 0)
+            {
+                if (!_srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list2, date = data.date, }))
+                {
+                    success = false;
+                }
+            }
+            if (success)
+            {
+                return Ok();
+            }
+            //if (_srmDeliveryService.AddDelivery(data)) return Ok();
             return BadRequest("出貨單生成失敗");
         }
         [HttpPost("UpdateDeliveryL")]
@@ -150,6 +171,14 @@ namespace Convience.ManagentApi.Controllers.SRM
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
+        }
+
+        [HttpPost("GetDeliveryExcel")]
+        public IActionResult GetDeliveryExcel(AddDeliveryModel data)
+        {
+            //var stream = await _srmDeliveryService.DownloadAsync(viewModel);
+            //return File(stream, "application/octet-stream", viewModel.Name);
+            return BadRequest("出貨單生成失敗");
         }
     }
 }

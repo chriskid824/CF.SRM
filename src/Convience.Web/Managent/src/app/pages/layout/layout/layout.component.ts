@@ -87,6 +87,7 @@ export class LayoutComponent implements OnInit {
       canOperate: 'delivery', routerLink: '', iconType: 'tool', firstBreadcrumb: '', lastBreadcrumb: '', name: '出貨',
       children: [
         { canOperate: 'deliveryh', routerLink: '/srm/deliveryh', iconType: 'fund-view', firstBreadcrumb: '出貨', lastBreadcrumb: '出貨明細查詢', name: '出貨明細查詢', },
+        { canOperate: 'deliveryh1200', routerLink: '/srm/deliveryh1200', iconType: 'fund-view', firstBreadcrumb: '出貨', lastBreadcrumb: '跟催表查詢', name: '跟催表查詢', },
         { canOperate: 'deliveryl', routerLink: '/srm/deliveryl', iconType: 'fund-view', firstBreadcrumb: '出貨', lastBreadcrumb: '出貨單查詢', name: '出貨單查詢', },
         { canOperate: 'deliveryreceive', routerLink: '/srm/deliveryreceive', iconType: 'fund-view', firstBreadcrumb: '出貨', lastBreadcrumb: '收貨作業', name: '收貨作業', },
       ]

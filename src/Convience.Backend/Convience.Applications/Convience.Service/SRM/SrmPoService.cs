@@ -227,8 +227,11 @@ namespace Convience.Service.SRM
                               StatusDesc = status.StatusDesc,
                               Matnr = matnr.SapMatnr,
                               Org = h.Org,
+                              Storage=l.Storage,
+                              StorageDesc=l.StorageDesc,
                               EkgryDesc=ekgry.EkgryDesc,
                           })
+                          .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate<DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
