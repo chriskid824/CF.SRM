@@ -258,6 +258,8 @@ namespace Convience.Service.SRM
             SrmMatnr description = _context.SrmMatnrs.Where(p => p.Description == data.Description && p.Werks == data.Werks).FirstOrDefault();
             SrmEkgry ekgrp = _context.SrmEkgries.Where(p => p.Ekgry == data.Ekgrp).FirstOrDefault();
             SrmMeasureUnit Unit = _context.SrmMeasureUnits.Where(p => p.MeasureDesc == data.UnitDesc).FirstOrDefault();
+            // 20220318新增卡控
+            SrmMaterialGroup group = _context.SrmMaterialGroups.Where(p => p.GroupId == data.MatnrGroup).FirstOrDefault();
 
             if (srmmatnr != null)
             {
@@ -275,6 +277,10 @@ namespace Convience.Service.SRM
             if (Unit == null)
             {
                 throw new Exception("計量單位有誤，請重新輸入");
+            }
+            if (group == null)
+            {
+                throw new Exception("物料群組有誤，請重新輸入");
             }
 
 
