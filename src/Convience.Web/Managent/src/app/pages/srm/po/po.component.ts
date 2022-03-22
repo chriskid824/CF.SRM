@@ -315,7 +315,7 @@ export class PoComponent implements OnInit {
             cellEditorFramework: AgGridDatePickerComponent,
             cellClassRules: {
               //'rag-green': 'x == null',
-              'rag-aqua': 'x == null',
+              'rag-yellow': 'x == null',
               //'rag-red': 'x == 21',
             },
           },
