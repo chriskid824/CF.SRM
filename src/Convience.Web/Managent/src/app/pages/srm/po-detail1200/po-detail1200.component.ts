@@ -224,8 +224,8 @@ export class PoDetail1200Component implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     const sortModel = [
-      {colId: 'Matnr', sort: 'desc'},
-      {colId: 'Description', sort: 'desc'},
+      {colId: 'Matnr', sort: 'asc'},
+      {colId: 'Description', sort: 'asc'},
       {colId: 'DeliveryDate', sort: 'asc'},
     ];
     this.gridApi.setSortModel(sortModel);
