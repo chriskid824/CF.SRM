@@ -155,13 +155,6 @@ export class PoDetail1200Component implements OnInit {
         field: 'MatnrId',
         hide:'true'
       },
-
-
-
-
-
-
-
       {
         headerName:'交貨地點',
         field: 'DeliveryPlace',
@@ -202,7 +195,7 @@ export class PoDetail1200Component implements OnInit {
       resizable: true,
       filter: true,
       flex: 1,
-      minWidth: 100,
+      minWidth: 150,
     };
     this.rowSelection = 'multiple';
     this.rowGroupPanelShow = 'always';
@@ -230,6 +223,12 @@ export class PoDetail1200Component implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    const sortModel = [
+      {colId: 'Matnr', sort: 'desc'},
+      {colId: 'Description', sort: 'desc'},
+      {colId: 'DeliveryDate', sort: 'desc'},
+    ];
+    this.gridApi.setSortModel(sortModel);
     this.getPoLList(null);
   }
   submitSearch() {
