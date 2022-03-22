@@ -137,6 +137,7 @@ import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
        { path: "deliveryh", component: PoDetailComponent, canActivate: [LoginGuard] },
        { path: "deliveryh1200", component: PoDetail1200Component, canActivate: [LoginGuard] },
        { path: "deliveryl", component: DelyveryLComponent , canActivate: [LoginGuard]},
+       { path: "deliveryl/:number", component: DelyveryLComponent , canActivate: [LoginGuard]},
        { path: "deliverymodal", component: DeliveryModalComponent , canActivate: [LoginGuard]},
        { path: "deliveryreceive", component: DeliveryReceiveComponent , canActivate: [LoginGuard]},
        { path: "qot", component: QotComponent },

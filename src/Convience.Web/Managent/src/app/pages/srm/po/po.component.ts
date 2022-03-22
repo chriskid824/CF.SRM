@@ -83,7 +83,7 @@ export class PoComponent implements OnInit {
         hide:'true',
       },
       {
-        headerName:'採購單號',
+        headerName:'單號',
         field: 'PoNum',
         cellRenderer: 'agGroupCellRenderer',
       },
@@ -101,11 +101,11 @@ export class PoComponent implements OnInit {
         field: 'StatusDesc',
       },
       {
-        headerName:'採購單總金額',
+        headerName:'總金額',
         field: 'TotalAmount',
       },
       {
-        headerName:'採購人員',
+        headerName:'採購員',
         field: 'EkgryDesc',
       },
       {
@@ -234,7 +234,43 @@ export class PoComponent implements OnInit {
     this.detailCellRendererParams = {
       detailGridOptions: {
         frameworkComponents:this.frameworkComponents,
+        rowStyle: { background: 'beige' },
         columnDefs: [
+          { headerName: '操作',
+          //           cellRenderer : function(params){
+          //               var eDiv = document.createElement('div');
+          //               eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">編輯檔案</button></span>';
+          //               var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+
+          //               eButton.addEventListener('click', function() {
+          // this.isVisible=true;
+
+          //               });
+          //               return eDiv;
+
+          //             }
+                       Width:10,
+                       cellRenderer : function(params){
+                          var eDiv = document.createElement('div');
+                          eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+                          var eButton_file = eDiv.querySelectorAll('.btn-simple')[0];
+                          eButton_file.addEventListener('click', function() {
+                            params.ondblclick(params);
+                          });
+                          return eDiv;
+
+                        },
+                        cellRendererParams: {
+                          ondblclick:this.openFileModal.bind(this),
+                          label: '',
+                        },
+                      //  cellRenderer: 'buttonRenderer',
+                      //  cellRendererParams: {
+                      //   ondblclick:this.start.bind(this),
+                      //   label: '',
+                      // },
+                      // pinned: 'left',
+                    },
           {
             headerName:'項次',
             field: 'PoLId',
@@ -280,7 +316,7 @@ export class PoComponent implements OnInit {
             cellEditorFramework: AgGridDatePickerComponent,
             cellClassRules: {
               //'rag-green': 'x == null',
-              'rag-lime': 'x == null',
+              'rag-aqua': 'x == null',
               //'rag-red': 'x == 21',
             },
           },
@@ -314,41 +350,6 @@ export class PoComponent implements OnInit {
             headerName:'其他內文',
             field: 'OtherDesc',
           },
-          { headerName: '操作',
-//           cellRenderer : function(params){
-//               var eDiv = document.createElement('div');
-//               eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">編輯檔案</button></span>';
-//               var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-
-//               eButton.addEventListener('click', function() {
-// this.isVisible=true;
-
-//               });
-//               return eDiv;
-
-//             }
-             Width:10,
-             cellRenderer : function(params){
-                var eDiv = document.createElement('div');
-                eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
-                var eButton_file = eDiv.querySelectorAll('.btn-simple')[0];
-                eButton_file.addEventListener('click', function() {
-                  params.ondblclick(params);
-                });
-                return eDiv;
-
-              },
-              cellRendererParams: {
-                ondblclick:this.openFileModal.bind(this),
-                label: '',
-              },
-            //  cellRenderer: 'buttonRenderer',
-            //  cellRendererParams: {
-            //   ondblclick:this.start.bind(this),
-            //   label: '',
-            // },
-            pinned: 'left',
-          }
         ],
         defaultColDef : {
           editable: false,

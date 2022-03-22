@@ -4,6 +4,7 @@ import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { SrmDeliveryService } from '../../../business/srm/srm-delivery.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DateFilterModel } from 'ag-grid-community';
+import { Router,ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-po-detail',
   encapsulation: ViewEncapsulation.None,
@@ -25,14 +26,24 @@ export class PoDetailComponent implements OnInit {
   rowData;
   searchForm: FormGroup = new FormGroup({});
   deliverydate;
-  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService) {
+  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
+    ,private router: Router,) {
     this.columnDefs = [
+      {
+        headerName:'料號',
+        field: 'Matnr',
+        checkboxSelection: checkboxSelection,
+        headerCheckboxSelection: headerCheckboxSelection,
+      },
+      {
+        headerName:'物料內文',
+        field: 'Description',
+      },
       {
         headerName:'採購單號',
         field: 'PoNum',
         minWidth: 170,
-        checkboxSelection: checkboxSelection,
-        headerCheckboxSelection: headerCheckboxSelection,
+
       },
       {
         headerName:'採購單識別碼',
@@ -41,49 +52,8 @@ export class PoDetailComponent implements OnInit {
         hide:'true',
       },
       {
-        headerName:'採購單明細識別碼',
+        headerName:'項次',
         field: 'PoLId',
-        hide:'true',
-      },
-      {
-        headerName:'供應商識別碼',
-        field: 'VendorId',
-        hide:'true',
-      },
-      {
-        headerName:'供應商',
-        field: 'VendorName',
-      },
-      {
-        headerName:'狀態',
-        field: 'StatusDesc',
-      },
-      {
-        headerName:'廠商交貨日期',
-        field: 'ReplyDeliveryDate',
-        valueFormatter:dateFormatter,
-      },
-      {
-        headerName:'採購單總金額',
-        field: 'TotalAmount',
-        hide:'true'
-      },
-      {
-        headerName:'採購人員',
-        field: 'EkgryDesc',
-      },
-      {
-        headerName:'料號識別碼',
-        field: 'MatnrId',
-        hide:'true'
-      },
-      {
-        headerName:'料號',
-        field: 'Matnr',
-      },
-      {
-        headerName:'物料內文',
-        field: 'Description',
       },
       {
         headerName:'採單數量',
@@ -120,7 +90,39 @@ export class PoDetailComponent implements OnInit {
         field: 'DeliveryDate',
         valueFormatter:dateFormatter
       },
+      {
+        headerName:'廠商交貨日期',
+        field: 'ReplyDeliveryDate',
+        valueFormatter:dateFormatter,
+      },
+      {
+        headerName:'供應商識別碼',
+        field: 'VendorId',
+        hide:'true',
+      },
+      {
+        headerName:'供應商',
+        field: 'VendorName',
+      },
+      {
+        headerName:'採購員',
+        field: 'EkgryDesc',
+      },
+      {
+        headerName:'狀態',
+        field: 'StatusDesc',
+      },
 
+      {
+        headerName:'採購單總金額',
+        field: 'TotalAmount',
+        hide:'true'
+      },
+      {
+        headerName:'料號識別碼',
+        field: 'MatnrId',
+        hide:'true'
+      },
       {
         headerName:'交貨地點',
         field: 'DeliveryPlace',
@@ -236,9 +238,9 @@ export class PoDetailComponent implements OnInit {
     }
     console.info(query);
     this._srmDeliveryService.AddDelivery(query)
-    .subscribe((result) => {
-      if(result==null) alert('出貨單生成成功');
-      this.refresh();
+    .subscribe((result:any) => {
+      if(result!=null) alert('出貨單生成成功');
+      this.router.navigate(['/srm/deliveryl/'+result]);
     });
   }
 }

@@ -13,6 +13,7 @@ import { DeliveryModalComponent } from "../delivery-modal/delivery-modal.compone
 import { DeliveryAddComponent } from "../delivery-add/delivery-add.component";
 import { SrmModule } from '../srm.module';
 import { EditButtonComponent } from './button-cell-renderer.component';
+import { ActivatedRoute } from '@angular/router';
 class DialogData {
   paramid: string;
   paramname:string;
@@ -56,7 +57,7 @@ export class DelyveryLComponent implements OnInit {
   @ViewChild('ctest2')
   ctest2: TemplateRef<any>;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
-    ,private _modalService: NzModalService, private dialog: MatDialog) {
+    ,private _modalService: NzModalService, private dialog: MatDialog,private route: ActivatedRoute) {
       this.isedit=true;
       this.frameworkComponents = {
         buttonRenderer: EditButtonComponent,
@@ -321,10 +322,10 @@ export class DelyveryLComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
-      DELIVERY_NUM: [null],
+      DELIVERY_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
     });
-    this.getDelyveryList(null);
+    //this.refresh();
     this.getPoLList(null);
   }
   getPoLList(query){
@@ -453,7 +454,7 @@ export class DelyveryLComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.getDelyveryList(null);
+    this.refresh();
     this.gridApi.sizeColumnsToFit();
     // this._srmPoService.GetPo(null)
     //   .subscribe((data) => {

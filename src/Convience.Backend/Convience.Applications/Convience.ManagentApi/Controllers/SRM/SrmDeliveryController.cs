@@ -42,23 +42,26 @@ namespace Convience.ManagentApi.Controllers.SRM
             bool success = true;
             List<ViewSrmPoL> list1 = data.data.FindAll(p => p.Storage == "05Z1");
             List<ViewSrmPoL> list2 = data.data.FindAll(p => p.Storage != "05Z1");
+            string deliveryNum = null;
             if (list1.Count > 0)
             {
-                if (!_srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list1, date = data.date, }))
+                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list1, date = data.date, });
+                if (deliveryNum == null)
                 {
                     success = false;
                 }
             }
             if (list2.Count > 0)
             {
-                if (!_srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list2, date = data.date, }))
+                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list2, date = data.date, });
+                if (deliveryNum == null)
                 {
                     success = false;
                 }
             }
             if (success)
             {
-                return Ok();
+                return Ok(deliveryNum);
             }
             //if (_srmDeliveryService.AddDelivery(data)) return Ok();
             return BadRequest("出貨單生成失敗");

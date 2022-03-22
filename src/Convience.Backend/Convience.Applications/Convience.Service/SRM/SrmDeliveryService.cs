@@ -25,7 +25,7 @@ namespace Convience.Service.SRM
 {
     public interface ISrmDeliveryService
     {
-        public bool AddDelivery(AddDeliveryModel data);
+        public string AddDelivery(AddDeliveryModel data);
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
         public int UpdateReplyDeliveryDateH(string ponum,DateTime date);
@@ -56,14 +56,14 @@ namespace Convience.Service.SRM
             //_systemIdentityDbUnitOfWork = systemIdentityDbUnitOfWork;
         }
 
-        public bool AddDelivery(AddDeliveryModel data)
+        public string AddDelivery(AddDeliveryModel data)
         {
             var neworder = _context.SrmDeliveryHs
     .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
             SrmDeliveryH dh = _context.SrmDeliveryHs.Find(neworder.DeliveryId);
             dh.DeliveryDate = data.date;
             _context.SrmDeliveryHs.Update(dh);
-            if (neworder == null) return false;
+            if (neworder == null) return null;
             data.data.ForEach(m =>
             {
                 SrmDeliveryL l = new SrmDeliveryL()
@@ -95,7 +95,7 @@ namespace Convience.Service.SRM
                 }
             });
             _context.SaveChanges();
-            return true;
+            return dh.DeliveryNum;
         }
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query)
         {
