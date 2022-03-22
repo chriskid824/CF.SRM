@@ -163,7 +163,7 @@ export class PoDetailComponent implements OnInit {
       resizable: true,
       filter: true,
       flex: 1,
-      minWidth: 100,
+      minWidth: 150,
     };
     this.rowSelection = 'multiple';
     this.rowGroupPanelShow = 'always';

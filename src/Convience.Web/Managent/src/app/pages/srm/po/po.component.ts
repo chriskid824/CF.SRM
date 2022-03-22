@@ -228,7 +228,7 @@ export class PoComponent implements OnInit {
       resizable: true,
       filter: true,
       flex: 1,
-      minWidth: 100,
+      minWidth: 150,
     };
     this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
@@ -249,7 +249,6 @@ export class PoComponent implements OnInit {
           //               return eDiv;
 
           //             }
-                       Width:10,
                        cellRenderer : function(params){
                           var eDiv = document.createElement('div');
                           eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
@@ -360,7 +359,7 @@ export class PoComponent implements OnInit {
           resizable: true,
           filter: true,
           flex: 1,
-          minWidth: 100,
+          minWidth: 150,
         },
       },
 
