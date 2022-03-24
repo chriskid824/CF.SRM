@@ -73,4 +73,7 @@ export class SrmPoService {
   GetDownLoadLog(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/GetDownLoadLog`,po);
   }
+  GetPoLAbnormal(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPoLAbnormal`,query);
+  }
 }

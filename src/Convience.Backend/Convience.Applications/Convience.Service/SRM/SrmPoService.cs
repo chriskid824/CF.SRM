@@ -44,6 +44,7 @@ namespace Convience.Service.SRM
         public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor);
         public void addLog(int poid, int polid, string filename, string ip, string username);
         public PagingResultModel<ViewSrmDownloadLog> GetDownloadList(QueryPoDownloadLogList query);
+        public IEnumerable<ViewSrmPoL> GetPoLAbnormal(QueryPoList query);
     }
 
     public class SrmPoService : ISrmPoService
@@ -628,6 +629,59 @@ namespace Convience.Service.SRM
                 Data = r,
                 Count = result.Count()
             };
+        }
+        public IEnumerable<ViewSrmPoL> GetPoLAbnormal(QueryPoList query)
+        {
+            var result = (from l in _context.SrmPoLs
+                          join h in _context.SrmPoHs on l.PoId equals h.PoId
+                          join status in _context.SrmStatuses on l.Status equals status.Status
+                          join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                          join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                          from matnr in matnrInfo.DefaultIfEmpty()
+                          join ekgry in _context.SrmEkgries on h.Buyer equals ekgry.Ekgry into ekgryInfo
+                          from ekgry in ekgryInfo.DefaultIfEmpty()
+                          where l.DeliveryDate != l.ReplyDeliveryDate
+                          && h.Status != 21
+                          select new ViewSrmPoL
+                          {
+                              PoNum = h.PoNum,
+                              PoLId = l.PoLId,
+                              PoId = l.PoId,
+                              MatnrId = l.MatnrId,
+                              Description = l.Description,
+                              Qty = l.Qty,
+                              Price = l.Price,
+                              DeliveryDate = l.DeliveryDate,
+                              ReplyDeliveryDate = l.ReplyDeliveryDate,
+                              DeliveryPlace = l.DeliveryPlace,
+                              CriticalPart = l.CriticalPart,
+                              InspectionTime = l.InspectionTime,
+                              Status = l.Status,
+                              VendorId = h.VendorId,
+                              VendorName = vendor.VendorName,
+                              SapVendor = vendor.SapVendor,
+                              TotalAmount = h.TotalAmount,
+                              Buyer = h.Buyer,
+                              StatusDesc = status.StatusDesc,
+                              Matnr = matnr.SapMatnr,
+                              Org = h.Org,
+                              Storage = l.Storage,
+                              StorageDesc = l.StorageDesc,
+                              EkgryDesc = ekgry.EkgryDesc,
+                          })
+                          .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
+                          .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                          .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.srmvendor), p => p.SapVendor == query.srmvendor)
+                          .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+            result.ForEach(p =>
+            {
+                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);
+            });
+
+            //.AndIfCondition(query.status != 0, p => p.Status == query.status);
+            return result.Where(p => p.RemainQty > 0).ToList();
         }
     }
 }

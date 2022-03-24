@@ -456,6 +456,31 @@ namespace Convience.ManagentApi.Controllers.SRM
             var h = _srmPoService.GetDownloadList(query);
             return Ok(h);
         }
+
+        [HttpPost("GetPoLAbnormal")]
+        public string GetPoLAbnormal(JObject query)
+        {
+            if (query == null)
+            {
+                return JsonConvert.SerializeObject(_srmPoService.GetAll(), Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+            }
+            QueryPoList q = new QueryPoList();
+            q.srmvendor = query["srmvendor"] == null ? null : query["srmvendor"].ToString();
+          
+            q.status = query["status"] == null ? 0 : (int)query["status"];
+            q.user = User;
+            var aaa = _srmPoService.GetPoLAbnormal(q);
+
+            return JsonConvert.SerializeObject(aaa, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+        }
     }
 
 }

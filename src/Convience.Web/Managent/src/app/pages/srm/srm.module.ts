@@ -77,6 +77,7 @@ import { SurfaceManageComponent } from './surface-manage/surface-manage.componen
 import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.component';
 import { PoDateModalComponent } from './po/po-date-modal';
 import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
+import { PoAbnormalComponent } from './po-abnormal/po-abnormal.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -120,6 +121,7 @@ import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
     PoDownloadlogComponent,
     PoDateModalComponent,
     PoDetail1200Component,
+    PoAbnormalComponent,
   ],
   imports: [
     CommonModule,
@@ -163,6 +165,7 @@ import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
         { path: "eqplist", component: EqplistComponent, canActivate: [LoginGuard]},
         { path: "process-manage", component: ProcessManageComponent, canActivate: [LoginGuard] },
         { path: "surface-manage", component: SurfaceManageComponent, canActivate: [LoginGuard] },
+        { path: "po-abnormal", component: PoAbnormalComponent, canActivate: [LoginGuard] },
     ]),
     AgGridModule.withComponents([ButtonRendererComponent]),
     NzButtonModule,
@@ -195,7 +198,7 @@ import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
     CKEditorModule,
     AngularEditorModule,
     NzListModule,
-    NzPopconfirmModule
+    NzPopconfirmModule,
   ]
 })
 export class SrmModule {

@@ -24,6 +24,7 @@ namespace Convience.Model.Models.SRM
         public int dataStatus { get; set; }
         public bool onlysevendays { get; set; } = true;
         public System.Security.Claims.ClaimsPrincipal user { get; set; }
+        public string srmvendor { get; set; }
     }
 
     public class QueryPoDownloadLogList
