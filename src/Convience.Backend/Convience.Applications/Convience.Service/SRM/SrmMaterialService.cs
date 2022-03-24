@@ -283,7 +283,6 @@ namespace Convience.Service.SRM
                 throw new Exception("物料群組有誤，請重新輸入");
             }
 
-
             if (string.IsNullOrWhiteSpace(data.MatnrGroup))
             {
                 throw new Exception("物料群組，必填");

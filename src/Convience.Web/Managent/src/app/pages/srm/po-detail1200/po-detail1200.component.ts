@@ -4,6 +4,7 @@ import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { SrmDeliveryService } from '../../../business/srm/srm-delivery.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DateFilterModel } from 'ag-grid-community';
+
 @Component({
   selector: 'app-po-detail1200',
   encapsulation: ViewEncapsulation.None,
@@ -15,6 +16,7 @@ export class PoDetail1200Component implements OnInit {
   gridColumnApi;
 
   columnDefs;
+  excelStyles;
   autoGroupColumnDef;
   defaultColDef;
   rowSelection;
@@ -29,7 +31,7 @@ export class PoDetail1200Component implements OnInit {
     this.columnDefs = [
       {
         headerName:'物料',
-        field: 'Matnr',
+        field: 'Matnr',      
         // checkboxSelection: checkboxSelection,
         // headerCheckboxSelection: headerCheckboxSelection,
       },
@@ -41,7 +43,8 @@ export class PoDetail1200Component implements OnInit {
         headerName:'採購單-項次',
         field: 'PoNum',
         minWidth: 170,
-        valueGetter: function (params) {
+        valueGetter: function (params) {  
+          console.log([params.data.Org,params.data.VendorId]);    
           if(params.data.PoNum==undefined){return "";}
           return params.data.PoNum+'-'+params.data.PoLId;
         },
@@ -78,18 +81,48 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName:'原始需求日期',
-        field: 'DeliveryDate',
-        valueFormatter:dateFormatter
+        field: 'OriginalDate',
+        valueGetter:function (params) {
+          if(params.data.OriginalDate==null) return "";
+          var date=new Date(params.data.OriginalDate);
+          return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+        }
       },
       {
         headerName:'請單本次需求日期',
         field: 'DeliveryDate',
-        valueFormatter:dateFormatter
+        valueGetter:function (params) {
+          if(params.data.DeliveryDate==null) return "";
+          var date=new Date(params.data.DeliveryDate);
+          return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+        },
+        cellStyle:function (params) {
+          var date=new Date(params.value);  
+          if (params.data.DeliveryDate!=params.data.OriginalDate) {    
+            return {color: 'red'};
+          }
+        },
+        cellClassRules: {
+          redFont: params => params.data.DeliveryDate!=params.data.OriginalDate,
+        },
       },
       {
         headerName:'廠商交貨日期',
         field: 'ReplyDeliveryDate',
-        valueFormatter:dateFormatter,
+        valueGetter:function (params) {
+          if(params.data.ReplyDeliveryDate==null) return "";
+          var date=new Date(params.data.ReplyDeliveryDate);
+          return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+        },
+        cellStyle:function (params) {
+          var date=new Date(params.value);  
+          if (params.data.ReplyDeliveryDate!=params.data.DeliveryDate) {    
+            return {color: 'blue'};
+          }
+        },
+        cellClassRules: {
+          blueFont: params => params.data.ReplyDeliveryDate!=params.data.DeliveryDate,
+        },
       },
       {
         headerName:'備註內文',
@@ -99,13 +132,12 @@ export class PoDetail1200Component implements OnInit {
         headerName:'儲存地點說明',
         field: 'Storage',
         valueGetter: function (params) {
-          console.info(params);
           if(params.data.Storage=='05Z1')
           {
             return '服務倉'
           }
-          return '非服務倉';
-        },
+          return '一般倉';
+        },        
       },
       {
         headerName:'特殊製程報告',
@@ -168,9 +200,23 @@ export class PoDetail1200Component implements OnInit {
       {
         headerName:'檢驗時間(天)',
         field: 'InspectionTime',
-        hide:'true'
+        hide:'true'        
       },
     ];
+    this.excelStyles = [
+      {
+          id: "redFont",
+          font: {
+              color: "#FF0000"
+          }
+      },
+      {
+          id: "blueFont",
+          font: {
+              color: "#0000FF"
+          }
+      },
+    ]
     this.autoGroupColumnDef = {
       headerName: 'Group',
       minWidth: 170,
@@ -308,3 +354,7 @@ function dateFormatter(data) {
   var date=new Date(data.value);
   return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
 }
+const ragCellClassRules = {
+  'redFonts': (params) => params.value === "一般倉",
+};
+

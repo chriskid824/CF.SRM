@@ -231,6 +231,7 @@ namespace Convience.Service.SRM
                               Storage=l.Storage,
                               StorageDesc=l.StorageDesc,
                               EkgryDesc=ekgry.EkgryDesc,
+                              OriginalDate = l.OriginalDate,
                           })
                           .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate<DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
