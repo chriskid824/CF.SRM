@@ -78,6 +78,7 @@ import { PoDownloadlogComponent } from './po-downloadlog/po-downloadlog.componen
 import { PoDateModalComponent } from './po/po-date-modal';
 import { PoDetail1200Component } from './po-detail1200/po-detail1200.component';
 import { PoAbnormalComponent } from './po-abnormal/po-abnormal.component';
+import { DeliveryHButtonComponent } from './delyvery-l/deliveryhbutton.component';
 @NgModule({
   declarations: [
     RfqComponent,
@@ -122,6 +123,7 @@ import { PoAbnormalComponent } from './po-abnormal/po-abnormal.component';
     PoDateModalComponent,
     PoDetail1200Component,
     PoAbnormalComponent,
+    DeliveryHButtonComponent,
   ],
   imports: [
     CommonModule,

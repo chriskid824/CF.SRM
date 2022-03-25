@@ -123,6 +123,7 @@ namespace Convience.Service.SRM
                           .AndIfHaveValue(query.poId,p=>p.PoId==query.poId)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.ekgryDesc), p => p.EkgryDesc.IndexOf(query.ekgryDesc) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
             // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
             FileQueryModel filequery = new FileQueryModel() { Directory= "PoFiles",Size=200,Page=1 };
@@ -240,6 +241,7 @@ namespace Convience.Service.SRM
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                 .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+                .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
             //var result = _context.SrmPoLs.Join(

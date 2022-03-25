@@ -72,6 +72,12 @@ namespace Convience.ManagentApi.Controllers.SRM
             if (_srmDeliveryService.UpdateDeliveryL(dls)) return Ok();
             return BadRequest("項次 新增/修改 失敗");
         }
+        [HttpPost("DeleteDeliveryH")]
+        public IActionResult DeleteDeliveryL(ViewSrmDeliveryH dh)
+        {
+            if (_srmDeliveryService.DeleteDeliveryH(dh)) return Ok();
+            return BadRequest("出貨單 : "+dh.DeliveryNum.ToString()+" 刪除失敗!");
+        }
         [HttpPost("DeleteDeliveryL")]
         public IActionResult DeleteDeliveryL(ViewSrmDeliveryL dls)
         {

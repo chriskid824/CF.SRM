@@ -5,6 +5,7 @@ import { SrmDeliveryService } from '../../../business/srm/srm-delivery.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DateFilterModel } from 'ag-grid-community';
 import { Router,ActivatedRoute } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-po-detail',
   encapsulation: ViewEncapsulation.None,
@@ -27,7 +28,7 @@ export class PoDetailComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   deliverydate;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
-    ,private router: Router,) {
+    ,private router: Router,private _messageService: NzMessageService,) {
     this.columnDefs = [
       {
         headerName:'料號',
@@ -64,6 +65,10 @@ export class PoDetailComponent implements OnInit {
         field: 'RemainQty',
       },
       {
+        headerName:'工單可交數',
+        valueGetter:"0",
+      },
+      {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
         editable:true,
@@ -94,6 +99,18 @@ export class PoDetailComponent implements OnInit {
         headerName:'廠商交貨日期',
         field: 'ReplyDeliveryDate',
         valueFormatter:dateFormatter,
+      },
+      {
+        headerName:'倉別',
+        field: 'Storage',
+        valueGetter: function (params) {
+          console.info(params);
+          if(params.data.Storage=='05Z1')
+          {
+            return '服務倉'
+          }
+          return '一般倉';
+        },
       },
       {
         headerName:'供應商識別碼',
@@ -181,7 +198,9 @@ export class PoDetailComponent implements OnInit {
       EkgryDesc:[null],
       replyDeliveryDate_s: [null],
       replyDeliveryDate_e: [null],
+      ORG: [null],
     });
+
   }
   // onPageSizeChanged(newPageSize) {
   //   var value = document.getElementById('page-size').value;
@@ -191,7 +210,9 @@ export class PoDetailComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.getPoLList(null);
+    this.rowData =null;
+    // this.gridApi.showNoRowsOverlay();
+    //this.getPoLList(null);
   }
   submitSearch() {
     this.refresh();
@@ -200,13 +221,22 @@ export class PoDetailComponent implements OnInit {
     this.refresh();
   }
   refresh() {
-    var query = {
-      poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
-      status: "15",
-      replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
-      replyDeliveryDate_e: this.searchForm.value["ReplyDeliveryDate_e"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_e"],
+    if(this.searchForm.value["ORG"] == null)
+    {
+      this._messageService.warning(`請先選擇廠區.`);
     }
-    this.getPoLList(query);
+    else
+    {
+      var query = {
+        poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
+        status: "15",
+        replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
+        replyDeliveryDate_e: this.searchForm.value["ReplyDeliveryDate_e"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_e"],
+        org: this.searchForm.value["ORG"] == null ? "" : this.searchForm.value["ORG"],
+      }
+      this.getPoLList(query);
+    }
+
   }
   getPoLList(query){
     if(query==null)

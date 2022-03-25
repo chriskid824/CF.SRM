@@ -28,6 +28,9 @@ export class SrmDeliveryService {
   DeleteDeliveryL(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/DeleteDeliveryL`,po);
   }
+  DeleteDeliveryH(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmDelivery}/DeleteDeliveryH`,po);
+  }
   GetDeliveryExcel(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/GetDeliveryExcel`,po);
   }

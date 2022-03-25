@@ -14,6 +14,7 @@ import { DeliveryAddComponent } from "../delivery-add/delivery-add.component";
 import { SrmModule } from '../srm.module';
 import { EditButtonComponent } from './button-cell-renderer.component';
 import { ActivatedRoute } from '@angular/router';
+import { DeliveryHButtonComponent } from './deliveryhbutton.component';
 class DialogData {
   paramid: string;
   paramname:string;
@@ -61,6 +62,7 @@ export class DelyveryLComponent implements OnInit {
       this.isedit=true;
       this.frameworkComponents = {
         buttonRenderer: EditButtonComponent,
+        deliveryhbutton:DeliveryHButtonComponent,
       }
     this.columnDefs = [
       {
@@ -96,24 +98,31 @@ export class DelyveryLComponent implements OnInit {
         headerName:'建立人員',
         field: 'CreateBy',
       },
+      {
+        headerName: '操作',
+            Width:120,
+            cellRenderer: 'deliveryhbutton',
+            cellRendererParams: {
+             //oncancel:this.deleteh.bind(this),
+             onClick: this.add.bind(this),
+             oncancel:this.deleteh.bind(this),
+             ondblclick:this.print.bind(this),
+             //onstorage:this.save.bind(this),
+             label: '',
+           },
+           pinned: 'left',
+        },
        { headerName: '操作', field: 'fieldName',
-      //  innerWidth:500,
-      //  cellRenderer: 'buttonRenderer',
-      //   cellRendererParams: {
-      //     onClick: this.add.bind(this),
-      //     oncancel:this.cancel.bind(this),
-      //     ondblclick:this.start.bind(this),
-      //     onstorage:this.save.bind(this),
-      //     label: '',
-      //   },
         pinned: 'left',
        cellRenderer : function(params){
          if(params.data.Status==14)
          {
            var eDiv = document.createElement('div');
            //eDiv.innerHTML = '<span class="my-css-class" style="width:100%"><button nz-button nzType="primary" class="btn-simple" style="height:39px"><i nz-icon nzType="delete"></i>列印出貨單</button><button nz-button nzType="primary" class="btn-edit" style="height:39px;margin-left:10px;"><i nz-icon nzType="delete"></i>編輯</button><button nz-button nzType="primary" class="btn-save" style="height:39px;margin-left:10px;"><i nz-icon nzType="save"></i>保存</button><button nz-button nzType="primary" class="btn-cancel" style="height:39px;margin-left:10px;"><i nz-icon nzType="cancel"></i>取消</button><button nz-button nzType="primary" class="btn-add" style="height:39px;margin-left:10px;"><i nz-icon nzType="add"></i>新增</button></span>';
-           eDiv.innerHTML = '<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>';
+           eDiv.innerHTML = `<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>
+           <span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">刪除</button></span>`;
            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+           var deleteButton = eDiv.querySelectorAll('.btn-simple')[1];
           //  var eButton_edit = eDiv.querySelectorAll('.btn-edit')[0];
           //  var eButton_add = eDiv.querySelectorAll('.btn-add')[0];
           //  var eButton_save = eDiv.querySelectorAll('.btn-save')[0];
@@ -131,6 +140,20 @@ export class DelyveryLComponent implements OnInit {
               dialogConfig.maxHeight = "1500px";
               dialogConfig.data = dialogData;
               dialog.open(DeliveryModalComponent, dialogConfig);
+            });
+            deleteButton.addEventListener('click', function() {
+              this.cancel.bind(this);
+              this._modalService.confirm({
+                nzTitle: '你確定要刪除出貨單'+params.data.DeliveryNum+'?',
+                //nzContent: '<b style="color: red;">Some descriptions</b>',
+                nzOkText: '確認',
+                nzOkType: 'primary',
+                nzOkDanger: true,
+                nzOnOk: () => this.submitDeleteH(params.data),
+                nzCancelText: '取消',
+                //nzOnCancel: () => alert("取消")
+              });
+              console.info(params.data);
             });
             // eButton_edit.addEventListener('click', function() {
             //   // params.api.forEachDetailGridInfo(function(detailGridInfo) {
@@ -491,8 +514,31 @@ export class DelyveryLComponent implements OnInit {
         }
       });
   }
+print(e)
+{
+  var dialogData=new DialogData();
+  dialogData.data=e.rowData;
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.disableClose = true;
+  dialogConfig.autoFocus = true;
+  //dialogConfig.minWidth = "1500px";
+  dialogConfig.maxHeight = "1500px";
+  dialogConfig.data = dialogData;
+  this.dialog.open(DeliveryModalComponent, dialogConfig);
+}
+deleteh(e) {
+  this._modalService.confirm({
+    nzTitle: '你確定要刪除出貨單 '+e.rowData.DeliveryNum+'?',
+    //nzContent: '<b style="color: red;">Some descriptions</b>',
+    nzOkText: '確認',
+    nzOkType: 'primary',
+    nzOkDanger: true,
+    nzOnOk: () => this.submitDeleteh(e.rowData),
+    nzCancelText: '取消',
+    //nzOnCancel: () => alert("取消")
+  });
 
-
+}
   add(e) {
     var ids=this.rowData.filter(p=>p.DeliveryId==e.rowData.DeliveryId)[0].SrmDeliveryLs.map(({ PoNum }) => PoNum);
     this.PoNumOptionExceptCurrent=this.PoNumOption.filter(p=>!ids.includes(p.label));
@@ -536,6 +582,30 @@ export class DelyveryLComponent implements OnInit {
     });
 
   }
+submitDeleteH(data)
+{
+  alert(data);
+console.info(data);
+}
+submitDeleteh(data){
+  this._srmDeliveryService.DeleteDeliveryH(data)
+  .subscribe((result) => {
+    if(result==null)
+    {
+    //  var selectedRows = this.gridApi.getRenderedNodes();
+    //  this.gridApi.setRowData(this.rowData);
+
+    //  this.gridApi.forEachLeafNode((node) => {
+    //    if (selectedRows.find(s => s.DeliveryId == node.data.DeliveryId)){
+    //      node.setRowNodeExpanded(true);
+    //    }
+    //  });
+     alert("刪除成功");
+     this.refresh();
+     this.tplModal.close();
+    }
+  });
+}
   submitDelete(data){
     this._srmDeliveryService.DeleteDeliveryL(data)
     .subscribe((result) => {

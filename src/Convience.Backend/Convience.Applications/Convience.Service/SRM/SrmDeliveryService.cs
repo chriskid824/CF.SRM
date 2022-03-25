@@ -32,6 +32,7 @@ namespace Convience.Service.SRM
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryL(ViewSrmDeliveryL data);
+        public bool DeleteDeliveryH(ViewSrmDeliveryH data);
         public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist);
     }
 
@@ -245,15 +246,42 @@ namespace Convience.Service.SRM
             SrmDeliveryL dl = _context.SrmDeliveryLs.Find(data.DeliveryLId);
             if (dl != null)
             {
-                _context.SrmDeliveryLs.Remove(dl);
-                SrmPoL pol = _context.SrmPoLs.Find(data.PoId, data.PoLId);
+                return DeleteDeliveryL(dl);
+            }
+            return false;
+        }
+        public bool DeleteDeliveryL(SrmDeliveryL dl)
+        {
+            if (dl != null)
+            {
+                SrmPoL pol = _context.SrmPoLs.Find(dl.PoId, dl.PoLId);
                 pol.Status = 15;
                 pol.DeliveryDate = null;
                 _context.SrmPoLs.Update(pol);
-                SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
+                SrmPoH poh = _context.SrmPoHs.Find(dl.PoId);
                 poh.Status = 15;
                 _context.SrmPoHs.Update(poh);
+                _context.SrmDeliveryLs.Remove(dl);
                 _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+        public bool DeleteDeliveryH(ViewSrmDeliveryH data)
+        {
+            List<SrmDeliveryL> dllist = _context.SrmDeliveryLs.Where(p=>p.DeliveryId==data.DeliveryId).ToList();
+            if (dllist != null && dllist.Count()>0)
+            {
+                foreach (var item in dllist)
+                {
+                    DeleteDeliveryL(item);
+                }
+                SrmDeliveryH dh = _context.SrmDeliveryHs.Find(data.DeliveryId);
+                if (dh != null)
+                {
+                    _context.SrmDeliveryHs.Remove(dh);
+                    _context.SaveChanges();
+                }                
                 return true;
             }
             return false;

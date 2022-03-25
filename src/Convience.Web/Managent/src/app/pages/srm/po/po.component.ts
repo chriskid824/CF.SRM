@@ -19,6 +19,7 @@ import { FileService } from 'src/app/business/file.service';
 import { FileInfo } from '../../content-manage/model/fileInfo';
 import { StorageService } from 'src/app/services/storage.service';
 import { PoDateModalComponent} from './po-date-modal';
+import { formatDate } from '@angular/common';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -109,8 +110,24 @@ export class PoComponent implements OnInit {
         field: 'EkgryDesc',
       },
       {
-        headerName:'採購組織',
+        headerName:'廠別',
         field: 'Org',
+        valueGetter: function (params) {
+          console.info(params);
+          if(params.data.Org=='3100')
+          {
+            return "千附精密";
+          }
+          else if(params.data.Org=='1200')
+          {
+            return "機械事業處";
+          }
+          else if(params.data.Org=='1100')
+          {
+            return "廠工事業處";
+          }
+          return params.data.Org;
+        }
       },
       {
         headerName:'文件日期',
@@ -377,7 +394,8 @@ export class PoComponent implements OnInit {
       PO_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
       EkgryDesc:[null],
-      DATASTATUS:[0]
+      DATASTATUS:[0],
+      ORG:['']
     });
   }
   start(e){
@@ -599,6 +617,7 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
       ekgryDesc: this.searchForm.value["EkgryDesc"] == null ? "" : this.searchForm.value["EkgryDesc"],
       dataStatus:this.searchForm.value["DATASTATUS"] == null ? "0" : this.searchForm.value["DATASTATUS"],
+      org: this.searchForm.value["ORG"] == null ? "" : this.searchForm.value["ORG"],
       page: this.page,
       size: this.size
     }
@@ -613,7 +632,8 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
         ekgryDesc: "",
         dataStatus:"0",
         page: this.page,
-        size: this.size
+        size: this.size,
+        org:""
       }
     }
     this._srmPoService.GetPo(query)
@@ -639,6 +659,8 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
 function dateFormatter(data) {
   if(data.value==null) return "";
   var date=new Date(data.value);
+  return `${formatDate(date, 'yyyy-MM-dd', 'zh-Hant-TW', '+0800')}`;
+  return `${date.getDate()}`;
   return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
 }
 function getDatePicker() {
