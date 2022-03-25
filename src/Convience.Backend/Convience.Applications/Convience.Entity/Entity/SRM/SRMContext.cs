@@ -60,6 +60,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmMatnrDoc> SrmMatnrDocs { get; set; }
         public virtual DbSet<SrmDownloadLog> SrmDownloadLogs { get; set; }
         public virtual DbSet<SrmPoUpdateLog> SrmPoUpdateLogs { get; set; }
+        public virtual DbSet<LogSapShedule> LogSapShedules { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1960,6 +1961,34 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(8)
                     .HasColumnName("SAP_VENDOR")
                     .HasComment("SAP供應商代碼");
+            });
+            modelBuilder.Entity<LogSapShedule>(entity =>
+            {
+                entity.HasKey(e => e.LogId);
+
+                entity.ToTable("Log_SapShedule");
+
+                entity.Property(e => e.LogId).HasColumnName("LOG_ID");
+
+                entity.Property(e => e.Datetime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("DATETIME");
+
+                entity.Property(e => e.Message)
+                    .HasMaxLength(200)
+                    .HasColumnName("MESSAGE");
+
+                entity.Property(e => e.SrmId)
+                    .HasMaxLength(30)
+                    .HasColumnName("SrmID");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(15)
+                    .HasColumnName("TYPE");
+
+                entity.Property(e => e.Werks)
+                    .HasMaxLength(15)
+                    .HasColumnName("WERKS");
             });
             OnModelCreatingPartial(modelBuilder);
         }

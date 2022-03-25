@@ -374,6 +374,19 @@ namespace Convience.Service.SRM
 
             _context.SrmVendors.Remove(vendorid);
             _context.SaveChanges();
+
+            LogSapShedule log = new LogSapShedule()
+            {
+                Type = "VENDOR",
+                SrmId = vendorid.SrmVendor1,
+                Message = $"供應商刪除，{data.User}",
+                Datetime = DateTime.Now,
+                Werks = vendorid.Ekorg.ToString(),
+            };
+
+            _context.LogSapShedules.Add(log);
+            _context.SaveChanges();
+
             return true;
         }
 
