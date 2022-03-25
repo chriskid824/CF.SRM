@@ -123,7 +123,8 @@ export class SupplierComponent implements OnInit {
   delete(title: TemplateRef<{}>, content: TemplateRef<{}>, supplier: Supplier){
     var data = {
       vendorId:supplier.vendorId,
-      srmVendor1:supplier.srmVendor1
+      srmVendor1:supplier.srmVendor1,
+      user:this._storageService.userName,
     }
 
     this.tplModal = this._modalService.confirm({

@@ -478,6 +478,20 @@ namespace Convience.Service.SRM
 
             _context.SrmMatnrs.Remove(matnrid);
             _context.SaveChanges();
+
+            LogSapShedule log = new LogSapShedule()
+            {
+                Type = "MATNR",
+                SrmId = matnrid.SrmMatnr1,
+                Message = $"料號刪除，{data.User}",
+                Datetime = DateTime.Now,
+                Werks = matnrid.Werks.ToString(),
+            };
+
+            _context.LogSapShedules.Add(log);
+            _context.SaveChanges();
+
+
             return true;
         }
     }

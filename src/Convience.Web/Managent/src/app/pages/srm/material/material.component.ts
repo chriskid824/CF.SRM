@@ -130,7 +130,8 @@ export class MaterialComponent implements OnInit {
   delete(title: TemplateRef<{}>, content: TemplateRef<{}>, material: Material){
     var data = {
       matnrId:material.matnrId,
-      srmMatnr1:material.srmMatnr1
+      srmMatnr1:material.srmMatnr1,
+      user:this._storageService.userName,
     }
 
     this.tplModal = this._modalService.confirm({
