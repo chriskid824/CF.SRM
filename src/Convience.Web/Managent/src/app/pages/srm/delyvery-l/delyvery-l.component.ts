@@ -112,163 +112,46 @@ export class DelyveryLComponent implements OnInit {
            },
            pinned: 'left',
         },
-       { headerName: '操作', field: 'fieldName',
-        pinned: 'left',
-       cellRenderer : function(params){
-         if(params.data.Status==14)
-         {
-           var eDiv = document.createElement('div');
-           //eDiv.innerHTML = '<span class="my-css-class" style="width:100%"><button nz-button nzType="primary" class="btn-simple" style="height:39px"><i nz-icon nzType="delete"></i>列印出貨單</button><button nz-button nzType="primary" class="btn-edit" style="height:39px;margin-left:10px;"><i nz-icon nzType="delete"></i>編輯</button><button nz-button nzType="primary" class="btn-save" style="height:39px;margin-left:10px;"><i nz-icon nzType="save"></i>保存</button><button nz-button nzType="primary" class="btn-cancel" style="height:39px;margin-left:10px;"><i nz-icon nzType="cancel"></i>取消</button><button nz-button nzType="primary" class="btn-add" style="height:39px;margin-left:10px;"><i nz-icon nzType="add"></i>新增</button></span>';
-           eDiv.innerHTML = `<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>
-           <span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">刪除</button></span>`;
-           var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-           var deleteButton = eDiv.querySelectorAll('.btn-simple')[1];
-          //  var eButton_edit = eDiv.querySelectorAll('.btn-edit')[0];
-          //  var eButton_add = eDiv.querySelectorAll('.btn-add')[0];
-          //  var eButton_save = eDiv.querySelectorAll('.btn-save')[0];
-          //  var eButton_cancel = eDiv.querySelectorAll('.btn-cancel')[0];
-          //  eButton_save.setAttribute('hidden','true');
-          //  eButton_cancel.setAttribute('hidden','true');
-           //eButton.addEventListener('click', showDialog);
-            eButton.addEventListener('click', function() {
-              var dialogData=new DialogData();
-              dialogData.data=params.data;
-              const dialogConfig = new MatDialogConfig();
-              dialogConfig.disableClose = true;
-              dialogConfig.autoFocus = true;
-              //dialogConfig.minWidth = "1500px";
-              dialogConfig.maxHeight = "1500px";
-              dialogConfig.data = dialogData;
-              dialog.open(DeliveryModalComponent, dialogConfig);
-            });
-            deleteButton.addEventListener('click', function() {
-              this.cancel.bind(this);
-              this._modalService.confirm({
-                nzTitle: '你確定要刪除出貨單'+params.data.DeliveryNum+'?',
-                //nzContent: '<b style="color: red;">Some descriptions</b>',
-                nzOkText: '確認',
-                nzOkType: 'primary',
-                nzOkDanger: true,
-                nzOnOk: () => this.submitDeleteH(params.data),
-                nzCancelText: '取消',
-                //nzOnCancel: () => alert("取消")
-              });
-              console.info(params.data);
-            });
-            // eButton_edit.addEventListener('click', function() {
-            //   // params.api.forEachDetailGridInfo(function(detailGridInfo) {
-            //   //   console.info(detailGridInfo);
-            //   // });
-            //   // var detailGridID = eButton_edit.closest('div[row-id]')
-            //   // params.api.setRowNodeExpanded({rowNode:params.node,expanded:true});
-            //   // params.node.expanded = true;
-            //   // params.api.onGroupExpandedOrCollapsed();
-            //   eButton_edit.setAttribute('hidden','true');
-            //   eButton_save.removeAttribute('hidden');
-            //   eButton_cancel.removeAttribute('hidden');
-            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-            //   if (detailGrid) {
-            //     var length=params.data.SrmDeliveryLs.length;
-            //     detailGrid.api.setFocusedCell(0, 'DeliveryQty');
-            //     for(var i=0;i<length;i++)
-            //     {
-            //       detailGrid.api.startEditingCell({
-            //         rowIndex: i,
-            //         colKey: 'DeliveryQty',
-            //       });
-            //     }
-            //   }
+    //    { headerName: '操作', field: 'fieldName',
+    //     pinned: 'left',
+    //    cellRenderer : function(params){
+    //      if(params.data.Status==14)
+    //      {
+    //        var eDiv = document.createElement('div');
+    //        //eDiv.innerHTML = '<span class="my-css-class" style="width:100%"><button nz-button nzType="primary" class="btn-simple" style="height:39px"><i nz-icon nzType="delete"></i>列印出貨單</button><button nz-button nzType="primary" class="btn-edit" style="height:39px;margin-left:10px;"><i nz-icon nzType="delete"></i>編輯</button><button nz-button nzType="primary" class="btn-save" style="height:39px;margin-left:10px;"><i nz-icon nzType="save"></i>保存</button><button nz-button nzType="primary" class="btn-cancel" style="height:39px;margin-left:10px;"><i nz-icon nzType="cancel"></i>取消</button><button nz-button nzType="primary" class="btn-add" style="height:39px;margin-left:10px;"><i nz-icon nzType="add"></i>新增</button></span>';
+    //        eDiv.innerHTML = `<span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">列印出貨單</button></span>
+    //        <span class="my-css-class"><button nz-button nzType="primary" class="btn-simple" style="height:39px">刪除</button></span>`;
+    //        var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+    //        var deleteButton = eDiv.querySelectorAll('.btn-simple')[1];
+    //         eButton.addEventListener('click', function() {
+    //           var dialogData=new DialogData();
+    //           dialogData.data=params.data;
+    //           const dialogConfig = new MatDialogConfig();
+    //           dialogConfig.disableClose = true;
+    //           dialogConfig.autoFocus = true;
+    //           //dialogConfig.minWidth = "1500px";
+    //           dialogConfig.maxHeight = "1500px";
+    //           dialogConfig.data = dialogData;
+    //           dialog.open(DeliveryModalComponent, dialogConfig);
+    //         });
+    //         deleteButton.addEventListener('click', function() {
+    //           this.cancel.bind(this);
+    //           this._modalService.confirm({
+    //             nzTitle: '你確定要刪除出貨單'+params.data.DeliveryNum+'?',
+    //             nzOkText: '確認',
+    //             nzOkType: 'primary',
+    //             nzOkDanger: true,
+    //             nzOnOk: () => this.submitDeleteH(params.data),
+    //             nzCancelText: '取消',
+    //           });
+    //           console.info(params.data);
+    //         });
 
+    //        return eDiv;
+    //        }
+    //      }
 
-            //   //  console.info(params);
-            //   // params.api.setFocusedCell(2, 'DeliveryNum');
-
-            // });
-            // eButton_add.addEventListener('click', function() {
-            //   // params.node.expanded = true;
-            //   // params.api.onGroupExpandedOrCollapsed();
-            //   var dialogData=new DialogData();
-            //   dialogData.data=params.data;
-            //   const dialogConfig = new MatDialogConfig();
-            //   dialogConfig.disableClose = true;
-            //   dialogConfig.autoFocus = true;
-            //   dialogConfig.minWidth = "250px";
-            //   //dialogConfig.maxHeight = "250px";
-            //   dialogConfig.data = dialogData;
-            //   const dialogRef =dialog.open(DeliveryAddComponent, dialogConfig);
-            //   dialogRef.afterClosed().subscribe(result => {
-            //     console.log('The dialog was closed');
-            //     if(result!=undefined)
-            //     {
-
-            //     }
-
-            //   });
-            // });
-            // eButton_save.addEventListener('click', function() {
-            //   eButton_edit.removeAttribute('hidden');
-            //   eButton_save.setAttribute('hidden','true');
-            //   eButton_cancel.setAttribute('hidden','true');
-            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-            //   if (detailGrid) {
-            //     var length=params.data.SrmDeliveryLs.length;
-            //     for(var i=0;i<length;i++)
-            //     {
-            //       detailGrid.api.stopEditing({
-            //         rowIndex: i,
-            //         colKey: 'DeliveryQty',
-            //       });
-            //     }
-            //   }
-            // });
-            // eButton_cancel.addEventListener('click', function() {
-            //   eButton_edit.removeAttribute('hidden');
-            //   eButton_save.setAttribute('hidden','true');
-            //   eButton_cancel.setAttribute('hidden','true');
-            //   var detailGrid = params.api.getDetailGridInfo("detail_"+params.rowIndex);
-            //   if (detailGrid) {
-            //     var length=params.data.SrmDeliveryLs.length;
-            //     for(var i=0;i<length;i++)
-            //     {
-            //       detailGrid.api.stopEditing({
-            //         rowIndex: i,
-            //         colKey: 'DeliveryQty',
-            //       });
-            //     }
-            //   }
-            // });
-              //this.showDialog();
-               //  this.tplModal = _modalService.create({
-              //     nzTitle: "123",
-              //     nzContent: `123`,
-               //    nzFooter: null,
-              //   });
-              // this._roleService.getRole(role.id).subscribe(reuslt => {
-              //   this.editedRole = reuslt;
-              //   this.editForm = this._formBuilder.group({
-              //     roleName: [this.editedRole.name, [Validators.required, Validators.maxLength(15)]],
-              //     remark: [this.editedRole.remark, [Validators.maxLength(30)]],
-              //     menus: [this.editedRole.menus?.split(',')]
-              //   });
-              //   this.tplModal = this._modalService.create({
-              //     nzTitle: 123,
-              //     nzContent: 123,
-              //     nzFooter: null,
-              //   });
-
-              // });
-            //   _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
-            //     alert('採購單號:'+params.data.DeliveryNum+'已交貨');
-            //     params.data.Status=11;
-            //     params.data.ReplyDate=new Date();
-            //    params.api.refreshCells();
-            //  });
-            //});
-           return eDiv;
-           }
-         }
-
-    },
+    // },
 
     //    {
     //     headerName: "",
