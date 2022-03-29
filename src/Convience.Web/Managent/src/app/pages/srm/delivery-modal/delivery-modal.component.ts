@@ -133,12 +133,13 @@ print(){
 }
 function printElement(elem) {
   var domClone = elem.cloneNode(true);
-
+  var domClone2 = elem.cloneNode(true);
   var $printSection = document.getElementById("printSection");
 
   if (!$printSection) {
       var $printSection2 = document.createElement("div");
       $printSection2.id = "printSection";
+      document.body.appendChild($printSection2);
       document.body.appendChild($printSection2);
       // $printSection2.innerHTML = "";
       // $printSection2.appendChild(domClone);
@@ -148,5 +149,8 @@ function printElement(elem) {
   $printSection = document.getElementById("printSection");
   $printSection.innerHTML = "";
   $printSection.appendChild(domClone);
+  $printSection.appendChild(domClone2);
+  console.log($printSection);
+
   window.print();
 }

@@ -20,7 +20,9 @@
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryPlace}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商電話</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.TelPhone}}</div>
-      </div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商單號</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryVendorsn}}</div>
+    </div>
 
     <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false" style="font-size: 30px;">
       <thead>
@@ -58,6 +60,17 @@
         </tr>
       </tbody>
     </nz-table>
+    <div>
+      <p style="margin-top:30px;font-size:18px;text-align: right;">
+        倉儲簽認
+        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供應商簽認 
+        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+      </p>
+    </div>
+    <div>
+      <p style="margin-top:25px;text-align: center;">本次交貨以此出貨單為憑證</p>
+    </div>
     <!-- <ag-grid-angular #agGrid style="width: 100%; height: 400px;" id="myGrid" class="ag-theme-alpine"
       [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowGroupPanelShow]="rowGroupPanelShow"
       [rowGroupPanelShow]="true" [rowData]="rowData" (gridReady)="onGridReady($event)" [enableCharts]="true"

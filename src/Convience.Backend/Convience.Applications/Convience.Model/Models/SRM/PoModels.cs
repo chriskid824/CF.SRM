@@ -92,6 +92,8 @@ namespace Convience.Model.Models.SRM
     public class AddDeliveryModel
     {
         public DateTime? date { get; set; }
+        public string? vendorsn { get; set; }
+
         public List<ViewSrmPoL> data = new List<ViewSrmPoL>();
     }
     public class ViewSrmPoH : SrmPoH
