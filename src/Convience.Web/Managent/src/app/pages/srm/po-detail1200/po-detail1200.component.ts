@@ -125,6 +125,54 @@ export class PoDetail1200Component implements OnInit {
         },
       },
       {
+        headerName:'差異天數',
+        field: 'DiffDays',
+        valueGetter: function (params) { 
+          if(params.data.ReplyDeliveryDate!=null && params.data.DeliveryDate!=null)
+          {
+            var date1 = params.data.ReplyDeliveryDate.substr(0,10);
+            var date2 = params.data.DeliveryDate.substr(0,10);
+            date1 = new Date(date1);
+            date2 = new Date(date2);
+            if (date1>=date2)
+            {
+              return Math.abs(date1-date2)/(1000 * 3600 * 24);
+            }
+            else
+            {
+              return '-'+Math.abs(date1-date2)/(1000 * 3600 * 24);
+            }
+          }
+          else{
+            return ""; 
+          }
+        }, 
+      },
+      {
+        headerName:'交貨狀態',
+        field: 'PoStatus',
+        valueGetter: function (params) {
+          if(params.data.ReplyDeliveryDate!=null && params.data.DeliveryDate!=null)
+          {
+            var date1 = params.data.ReplyDeliveryDate.substr(0,10);
+            var date2 = params.data.DeliveryDate.substr(0,10);
+            if(date1>date2)
+            {
+              return '交貨延遲'
+            }
+            else if(date1<date2)
+            {
+              return '交貨提前'
+            }
+            else
+            {
+              return '交貨相符';
+            }
+          }
+          else { return ""; }
+        }, 
+      },
+      {
         headerName:'備註內文',
         field: 'OtherDesc',
       },

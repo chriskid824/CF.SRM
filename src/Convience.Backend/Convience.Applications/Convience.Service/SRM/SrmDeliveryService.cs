@@ -64,6 +64,7 @@ namespace Convience.Service.SRM
     .FromSqlRaw("EXECUTE dbo.GetNum {0}", 1).ToList().FirstOrDefault();
             SrmDeliveryH dh = _context.SrmDeliveryHs.Find(neworder.DeliveryId);
             dh.DeliveryDate = data.date;
+            dh.DeliveryVendorsn = data.vendorsn;
             _context.SrmDeliveryHs.Update(dh);
             if (neworder == null) return null;
             data.data.ForEach(m =>
@@ -111,6 +112,7 @@ namespace Convience.Service.SRM
                     DeliveryId = p.DeliveryId,
                     DeliveryDate=p.DeliveryDate,
                     DeliveryNum = p.DeliveryNum,
+                    DeliveryVendorsn = p.DeliveryVendorsn,
                     Status = p.Status,
                     CreateDate = p.CreateDate,
                     CreateBy = p.CreateBy,

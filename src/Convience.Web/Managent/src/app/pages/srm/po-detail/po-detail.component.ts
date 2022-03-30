@@ -28,6 +28,7 @@ export class PoDetailComponent implements OnInit {
   rowData;
   searchForm: FormGroup = new FormGroup({});
   deliverydate;
+  vendorsn;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
     ,private router: Router,private _messageService: NzMessageService,private _storageService: StorageService,) {
     this.columnDefs = [
@@ -72,7 +73,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
-        editable:true,
+        editable:true,        
         valueGetter: function (params) {
           console.info(params);
           if(params.data.DeliveryQty>params.data.RemainQty)
@@ -86,6 +87,7 @@ export class PoDetailComponent implements OnInit {
           //   return params.data[params.colDef.field];
           // }
         },
+        cellStyle:{background: '#f0f8ff'},
       },
       {
         headerName:'單價',
@@ -277,6 +279,7 @@ export class PoDetailComponent implements OnInit {
     var query = {
       date: this.deliverydate,
       data: selectedData,
+      vendorsn: this.vendorsn,
     }
     console.info(query);
     this._srmDeliveryService.AddDelivery(query)

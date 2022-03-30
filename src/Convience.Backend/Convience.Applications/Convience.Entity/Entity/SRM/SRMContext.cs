@@ -626,6 +626,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasMaxLength(20)
                     .HasColumnName("DELIVERY_NUM");
 
+                entity.Property(e => e.DeliveryVendorsn)
+                    .HasMaxLength(20)
+                    .HasColumnName("DELIVERY_VENDORSN");
+
                 entity.Property(e => e.LastUpdateBy)
                     .HasMaxLength(8)
                     .HasColumnName("LAST_UPDATE_BY");

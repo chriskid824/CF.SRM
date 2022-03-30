@@ -407,6 +407,7 @@ print(e)
   //dialogConfig.minWidth = "1500px";
   dialogConfig.maxHeight = "1500px";
   dialogConfig.data = dialogData;
+  console.log(dialogConfig);
   this.dialog.open(DeliveryModalComponent, dialogConfig);
 }
 deleteh(e) {
