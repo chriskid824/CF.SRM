@@ -40,7 +40,7 @@ namespace Convience.Service.SRM
 
         public bool UpdateStatus(int id, int status);
         public List<SapResultData> UpdateSapData(SapPoData data, string userName);
-        public string UpdatePoLDoc(int matnr_id,string des, int vendor_id, List<BaseFileData> fdList, string userid);
+        public string UpdatePoLDoc(int matnr_id, string des, int vendor_id, List<BaseFileData> fdList, string userid);
         public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor);
         public void addLog(int poid, int polid, string filename, string ip, string username);
         public PagingResultModel<ViewSrmDownloadLog> GetDownloadList(QueryPoDownloadLogList query);
@@ -115,26 +115,26 @@ namespace Convience.Service.SRM
                               StatusDesc = status.StatusDesc,
                               VendorName = vendor.VendorName,
                               SapVendor = vendor.SapVendor,
-                              EkgryDesc=ekgry.EkgryDesc,
+                              EkgryDesc = ekgry.EkgryDesc,
                               //SrmPoLs = poh.SrmPoLs,
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
-                          .AndIfHaveValue(query.poId,p=>p.PoId==query.poId)
+                          .AndIfHaveValue(query.poId, p => p.PoId == query.poId)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.ekgryDesc), p => p.EkgryDesc.IndexOf(query.ekgryDesc) > -1)
                 .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
                 .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
                 .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
             // List<string> numberList = _context.ViewSrmFileRecords.Where(m=> _context.ViewSrmFileRecords.Where(p => p.RecordLId == null).Select(p => p.Number).Except(m.Number)).Select(m=>m.Number).ToList();
-            FileQueryModel filequery = new FileQueryModel() { Directory= "PoFiles",Size=200,Page=1 };
+            FileQueryModel filequery = new FileQueryModel() { Directory = "PoFiles", Size = 200, Page = 1 };
             var files = _fileService.GetContentsAsync(filequery);
             List<string> fileDirList = files.Result.Select(p => p.Name).ToList();
             var numberList = from c in _context.ViewSrmFileRecords
-    where !(from o in _context.ViewSrmFileRecords
-            where o.RecordLId ==null
-            select o.Number )
-           .Contains(c.Number)
-    select c.Number;
+                             where !(from o in _context.ViewSrmFileRecords
+                                     where o.RecordLId == null
+                                     select o.Number)
+                                    .Contains(c.Number)
+                             select c.Number;
             result.ForEach(p =>
             {
                 p.hasFile = fileDirList.Contains(p.PoNum);
@@ -155,7 +155,7 @@ namespace Convience.Service.SRM
                                  Price = l.Price,
                                  DeliveryDate = l.DeliveryDate,
                                  ReplyDeliveryDate = l.ReplyDeliveryDate,
-                                 OriginalDate=l.OriginalDate,
+                                 OriginalDate = l.OriginalDate,
                                  DeliveryPlace = l.DeliveryPlace,
                                  CriticalPart = l.CriticalPart,
                                  InspectionTime = l.InspectionTime,
@@ -173,22 +173,22 @@ namespace Convience.Service.SRM
                 if (query.dataStatus == 2)
                 {
                     p.SrmPoLs = (from c in p.SrmPoLs
-                                                          where !(from o in numberList
-                                                                  select o)
-                                                                 .Contains(c.PoNum + '-' + c.PoLId)
-                                                          select c).ToList();
+                                 where !(from o in numberList
+                                         select o)
+                                        .Contains(c.PoNum + '-' + c.PoLId)
+                                 select c).ToList();
                 }
                 else if (query.dataStatus == 1)
                 {
                     p.SrmPoLs = (from c in p.SrmPoLs
-                                                          where (from o in numberList
-                                                                  select o)
-                                                                 .Contains(c.Number)
-                                                          select c).ToList();
+                                 where (from o in numberList
+                                        select o)
+                                        .Contains(c.Number)
+                                 select c).ToList();
                 }
 
             });
-            return result.Where(p=>p.SrmPoLs.Count()>0).ToList();
+            return result.Where(p => p.SrmPoLs.Count() > 0).ToList();
         }
 
         public IEnumerable<SrmPoH> GetMatnrById(int id)
@@ -229,12 +229,12 @@ namespace Convience.Service.SRM
                               StatusDesc = status.StatusDesc,
                               Matnr = matnr.SapMatnr,
                               Org = h.Org,
-                              Storage=l.Storage,
-                              StorageDesc=l.StorageDesc,
-                              EkgryDesc=ekgry.EkgryDesc,
+                              Storage = l.Storage,
+                              StorageDesc = l.StorageDesc,
+                              EkgryDesc = ekgry.EkgryDesc,
                               OriginalDate = l.OriginalDate,
                           })
-                          .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate<DateTime.Now.Date.AddDays(7)))
+                          .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate < DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
                               .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
@@ -291,13 +291,20 @@ namespace Convience.Service.SRM
         public bool UpdateStatus(int id, int status)
         {
             SrmPoH data = _context.SrmPoHs.Find(id);
-            data.Status = status;
-            if (status == 11)
+            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId);
+            //帶接收狀態變化時 預設為接收了 接收後status可能是14待收貨 廠商交貨日期預設本次需求日
+            if (data.Status == 21)
             {
                 data.ReplyDate = DateTime.Now;
+                foreach (var item in LList)
+                {
+                    item.ReplyDeliveryDate = item.DeliveryDate;
+                }
             }
+            data.Status = status;
+
             _context.SrmPoHs.Update(data);
-            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId);
+
             foreach (var item in LList)
             {
                 item.Status = status;
@@ -344,7 +351,7 @@ namespace Convience.Service.SRM
                               DocDate = h.DocDate,
                               ReplyDate = h.ReplyDate,
                               CreateDate = h.CreateDate,
-                              EkgryDesc=ekgry.EkgryDesc
+                              EkgryDesc = ekgry.EkgryDesc
                           })
               .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
               .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
@@ -369,69 +376,85 @@ namespace Convience.Service.SRM
             {
                 SapResultData r = new SapResultData() { Id = po.EBELN, Type = "採購單" };
                 //採購單
-                if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
+                //供應商
+                if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
                 {
-                    //供應商
-                    if (_context.SrmVendors.Any(v => v.SapVendor == po.LIFNR))
+                    //採購項次-即將匯入
+                    if (data.T_EKPO.Any(ekpo => ekpo.EBELN == po.EBELN))
                     {
-                        //採購項次-即將匯入
-                        if (data.T_EKPO.Any(ekpo => ekpo.EBELN == po.EBELN))
+                        List<T_EKPO> ekList = data.T_EKPO.Where(e => e.EBELN == po.EBELN).ToList();
+                        int ekcount = 0;
+                        ekList.ForEach(ek =>
                         {
-                            List<T_EKPO> ekList = data.T_EKPO.Where(e => e.EBELN == po.EBELN).ToList();
-                            int ekcount = 0;
-                            ekList.ForEach(ek =>
+                            if (_context.SrmMatnrs.Any(m => m.SapMatnr == ek.MATNR))
                             {
-                                if (_context.SrmMatnrs.Any(m => m.SapMatnr == ek.MATNR))
-                                {
-                                    ekcount++;
-                                }
-                            });
+                                ekcount++;
+                            }
+                        });
 
-                            //採購項次料號
-                            if (ekcount > 0)
+                        //採購項次料號
+                        if (ekcount > 0)
+                        {
+                            if (!_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
                             {
-                                int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
-                                DateTime now = DateTime.Now;
-                                SrmPoH poH = new SrmPoH()
+                                if (po.EKORG == 3100)
                                 {
-                                    PoNum = po.EBELN,
-                                    Status = 21,
-                                    VendorId = vendorid,
-                                    TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
-                                    Buyer = po.EKGRP,
-                                    Org = po.EKORG,
-                                    DocDate = po.BEDAT,
-                                    CreateDate = now,
-                                    CreateBy = userName,
-                                    LastUpdateDate = now,
-                                    LastUpdateBy = userName,
-                                };
-                                _context.SrmPoHs.Add(poH);
-                                r.OutCome = "成功";
-                                result.Add(r);
+                                }
+                                else
+                                {
+                                    r.OutCome = "失敗";
+                                    r.Reason = "該採購單號已存在";
+                                    result.Add(r);
+                                }
                             }
                             else
                             {
+                                //如果已存在這邊先不做事改到pol那邊確認了本次需求日期不同時再補update
+                                if (_context.SrmPoHs.Any(p => p.PoNum == po.EBELN))
+                                {
+                                }
+                                else
+                                {
+                                    int vendorid = _context.SrmVendors.FirstOrDefault(p => p.SapVendor == po.LIFNR).VendorId;
+                                    DateTime now = DateTime.Now;
+                                    SrmPoH poH = new SrmPoH()
+                                    {
+                                        PoNum = po.EBELN,
+                                        Status = 21,
+                                        VendorId = vendorid,
+                                        TotalAmount = Convert.ToInt32(Convert.ToDouble(po.RLWRT)),
+                                        Buyer = po.EKGRP,
+                                        Org = po.EKORG,
+                                        DocDate = po.BEDAT,
+                                        CreateDate = now,
+                                        CreateBy = userName,
+                                        LastUpdateDate = now,
+                                        LastUpdateBy = userName,
+                                    };
+                                    _context.SrmPoHs.Add(poH);
+                                }
+
+                                r.OutCome = "成功";
+                                result.Add(r);
                             }
                         }
                         else
                         {
                         }
-
                     }
                     else
                     {
-                        r.OutCome = "失敗";
-                        r.Reason = "供應商 " + po.LIFNR + " 不存在";
-                        result.Add(r);
                     }
+
                 }
                 else
                 {
                     r.OutCome = "失敗";
-                    r.Reason = "該採購單號已存在";
+                    r.Reason = "供應商 " + po.LIFNR + " 不存在";
                     result.Add(r);
                 }
+
+
 
             });
             _context.SaveChanges();
@@ -442,13 +465,46 @@ namespace Convience.Service.SRM
                 if (_context.SrmPoHs.Any(p => p.PoNum == pol.EBELN))
                 {
                     SrmPoH poH = _context.SrmPoHs.FirstOrDefault(h => h.PoNum == pol.EBELN);
-                    //採購項次
-                    if (!_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
+
+                    //料號
+                    if (_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
                     {
-                        //料號
-                        if (_context.SrmMatnrs.Any(m => m.SapMatnr == pol.MATNR))
+                        //採購項次
+                        if (_context.SrmPoLs.Any(l => l.PoId == poH.PoId && l.PoLId == pol.EBELP))
                         {
-                            int matnrid = pol.MATNR==""?0: _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
+                            SrmPoL pol_ori = _context.SrmPoLs.Where(p => p.PoId == poH.PoId && p.PoLId == pol.EBELP).FirstOrDefault();
+                            //如果pol狀態在帶接收帶回覆帶交貨之中的話
+                            if (pol_ori.Status == 21 || pol_ori.Status == 11 || pol_ori.Status == 15)
+                            {
+                                if (pol_ori.DeliveryDate != pol.EINDT)
+                                {
+                                    pol_ori.DeliveryDate = pol.EINDT;
+                                    pol_ori.Status = 11;
+                                    _context.SrmPoLs.Update(pol_ori);
+                                    poH.Status = 11;
+                                    _context.SrmPoHs.Update(poH);
+
+                                    r.OutCome = "成功";
+                                    r.Reason = "修改本次需求日,並將狀態改為待回覆";
+                                    result.Add(r);
+                                }
+                                else
+                                {
+                                    r.OutCome = "失敗";
+                                    r.Reason = "本次需求日相同 不需修改";
+                                    result.Add(r);
+                                }
+                            }
+                            else
+                            {
+                                r.OutCome = "失敗";
+                                r.Reason = "狀態不在 待接收 待回覆 待交貨之中 無法修改";
+                                result.Add(r);
+                            }
+                        }
+                        else
+                        {
+                            int matnrid = pol.MATNR == "" ? 0 : _context.SrmMatnrs.FirstOrDefault(p => p.SapMatnr == pol.MATNR).MatnrId;
                             SrmPoL poL = new SrmPoL()
                             {
                                 PoLId = pol.EBELP,
@@ -457,33 +513,28 @@ namespace Convience.Service.SRM
                                 Description = pol.MAKTX,
                                 Qty = Convert.ToInt32(Convert.ToDouble(pol.MENGE)),
                                 Price = pol.NETPR,
-                                OriginalDate=pol.O_EINDT,
+                                OriginalDate = pol.O_EINDT,
                                 DeliveryDate = pol.EINDT,
                                 DeliveryPlace = pol.PLACE,
                                 CriticalPart = pol.KZKRI,
                                 InspectionTime = 1,
                                 Status = 21,
                                 WoNum = pol.AUFNR,
-                                OtherDesc=pol.OTHER_DESC,
-                                Storage=pol.LGORT,
-                                StorageDesc=pol.LGOBE,
-                                Cell=pol.LGPBE,
+                                OtherDesc = pol.OTHER_DESC,
+                                Storage = pol.LGORT,
+                                StorageDesc = pol.LGOBE,
+                                Cell = pol.LGPBE,
                             };
                             _context.SrmPoLs.Add(poL);
-                            r.OutCome = "成功";
-                            result.Add(r);
                         }
-                        else
-                        {
-                            r.OutCome = "失敗";
-                            r.Reason = "料號 " + pol.MATNR + " 不存在";
-                            result.Add(r);
-                        }
+
+                        r.OutCome = "成功";
+                        result.Add(r);
                     }
                     else
                     {
                         r.OutCome = "失敗";
-                        r.Reason = "該採購項次已存在";
+                        r.Reason = "料號 " + pol.MATNR + " 不存在";
                         result.Add(r);
                     }
                 }
@@ -511,24 +562,25 @@ namespace Convience.Service.SRM
             return result;
         }
 
-        public string UpdatePoLDoc(int matnr_id, string des, int vendor_id, List<BaseFileData> fdList,string userid)
+        public string UpdatePoLDoc(int matnr_id, string des, int vendor_id, List<BaseFileData> fdList, string userid)
         {
             foreach (var item in fdList)
             {
-                SrmMatnrDoc doc = _context.SrmMatnrDocs.Where(p => p.Filename == item.Name&&p.VendorId==vendor_id)
-                    .AndIfCondition(matnr_id==0,p=>p.Description==des)
-                    .AndIfCondition(matnr_id!=0,p=> p.MatnrId == matnr_id)
+                SrmMatnrDoc doc = _context.SrmMatnrDocs.Where(p => p.Filename == item.Name && p.VendorId == vendor_id)
+                    .AndIfCondition(matnr_id == 0, p => p.Description == des)
+                    .AndIfCondition(matnr_id != 0, p => p.MatnrId == matnr_id)
                     .FirstOrDefault();
                 if (doc == null)
                 {
-                    doc = new SrmMatnrDoc() { 
-                        MatnrId=matnr_id,
-                        Description=des,
-                        VendorId=vendor_id,
-                        Filename=item.Name,
-                        Active=item.active,
-                        CreateBy= userid,
-                        LastUpdateBy=userid
+                    doc = new SrmMatnrDoc()
+                    {
+                        MatnrId = matnr_id,
+                        Description = des,
+                        VendorId = vendor_id,
+                        Filename = item.Name,
+                        Active = item.active,
+                        CreateBy = userid,
+                        LastUpdateBy = userid
                     };
                     _context.SrmMatnrDocs.Add(doc);
                 }
@@ -544,14 +596,14 @@ namespace Convience.Service.SRM
             return null;
         }
 
-        public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet,bool isvendor)
+        public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor)
         {
             List<BaseFileData> fdList = new List<BaseFileData>();
-            int poid = _context.SrmPoHs.Where(p => p.PoNum == ponum).Select(p=>p.PoId).FirstOrDefault();
+            int poid = _context.SrmPoHs.Where(p => p.PoNum == ponum).Select(p => p.PoId).FirstOrDefault();
             int vendor_id = _context.SrmPoHs.Where(p => p.PoNum == ponum).Select(p => p.VendorId).FirstOrDefault();
-            if (poid <= 0||vendor_id<=0) return null;
+            if (poid <= 0 || vendor_id <= 0) return null;
             int matnr_id = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.MatnrId).FirstOrDefault();
-            string des= _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.Description).FirstOrDefault();
+            string des = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.Description).FirstOrDefault();
             //if (matnr_id <= 0) return null;
             List<SrmMatnrDoc> doclist = _context.SrmMatnrDocs.Where(p => p.VendorId == vendor_id)
                 .AndIfCondition(matnr_id == 0, p => p.Description == des)
@@ -580,16 +632,16 @@ namespace Convience.Service.SRM
             }
             return fdList;
         }
-        public void addLog(int poid, int polid, string filename,string ip,string username)
+        public void addLog(int poid, int polid, string filename, string ip, string username)
         {
             SrmDownloadLog log = new SrmDownloadLog()
             {
-                PoId=poid,
-                PoLId=polid,
-                FileName=filename,
-                Ip=ip,
-                CreateBy=username,
-                LastUpdateBy=username
+                PoId = poid,
+                PoLId = polid,
+                FileName = filename,
+                Ip = ip,
+                CreateBy = username,
+                LastUpdateBy = username
             };
             _context.SrmDownloadLogs.Add(log);
             _context.SaveChanges();

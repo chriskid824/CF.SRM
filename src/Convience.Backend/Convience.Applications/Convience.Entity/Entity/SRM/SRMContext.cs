@@ -742,6 +742,18 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("CELL")
                     .HasComment("儲格");
 
+                entity.Property(e => e.ChangeDateReason)
+                    .HasMaxLength(300)
+                    .HasColumnName("CHANGE_DATE_REASON");
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(50)
+                    .HasColumnName("CREATE_BY");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
                 entity.Property(e => e.CriticalPart)
                     .HasMaxLength(5)
                     .HasColumnName("CRITICAL_PART");
@@ -760,6 +772,22 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.InspectionQty).HasColumnName("INSPECTION_QTY");
 
                 entity.Property(e => e.InspectionTime).HasColumnName("INSPECTION_TIME");
+
+                entity.Property(e => e.LastDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_DELIVERY_DATE");
+
+                entity.Property(e => e.LastReplyDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_REPLY_DELIVERY_DATE");
+
+                entity.Property(e => e.LastUpdateBy)
+                    .HasMaxLength(50)
+                    .HasColumnName("LAST_UPDATE_BY");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
 
                 entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
 
@@ -803,6 +831,8 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.WoNum)
                     .HasMaxLength(12)
                     .HasColumnName("WO_NUM");
+
+                entity.Property(e => e.WoQty).HasColumnName("WO_QTY");
 
                 entity.HasOne(d => d.Po)
                     .WithMany(p => p.SrmPoLs)

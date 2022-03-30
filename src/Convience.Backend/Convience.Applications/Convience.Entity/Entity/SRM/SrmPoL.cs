@@ -29,6 +29,14 @@ namespace Convience.Entity.Entity.SRM
         public string WoNum { get; set; }
         public int? WoItem { get; set; }
         public string OtherDesc { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string CreateBy { get; set; }
+        public DateTime? LastUpdateDate { get; set; }
+        public string LastUpdateBy { get; set; }
+        public int? WoQty { get; set; }
+        public DateTime? LastDeliveryDate { get; set; }
+        public DateTime? LastReplyDeliveryDate { get; set; }
+        public string ChangeDateReason { get; set; }
 
         public virtual SrmPoH Po { get; set; }
     }

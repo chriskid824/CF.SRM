@@ -28,7 +28,8 @@ namespace Convience.Service.SRM
         public string AddDelivery(AddDeliveryModel data);
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
-        public int UpdateReplyDeliveryDateH(string ponum,DateTime date);
+        public int UpdateReplyDeliveryDateH(string ponum, DateTime date);
+        public int UpdateReplyDeliveryDateWithReason(int poid,int polid,DateTime date,string reason);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryL(ViewSrmDeliveryL data);
@@ -179,8 +180,31 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return poid;
         }
+        public int UpdateReplyDeliveryDateWithReason(int poid, int polid, DateTime date, string reason)
+        {
+            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid &&p.PoLId==polid).FirstOrDefault();
+            pol.Status = 11;
+            pol.LastDeliveryDate = pol.ReplyDeliveryDate;
+            pol.ReplyDeliveryDate = date;
+            pol.ChangeDateReason = reason;
+            _context.SrmPoLs.Update(pol);
+            SrmPoH poh = _context.SrmPoHs.Find(poid);
+            poh.Status = 11;
+            _context.SrmPoHs.Update(poh);
+            _context.SaveChanges();
+            return poid;
+        }
         public bool UpdateReplyDeliveryDate(SrmPoL data)
         {
+            bool is3100 = false;
+            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == data.PoId && p.PoLId == data.PoLId).FirstOrDefault();
+            data.LastReplyDeliveryDate = pol.ReplyDeliveryDate;
+            SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
+            if (poh != null&& poh.Org==3100)
+            {
+                is3100 = true;
+                //poh.
+            }
             _context.SrmPoLs.Update(data);
             _context.SaveChanges();
             return true;

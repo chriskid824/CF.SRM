@@ -31,6 +31,9 @@ export class SrmPoService {
   UpdateReplyDeliveryDate(po) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdateReplyDeliveryDate`,po);
   }
+  UpdateReplyDeliveryDateWithReason(po) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/UpdateReplyDeliveryDateWithReason`,po);
+  }
   UpdateStatus(id) {
     return this.httpClient.get(`${this.uriConstant.SrmPo}/UpdateStatus?id=${id}`);
   }

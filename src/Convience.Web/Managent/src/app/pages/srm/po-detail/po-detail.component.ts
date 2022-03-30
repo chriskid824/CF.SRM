@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DateFilterModel } from 'ag-grid-community';
 import { Router,ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { StorageService } from 'src/app/services/storage.service';
 @Component({
   selector: 'app-po-detail',
   encapsulation: ViewEncapsulation.None,
@@ -28,7 +29,7 @@ export class PoDetailComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   deliverydate;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
-    ,private router: Router,private _messageService: NzMessageService,) {
+    ,private router: Router,private _messageService: NzMessageService,private _storageService: StorageService,) {
     this.columnDefs = [
       {
         headerName:'料號',
@@ -192,15 +193,20 @@ export class PoDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    var Werks= this._storageService.werks.split(',');
+    var werkselected=null;
+    if(Werks.length==1)
+    {
+      werkselected=Werks[0];
+    }
     this.searchForm = this._formBuilder.group({
       PO_NUM: [null],
       STATUS: [1],
       EkgryDesc:[null],
       replyDeliveryDate_s: [null],
       replyDeliveryDate_e: [null],
-      ORG: [null],
+      ORG: [werkselected],
     });
-
   }
   // onPageSizeChanged(newPageSize) {
   //   var value = document.getElementById('page-size').value;
@@ -211,8 +217,14 @@ export class PoDetailComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.rowData =null;
-    // this.gridApi.showNoRowsOverlay();
-    //this.getPoLList(null);
+    var Werks= this._storageService.werks.split(',');
+    if(Werks.length==1)
+    {
+      //this.gridApi.showNoRowsOverlay();
+      this.refresh();
+    }
+    //
+    //
   }
   submitSearch() {
     this.refresh();

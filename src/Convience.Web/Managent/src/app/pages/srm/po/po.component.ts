@@ -168,15 +168,17 @@ export class PoComponent implements OnInit {
           eButton.addEventListener('click', function() {
             _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
               alert('採購單號:'+params.data.PoNum+'已接收');
-              params.data.Status=11;
+              params.data.Status=15;
               params.data.ReplyDate=new Date();
-              params.data.StatusDesc="待回覆";
+              params.data.StatusDesc="待交貨";
               params.data.SrmPoLs.forEach(element => {
-                element.Status=11;
-                element.StatusDesc="待回覆";
+                element.Status=15;
+                element.StatusDesc="待交貨";
+                element.ReplyDeliveryDate=element.DeliveryDate;
                 eDiv.innerHTML='';
               });
               params.api.refreshCells();
+              params.api.redrawRows();
             });
             });
           // if(params.data.hasFile)
@@ -213,22 +215,42 @@ export class PoComponent implements OnInit {
           else if(params.data.Status==11)
           {
             var eDiv = document.createElement('div');
-            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">統一回覆</button></span>';
+            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">回覆</button></span>';
             var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-
             eButton.addEventListener('click', function() {
-              // var dialogData=new DialogData();
-              // dialogData.data=params.data;
-              const dialogConfig = new MatDialogConfig();
-              dialogConfig.disableClose = true;
-              dialogConfig.autoFocus = true;
-              //dialogConfig.minWidth = "1500px";
-              dialogConfig.maxHeight = "1500px";
-              dialogConfig.data = params.data.PoNum;
-              dialog.open(PoDateModalComponent, dialogConfig);
+              _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
+                alert('採購單號:'+params.data.PoNum+'已回覆');
+                params.data.Status=15;
+                params.data.ReplyDate=new Date();
+                params.data.StatusDesc="待交貨";
+                params.data.SrmPoLs.forEach(element => {
+                  element.Status=15;
+                  element.StatusDesc="待交貨";
+                  element.ReplyDeliveryDate=element.DeliveryDate;
+                  eDiv.innerHTML='';
+                });
+                params.api.refreshCells();
+                params.api.redrawRows();
               });
+            });
             return eDiv;
-            }
+          }
+          // else if(params.data.Status==11||params.data.Status==15)
+          // {
+          //   var eDiv = document.createElement('div');
+          //   eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">統一回覆</button></span>';
+          //   var eButton = eDiv.querySelectorAll('.btn-simple')[0];
+
+          //   eButton.addEventListener('click', function() {
+          //     const dialogConfig = new MatDialogConfig();
+          //     dialogConfig.disableClose = true;
+          //     dialogConfig.autoFocus = true;
+          //     dialogConfig.maxHeight = "1500px";
+          //     dialogConfig.data = params.data.PoNum;
+          //     dialog.open(PoDateModalComponent, dialogConfig);
+          //     });
+          //   return eDiv;
+          //   }
         },
         cellRendererParams: {
           // ondblclick:this.openFileModal.bind(this),
@@ -249,6 +271,7 @@ export class PoComponent implements OnInit {
     };
     this.components = { datePicker: getDatePicker()};
     this.detailCellRendererParams = {
+      refreshStrategy: 'rows',
       detailGridOptions: {
         frameworkComponents:this.frameworkComponents,
         rowStyle: { background: 'beige' },
@@ -381,7 +404,6 @@ export class PoComponent implements OnInit {
       },
 
       getDetailRowData: function (params) {
-        console.info(params);
         params.successCallback(params.data.SrmPoLs);
 
       },
@@ -390,12 +412,18 @@ export class PoComponent implements OnInit {
 
   ngOnInit(): void {
     this.isvendor=this._storageService.vendorId.length>0;
+    var Werks= this._storageService.werks.split(',');
+    var werkselected='';
+    if(Werks.length==1)
+    {
+      werkselected=Werks[0];
+    }
     this.searchForm = this._formBuilder.group({
       PO_NUM: this.route.snapshot.paramMap.get('number'),
       STATUS: [1],
       EkgryDesc:[null],
       DATASTATUS:[0],
-      ORG:['']
+      ORG:[werkselected]
     });
   }
   start(e){

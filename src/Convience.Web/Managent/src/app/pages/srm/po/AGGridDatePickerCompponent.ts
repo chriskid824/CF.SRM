@@ -3,15 +3,16 @@ import { ICellEditorAngularComp } from 'ag-grid-angular/ag-grid-angular';
 import { DatePipe } from '@angular/common';
 import { SrmPoService } from '../../../business/srm/srm-po.service';
 import { differenceInCalendarDays } from 'date-fns';
-
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { PoReasonModalComponent} from './po-date-modal';
 @Component({
   selector: 'date-editor-cell',
   template: `
-    <nz-date-picker nzSize="large" *ngIf="params.data.Status==15||params.data.Status==11" nzAutoFocus="true" [(ngModel)]="selectedDate" (ngModelChange)="onChange($event)" style nzPlaceHolder="請選擇日期" [nzDisabledDate]="disabledDate"></nz-date-picker>
-  `
+    <nz-date-picker nzSize="large" *ngIf="(params.data.Status==15||params.data.Status==11)&&params.data.Org!=3100" nzAutoFocus="true" [(ngModel)]="selectedDate" (ngModelChange)="onChange($event)" style nzPlaceHolder="請選擇日期" [nzDisabledDate]="disabledDate"></nz-date-picker>
+    `
 })
 export class AgGridDatePickerComponent implements ICellEditorAngularComp {
-  constructor(private _srmPoService: SrmPoService) {
+  constructor(private _srmPoService: SrmPoService,private dialog: MatDialog) {
   }
   public params: any;
 
@@ -23,7 +24,15 @@ export class AgGridDatePickerComponent implements ICellEditorAngularComp {
   agInit(params: any): void {
     this.params = params;
   }
-
+  ngAfterViewInit() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    //dialogConfig.minWidth = "1500px";
+    dialogConfig.maxHeight = "1500px";
+    dialogConfig.data = this.params;
+    this.dialog.open(PoReasonModalComponent, dialogConfig);
+  }
   getValue(): any {
     if(this.selectedDate!=undefined)
     {
@@ -44,5 +53,11 @@ export class AgGridDatePickerComponent implements ICellEditorAngularComp {
   onChange(date: Date) {
     this.selectedDate = date;//{ date: { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDay() } };
     this.params.api.stopEditing();
+    console.info(this.params);
   }
 }
+
+
+
+
+

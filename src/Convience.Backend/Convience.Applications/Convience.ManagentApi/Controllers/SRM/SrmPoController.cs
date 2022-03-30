@@ -196,6 +196,18 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
+        [HttpPost("UpdateReplyDeliveryDateWithReason")]
+        public IActionResult UpdateReplyDeliveryDateWithReason(JObject po)
+        {
+            if (po.Property("PoId") == null || po.Property("date") == null|| po.Property("PoLId") == null || po.Property("Reason") == null) return Ok();
+            int PoId = (int)po["PoId"];
+            int PoLId = (int)po["PoLId"];
+            DateTime date = Convert.ToDateTime(po["date"].ToString());
+            string reason = po["Reason"].ToString();
+            int poid = _srmDeliveryService.UpdateReplyDeliveryDateWithReason(PoId,PoLId, date, reason);
+            _srmPoService.UpdateStatus(poid, 15);
+            return Ok();
+        }
         [HttpPost("UpdateReplyDeliveryDate")]
         public IActionResult UpdateReplyDeliveryDate(JObject po)
         {
@@ -223,7 +235,7 @@ namespace Convience.ManagentApi.Controllers.SRM
         public IActionResult UpdateStatus(int id)
         {
             //int data= id.ToObject<int>();
-            _srmPoService.UpdateStatus(id, 11);
+            _srmPoService.UpdateStatus(id, 15);
             return Ok();
         }
         [HttpPost("Sap_GetPoData")]
