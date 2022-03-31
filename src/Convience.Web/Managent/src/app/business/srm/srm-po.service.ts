@@ -79,4 +79,7 @@ export class SrmPoService {
   GetPoLAbnormal(query) {
     return this.httpClient.post(`${this.uriConstant.SrmPo}/GetPoLAbnormal`,query);
   }
+  GetOrg(query) {
+    return this.httpClient.post(`${this.uriConstant.SrmPo}/GetOrg`,query);
+  }
 }
