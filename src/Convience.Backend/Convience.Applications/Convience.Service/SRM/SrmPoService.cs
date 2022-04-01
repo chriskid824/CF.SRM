@@ -550,10 +550,9 @@ namespace Convience.Service.SRM
                                 Cell = pol.LGPBE,
                             };
                             _context.SrmPoLs.Add(poL);
+                            r.OutCome = "成功";
+                            result.Add(r);
                         }
-
-                        r.OutCome = "成功";
-                        result.Add(r);
                     }
                     else
                     {
