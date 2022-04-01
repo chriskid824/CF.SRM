@@ -3,8 +3,7 @@
     <nz-form-item>
       <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
       <nz-form-control>
-        <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"
-               autocomplete="off" />
+        <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'" autocomplete="off" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -20,33 +19,77 @@
   </form>
 
 </nz-card>
+<div id="grid1200" [hidden]="org !='1200'">
   <nz-card>
     <!-- <nz-date-picker [(ngModel)]="deliverydate" nzPlaceHolder="請選擇出貨日期"></nz-date-picker>
     <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">建立出貨單</button> -->
     <!-- <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="excel($event)" *canOperate="'DO_CREATE'">生成報表</button> -->
-  <ag-grid-angular
-    #agGrid
-    style="width: 100%; height: 650px;"
-    id="myGrid"
-    class="ag-theme-alpine"
-    [columnDefs]="columnDefs" 
-    [excelStyles]="excelStyles"
-    [autoGroupColumnDef]="autoGroupColumnDef"
-    [defaultColDef]="defaultColDef"
-    [suppressRowClickSelection]="true"
-    [groupSelectsChildren]="true"
-    [debug]="true"
-    [rowSelection]="rowSelection"
-
-    [pivotPanelShow]="pivotPanelShow"
-    [enableRangeSelection]="true"
-    [pagination]="true"
-    [paginationPageSize]="paginationPageSize"
-    [paginationNumberFormatter]="paginationNumberFormatter"
-    [rowData]="rowData"
-    (gridReady)="onGridReady($event)"
-    [enableCellTextSelection]="true" 
-  ></ag-grid-angular>
-</nz-card>
+    <ag-grid-angular #agGrid style="width: 100%; height: 650px;" id="myGrid" class="ag-theme-alpine"
+      [columnDefs]="columnDefs_1200"
+      [excelStyles]="excelStyles" 
+      [autoGroupColumnDef]="autoGroupColumnDef"
+      [defaultColDef]="defaultColDef" 
+      [suppressRowClickSelection]="true" 
+      [groupSelectsChildren]="true" [debug]="true"
+      [rowSelection]="rowSelection" 
+      [pivotPanelShow]="pivotPanelShow" 
+      [enableRangeSelection]="true" 
+      [pagination]="true"
+      [paginationPageSize]="paginationPageSize" 
+      [paginationNumberFormatter]="paginationNumberFormatter"
+      [rowData]="rowData" (gridReady)="onGridReady($event)" 
+      [enableCellTextSelection]="true">
+    </ag-grid-angular>
+  </nz-card>
+</div>
+<div id="grid3100" [hidden]="org !='3100'" >
+  <nz-card>
+    <!-- <nz-date-picker [(ngModel)]="deliverydate" nzPlaceHolder="請選擇出貨日期"></nz-date-picker>
+  <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">建立出貨單</button> -->
+    <!-- <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="excel($event)" *canOperate="'DO_CREATE'">生成報表</button> -->
+    <ag-grid-angular #agGrid style="width: 100%; height: 650px;" id="myGrid" class="ag-theme-alpine"
+      [columnDefs]="columnDefs_3100" 
+      [excelStyles]="excelStyles" 
+      [autoGroupColumnDef]="autoGroupColumnDef"
+      [defaultColDef]="defaultColDef" 
+      [suppressRowClickSelection]="true" 
+      [groupSelectsChildren]="true" 
+      [debug]="true"
+      [rowSelection]="rowSelection" 
+      [pivotPanelShow]="pivotPanelShow" 
+      [enableRangeSelection]="true" 
+      [pagination]="true"
+      [paginationPageSize]="paginationPageSize" 
+      [paginationNumberFormatter]="paginationNumberFormatter"
+      [rowData]="rowData" (gridReady)="onGridReady($event)" 
+      [enableCellTextSelection]="true">
+    </ag-grid-angular>
+  </nz-card>
+</div>
 <!-- </div> -->
 <!-- [rowGroupPanelShow]="rowGroupPanelShow" -->
+
+<div id="grid3100" [hidden]="org !='12003100' " >
+  <nz-card>
+    <!-- <nz-date-picker [(ngModel)]="deliverydate" nzPlaceHolder="請選擇出貨日期"></nz-date-picker>
+  <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">建立出貨單</button> -->
+    <!-- <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="excel($event)" *canOperate="'DO_CREATE'">生成報表</button> -->
+    <ag-grid-angular #agGrid style="width: 100%; height: 650px;" id="myGrid" class="ag-theme-alpine"
+      [columnDefs]="columnDefs_both" 
+      [excelStyles]="excelStyles" 
+      [autoGroupColumnDef]="autoGroupColumnDef"
+      [defaultColDef]="defaultColDef" 
+      [suppressRowClickSelection]="true" 
+      [groupSelectsChildren]="true" 
+      [debug]="true"
+      [rowSelection]="rowSelection" 
+      [pivotPanelShow]="pivotPanelShow" 
+      [enableRangeSelection]="true" 
+      [pagination]="true"
+      [paginationPageSize]="paginationPageSize" 
+      [paginationNumberFormatter]="paginationNumberFormatter"
+      [rowData]="rowData" (gridReady)="onGridReady($event)" 
+      [enableCellTextSelection]="true">
+    </ag-grid-angular>
+  </nz-card>
+</div>

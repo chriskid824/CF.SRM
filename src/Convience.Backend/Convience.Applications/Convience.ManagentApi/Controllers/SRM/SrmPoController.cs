@@ -503,6 +503,13 @@ namespace Convience.ManagentApi.Controllers.SRM
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         });
         }
+        [HttpPost("GetOrg")]
+        public IActionResult GetOrg(QueryPoList query)
+        {
+            query.user = User;
+            var h = _srmPoService.GetOrg(query);
+            return Ok(h);
+        }
     }
 
 }

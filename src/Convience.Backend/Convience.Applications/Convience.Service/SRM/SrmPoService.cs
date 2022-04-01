@@ -46,6 +46,7 @@ namespace Convience.Service.SRM
         public void addLog(int poid, int polid, string filename, string ip, string username);
         public PagingResultModel<ViewSrmDownloadLog> GetDownloadList(QueryPoDownloadLogList query);
         public IEnumerable<ViewSrmPoL> GetPoLAbnormal(QueryPoList query);
+        public int GetOrg(QueryPoList query);
     }
 
     public class SrmPoService : ISrmPoService
@@ -236,6 +237,7 @@ namespace Convience.Service.SRM
                               EkgryDesc = ekgry.EkgryDesc,
                               OriginalDate = l.OriginalDate,
                               ChangeDateReason = l.ChangeDateReason,
+                              WoNum = l.WoNum
                           })
                           .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate < DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
@@ -759,6 +761,35 @@ namespace Convience.Service.SRM
 
             //.AndIfCondition(query.status != 0, p => p.Status == query.status);
             return result.Where(p => p.RemainQty > 0).ToList();
+        }
+        public int GetOrg(QueryPoList query)
+        {
+            int org = 0;
+            if (query.srmvendor.IndexOf("admin") != -1) 
+            {
+                org = 12003100;
+                return org;
+            }
+            var v = _context.SrmVendors.Where(p => p.SrmVendor1 == query.srmvendor || p.SapVendor == query.srmvendor).ToList();
+            if (v.Count > 1)
+            {
+                org = 12003100;
+                return org;
+            }
+            if (v.Count == 1)
+            {
+                org = v.Select(r => r.Ekorg).First().Value;
+            }
+            //查是不是採購
+            if (v.Count == 0) 
+            {
+                var p = _context.SrmEkgries.Where(p => p.Empid == query.srmvendor).ToList();
+                if (p.Count>0)
+                {
+                    org = p.Select(r => r.Werks).First();
+                }
+            }
+            return org;
         }
     }
 }
