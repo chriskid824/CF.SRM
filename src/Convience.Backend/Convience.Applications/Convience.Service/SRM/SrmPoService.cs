@@ -39,6 +39,7 @@ namespace Convience.Service.SRM
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size);
 
         public bool UpdateStatus(int id, int status);
+        public bool UpdateStatus(int poid, int polid, int status);
         public List<SapResultData> UpdateSapData(SapPoData data, string userName);
         public string UpdatePoLDoc(int matnr_id, string des, int vendor_id, List<BaseFileData> fdList, string userid);
         public List<BaseFileData> GetMatnrDocListFromSap(string ponum, int polid, List<T_DRAD> dataSet, bool isvendor);
@@ -159,14 +160,15 @@ namespace Convience.Service.SRM
                                  DeliveryPlace = l.DeliveryPlace,
                                  CriticalPart = l.CriticalPart,
                                  InspectionTime = l.InspectionTime,
-                                 Status = h.Status,
+                                 Status = l.Status,
                                  VendorId = h.VendorId,
                                  VendorName = vendor.VendorName,
                                  TotalAmount = h.TotalAmount,
                                  Buyer = h.Buyer,
                                  StatusDesc = status.StatusDesc,
                                  Matnr = matnr.SapMatnr,
-                                 Org = p.Org
+                                 Org = p.Org,
+                                 ChangeDateReason =l.ChangeDateReason,
                              }).Where(l => l.PoId == p.PoId)
                              //.AndIfCondition(query.isNeedData, p => _context.ViewSrmFileRecords)
                              .ToList();
@@ -233,6 +235,7 @@ namespace Convience.Service.SRM
                               StorageDesc = l.StorageDesc,
                               EkgryDesc = ekgry.EkgryDesc,
                               OriginalDate = l.OriginalDate,
+                              ChangeDateReason = l.ChangeDateReason,
                           })
                           .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate < DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
@@ -311,6 +314,25 @@ namespace Convience.Service.SRM
                 _context.SrmPoLs.Update(item);
             }
             _context.SaveChanges();
+            return true;
+        }
+        public bool UpdateStatus(int poid,int polid, int status)
+        {
+            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).FirstOrDefault();
+            if (pol == null) return false;
+            pol.Status = status;
+
+            _context.SrmPoLs.Update(pol);
+            _context.SaveChanges();
+            if (_context.SrmPoLs.Any(p => p.PoId == poid && p.Status == 11))
+            { }
+            else
+            {
+                SrmPoH poh = _context.SrmPoHs.Find(poid);
+                poh.Status = 15;
+                _context.SrmPoHs.Update(poh);
+                _context.SaveChanges();
+            }
             return true;
         }
         public PagingResultModel<ViewSrmPoPoL> GetPoPoL(QueryPoList query, int page, int size)

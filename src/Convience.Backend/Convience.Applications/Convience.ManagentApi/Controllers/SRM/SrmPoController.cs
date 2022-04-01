@@ -205,7 +205,8 @@ namespace Convience.ManagentApi.Controllers.SRM
             DateTime date = Convert.ToDateTime(po["date"].ToString());
             string reason = po["Reason"].ToString();
             int poid = _srmDeliveryService.UpdateReplyDeliveryDateWithReason(PoId,PoLId, date, reason);
-            _srmPoService.UpdateStatus(poid, 15);
+
+            //_srmPoService.UpdateStatus(poid, 15);
             return Ok();
         }
         [HttpPost("UpdateReplyDeliveryDate")]
@@ -236,6 +237,13 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             //int data= id.ToObject<int>();
             _srmPoService.UpdateStatus(id, 15);
+            return Ok();
+        }
+        [HttpGet("UpdateStatus_Reply")]
+        public IActionResult UpdateStatus_Reply(int poid,int polid)
+        {
+            //int data= id.ToObject<int>();
+            _srmPoService.UpdateStatus(poid, polid, 15);
             return Ok();
         }
         [HttpPost("Sap_GetPoData")]

@@ -25,13 +25,16 @@ export class AgGridDatePickerComponent implements ICellEditorAngularComp {
     this.params = params;
   }
   ngAfterViewInit() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    //dialogConfig.minWidth = "1500px";
-    dialogConfig.maxHeight = "1500px";
-    dialogConfig.data = this.params;
-    this.dialog.open(PoReasonModalComponent, dialogConfig);
+    if(this.params.data.Org==3100)
+    {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      //dialogConfig.minWidth = "1500px";
+      dialogConfig.maxHeight = "1500px";
+      dialogConfig.data = this.params;
+      this.dialog.open(PoReasonModalComponent, dialogConfig);
+    }
   }
   getValue(): any {
     if(this.selectedDate!=undefined)

@@ -20,6 +20,7 @@ import { FileInfo } from '../../content-manage/model/fileInfo';
 import { StorageService } from 'src/app/services/storage.service';
 import { PoDateModalComponent} from './po-date-modal';
 import { formatDate } from '@angular/common';
+import { ConditionalExpr } from '@angular/compiler';
 // import { TotalValueRenderer } from './total-value-renderer.component';
 declare const $: any; // avoid the error on $(this.eInput).datepicker();
 datepickerFactory($);
@@ -212,29 +213,7 @@ export class PoComponent implements OnInit {
           // });
           return eDiv;
           }
-          else if(params.data.Status==11)
-          {
-            var eDiv = document.createElement('div');
-            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">回覆</button></span>';
-            var eButton = eDiv.querySelectorAll('.btn-simple')[0];
-            eButton.addEventListener('click', function() {
-              _srmPoService.UpdateStatus(params.data.PoId).subscribe(result=>{
-                alert('採購單號:'+params.data.PoNum+'已回覆');
-                params.data.Status=15;
-                params.data.ReplyDate=new Date();
-                params.data.StatusDesc="待交貨";
-                params.data.SrmPoLs.forEach(element => {
-                  element.Status=15;
-                  element.StatusDesc="待交貨";
-                  element.ReplyDeliveryDate=element.DeliveryDate;
-                  eDiv.innerHTML='';
-                });
-                params.api.refreshCells();
-                params.api.redrawRows();
-              });
-            });
-            return eDiv;
-          }
+
           // else if(params.data.Status==11||params.data.Status==15)
           // {
           //   var eDiv = document.createElement('div');
@@ -291,11 +270,41 @@ export class PoComponent implements OnInit {
           //             }
                        cellRenderer : function(params){
                           var eDiv = document.createElement('div');
-                          eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+                          if(params.data.Status==11)
+                          {
+                            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span><span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">回覆</button></span>';
+                          }
+                          else
+                          {
+                            eDiv.innerHTML = '<span class="my-css-class"><button *canOperate="\'PO_ACCEPT\'" nz-button nzType="primary" class="btn-simple" style="height:39px">檔案</button></span>';
+                          }
                           var eButton_file = eDiv.querySelectorAll('.btn-simple')[0];
                           eButton_file.addEventListener('click', function() {
                             params.ondblclick(params);
                           });
+                          if(params.data.Status==11)
+                          {
+                            var eButton_reply = eDiv.querySelectorAll('.btn-simple')[1];
+                            eButton_reply.addEventListener('click', function() {
+                              console.info(params.data.PoId);
+                              console.info(params.data.PoLId);
+                              _srmPoService.UpdateStatus_Reply(params.data.PoId,params.data.PoLId).subscribe(result=>{
+                                alert('採購單:'+params.data.PoNum+'-'+params.data.PoLId+' 已回覆');
+                                params.data.Status=15;
+                                params.data.ReplyDate=new Date();
+                                params.data.StatusDesc="待交貨";
+                                // params.data.SrmPoLs.forEach(element => {
+                                //   element.Status=15;
+                                //   element.StatusDesc="待交貨";
+                                //   element.ReplyDeliveryDate=element.DeliveryDate;
+                                //   eDiv.innerHTML='';
+                                // });
+                                params.api.refreshCells();
+                                // params.api.redrawRows();
+                              });
+                            });
+                          }
+
                           return eDiv;
 
                         },
@@ -388,6 +397,10 @@ export class PoComponent implements OnInit {
           {
             headerName:'其他內文',
             field: 'OtherDesc',
+          },
+          {
+            headerName:'交貨日異動說明',
+            field: 'ChangeDateReason',
           },
         ],
         defaultColDef : {
