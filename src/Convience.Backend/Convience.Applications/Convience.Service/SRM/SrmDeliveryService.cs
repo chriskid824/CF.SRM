@@ -207,7 +207,7 @@ namespace Convience.Service.SRM
         public bool UpdateReplyDeliveryDate(SrmPoL data)
         {
             bool is3100 = false;
-            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == data.PoId && p.PoLId == data.PoLId).FirstOrDefault();
+            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == data.PoId && p.PoLId == data.PoLId).AsNoTracking().FirstOrDefault();
             data.LastReplyDeliveryDate = pol.ReplyDeliveryDate;
             SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
             if (poh != null&& poh.Org==3100)
