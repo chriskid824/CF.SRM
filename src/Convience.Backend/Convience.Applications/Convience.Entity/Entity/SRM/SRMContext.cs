@@ -741,6 +741,14 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.PoLId).HasColumnName("PO_L_ID");
 
+                entity.Property(e => e.Bedat)
+                    .HasMaxLength(10)
+                    .HasColumnName("BEDAT");
+
+                entity.Property(e => e.Bednr)
+                    .HasMaxLength(300)
+                    .HasColumnName("BEDNR");
+
                 entity.Property(e => e.Cell)
                     .HasMaxLength(10)
                     .HasColumnName("CELL")
@@ -773,7 +781,23 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
 
+                entity.Property(e => e.Ebban)
+                    .HasMaxLength(300)
+                    .HasColumnName("EBBAN");
+
+                entity.Property(e => e.EstDeliveryDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("EST_DELIVERY_DATE");
+
+                entity.Property(e => e.EstDeliveryDays)
+                    .HasMaxLength(5)
+                    .HasColumnName("EST_DELIVERY_DAYS");
+
                 entity.Property(e => e.InspectionQty).HasColumnName("INSPECTION_QTY");
+
+                entity.Property(e => e.InspectionReport)
+                    .HasMaxLength(300)
+                    .HasColumnName("INSPECTION_REPORT");
 
                 entity.Property(e => e.InspectionTime).HasColumnName("INSPECTION_TIME");
 
@@ -794,6 +818,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("LAST_UPDATE_DATE");
 
                 entity.Property(e => e.MatnrId).HasColumnName("MATNR_ID");
+
+                entity.Property(e => e.Neindt)
+                    .HasMaxLength(300)
+                    .HasColumnName("NEINDT");
 
                 entity.Property(e => e.OriginalDate)
                     .HasColumnType("datetime")
@@ -816,6 +844,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnType("datetime")
                     .HasColumnName("REPLY_DELIVERY_DATE");
 
+                entity.Property(e => e.SipReport)
+                    .HasMaxLength(300)
+                    .HasColumnName("SIP_REPORT");
+
                 entity.Property(e => e.Status)
                     .HasColumnName("STATUS")
                     .HasDefaultValueSql("((21))");
@@ -830,6 +862,8 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("STORAGE_DESC")
                     .HasComment("儲存地點說明");
 
+                entity.Property(e => e.Tdline).HasColumnName("TDLINE");
+
                 entity.Property(e => e.WoItem).HasColumnName("WO_ITEM");
 
                 entity.Property(e => e.WoNum)
@@ -838,11 +872,13 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.WoQty).HasColumnName("WO_QTY");
 
-                entity.HasOne(d => d.Po)
-                    .WithMany(p => p.SrmPoLs)
-                    .HasForeignKey(d => d.PoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("PO_ID");
+                entity.Property(e => e.Wzb04)
+                    .HasMaxLength(300)
+                    .HasColumnName("WZB04");
+
+                entity.Property(e => e.Zpano)
+                    .HasMaxLength(300)
+                    .HasColumnName("ZPANO");
             });
 
 

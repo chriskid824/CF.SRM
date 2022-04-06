@@ -37,6 +37,17 @@ namespace Convience.Entity.Entity.SRM
         public DateTime? LastDeliveryDate { get; set; }
         public DateTime? LastReplyDeliveryDate { get; set; }
         public string ChangeDateReason { get; set; }
+        public DateTime? EstDeliveryDate { get; set; }
+        public string EstDeliveryDays { get; set; }
+        public string InspectionReport { get; set; }
+        public string SipReport { get; set; }
+        public string Bednr { get; set; }
+        public string Ebban { get; set; }
+        public string Wzb04 { get; set; }
+        public string Neindt { get; set; }
+        public string Tdline { get; set; }
+        public string Zpano { get; set; }
+        public string Bedat { get; set; }
 
         public virtual SrmPoH Po { get; set; }
     }

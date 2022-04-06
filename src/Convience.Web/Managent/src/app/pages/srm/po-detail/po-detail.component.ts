@@ -68,7 +68,7 @@ export class PoDetailComponent implements OnInit {
       },
       {
         headerName:'工單可交數',
-        valueGetter:"0",
+        field: 'WoQty',
       },
       {
         headerName:'此次交貨數量',
