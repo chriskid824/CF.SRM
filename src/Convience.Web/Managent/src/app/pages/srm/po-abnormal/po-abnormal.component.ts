@@ -79,7 +79,7 @@ export class PoAbnormalComponent implements OnInit {
       },
       {
         headerName: '工單可交數',
-        valueGetter: "0",
+        field: 'WoQty',
       },
       {
         headerName: '此次交貨數量',
@@ -102,7 +102,7 @@ export class PoAbnormalComponent implements OnInit {
         headerName: '原始需求日期',
         field: 'DeliveryDate',
         valueFormatter: dateFormatter
-      },
+      }, 
       {
         headerName: '請單本次需求日期',
         field: 'DeliveryDate',
@@ -115,7 +115,7 @@ export class PoAbnormalComponent implements OnInit {
       },
       {
         headerName: '備註內文',
-        field: 'OtherDesc',
+        field: 'Tdline',
       },
       {
         headerName: '儲存地點說明',

@@ -756,6 +756,8 @@ namespace Convience.Service.SRM
                               Storage = l.Storage,
                               StorageDesc = l.StorageDesc,
                               EkgryDesc = ekgry.EkgryDesc,
+                              WoQty = l.WoQty,
+                              Tdline = l.Tdline,
                           })
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
