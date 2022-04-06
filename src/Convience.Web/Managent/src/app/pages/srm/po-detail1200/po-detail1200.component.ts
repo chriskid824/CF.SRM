@@ -62,7 +62,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '工單可交數',
-        valueGetter: "0",
+        field: 'WoQty',
       },
       {
         headerName: '此次交貨數量',
@@ -183,9 +183,11 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '特殊製程報告',
+        field: 'InspectionReport',
       },
       {
         headerName: '附SIP',
+        field: 'SipReport',
       },
       {
         headerName: '供應商代碼',
@@ -296,9 +298,11 @@ export class PoDetail1200Component implements OnInit {
     this.columnDefs_3100 = [
       {
         headerName: '追蹤號碼',
+        field: 'Bednr',
       },
       {
         headerName: '請購單-項次',
+        field: 'Ebban',
       },
       {
         headerName: '採購單-項次',
@@ -327,6 +331,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '正確精密物料版次',
+        field: 'Wzb04',
       },
       {
         headerName: '採購單數量',
@@ -356,20 +361,19 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '採購交期回覆',
-        field: '',
+        field: 'Neindt',
       },
       {
         headerName: '備註內文',
-        field: 'OtherDesc',
-        hide: 'true',
+        field: 'Tdline',
       },
       {
         headerName: '刻號',
-        field: '',
+        field: 'Zpano',
       },
       {
         headerName: '採單文件日期',
-        field: '',
+        field: 'Bedat',
       },
       {
         headerName: '待交貨',
@@ -537,7 +541,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '工單可交數',
-        valueGetter: "0",
+        field: 'WoQty',
       },
       {
         headerName: '此次交貨數量',
@@ -643,10 +647,6 @@ export class PoDetail1200Component implements OnInit {
         },
       },
       {
-        headerName: '備註內文',
-        field: 'OtherDesc',
-      },
-      {
         headerName: '儲存地點說明',
         field: 'Storage',
         valueGetter: function (params) {
@@ -658,9 +658,11 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '特殊製程報告',
+        field: 'InspectionReport',
       },
       {
         headerName: '附SIP',
+        field: 'SipReport',
       },
       {
         headerName: '供應商代碼',
@@ -686,19 +688,16 @@ export class PoDetail1200Component implements OnInit {
         field: 'PoLId',
         hide: 'true',
       },
-
       {
         headerName: '狀態',
         field: 'StatusDesc',
         hide: 'true',
       },
-
       {
         headerName: '採購單總金額',
         field: 'TotalAmount',
         hide: 'true'
       },
-
       {
         headerName: '料號識別碼',
         field: 'MatnrId',
@@ -721,9 +720,11 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '追蹤號碼',
+        field: 'Bednr',
       },
       {
         headerName: '請購單-項次',
+        field: 'Ebban',
       },
       {
         headerName: '工單號碼',
@@ -731,18 +732,23 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '正確精密物料版次',
+        field: 'Wzb04',
       },
       {
         headerName: '採購交期回覆',
-        field: '',
+        field: 'Neindt',
+      },
+      {
+        headerName: '備註內文',
+        field: 'Tdline',
       },
       {
         headerName: '刻號',
-        field: '',
+        field: 'Zpano',
       },
       {
         headerName: '採單文件日期',
-        field: '',
+        field: 'Bedat',
       },
     ];
 
