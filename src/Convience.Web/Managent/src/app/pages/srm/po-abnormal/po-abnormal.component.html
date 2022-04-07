@@ -8,6 +8,13 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
+          <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"
+                   autocomplete="off" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
           <nz-form-label [nzFor]="'STATUS'">狀態</nz-form-label>
           <nz-form-control>
             <nz-select [formControlName]="'STATUS'" ngModel="0" style="width: 100px;">

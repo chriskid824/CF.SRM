@@ -219,6 +219,7 @@ export class PoAbnormalComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this._formBuilder.group({
+      PO_NUM: this.route.snapshot.paramMap.get('number'),
       srmvendor: [null],
       STATUS: [1]
     });
@@ -232,6 +233,7 @@ export class PoAbnormalComponent implements OnInit {
   }
   refresh() {
     var query = {
+      poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
       srmvendor: this.searchForm.value["srmvendor"] == null ? "" : this.searchForm.value["srmvendor"],
       status: this.searchForm.value["STATUS"] == null ? "0" : this.searchForm.value["STATUS"],
       page: this.page,
