@@ -22,6 +22,8 @@
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.TelPhone}}</div>
       <div class="col-md-2 col-sm-2" style="margin-top: 15px;">供應商單號</div>
       <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryVendorsn}}</div>
+      <div class="col-md-2 col-sm-2" style="margin-top: 15px;">經辦人員</div>
+      <div class="col-md-4 col-sm-4" style="margin-top: 15px;">{{deliverydata.DeliveryManager}}</div>
     </div>
 
     <nz-table #basicTable [nzData]="rowData" [nzFrontPagination]="false" [nzShowPagination]="false" style="font-size: 30px;">
@@ -62,9 +64,7 @@
     </nz-table>
     <div>
       <p style="margin-top:30px;font-size:18px;text-align: right;">
-        倉儲簽認
-        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;供應商簽認 
+        倉儲簽名
         <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
       </p>
     </div>

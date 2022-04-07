@@ -65,6 +65,7 @@ namespace Convience.Service.SRM
             SrmDeliveryH dh = _context.SrmDeliveryHs.Find(neworder.DeliveryId);
             dh.DeliveryDate = data.date;
             dh.DeliveryVendorsn = data.vendorsn;
+            dh.DeliveryManager = data.manager;
             _context.SrmDeliveryHs.Update(dh);
             if (neworder == null) return null;
             data.data.ForEach(m =>
@@ -113,6 +114,7 @@ namespace Convience.Service.SRM
                     DeliveryDate=p.DeliveryDate,
                     DeliveryNum = p.DeliveryNum,
                     DeliveryVendorsn = p.DeliveryVendorsn,
+                    DeliveryManager = p.DeliveryManager,
                     Status = p.Status,
                     CreateDate = p.CreateDate,
                     CreateBy = p.CreateBy,

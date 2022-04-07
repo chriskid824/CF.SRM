@@ -93,6 +93,7 @@ namespace Convience.Model.Models.SRM
     {
         public DateTime? date { get; set; }
         public string? vendorsn { get; set; }
+        public string? manager { get; set; }
 
         public List<ViewSrmPoL> data = new List<ViewSrmPoL>();
     }

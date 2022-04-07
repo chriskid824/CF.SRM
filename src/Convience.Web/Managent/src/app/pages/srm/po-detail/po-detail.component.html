@@ -35,6 +35,8 @@
     <nz-date-picker style="width: 130px;" [(ngModel)]="deliverydate" nzPlaceHolder="請選擇出貨日期" *canOperate="'DO_CREATE'"></nz-date-picker>
     &nbsp;&nbsp;&nbsp;
     <input nz-input style="width: 130px;" [(ngModel)]="vendorsn" placeholder="供應商出貨單號" />
+    &nbsp;&nbsp;&nbsp;
+    <input nz-input style="width: 130px;" [(ngModel)]="manager" placeholder="經辦人員" />
     <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">建立出貨單</button>
   <ag-grid-angular
     #agGrid

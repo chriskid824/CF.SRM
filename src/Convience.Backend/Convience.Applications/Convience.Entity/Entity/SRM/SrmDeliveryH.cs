@@ -13,15 +13,18 @@ namespace Convience.Entity.Entity.SRM
         {
             SrmDeliveryLs = new HashSet<SrmDeliveryL>();
         }
+
         public int DeliveryId { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public string DeliveryNum { get; set; }
         public string DeliveryVendorsn { get; set; }
+        public string DeliveryManager { get; set; }
         public int? Status { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateBy { get; set; }
         public DateTime LastUpdateDate { get; set; }
         public string LastUpdateBy { get; set; }
+
         public virtual ICollection<SrmDeliveryL> SrmDeliveryLs { get; set; }
     }
 }

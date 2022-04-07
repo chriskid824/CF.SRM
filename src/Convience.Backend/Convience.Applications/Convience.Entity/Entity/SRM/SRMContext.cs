@@ -622,6 +622,10 @@ namespace Convience.Entity.Entity.SRM
                     .HasColumnName("DELIVERY_DATE")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.DeliveryManager)
+                    .HasMaxLength(10)
+                    .HasColumnName("DELIVERY_MANAGER");
+
                 entity.Property(e => e.DeliveryNum)
                     .HasMaxLength(20)
                     .HasColumnName("DELIVERY_NUM");

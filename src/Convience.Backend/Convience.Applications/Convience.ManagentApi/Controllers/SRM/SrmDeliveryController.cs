@@ -45,7 +45,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             string deliveryNum = null;
             if (list1.Count > 0)
             {
-                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list1, date = data.date, vendorsn = data.vendorsn });
+                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list1, date = data.date, vendorsn = data.vendorsn ,manager = data.manager});
                 if (deliveryNum == null)
                 {
                     success = false;
@@ -53,7 +53,7 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             if (list2.Count > 0)
             {
-                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list2, date = data.date, vendorsn = data.vendorsn });
+                deliveryNum = _srmDeliveryService.AddDelivery(new AddDeliveryModel() { data = list2, date = data.date, vendorsn = data.vendorsn, manager = data.manager });
                 if (deliveryNum == null)
                 {
                     success = false;

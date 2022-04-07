@@ -29,6 +29,7 @@ export class PoDetailComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({});
   deliverydate;
   vendorsn;
+  manager;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
     ,private router: Router,private _messageService: NzMessageService,private _storageService: StorageService,) {
     this.columnDefs = [
@@ -75,7 +76,6 @@ export class PoDetailComponent implements OnInit {
         field: 'DeliveryQty',
         editable:true,        
         valueGetter: function (params) {
-          console.info(params);
           if(params.data.DeliveryQty>params.data.RemainQty)
           {
             params.data.DeliveryQty=params.data.RemainQty;
@@ -107,7 +107,6 @@ export class PoDetailComponent implements OnInit {
         headerName:'倉別',
         field: 'Storage',
         valueGetter: function (params) {
-          console.info(params);
           if(params.data.Storage=='05Z1')
           {
             return '服務倉'
@@ -280,6 +279,7 @@ export class PoDetailComponent implements OnInit {
       date: this.deliverydate,
       data: selectedData,
       vendorsn: this.vendorsn,
+      manager: this.manager,
     }
     console.info(query);
     this._srmDeliveryService.AddDelivery(query)
