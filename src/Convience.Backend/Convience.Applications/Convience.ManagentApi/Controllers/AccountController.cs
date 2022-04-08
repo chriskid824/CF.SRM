@@ -3,6 +3,7 @@ using Convience.ManagentApi.Infrastructure.Logs.LoginLog;
 using Convience.Model.Constants;
 using Convience.Model.Models.Account;
 using Convience.Service.Account;
+using Convience.Service.SRM;
 using Convience.Service.SystemManage;
 using Convience.Util.Extension;
 
@@ -22,14 +23,17 @@ namespace Convience.ManagentApi.Controllers
         private readonly IMenuService _menuService;
 
         private readonly IRoleService _roleService;
+        private readonly ISrmVendorService _vendorService;
 
         public AccountController(IAccountService loginService,
             IMenuService menuService,
-            IRoleService roleService)
+            IRoleService roleService,
+            ISrmVendorService vendorService)
         {
             _loginService = loginService;
             _menuService = menuService;
             _roleService = roleService;
+            _vendorService = vendorService;
         }
 
         [HttpGet("captcha")]
@@ -92,6 +96,14 @@ namespace Convience.ManagentApi.Controllers
                 return this.BadRequestResult(AccountConstants.ACCOUNT_MODIFY_PASSWORD_FAIL);
             }
             return Ok();
+        }
+        [HttpGet("AutoCreateUsers")]
+        public async Task<IActionResult> AutoCreateUsers()
+        {
+            string result = await _vendorService.AddUserFromVendor();
+            result = await _vendorService.DefaultPassword();
+            if (string.IsNullOrWhiteSpace(result)) return Ok();
+            return BadRequest(result);
         }
     }
 }

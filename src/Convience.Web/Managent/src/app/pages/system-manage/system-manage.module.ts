@@ -22,6 +22,8 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { AvatarSelectComponent } from './avatar-select/avatar-select.component';
 import { SharedModule } from '../shared/shared.module';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { SharedModule } from '../shared/shared.module';
     NzTreeSelectModule,
     NzIconModule,
     NzRadioModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzSpinModule,
+    NzPopconfirmModule,
   ]
 })
 export class SystemManageModule { }

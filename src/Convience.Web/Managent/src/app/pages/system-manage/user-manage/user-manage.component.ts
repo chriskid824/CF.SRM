@@ -32,7 +32,7 @@ export class UserManageComponent implements OnInit {
 
   data: User[] = [];
   roles: Role[] = [];
-
+  isSpinning=false;
   // store search parameters
   private _searchObject: any = {};
 
@@ -258,5 +258,18 @@ export class UserManageComponent implements OnInit {
   loadedData(nodes) {
     this.departmentNode = nodes;
   }
-
+  sapDelivery(event) {
+    this.isSpinning=true;
+    this._userService.autoCreateUsers()
+    .subscribe((result:any) => {
+      this.isSpinning=false;
+      if(result==null) alert('重新生成成功');
+      else
+      {
+       alert(result);
+      }
+    });
+  }
+  cancel()
+  {}
 }

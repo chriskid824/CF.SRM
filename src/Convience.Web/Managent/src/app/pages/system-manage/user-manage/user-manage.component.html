@@ -59,11 +59,24 @@
         </nz-card>
 
         <!--用戶數據-->
+        <nz-spin [nzSpinning]="isSpinning">
         <nz-card [nzSize]="'small'" id="userCard">
             <div>
                 <button nz-button class="mr-10" (click)="add(addUserTitleTpl,userContentTpl)"
                     *canOperate="'adduserbtn'"><i nz-icon nzType="plus"></i>添加用戶</button>
                 <button nz-button class="mr-10" (click)="refresh()"><i nz-icon nzType="sync"></i>刷新數據</button>
+                <button
+                nz-popconfirm
+                nzPopconfirmTitle="將耗時1分鐘左右"
+                (nzOnConfirm)="sapDelivery($event)"
+                (nzOnCancel)="cancel()"
+                nzPopconfirmPlacement="top"
+                nz-button
+                nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;"
+                *canOperate="'SAP_DELIVERY'"
+              >
+              生成供應商帳號
+              </button>
             </div>
             <div class="mt-10">
                 <nz-table #dataTable nzSize="middle" [nzData]="data" nzShowPagination="false" nzFrontPagination="false"
@@ -128,7 +141,7 @@
                 </nz-pagination>
             </div>
         </nz-card>
-
+      </nz-spin>
     </div>
 </div>
 

@@ -51,6 +51,11 @@ export class UserService {
   setPwd(model: UserPassword) {
     return this.httpClient.post<UserPassword>(`${this.uriConstant.UserUri}/password`, model);
   }
+  autoCreateUsers()
+  {
+    let uri = `${this.uriConstant.AutoCreateUsersUri}`;
+    return this.httpClient.get(uri);
+  }
 }
 
 export interface UserPassword {

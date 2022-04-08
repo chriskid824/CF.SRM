@@ -40,6 +40,8 @@ export class UriConfig {
 
     get ModifySelfPasswordUri(): string { return `${this._apiUri}/password` };
 
+    get AutoCreateUsersUri(): string { return `${this._apiUri}/AutoCreateUsers` };
+
     get RoleUri(): string { return `${this._apiUri}/role` };
 
     get UserUri(): string { return `${this._apiUri}/user` };
