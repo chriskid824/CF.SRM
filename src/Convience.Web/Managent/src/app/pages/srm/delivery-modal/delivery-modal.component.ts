@@ -68,6 +68,11 @@ export class DeliveryModalComponent implements OnInit {
         field: 'CreateBy',
         suppressSizeToFit: false,
       },
+      {
+        headerName:'儲位',
+        field: 'Cell',
+        suppressSizeToFit: false,
+      }
     ];
     this.defaultColDef = {
       editable: true,

@@ -70,6 +70,7 @@ namespace Convience.Model.Models.SRM
         public int? Org { get; set; }
         public string DeliveryPlace { get; set; }
         public string LastUpdateBy { get; set; }
+        public string Cell { get; set; }
     }
 
     public class ViewSrmPoL : SrmPoL

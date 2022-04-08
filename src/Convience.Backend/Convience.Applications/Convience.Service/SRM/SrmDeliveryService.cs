@@ -121,6 +121,7 @@ namespace Convience.Service.SRM
                     CreateBy = p.CreateBy,
                     LastUpdateDate = p.LastUpdateDate,
                     LastUpdateBy = p.LastUpdateBy
+                    
                 }).ToList();
             result.ForEach(p =>
             {
@@ -151,7 +152,7 @@ namespace Convience.Service.SRM
                                        DeliveryPlace = pol.DeliveryPlace,
                                        TelPhone = vendor.TelPhone,
                                        Address = vendor.Address,
-
+                                       Cell = pol.Cell,
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
                                        //WoNum = pol.WoNum,
