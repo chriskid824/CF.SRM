@@ -869,6 +869,8 @@ namespace Convience.Entity.Entity.SRM
 
                 entity.Property(e => e.Tdline).HasColumnName("TDLINE");
 
+                entity.Property(e => e.Weiqi1).HasColumnName("WEIQI1");
+
                 entity.Property(e => e.WoItem).HasColumnName("WO_ITEM");
 
                 entity.Property(e => e.WoNum)
