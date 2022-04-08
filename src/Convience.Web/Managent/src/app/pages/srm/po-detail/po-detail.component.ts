@@ -30,6 +30,7 @@ export class PoDetailComponent implements OnInit {
   deliverydate;
   vendorsn;
   manager;
+  isSpinning = false;
   constructor(private _formBuilder: FormBuilder,private http: HttpClient,private _srmPoService: SrmPoService,private _srmDeliveryService: SrmDeliveryService
     ,private router: Router,private _messageService: NzMessageService,private _storageService: StorageService,) {
     this.columnDefs = [
@@ -74,7 +75,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
-        editable:true,        
+        editable:true,
         valueGetter: function (params) {
           if(params.data.DeliveryQty>params.data.RemainQty)
           {
@@ -288,6 +289,20 @@ export class PoDetailComponent implements OnInit {
       this.router.navigate(['/srm/deliveryl/'+result]);
     });
   }
+  sapDelivery(event) {
+    this.isSpinning=true;
+    this._srmDeliveryService.SapDelivery()
+    .subscribe((result:any) => {
+      this.isSpinning=false;
+      if(result==null) alert('重新生成成功');
+      else
+      {
+       alert(result);
+      }
+    });
+  }
+  cancel()
+  {}
 }
 var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;

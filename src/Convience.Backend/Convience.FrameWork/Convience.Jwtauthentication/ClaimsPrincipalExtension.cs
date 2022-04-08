@@ -15,12 +15,13 @@ namespace Convience.JwtAuthentication
     }
     public static class ClaimsPrincipalExtension
     {
+        //名稱
         public static string GetName(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Name)
                 ?.Value ?? string.Empty;
         }
-
+        //帳號
         public static string GetUserName(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.UserName)

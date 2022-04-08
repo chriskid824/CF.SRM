@@ -29,12 +29,13 @@ namespace Convience.Service.SRM
 
         public IEnumerable<ViewSrmDeliveryH> GetDelivery(QueryPoList query);
         public int UpdateReplyDeliveryDateH(string ponum, DateTime date);
-        public int UpdateReplyDeliveryDateWithReason(int poid,int polid,DateTime date,string reason);
+        public int UpdateReplyDeliveryDateWithReason(int poid, int polid, DateTime date, string reason);
         public bool UpdateReplyDeliveryDate(SrmPoL data);
         public bool UpdateDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryL(ViewSrmDeliveryL data);
         public bool DeleteDeliveryH(ViewSrmDeliveryH data);
         public string ReceiveDeliveryL(List<ViewSrmDeliveryL> datalist);
+        public string SapDelivery(string userid);
     }
 
     public class SrmDeliveryService : ISrmDeliveryService
@@ -111,7 +112,7 @@ namespace Convience.Service.SRM
                 .Select(p => new ViewSrmDeliveryH
                 {
                     DeliveryId = p.DeliveryId,
-                    DeliveryDate=p.DeliveryDate,
+                    DeliveryDate = p.DeliveryDate,
                     DeliveryNum = p.DeliveryNum,
                     DeliveryVendorsn = p.DeliveryVendorsn,
                     DeliveryManager = p.DeliveryManager,
@@ -148,8 +149,8 @@ namespace Convience.Service.SRM
                                        VendorId = vendor.VendorId,
                                        Org = poh.Org,
                                        DeliveryPlace = pol.DeliveryPlace,
-                                       TelPhone=vendor.TelPhone,
-                                       Address=vendor.Address,
+                                       TelPhone = vendor.TelPhone,
+                                       Address = vendor.Address,
 
                                        //Url = query.host + "/" + l.DeliveryLId.ToString() + "/" + p.DeliveryNum,
                                        //WoItem = pol.WoItem,
@@ -164,7 +165,7 @@ namespace Convience.Service.SRM
                 if (p.SrmDeliveryLs.Count > 0)
                 {
                     p.VendorName = p.SrmDeliveryLs.First().VendorName;
-                    p.TelPhone= p.SrmDeliveryLs.First().TelPhone;
+                    p.TelPhone = p.SrmDeliveryLs.First().TelPhone;
                     p.Address = p.SrmDeliveryLs.First().Address;
                     p.DeliveryPlace = p.SrmDeliveryLs.First().DeliveryPlace;
                 }
@@ -186,7 +187,7 @@ namespace Convience.Service.SRM
         }
         public int UpdateReplyDeliveryDateWithReason(int poid, int polid, DateTime date, string reason)
         {
-            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid &&p.PoLId==polid).FirstOrDefault();
+            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).FirstOrDefault();
             pol.LastReplyDeliveryDate = pol.ReplyDeliveryDate;
             pol.ReplyDeliveryDate = date;
             pol.ChangeDateReason = reason;
@@ -212,7 +213,7 @@ namespace Convience.Service.SRM
             SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == data.PoId && p.PoLId == data.PoLId).AsNoTracking().FirstOrDefault();
             data.LastReplyDeliveryDate = pol.ReplyDeliveryDate;
             SrmPoH poh = _context.SrmPoHs.Find(data.PoId);
-            if (poh != null&& poh.Org==3100)
+            if (poh != null && poh.Org == 3100)
             {
                 is3100 = true;
                 //poh.
@@ -305,8 +306,8 @@ namespace Convience.Service.SRM
         }
         public bool DeleteDeliveryH(ViewSrmDeliveryH data)
         {
-            List<SrmDeliveryL> dllist = _context.SrmDeliveryLs.Where(p=>p.DeliveryId==data.DeliveryId).ToList();
-            if (dllist != null && dllist.Count()>0)
+            List<SrmDeliveryL> dllist = _context.SrmDeliveryLs.Where(p => p.DeliveryId == data.DeliveryId).ToList();
+            if (dllist != null && dllist.Count() > 0)
             {
                 foreach (var item in dllist)
                 {
@@ -317,7 +318,7 @@ namespace Convience.Service.SRM
                 {
                     _context.SrmDeliveryHs.Remove(dh);
                     _context.SaveChanges();
-                }                
+                }
                 return true;
             }
             return false;
@@ -371,6 +372,93 @@ namespace Convience.Service.SRM
             float deliveryQty = _context.SrmDeliveryLs.Where(p => p.PoId == poid && p.PoLId == polid).Sum(p => p.DeliveryQty).Value;
             float Qty = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).Select(p => p.Qty).FirstOrDefault().Value;
             return deliveryQty == Qty;
+        }
+        public string SapDelivery(string userid)
+        {
+            #region 全部交貨
+            var query = _context.Zmmr008s.Where(p => Convert.ToDecimal(p.Weiqi1) == 0);
+            //選出所有的採購單號後
+            List<string> numlist = query.Select(p => p.Ebeln).Distinct().ToList();
+            //List<SrmPoH> updatepohs = new List<SrmPoH>();
+            //List<SrmPoL> updatepols = new List<SrmPoL>();
+
+            foreach (var num in numlist)
+            {
+                if (_context.SrmPoHs.Any(p => p.PoNum ==num))
+                {
+                    //選出採購單號底下的項次
+                    List<int> polidlist = query.Where(p => p.Ebeln==num).Select(p=> int.Parse(p.Ebelp)).ToList();
+                    int poid = _context.SrmPoHs.Where(p => p.PoNum == num).AsNoTracking().FirstOrDefault().PoId;
+                    foreach (var polid in polidlist)
+                    {
+                        if (_context.SrmPoLs.Any(p => p.PoId == poid && p.PoLId == Convert.ToInt16(polid) && p.Status != 12))
+                        {
+                            SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == Convert.ToInt16(polid)).FirstOrDefault();
+                            pol.Status = 12;
+                            _context.SrmPoLs.Update(pol);
+                        }
+                    }
+                    if (!_context.SrmPoLs.Any(p => p.PoId == poid && !polidlist.Contains(p.PoLId) &&p.Status!=12))
+                    {
+                        SrmPoH poh= _context.SrmPoHs.Where(p => p.PoNum == num).FirstOrDefault();
+                        poh.Status = 12;
+                        _context.SrmPoHs.Update(poh);
+                    }
+                }
+            }
+            _context.SaveChanges();
+            #endregion
+            #region 部分交貨
+            List<Zmmr008> list = _context.Zmmr008s.Where(p => p.Poqty != p.Weiqi1 && Convert.ToDecimal(p.Weiqi1) > 0).ToList();
+            int d_id = 0;
+            //先找到系統採購單 如果沒有就創建一個
+            if (_context.SrmDeliveryHs.Any(p => p.DeliveryNum == "0000000000000000"))
+            {
+                d_id = _context.SrmDeliveryHs.Where(p => p.DeliveryNum == "0000000000000000").FirstOrDefault().DeliveryId;
+                _context.SrmDeliveryLs.RemoveRange(_context.SrmDeliveryLs.Where(p => p.DeliveryId == d_id));
+                _context.SaveChanges();
+            }
+            else
+            {
+                SrmDeliveryH dh = new SrmDeliveryH()
+                {
+                    DeliveryDate = DateTime.Now,
+                    DeliveryNum = "0000000000000000",
+                    Status = 12,
+                    CreateBy = userid,
+                    CreateDate = DateTime.Now,
+                };
+                _context.SrmDeliveryHs.Add(dh);
+                _context.SaveChanges();
+                d_id = dh.DeliveryId;
+            }
+            List<SrmDeliveryL> dls = new List<SrmDeliveryL>();
+            foreach (var item in list)
+            {
+                if (_context.SrmPoHs.Any(p => p.PoNum == item.Ebeln))
+                {
+                    int poid = _context.SrmPoHs.Where(p => p.PoNum == item.Ebeln).FirstOrDefault().PoId;
+                    SrmDeliveryL dl = new SrmDeliveryL()
+                    {
+                        DeliveryId = d_id,
+                        PoId = poid,
+                        PoLId = Convert.ToInt32(item.Ebelp),
+                        DeliveryQty = (float?)(Convert.ToDecimal(item.Poqty) - Convert.ToDecimal(item.Weiqi1)),
+                        QmQty=0,
+                    };
+                    dls.Add(dl);
+                }
+
+            }
+            if (dls.Count > 0)
+            {
+                _context.SrmDeliveryLs.AddRange(dls);
+                _context.SaveChanges();
+            }
+            #endregion
+
+
+            return null;
         }
     }
 }

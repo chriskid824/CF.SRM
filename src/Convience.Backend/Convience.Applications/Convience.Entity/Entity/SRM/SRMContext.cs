@@ -61,6 +61,7 @@ namespace Convience.Entity.Entity.SRM
         public virtual DbSet<SrmDownloadLog> SrmDownloadLogs { get; set; }
         public virtual DbSet<SrmPoUpdateLog> SrmPoUpdateLogs { get; set; }
         public virtual DbSet<LogSapShedule> LogSapShedules { get; set; }
+        public virtual DbSet<Zmmr008> Zmmr008s { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -2063,6 +2064,330 @@ namespace Convience.Entity.Entity.SRM
                 entity.Property(e => e.Werks)
                     .HasMaxLength(15)
                     .HasColumnName("WERKS");
+            });
+            modelBuilder.Entity<Zmmr008>(entity =>
+            {
+                entity.HasKey(e => e.Ekebe);
+
+                entity.ToTable("ZMMR008");
+
+                entity.Property(e => e.Ekebe)
+                    .HasMaxLength(300)
+                    .HasColumnName("EKEBE");
+
+                entity.Property(e => e.Afnam)
+                    .HasMaxLength(300)
+                    .HasColumnName("AFNAM");
+
+                entity.Property(e => e.Aplfz)
+                    .HasMaxLength(300)
+                    .HasColumnName("APLFZ");
+
+                entity.Property(e => e.Astna)
+                    .HasMaxLength(300)
+                    .HasColumnName("ASTNA");
+
+                entity.Property(e => e.AufmBudat)
+                    .HasMaxLength(300)
+                    .HasColumnName("AUFM_BUDAT");
+
+                entity.Property(e => e.Aufnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("AUFNR");
+
+                entity.Property(e => e.Badat)
+                    .HasMaxLength(300)
+                    .HasColumnName("BADAT");
+
+                entity.Property(e => e.Banfn)
+                    .HasMaxLength(300)
+                    .HasColumnName("BANFN");
+
+                entity.Property(e => e.Bedat)
+                    .HasMaxLength(300)
+                    .HasColumnName("BEDAT");
+
+                entity.Property(e => e.Bednr)
+                    .HasMaxLength(300)
+                    .HasColumnName("BEDNR");
+
+                entity.Property(e => e.Befor)
+                    .HasMaxLength(300)
+                    .HasColumnName("BEFOR");
+
+                entity.Property(e => e.Bnfpo)
+                    .HasMaxLength(300)
+                    .HasColumnName("BNFPO");
+
+                entity.Property(e => e.Budat)
+                    .HasMaxLength(300)
+                    .HasColumnName("BUDAT");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CREATE_DATE");
+
+                entity.Property(e => e.Diffday)
+                    .HasMaxLength(300)
+                    .HasColumnName("DIFFDAY");
+
+                entity.Property(e => e.Ebban)
+                    .HasMaxLength(300)
+                    .HasColumnName("EBBAN");
+
+                entity.Property(e => e.Ebeln)
+                    .HasMaxLength(300)
+                    .HasColumnName("EBELN");
+
+                entity.Property(e => e.Ebelp)
+                    .HasMaxLength(300)
+                    .HasColumnName("EBELP");
+
+                entity.Property(e => e.Eknam)
+                    .HasMaxLength(300)
+                    .HasColumnName("EKNAM");
+
+                entity.Property(e => e.Ewbez)
+                    .HasMaxLength(300)
+                    .HasColumnName("EWBEZ");
+
+                entity.Property(e => e.Extwg)
+                    .HasMaxLength(300)
+                    .HasColumnName("EXTWG");
+
+                entity.Property(e => e.F92).HasMaxLength(300);
+
+                entity.Property(e => e.FlagError)
+                    .HasMaxLength(300)
+                    .HasColumnName("FLAG_ERROR");
+
+                entity.Property(e => e.Frgke)
+                    .HasMaxLength(300)
+                    .HasColumnName("FRGKE");
+
+                entity.Property(e => e.Frgzu)
+                    .HasMaxLength(300)
+                    .HasColumnName("FRGZU");
+
+                entity.Property(e => e.Grun)
+                    .HasMaxLength(300)
+                    .HasColumnName("GRUN");
+
+                entity.Property(e => e.IfFirst).HasMaxLength(1);
+
+                entity.Property(e => e.Infnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("INFNR");
+
+                entity.Property(e => e.Knttp)
+                    .HasMaxLength(300)
+                    .HasColumnName("KNTTP");
+
+                entity.Property(e => e.Kostl)
+                    .HasMaxLength(300)
+                    .HasColumnName("KOSTL");
+
+                entity.Property(e => e.Kzkri)
+                    .HasMaxLength(300)
+                    .HasColumnName("KZKRI");
+
+                entity.Property(e => e.LUdate)
+                    .HasMaxLength(300)
+                    .HasColumnName("L_UDATE");
+
+                entity.Property(e => e.LastUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_UPDATE_DATE");
+
+                entity.Property(e => e.Lfdat)
+                    .HasMaxLength(300)
+                    .HasColumnName("LFDAT");
+
+                entity.Property(e => e.Lgobe)
+                    .HasMaxLength(300)
+                    .HasColumnName("LGOBE");
+
+                entity.Property(e => e.Lgort)
+                    .HasMaxLength(300)
+                    .HasColumnName("LGORT");
+
+                entity.Property(e => e.Lifnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("LIFNR");
+
+                entity.Property(e => e.Lmnga)
+                    .HasMaxLength(300)
+                    .HasColumnName("LMNGA");
+
+                entity.Property(e => e.Loekz)
+                    .HasMaxLength(300)
+                    .HasColumnName("LOEKZ");
+
+                entity.Property(e => e.Maktx).HasColumnName("MAKTX");
+
+                entity.Property(e => e.Matnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("MATNR");
+
+                entity.Property(e => e.Meins)
+                    .HasMaxLength(300)
+                    .HasColumnName("MEINS");
+
+                entity.Property(e => e.MengeAufm)
+                    .HasMaxLength(300)
+                    .HasColumnName("MENGE_AUFM");
+
+                entity.Property(e => e.Mtart)
+                    .HasMaxLength(300)
+                    .HasColumnName("MTART");
+
+                entity.Property(e => e.Name1)
+                    .HasMaxLength(300)
+                    .HasColumnName("NAME1");
+
+                entity.Property(e => e.Neindt)
+                    .HasMaxLength(300)
+                    .HasColumnName("NEINDT");
+
+                entity.Property(e => e.Netpr1)
+                    .HasMaxLength(300)
+                    .HasColumnName("NETPR1");
+
+                entity.Property(e => e.Nplnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("NPLNR");
+
+                entity.Property(e => e.Oekgrp)
+                    .HasMaxLength(300)
+                    .HasColumnName("OEKGRP");
+
+                entity.Property(e => e.Omatnr)
+                    .HasMaxLength(300)
+                    .HasColumnName("OMATNR");
+
+                entity.Property(e => e.Over)
+                    .HasMaxLength(300)
+                    .HasColumnName("OVER");
+
+                entity.Property(e => e.Pgrno)
+                    .HasMaxLength(300)
+                    .HasColumnName("PGRNO");
+
+                entity.Property(e => e.Poqty)
+                    .HasMaxLength(300)
+                    .HasColumnName("POQTY");
+
+                entity.Property(e => e.Preis)
+                    .HasMaxLength(300)
+                    .HasColumnName("PREIS");
+
+                entity.Property(e => e.Prqty)
+                    .HasMaxLength(300)
+                    .HasColumnName("PRQTY");
+
+                entity.Property(e => e.Pspid)
+                    .HasMaxLength(300)
+                    .HasColumnName("PSPID");
+
+                entity.Property(e => e.Report)
+                    .HasMaxLength(300)
+                    .HasColumnName("REPORT");
+
+                entity.Property(e => e.Rmeins)
+                    .HasMaxLength(300)
+                    .HasColumnName("RMEINS");
+
+                entity.Property(e => e.Rqstat)
+                    .HasMaxLength(300)
+                    .HasColumnName("RQSTAT");
+
+                entity.Property(e => e.SWorkdate)
+                    .HasMaxLength(300)
+                    .HasColumnName("S_WORKDATE");
+
+                entity.Property(e => e.Sbdkz)
+                    .HasMaxLength(300)
+                    .HasColumnName("SBDKZ");
+
+                entity.Property(e => e.Sname)
+                    .HasMaxLength(300)
+                    .HasColumnName("SNAME");
+
+                entity.Property(e => e.Soucer)
+                    .HasMaxLength(300)
+                    .HasColumnName("SOUCER");
+
+                entity.Property(e => e.Stime)
+                    .HasMaxLength(300)
+                    .HasColumnName("STIME");
+
+                entity.Property(e => e.Submi)
+                    .HasMaxLength(300)
+                    .HasColumnName("SUBMI");
+
+                entity.Property(e => e.Tdline).HasColumnName("TDLINE");
+
+                entity.Property(e => e.Tkzkri)
+                    .HasMaxLength(300)
+                    .HasColumnName("TKZKRI");
+
+                entity.Property(e => e.Txz01).HasColumnName("TXZ01");
+
+                entity.Property(e => e.Valueo)
+                    .HasMaxLength(300)
+                    .HasColumnName("VALUEO");
+
+                entity.Property(e => e.Vbeln)
+                    .HasMaxLength(300)
+                    .HasColumnName("VBELN");
+
+                entity.Property(e => e.Vbelp)
+                    .HasMaxLength(300)
+                    .HasColumnName("VBELP");
+
+                entity.Property(e => e.Vornr)
+                    .HasMaxLength(300)
+                    .HasColumnName("VORNR");
+
+                entity.Property(e => e.Waers)
+                    .HasMaxLength(300)
+                    .HasColumnName("WAERS");
+
+                entity.Property(e => e.WbsNo)
+                    .HasMaxLength(300)
+                    .HasColumnName("WBS_NO");
+
+                entity.Property(e => e.Weiqi1)
+                    .HasMaxLength(300)
+                    .HasColumnName("WEIQI1");
+
+                entity.Property(e => e.Weiqi2)
+                    .HasMaxLength(300)
+                    .HasColumnName("WEIQI2");
+
+                entity.Property(e => e.Werks)
+                    .HasMaxLength(300)
+                    .HasColumnName("WERKS");
+
+                entity.Property(e => e.Wzb04)
+                    .HasMaxLength(300)
+                    .HasColumnName("WZB04");
+
+                entity.Property(e => e.Wzb04Error)
+                    .HasMaxLength(300)
+                    .HasColumnName("WZB04_ERROR");
+
+                entity.Property(e => e.ZpackingXls)
+                    .HasMaxLength(300)
+                    .HasColumnName("ZPACKING_XLS");
+
+                entity.Property(e => e.Zpano)
+                    .HasMaxLength(300)
+                    .HasColumnName("ZPANO");
+
+                entity.Property(e => e.Zsorno)
+                    .HasMaxLength(300)
+                    .HasColumnName("ZSORNO");
             });
             OnModelCreatingPartial(modelBuilder);
         }

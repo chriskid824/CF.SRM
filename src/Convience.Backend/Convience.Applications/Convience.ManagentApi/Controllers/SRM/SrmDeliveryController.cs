@@ -94,15 +94,6 @@ namespace Convience.ManagentApi.Controllers.SRM
             }
             try
             {
-                if (dls != null && dls.Count > 0)
-                {
-                    string result = _srmDeliveryService.ReceiveDeliveryL(dls);
-                    if (string.IsNullOrEmpty(result))
-                    { }                    
-                    else
-                    { return BadRequest(result); }
-                    
-                }
                 using (HttpClient client = new HttpClient())
                 {
                     string json = JsonConvert.SerializeObject(dls);
@@ -120,6 +111,15 @@ namespace Convience.ManagentApi.Controllers.SRM
                         }
                         else
                         {
+                            if (dls != null && dls.Count > 0)
+                            {
+                                string result_sql = _srmDeliveryService.ReceiveDeliveryL(dls);
+                                if (string.IsNullOrEmpty(result_sql))
+                                { }
+                                else
+                                { return BadRequest(result_sql); }
+
+                            }
                             return Ok();
                         }
                     }
@@ -188,6 +188,13 @@ namespace Convience.ManagentApi.Controllers.SRM
             //var stream = await _srmDeliveryService.DownloadAsync(viewModel);
             //return File(stream, "application/octet-stream", viewModel.Name);
             return BadRequest("出貨單生成失敗");
+        }
+        [HttpGet("SapDelivery")]
+        public IActionResult SapDelivery()
+        {
+           string result= _srmDeliveryService.SapDelivery(User.GetUserName());
+            if (string.IsNullOrWhiteSpace(result)) return Ok();
+            return BadRequest(result);
         }
     }
 }

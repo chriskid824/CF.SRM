@@ -3,6 +3,7 @@ using Convience.Entity.Entity.SRM;
 using Convience.EntityFrameWork.Repositories;
 using Convience.JwtAuthentication;
 using Convience.Model.Models.Account;
+using Convience.Service.SystemManage;
 using Convience.Util.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
@@ -75,9 +76,22 @@ namespace Convience.Service.Account
                     //int[] werks = _srmContext.SrmEkgries.Where(r => r.Empid == user.UserName).Select(r => r.Werks).ToArray();
                     List<string> roleidarr = roleIds.Split(',').ToList();
                     //var rolenames = _srmContext.AspNetRoles.Where(p => (',' + roleIds + ',').IndexOf(',' + p.Id.ToString() + ',') > -1).Select(p => p.Name).ToList();
-                    string rolenames = string.Join(',', _srmContext.AspNetRoles.Where(p => roleidarr.Contains(p.Id.ToString())).Select(p => p.Name));
-                    int[] werks = GetWerks(rolenames);
+                    int[] werks;
                     string isVendor = CheckIsVendor(user.SapId);
+                    //如果是廠商亦須從廠商的ekorg取得
+                    if (isVendor == "1")
+                    {
+                        werks = _srmContext.SrmVendors.Where(p => p.SapVendor == user.SapId && p.SapVendor != null &&p.Ekorg.HasValue)
+                                                      .Select(p => p.Ekorg.Value).ToArray();
+                    }
+                    //不是廠商則由rolename取得
+                    else
+                    {
+                        string rolenames = string.Join(',', _srmContext.AspNetRoles.Where(p => roleidarr.Contains(p.Id.ToString())).Select(p => p.Name));
+                        werks = GetWerks(rolenames);
+                    }
+
+
                     string vendorId = isVendor == "1" ? user.SapId : string.Empty;
                     var pairs = new List<(string, string)>
                     {

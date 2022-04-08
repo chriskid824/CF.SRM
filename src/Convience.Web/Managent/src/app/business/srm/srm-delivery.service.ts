@@ -34,4 +34,7 @@ export class SrmDeliveryService {
   GetDeliveryExcel(po) {
     return this.httpClient.post(`${this.uriConstant.SrmDelivery}/GetDeliveryExcel`,po);
   }
+  SapDelivery() {
+    return this.httpClient.get(`${this.uriConstant.SrmDelivery}/SapDelivery`);
+  }
 }

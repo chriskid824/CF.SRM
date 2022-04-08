@@ -1,3 +1,4 @@
+<nz-spin [nzSpinning]="isSpinning">
 <nz-card [nzSize]="'small'" id="searchBar">
   <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
     <nz-form-item>
@@ -38,6 +39,18 @@
     &nbsp;&nbsp;&nbsp;
     <input nz-input style="width: 130px;" [(ngModel)]="manager" placeholder="經辦人員" />
     <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">建立出貨單</button>
+    <button
+        nz-popconfirm
+        nzPopconfirmTitle="將耗時2分鐘左右"
+        (nzOnConfirm)="sapDelivery($event)"
+        (nzOnCancel)="cancel()"
+        nzPopconfirmPlacement="top"
+        nz-button
+        nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;"
+        *canOperate="'SAP_DELIVERY'"
+      >
+      依照sap資料重新生成出貨單
+      </button>
   <ag-grid-angular
     #agGrid
     style="width: 100%; height: 650px;"
@@ -61,5 +74,6 @@
     [enableCellTextSelection]="true"
   ></ag-grid-angular>
 </nz-card>
+</nz-spin>
 <!-- </div> -->
 <!-- [rowGroupPanelShow]="rowGroupPanelShow" -->
