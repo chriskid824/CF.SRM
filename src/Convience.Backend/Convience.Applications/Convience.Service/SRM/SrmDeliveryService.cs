@@ -410,7 +410,7 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             #endregion
             #region 部分交貨
-            List<Zmmr008> list = _context.Zmmr008s.Where(p => p.Poqty != p.Weiqi1 && Convert.ToDecimal(p.Weiqi1) > 0).ToList();
+            List<Zmmr008> list = _context.Zmmr008s.Where(p => p.Poqty != p.Weiqi1 && Convert.ToDecimal(p.Weiqi1) > 0 && p.Werks == "1200").ToList();
             int d_id = 0;
             //先找到系統採購單 如果沒有就創建一個
             if (_context.SrmDeliveryHs.Any(p => p.DeliveryNum == "0000000000000000"))
