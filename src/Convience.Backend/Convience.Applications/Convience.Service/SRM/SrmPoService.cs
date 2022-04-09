@@ -248,6 +248,7 @@ namespace Convience.Service.SRM
                               Tdline = l.Tdline,
                               Zpano = l.Zpano,
                               Bedat = l.Bedat,
+                              Weiqi1 = l.Weiqi1,
                           })
                           .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate < DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
@@ -256,8 +257,7 @@ namespace Convience.Service.SRM
                               .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                 .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                 .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
-                .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
-                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
+                .AndIfCondition(query.org.HasValue, p => p.Org == query.org).ToList();
 
             //var result = _context.SrmPoLs.Join(
             //    _context.SrmPoHs,
@@ -289,13 +289,9 @@ namespace Convience.Service.SRM
             //    .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
             //    .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
-            result.ForEach(p =>
-            {
-                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);
-            });
 
             //.AndIfCondition(query.status != 0, p => p.Status == query.status);
-            return result.Where(p => p.RemainQty > 0).ToList();
+            return result.Where(p => p.Weiqi1 > 0).ToList();
         }
 
         public IEnumerable<SrmPoL> GetPolById(int id)

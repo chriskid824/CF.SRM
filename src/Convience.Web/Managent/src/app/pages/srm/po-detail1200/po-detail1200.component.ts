@@ -58,7 +58,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '待交貨',
-        field: 'RemainQty',
+        field: 'Weiqi1',
       },
       {
         headerName: '工單可交數',
@@ -70,8 +70,8 @@ export class PoDetail1200Component implements OnInit {
         editable: true,
         valueGetter: function (params) {
           console.info(params);
-          if (params.data.DeliveryQty > params.data.RemainQty) {
-            params.data.DeliveryQty = params.data.RemainQty;
+          if (params.data.DeliveryQty > params.data.Weiqi1) {
+            params.data.DeliveryQty = params.data.Weiqi1;
           }
           return params.data.DeliveryQty;
         },
@@ -331,7 +331,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '正確精密物料版次',
-        field: 'Wzb04',
+        field: '',
       },
       {
         headerName: '採購單數量',
@@ -377,7 +377,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '待交貨',
-        field: 'RemainQty',
+        field: 'Weiqi1',
         hide: 'true',
       },
       {
@@ -391,8 +391,8 @@ export class PoDetail1200Component implements OnInit {
         editable: true,
         valueGetter: function (params) {
           console.info(params);
-          if (params.data.DeliveryQty > params.data.RemainQty) {
-            params.data.DeliveryQty = params.data.RemainQty;
+          if (params.data.DeliveryQty > params.data.Weiqi1) {
+            params.data.DeliveryQty = params.data.Weiqi1;
           }
           return params.data.DeliveryQty;
         },
@@ -537,7 +537,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '待交貨',
-        field: 'RemainQty',
+        field: 'Weiqi1',
       },
       {
         headerName: '工單可交數',
@@ -549,8 +549,8 @@ export class PoDetail1200Component implements OnInit {
         editable: true,
         valueGetter: function (params) {
           console.info(params);
-          if (params.data.DeliveryQty > params.data.RemainQty) {
-            params.data.DeliveryQty = params.data.RemainQty;
+          if (params.data.DeliveryQty > params.data.Weiqi1) {
+            params.data.DeliveryQty = params.data.Weiqi1;
           }
           return params.data.DeliveryQty;
         },
@@ -732,7 +732,7 @@ export class PoDetail1200Component implements OnInit {
       },
       {
         headerName: '正確精密物料版次',
-        field: 'Wzb04',
+        field: '',
       },
       {
         headerName: '採購交期回覆',

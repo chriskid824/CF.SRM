@@ -48,6 +48,7 @@ namespace Convience.Entity.Entity.SRM
         public string Tdline { get; set; }
         public string Zpano { get; set; }
         public string Bedat { get; set; }
+        public double? Weiqi1 { get; set; }
 
         public virtual SrmPoH Po { get; set; }
     }
