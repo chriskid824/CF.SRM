@@ -797,6 +797,7 @@ export class PoDetail1200Component implements OnInit {
       status: "15",
       replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
       replyDeliveryDate_e: this.searchForm.value["ReplyDeliveryDate_e"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_e"],
+      type:"sap",
     }
     this.getPoLList(query);
   }
@@ -822,8 +823,10 @@ export class PoDetail1200Component implements OnInit {
         replyDeliveryDate_s: null,
         replyDeliveryDate_e: null,
         onlysevendays: false,
-      }
+        type:"sap",
+      }      
     }
+    console.log(query);
     this._srmPoService.GetPoL(query)
       .subscribe((result) => {
         this.rowData = result;

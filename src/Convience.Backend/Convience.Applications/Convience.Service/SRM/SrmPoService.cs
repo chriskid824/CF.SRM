@@ -289,9 +289,20 @@ namespace Convience.Service.SRM
             //    .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
             //    .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
+            result.ForEach(p =>
+            {
+                p.RemainQty = p.Qty - _context.SrmDeliveryLs.Where(q => q.PoId == p.PoId && q.PoLId == p.PoLId).Sum(q => q.DeliveryQty);
+            });
 
             //.AndIfCondition(query.status != 0, p => p.Status == query.status);
-            return result.Where(p => p.Weiqi1 > 0).ToList();
+            if (query.type == "sap")
+            {
+                return result.Where(p => p.Weiqi1 > 0).ToList();
+            }
+            else
+            {
+                return result.Where(p => p.RemainQty > 0).ToList();
+            }
         }
 
         public IEnumerable<SrmPoL> GetPolById(int id)
