@@ -173,11 +173,14 @@ export class PoComponent implements OnInit {
               params.data.ReplyDate=new Date();
               params.data.StatusDesc="待交貨";
               params.data.SrmPoLs.forEach(element => {
-                element.Status=15;
-                element.StatusDesc="待交貨";
-                element.ReplyDeliveryDate=element.DeliveryDate;
-                eDiv.innerHTML='';
+                if(element.Status!=12)
+                {
+                  element.Status=15;
+                  element.StatusDesc="待交貨";
+                  element.ReplyDeliveryDate=element.DeliveryDate;
+                }
               });
+              eDiv.innerHTML='';
               params.api.refreshCells();
               params.api.redrawRows();
             });

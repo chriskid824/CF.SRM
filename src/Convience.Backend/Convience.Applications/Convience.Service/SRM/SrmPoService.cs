@@ -313,7 +313,8 @@ namespace Convience.Service.SRM
         public bool UpdateStatus(int id, int status)
         {
             SrmPoH data = _context.SrmPoHs.Find(id);
-            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId);
+            //已收貨的不處理
+            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId &&p.Status!=12);
             //帶接收狀態變化時 預設為接收了 接收後status可能是14待收貨 廠商交貨日期預設本次需求日
             if (data.Status == 21)
             {
