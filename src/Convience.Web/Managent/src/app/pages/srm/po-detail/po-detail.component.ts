@@ -67,11 +67,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'未交貨數量',
         field: 'RemainQty',
-      },
-      {
-        headerName:'工單可交數',
-        field: 'WoQty',
-      },
+      },      
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
@@ -89,6 +85,10 @@ export class PoDetailComponent implements OnInit {
           // }
         },
         cellStyle:{background: '#f0f8ff'},
+      },
+      {
+        headerName:'工單可交數',
+        field: 'WoQty',
       },
       {
         headerName:'單價',
