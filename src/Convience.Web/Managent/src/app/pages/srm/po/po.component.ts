@@ -399,6 +399,17 @@ export class PoComponent implements OnInit {
             field: 'DeliveryPlace',
           },
           {
+            headerName:'倉別',
+            field: 'Storage',
+            valueGetter: function (params) {
+              if(params.data.Storage=='05Z1')
+              {
+                return '服務倉'
+              }
+              return '一般倉';
+            },
+          },
+          {
             headerName:'關鍵零組件',
             field: 'CriticalPart',
           },

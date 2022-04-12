@@ -157,6 +157,7 @@ namespace Convience.Service.SRM
                                                ReplyDeliveryDate = l.ReplyDeliveryDate,
                                                OriginalDate = l.OriginalDate,
                                                DeliveryPlace = l.DeliveryPlace,
+                                               Storage = l.Storage,
                                                CriticalPart = l.CriticalPart,
                                                InspectionTime = l.InspectionTime,
                                                Status = l.Status,
