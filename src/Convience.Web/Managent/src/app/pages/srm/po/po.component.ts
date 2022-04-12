@@ -61,6 +61,7 @@ export class PoComponent implements OnInit {
   polData:any;
   isRowSelectable:false;
   gridOptions = {
+    rowSelection: 'multiple',
     isRowSelectable: function (rowNode) {
       return rowNode.data ? rowNode.data.Status == 21 : false;
     },
