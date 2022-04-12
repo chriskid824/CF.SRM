@@ -292,8 +292,8 @@ namespace Convience.Service.SRM
                           .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
                           .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
                           .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
-                          .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
-                          .ToList();
+                .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
+                .AndIfCondition(query.status != 0, p => p.Status == query.status).ToList();
 
             //var result = _context.SrmPoLs.Join(
             //    _context.SrmPoHs,
