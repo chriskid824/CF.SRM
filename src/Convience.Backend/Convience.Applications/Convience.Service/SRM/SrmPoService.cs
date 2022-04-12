@@ -137,42 +137,76 @@ namespace Convience.Service.SRM
                                      select o.Number)
                                     .Contains(c.Number)
                              select c.Number;
+            List<int> poidList = result.Select(p => p.PoId).ToList();
+            List<ViewSrmPoL> ViewSrmPoLs= (from l in _context.SrmPoLs
+                                           join h in _context.SrmPoHs on l.PoId equals h.PoId
+                                           join status in _context.SrmStatuses on l.Status equals status.Status
+                                           join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                                           join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                                           from matnr in matnrInfo.DefaultIfEmpty()
+                                           select new ViewSrmPoL
+                                           {
+                                               PoNum = h.PoNum,
+                                               PoLId = l.PoLId,
+                                               PoId = l.PoId,
+                                               MatnrId = l.MatnrId,
+                                               Description = l.Description,
+                                               Qty = l.Qty,
+                                               Price = l.Price,
+                                               DeliveryDate = l.DeliveryDate,
+                                               ReplyDeliveryDate = l.ReplyDeliveryDate,
+                                               OriginalDate = l.OriginalDate,
+                                               DeliveryPlace = l.DeliveryPlace,
+                                               CriticalPart = l.CriticalPart,
+                                               InspectionTime = l.InspectionTime,
+                                               Status = l.Status,
+                                               VendorId = h.VendorId,
+                                               VendorName = vendor.VendorName,
+                                               TotalAmount = h.TotalAmount,
+                                               Buyer = h.Buyer,
+                                               StatusDesc = status.StatusDesc,
+                                               Matnr = matnr.SapMatnr,
+                                               Org = h.Org,
+                                               ChangeDateReason = l.ChangeDateReason,
+                                           }).Where(l => poidList.Contains(l.PoId))
+                             .ToList();
             result.ForEach(p =>
             {
                 p.hasFile = fileDirList.Contains(p.PoNum);
-                p.SrmPoLs = (from l in _context.SrmPoLs
-                             join h in _context.SrmPoHs on l.PoId equals h.PoId
-                             join status in _context.SrmStatuses on l.Status equals status.Status
-                             join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
-                             join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
-                             from matnr in matnrInfo.DefaultIfEmpty()
-                             select new ViewSrmPoL
-                             {
-                                 PoNum = h.PoNum,
-                                 PoLId = l.PoLId,
-                                 PoId = l.PoId,
-                                 MatnrId = l.MatnrId,
-                                 Description = l.Description,
-                                 Qty = l.Qty,
-                                 Price = l.Price,
-                                 DeliveryDate = l.DeliveryDate,
-                                 ReplyDeliveryDate = l.ReplyDeliveryDate,
-                                 OriginalDate = l.OriginalDate,
-                                 DeliveryPlace = l.DeliveryPlace,
-                                 CriticalPart = l.CriticalPart,
-                                 InspectionTime = l.InspectionTime,
-                                 Status = l.Status,
-                                 VendorId = h.VendorId,
-                                 VendorName = vendor.VendorName,
-                                 TotalAmount = h.TotalAmount,
-                                 Buyer = h.Buyer,
-                                 StatusDesc = status.StatusDesc,
-                                 Matnr = matnr.SapMatnr,
-                                 Org = p.Org,
-                                 ChangeDateReason =l.ChangeDateReason,
-                             }).Where(l => l.PoId == p.PoId)
-                             //.AndIfCondition(query.isNeedData, p => _context.ViewSrmFileRecords)
-                             .ToList();
+                p.SrmPoLs = ViewSrmPoLs.Where(l => l.PoId == p.PoId).ToList();
+                //p.SrmPoLs = (from l in _context.SrmPoLs
+                //             join h in _context.SrmPoHs on l.PoId equals h.PoId
+                //             join status in _context.SrmStatuses on l.Status equals status.Status
+                //             join vendor in _context.SrmVendors on h.VendorId equals vendor.VendorId
+                //             join matnr in _context.SrmMatnrs on l.MatnrId equals matnr.MatnrId into matnrInfo
+                //             from matnr in matnrInfo.DefaultIfEmpty()
+                //             select new ViewSrmPoL
+                //             {
+                //                 PoNum = h.PoNum,
+                //                 PoLId = l.PoLId,
+                //                 PoId = l.PoId,
+                //                 MatnrId = l.MatnrId,
+                //                 Description = l.Description,
+                //                 Qty = l.Qty,
+                //                 Price = l.Price,
+                //                 DeliveryDate = l.DeliveryDate,
+                //                 ReplyDeliveryDate = l.ReplyDeliveryDate,
+                //                 OriginalDate = l.OriginalDate,
+                //                 DeliveryPlace = l.DeliveryPlace,
+                //                 CriticalPart = l.CriticalPart,
+                //                 InspectionTime = l.InspectionTime,
+                //                 Status = l.Status,
+                //                 VendorId = h.VendorId,
+                //                 VendorName = vendor.VendorName,
+                //                 TotalAmount = h.TotalAmount,
+                //                 Buyer = h.Buyer,
+                //                 StatusDesc = status.StatusDesc,
+                //                 Matnr = matnr.SapMatnr,
+                //                 Org = p.Org,
+                //                 ChangeDateReason = l.ChangeDateReason,
+                //             }).Where(l => l.PoId == p.PoId)
+                //             //.AndIfCondition(query.isNeedData, p => _context.ViewSrmFileRecords)
+                //             .ToList();
                 if (query.dataStatus == 2)
                 {
                     p.SrmPoLs = (from c in p.SrmPoLs
@@ -253,11 +287,13 @@ namespace Convience.Service.SRM
                           .AndIfCondition(query.onlysevendays, p => (p.ReplyDeliveryDate < DateTime.Now.Date.AddDays(7)))
                           .AndIfCondition(!query.user.GetIsVendor(), p => query.user.GetUserWerks().Contains(p.Org.ToString()))
                           .AndIfCondition(query.user.GetIsVendor(), p => p.SapVendor == query.user.GetVendorId())
-                              .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
-                              .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
-                .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
-                .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
-                .AndIfCondition(query.org.HasValue, p => p.Org == query.org).ToList();
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.matnr), p => p.Matnr.IndexOf(query.matnr) > -1)
+                          .AndIfCondition(!string.IsNullOrWhiteSpace(query.poNum), p => p.PoNum.IndexOf(query.poNum) > -1)
+                          .AndIfCondition(query.poLId != 0, p => p.PoLId == query.poLId)
+                          .AndIfHaveValue(query.replyDeliveryDate_s, p => p.DeliveryDate >= query.replyDeliveryDate_s.Value.Date)
+                          .AndIfHaveValue(query.replyDeliveryDate_e, p => p.DeliveryDate <= query.replyDeliveryDate_e.Value.AddDays(1).Date)
+                          .AndIfCondition(query.org.HasValue, p => p.Org == query.org)
+                          .ToList();
 
             //var result = _context.SrmPoLs.Join(
             //    _context.SrmPoHs,
@@ -314,7 +350,7 @@ namespace Convience.Service.SRM
         {
             SrmPoH data = _context.SrmPoHs.Find(id);
             //已收貨的不處理
-            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId &&p.Status!=12);
+            var LList = _context.SrmPoLs.Where(p => p.PoId == data.PoId && p.Status != 12);
             //帶接收狀態變化時 預設為接收了 接收後status可能是14待收貨 廠商交貨日期預設本次需求日
             if (data.Status == 21)
             {
@@ -336,7 +372,7 @@ namespace Convience.Service.SRM
             _context.SaveChanges();
             return true;
         }
-        public bool UpdateStatus(int poid,int polid, int status)
+        public bool UpdateStatus(int poid, int polid, int status)
         {
             SrmPoL pol = _context.SrmPoLs.Where(p => p.PoId == poid && p.PoLId == polid).FirstOrDefault();
             if (pol == null) return false;
@@ -784,7 +820,7 @@ namespace Convience.Service.SRM
         public int GetOrg(QueryPoList query)
         {
             int org = 0;
-            if (query.srmvendor.IndexOf("admin") != -1) 
+            if (query.srmvendor.IndexOf("admin") != -1)
             {
                 org = 12003100;
                 return org;
@@ -800,10 +836,10 @@ namespace Convience.Service.SRM
                 org = v.Select(r => r.Ekorg).First().Value;
             }
             //查是不是採購
-            if (v.Count == 0) 
+            if (v.Count == 0)
             {
                 var p = _context.SrmEkgries.Where(p => p.Empid == query.srmvendor).ToList();
-                if (p.Count>0)
+                if (p.Count > 0)
                 {
                     org = p.Select(r => r.Werks).First();
                 }

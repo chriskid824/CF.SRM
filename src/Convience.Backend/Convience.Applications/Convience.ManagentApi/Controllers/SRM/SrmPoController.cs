@@ -179,6 +179,7 @@ namespace Convience.ManagentApi.Controllers.SRM
                     });
             }
             QueryPoList q = new QueryPoList();
+            q.matnr = query["matnr"] == null ? null : query["matnr"].ToString();
             q.poNum = query["poNum"] == null ? null : query["poNum"].ToString();
             q.poLId = query["poLId"] == null ? 0 : (int)query["poLId"];
             q.status = query["status"] == null ? 0 : (int)query["status"];
@@ -238,6 +239,16 @@ namespace Convience.ManagentApi.Controllers.SRM
         {
             //int data= id.ToObject<int>();
             _srmPoService.UpdateStatus(id, 15);
+            return Ok();
+        }
+        [HttpPost("UpdateStatus_Batch")]
+        public IActionResult UpdateStatus(List<int> idList)
+        {
+            //int data= id.ToObject<int>();
+            foreach (var id in idList)
+            {
+                _srmPoService.UpdateStatus(id, 15);
+            }
             return Ok();
         }
         [HttpGet("UpdateStatus_Reply")]

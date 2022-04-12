@@ -67,7 +67,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'未交貨數量',
         field: 'RemainQty',
-      },      
+      },
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
@@ -202,6 +202,7 @@ export class PoDetailComponent implements OnInit {
       werkselected=Werks[0];
     }
     this.searchForm = this._formBuilder.group({
+      MATNR: [null],
       PO_NUM: [null],
       STATUS: [1],
       EkgryDesc:[null],
@@ -242,6 +243,7 @@ export class PoDetailComponent implements OnInit {
     else
     {
       var query = {
+        matnr: this.searchForm.value["MATNR"] == null ? "" : this.searchForm.value["MATNR"],
         poNum: this.searchForm.value["PO_NUM"] == null ? "" : this.searchForm.value["PO_NUM"],
         status: "15",
         replyDeliveryDate_s: this.searchForm.value["ReplyDeliveryDate_s"] == null ? "" : this.searchForm.value["ReplyDeliveryDate_s"],
@@ -256,6 +258,7 @@ export class PoDetailComponent implements OnInit {
     if(query==null)
     {
       query = {
+        matnr:"",
         poNum: "",
         status: "15",
         replyDeliveryDate_s: null,

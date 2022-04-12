@@ -27,6 +27,7 @@ namespace Convience.Model.Models.SRM
         public System.Security.Claims.ClaimsPrincipal user { get; set; }
         public string srmvendor { get; set; }
         public string type { get; set; }
+        public string matnr { get; set; }
     }
 
     public class QueryPoDownloadLogList

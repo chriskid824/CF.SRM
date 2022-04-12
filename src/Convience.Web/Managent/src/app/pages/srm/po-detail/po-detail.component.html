@@ -2,6 +2,13 @@
 <nz-card [nzSize]="'small'" id="searchBar">
   <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm" (ngSubmit)="submitSearch()">
     <nz-form-item>
+      <nz-form-label [nzFor]="'MATNR'">料號</nz-form-label>
+      <nz-form-control>
+        <input nz-input placeholder="料號" [formControlName]="'MATNR'" [attr.id]="'MATNR'"
+               autocomplete="off" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzFor]="'PO_NUM'">採購單號</nz-form-label>
       <nz-form-control>
         <input nz-input placeholder="採購單號" [formControlName]="'PO_NUM'" [attr.id]="'PO_NUM'"

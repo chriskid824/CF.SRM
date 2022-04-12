@@ -52,6 +52,7 @@
         <nz-form-item>
           <nz-form-control>
             <button nz-button nzType="primary">搜索</button>
+            <button nz-button nzType="primary" type="button" style="margin-top: -10px;margin-bottom: 10px; margin-left: 20px;" (click)="getSelectedRowData($event)" *canOperate="'DO_CREATE'">統一接收</button>
             <!--<button nz-button nzType="outline" type="button" class="ml-10"
               (click)="resetSearchForm()">
         重置
@@ -80,6 +81,7 @@
   [stopEditingWhenCellsLoseFocus]="true"
   [enableCellTextSelection]="true"
   [getContextMenuItems]="getContextMenuItems"
+  [gridOptions]="gridOptions"
 ></ag-grid-angular>
 
 <app-file-modal #filemodal></app-file-modal>

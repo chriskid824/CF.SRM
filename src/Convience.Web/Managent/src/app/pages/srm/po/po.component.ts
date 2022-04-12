@@ -59,6 +59,12 @@ export class PoComponent implements OnInit {
   formData:FormData;
   poData:any;
   polData:any;
+  isRowSelectable:false;
+  gridOptions = {
+    isRowSelectable: function (rowNode) {
+      return rowNode.data ? rowNode.data.Status == 21 : false;
+    },
+}
   showUploadList = {
     showDownloadIcon: true,
    showRemoveIcon: false,
@@ -88,6 +94,8 @@ export class PoComponent implements OnInit {
         headerName:'單號',
         field: 'PoNum',
         cellRenderer: 'agGroupCellRenderer',
+        checkboxSelection: checkboxSelection,
+        headerCheckboxSelection: headerCheckboxSelection,
       },
       {
         headerName:'供應商識別碼',
@@ -699,6 +707,27 @@ this._srmPoService.DownloadFileUrl(fileName).subscribe((result: any) => {
     return result;
   }
   submitEdit(){}
+  getSelectedRowData(event) {
+    let selectedNodes = this.gridApi.getSelectedNodes();
+    if(selectedNodes.length==0)
+    {
+      alert('請先選擇要接收的採購單!');
+      return;
+    }
+    let selectedData = selectedNodes.map(node => node.data.PoId);
+    console.info(selectedData);
+    this._srmPoService.UpdateStatus_Batch(selectedData)
+    .subscribe((result:any)=>{
+      if(result==null)
+      {
+        alert('統一接收成功!');
+        location.reload();
+      }
+      else{alert(result);}
+    });
+  }
+  cancel()
+  {}
 }
 function dateFormatter(data) {
   if(data.value==null) return "";
@@ -732,3 +761,9 @@ function getDatePicker() {
   };
   return Datepicker;
 }
+var checkboxSelection = function (params) {
+  return params.columnApi.getRowGroupColumns().length === 0;
+};
+var headerCheckboxSelection = function (params) {
+  return params.columnApi.getRowGroupColumns().length === 0;
+};
