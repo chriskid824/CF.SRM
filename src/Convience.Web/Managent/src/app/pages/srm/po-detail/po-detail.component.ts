@@ -47,7 +47,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'採購單號',
         field: 'PoNum',
-        minWidth: 170,
+        minWidth: 115,
 
       },
       {
@@ -59,18 +59,22 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'項次',
         field: 'PoLId',
+        minWidth: 85,
       },
       {
         headerName:'採單數量',
         field: 'Qty',
+        minWidth: 115,
       },
       {
         headerName:'未交貨數量',
         field: 'RemainQty',
+        minWidth: 125,
       },
       {
         headerName:'此次交貨數量',
         field: 'DeliveryQty',
+        minWidth: 140,
         editable:true,
         valueGetter: function (params) {
           if(params.data.DeliveryQty>params.data.RemainQty)
@@ -89,6 +93,7 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'工單可交數',
         field: 'WoQty',
+        minWidth: 125,
       },
       {
         headerName:'單價',
@@ -97,16 +102,19 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'本次需求日',
         field: 'DeliveryDate',
-        valueFormatter:dateFormatter
+        valueFormatter:dateFormatter,
+        minWidth: 125,
       },
       {
         headerName:'廠商交貨日期',
         field: 'ReplyDeliveryDate',
         valueFormatter:dateFormatter,
+        minWidth: 140,
       },
       {
         headerName:'倉別',
         field: 'Storage',
+        minWidth: 85,
         valueGetter: function (params) {
           if(params.data.Storage=='05Z1')
           {
@@ -127,10 +135,12 @@ export class PoDetailComponent implements OnInit {
       {
         headerName:'採購員',
         field: 'EkgryDesc',
+        minWidth: 100,
       },
       {
         headerName:'狀態',
         field: 'StatusDesc',
+        minWidth: 90,
       },
 
       {
